@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">檢查取號機</string>
+
+    <string name="confirm">確認</string>
+    <string name="cancel">取消</string>
+    <string name="setting">設定</string>
+    <string name="backspace">刪除</string>
+    <string name="enter">送出</string>
+
+    <string name="present_card_remind">檢查前請先插健保卡報到</string>
+    <string name="national_id">身分證、病歷號</string>
+    <string name="national_id_input_title">如您未攜帶健保卡，可輕觸螢幕輸入%s</string>
+    <string name="national_id_input_hint">請輸入%s</string>
+    <string name="submit">送出</string>
+    <string name="get_patient_not_found">查無此身分證號或病歷號之排檢資訊。</string>
+
+    <string name="print_serial_no">檢查號碼</string>
+    <string name="print_footer">請依叫號 等候辦理</string>
+
+    <string name="checking">資料辨識中…</string>
+
+    <string name="success_to_check">報到成功</string>
+    <string name="success_to_check_message">請拿取號碼牌</string>
+
+    <string name="fail_to_check">報到失敗</string>
+
+    <string name="server_domain">伺服器網域</string>
+    <string name="org_id">機構代碼</string>
+    <string-array name="setting_items">
+        <item>@string/server_domain</item>
+        <item>@string/org_id</item>
+    </string-array>
+
+    <string name="no_internet">需要有網路連線，請確認。</string>
+    <string name="service_timeout">伺服器連線逾時，請確認。</string>
+    
+    <string name="mScheduler_api_error_10001">主要欄位為空</string>
+    <string name="mScheduler_api_error_10002">找不到指定機構</string>
+    <string name="mScheduler_api_error_10003">找不到指定醫師</string>
+    <string name="mScheduler_api_error_10004">找不到指定科別</string>
+    <string name="mScheduler_api_error_10005">病患名稱為空</string>
+    <string name="mScheduler_api_error_10006">病患手機為空</string>
+    <string name="mScheduler_api_error_10007">病患生日格式錯誤</string>
+    <string name="mScheduler_api_error_10008">病患身分證為空</string>
+    <string name="mScheduler_api_error_10009">指定時段格式錯誤</string>
+</resources>
