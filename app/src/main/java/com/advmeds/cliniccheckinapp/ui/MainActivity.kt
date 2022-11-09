@@ -120,6 +120,11 @@ class MainActivity : AppCompatActivity() {
 
         override fun onReceiveResult(result: Result<AcsResponseModel>) {
             result.onSuccess {
+                if (!usbPrinterService.isConnected) {
+                    Snackbar.make(binding.root, "The printer is disconnect.", Snackbar.LENGTH_LONG).show()
+                    return
+                }
+                
                 getPatients(it.icId)
             }.onFailure {
                 it.message?.let { it1 ->

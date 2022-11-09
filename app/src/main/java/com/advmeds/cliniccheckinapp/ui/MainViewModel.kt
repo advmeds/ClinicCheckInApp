@@ -20,6 +20,7 @@ import retrofit2.Retrofit
 import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.concurrent.TimeUnit
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     sealed class CheckInStatus {
@@ -41,7 +42,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private val client = OkHttpClient.Builder()
-//        .readTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
         .addInterceptor {
             val request = it.request()
 
