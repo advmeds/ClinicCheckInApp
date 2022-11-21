@@ -16,11 +16,7 @@ class ErrorDialogFragment(
     private val message: CharSequence
 ) : AppCompatDialogFragment() {
 
-    private var _binding: ErrorDialogFragmentBinding? = null
     private lateinit var composeView: ComposeView
-
-    /** This property is only valid between onCreateView and onDestroyView. */
-    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,10 +34,6 @@ class ErrorDialogFragment(
     ): View {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.argb((255 * 0.5).toInt(), 0 , 0, 0)))
 
-        _binding = ErrorDialogFragmentBinding.inflate(inflater, container, false)
-
-        //return binding.root
-
         return ComposeView(requireContext()).also {
             composeView = it
         }
@@ -58,17 +50,5 @@ class ErrorDialogFragment(
                 }
             )
         }
-
-        binding.fragmentMessageTv.text = message
-
-        binding.root.setOnClickListener {
-            dismiss()
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        _binding = null
     }
 }

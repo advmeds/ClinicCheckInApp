@@ -16,10 +16,6 @@ import com.advmeds.cliniccheckinapp.dialog.screen.CheckingDialogFragmentScreen
 class CheckingDialogFragment : AppCompatDialogFragment() {
 
     private lateinit var composeView: ComposeView
-    private var _binding: CheckingDialogFragmentBinding? = null
-
-    /** This property is only valid between onCreateView and onDestroyView. */
-    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,9 +40,6 @@ class CheckingDialogFragment : AppCompatDialogFragment() {
             }
         }
 
-        _binding = CheckingDialogFragmentBinding.inflate(inflater, container, false)
-
-        //return binding.root
         return ComposeView(requireContext()).also {
             composeView = it
         }
@@ -58,11 +51,5 @@ class CheckingDialogFragment : AppCompatDialogFragment() {
         composeView.setContent {
             CheckingDialogFragmentScreen()
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        _binding = null
     }
 }
