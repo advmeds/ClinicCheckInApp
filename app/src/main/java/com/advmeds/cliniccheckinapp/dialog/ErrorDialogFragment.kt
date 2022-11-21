@@ -7,14 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.compose.ui.platform.ComposeView
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.ErrorDialogFragmentBinding
+import com.advmeds.cliniccheckinapp.dialog.screen.ErrorDialogFragmentScreen
 
 class ErrorDialogFragment(
     private val message: CharSequence
 ) : AppCompatDialogFragment() {
 
     private var _binding: ErrorDialogFragmentBinding? = null
+    private lateinit var composeView: ComposeView
 
     /** This property is only valid between onCreateView and onDestroyView. */
     private val binding get() = _binding!!
@@ -37,11 +40,24 @@ class ErrorDialogFragment(
 
         _binding = ErrorDialogFragmentBinding.inflate(inflater, container, false)
 
-        return binding.root
+        //return binding.root
+
+        return ComposeView(requireContext()).also {
+            composeView = it
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        composeView.setContent {
+            ErrorDialogFragmentScreen(
+                message = message.toString(),
+                closeDialog = {
+                    dismiss()
+                }
+            )
+        }
 
         binding.fragmentMessageTv.text = message
 
