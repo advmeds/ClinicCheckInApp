@@ -86,3 +86,45 @@ fun ErrorDialogFragmentScreen(message: String, closeDialog: () -> Unit) {
         }
     }
 }
+
+@Composable
+fun SuccessDialogFragmentScreen(closeDialog: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 146.dp, end = 146.dp)
+            .clickable(onClick = closeDialog),
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            shape = RoundedCornerShape(10.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(20.dp), verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_baseline_check_circle),
+                    contentDescription = "check_circle"
+                )
+                Column(modifier = Modifier.padding(start = 8.dp)) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.success_to_check),
+                        color = colorResource(id = R.color.colorPrimary),
+                        fontSize = 48.sp
+                    )
+
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp),
+                        text = stringResource(id = R.string.success_to_check_message),
+                        color = Color.Black,
+                        fontSize = 36.sp
+                    )
+                }
+            }
+        }
+    }
+}

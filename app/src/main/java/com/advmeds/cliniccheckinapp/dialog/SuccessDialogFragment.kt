@@ -7,12 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.compose.ui.platform.ComposeView
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.SuccessDialogFragmentBinding
+import com.advmeds.cliniccheckinapp.dialog.screen.SuccessDialogFragmentScreen
 
 class SuccessDialogFragment : AppCompatDialogFragment() {
 
     private var _binding: SuccessDialogFragmentBinding? = null
+    private lateinit var composeView: ComposeView
 
     /** This property is only valid between onCreateView and onDestroyView. */
     private val binding get() = _binding!!
@@ -35,7 +38,11 @@ class SuccessDialogFragment : AppCompatDialogFragment() {
 
         _binding = SuccessDialogFragmentBinding.inflate(inflater, container, false)
 
-        return binding.root
+        //return binding.root
+
+        return ComposeView(requireContext()).also {
+            composeView = it
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,6 +50,14 @@ class SuccessDialogFragment : AppCompatDialogFragment() {
 
         binding.root.setOnClickListener {
             dismiss()
+        }
+
+        composeView.setContent {
+            SuccessDialogFragmentScreen(
+                closeDialog = {
+                    dismiss()
+                }
+            )
         }
     }
 
