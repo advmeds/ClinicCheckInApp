@@ -4,7 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,6 +27,9 @@ fun CheckingDialogFragmentScreen() {
         contentAlignment = Alignment.Center
     ) {
         Card(
+            colors = CardDefaults.cardColors(
+                containerColor =  MaterialTheme.colorScheme.surface,
+            ),
             shape = RoundedCornerShape(10.dp)
         ) {
             Row(
@@ -55,6 +61,9 @@ fun ErrorDialogFragmentScreen(message: String, closeDialog: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Card(
+            colors = CardDefaults.cardColors(
+                containerColor =  MaterialTheme.colorScheme.surface,
+            ),
             shape = RoundedCornerShape(10.dp)
         ) {
             Row(
@@ -97,6 +106,9 @@ fun SuccessDialogFragmentScreen(closeDialog: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Card(
+            colors = CardDefaults.cardColors(
+                containerColor =  MaterialTheme.colorScheme.surface,
+            ),
             shape = RoundedCornerShape(10.dp)
         ) {
             Row(
