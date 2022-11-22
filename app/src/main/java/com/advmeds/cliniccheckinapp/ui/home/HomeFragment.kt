@@ -15,6 +15,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
@@ -34,6 +39,8 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private lateinit var composeView: ComposeView
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,7 +48,11 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = HomeFragmentBinding.inflate(inflater, container, false)
 
-        return binding.root
+        //return binding.root
+
+        return ComposeView(requireContext()).also {
+            composeView = it
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,6 +101,39 @@ class HomeFragment : Fragment() {
         binding.idInputEt.hint = String.format(getString(R.string.national_id_input_hint), arg)
 
         setupKeyboard()
+
+        composeView.setContent {
+
+            HomeScreen(
+                onNextClick = {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle(R.string.setting)
+                        .setItems(R.array.setting_items) { _, index ->
+                            when (index) {
+                                0 -> {
+                                    onSetServerDomainItemClicked()
+                                }
+                                1 -> {
+                                    onSetOrgIDItemClicked()
+                                }
+                            }
+                        }
+                        .showOnly()
+                },
+                onMadeRequest = {
+                    makeGetPatientRequest(it)
+                },
+                input_title =
+                buildAnnotatedString {
+                    append(text.substring(0, textStart))
+                    withStyle(style = SpanStyle(colorResource(id = R.color.colorPrimary))) {
+                        append(text.substring(textStart, textEnd))
+                    }
+                },
+
+                String.format(getString(R.string.national_id_input_hint), arg)
+            )
+        }
     }
 
     private fun onSetServerDomainItemClicked() {
@@ -214,11 +258,13 @@ class HomeFragment : Fragment() {
         binding.enterButton.setOnClickListener {
             val patient = binding.idInputEt.text.toString().trim()
 
-            if (patient.isNotBlank()) {
-                binding.idInputEt.text = null
+            makeGetPatientRequest(patient)
+        }
+    }
 
-                (requireActivity() as MainActivity).getPatients(patient)
-            }
+    private fun makeGetPatientRequest(patient:String) {
+        if (patient.isNotBlank()) {
+            (requireActivity() as MainActivity).getPatients(patient)
         }
     }
 
