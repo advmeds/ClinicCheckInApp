@@ -8,15 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.compose.ui.platform.ComposeView
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.CheckingDialogFragmentBinding
+import com.advmeds.cliniccheckinapp.dialog.screen.CheckingDialogFragmentScreen
 
 class CheckingDialogFragment : AppCompatDialogFragment() {
 
-    private var _binding: CheckingDialogFragmentBinding? = null
-
-    /** This property is only valid between onCreateView and onDestroyView. */
-    private val binding get() = _binding!!
+    private lateinit var composeView: ComposeView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,18 +40,16 @@ class CheckingDialogFragment : AppCompatDialogFragment() {
             }
         }
 
-        _binding = CheckingDialogFragmentBinding.inflate(inflater, container, false)
-
-        return binding.root
+        return ComposeView(requireContext()).also {
+            composeView = it
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        _binding = null
+        composeView.setContent {
+            CheckingDialogFragmentScreen()
+        }
     }
 }

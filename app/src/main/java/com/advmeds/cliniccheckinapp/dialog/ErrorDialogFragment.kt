@@ -7,17 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.compose.ui.platform.ComposeView
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.ErrorDialogFragmentBinding
+import com.advmeds.cliniccheckinapp.dialog.screen.ErrorDialogFragmentScreen
 
 class ErrorDialogFragment(
     private val message: CharSequence
 ) : AppCompatDialogFragment() {
 
-    private var _binding: ErrorDialogFragmentBinding? = null
-
-    /** This property is only valid between onCreateView and onDestroyView. */
-    private val binding get() = _binding!!
+    private lateinit var composeView: ComposeView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,24 +34,21 @@ class ErrorDialogFragment(
     ): View {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.argb((255 * 0.5).toInt(), 0 , 0, 0)))
 
-        _binding = ErrorDialogFragmentBinding.inflate(inflater, container, false)
-
-        return binding.root
+        return ComposeView(requireContext()).also {
+            composeView = it
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.fragmentMessageTv.text = message
-
-        binding.root.setOnClickListener {
-            dismiss()
+        composeView.setContent {
+            ErrorDialogFragmentScreen(
+                message = message.toString(),
+                closeDialog = {
+                    dismiss()
+                }
+            )
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        _binding = null
     }
 }
