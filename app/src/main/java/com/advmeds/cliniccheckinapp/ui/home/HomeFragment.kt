@@ -7,6 +7,7 @@ import android.text.InputType
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
@@ -28,20 +37,16 @@ import okhttp3.HttpUrl
 class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels()
 
-    private var _binding: HomeFragmentBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var composeView: ComposeView
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = HomeFragmentBinding.inflate(inflater, container, false)
-
-        return binding.root
+        return ComposeView(requireContext()).also {
+            composeView = it
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,45 +56,43 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupUI() {
-        binding.logoImageView.setOnLongClickListener {
-
-            AlertDialog.Builder(requireContext())
-                .setTitle(R.string.setting)
-                .setItems(R.array.setting_items) { _, index ->
-                    when (index) {
-                        0 -> {
-                            onSetServerDomainItemClicked()
-                        }
-                        1 -> {
-                            onSetOrgIDItemClicked()
-                        }
-                    }
-                }
-                .showOnly()
-
-            return@setOnLongClickListener true
-        }
-
         val arg = getString(R.string.national_id)
         val text = String.format(getString(R.string.national_id_input_title), arg)
-        val textColor = ContextCompat.getColor(
-            requireContext(),
-            R.color.colorPrimary
-        )
+
         val textStart = text.indexOf(arg)
         val textEnd = textStart + arg.length
-        val spannable = SpannableString(text)
-        spannable.setSpan(
-            ForegroundColorSpan(textColor),
-            textStart,
-            textEnd,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
 
-        binding.idInputTitleTv.text = spannable
-        binding.idInputEt.hint = String.format(getString(R.string.national_id_input_hint), arg)
+        composeView.setContent {
+            HomeScreen(
+                onNextClick = {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle(R.string.setting)
+                        .setItems(R.array.setting_items) { _, index ->
+                            when (index) {
+                                0 -> {
+                                    onSetServerDomainItemClicked()
+                                }
+                                1 -> {
+                                    onSetOrgIDItemClicked()
+                                }
+                            }
+                        }
+                        .showOnly()
+                },
+                onMadeRequest = {
+                    makeGetPatientRequest(it)
+                },
+                input_title =
+                buildAnnotatedString {
+                    append(text.substring(0, textStart))
+                    withStyle(style = SpanStyle(colorResource(id = R.color.colorPrimary))) {
+                        append(text.substring(textStart, textEnd))
+                    }
+                },
 
-        setupKeyboard()
+                String.format(getString(R.string.national_id_input_hint), arg)
+            )
+        }
     }
 
     private fun onSetServerDomainItemClicked() {
@@ -103,7 +106,8 @@ class HomeFragment : Fragment() {
         } else {
             editText.setTextAppearance(requireContext(), R.style.TextAppearance_AppCompat_Subhead)
         }
-        editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+        editText.inputType =
+            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
         editText.hint = "https://example.com"
 
         val layout = LinearLayout(requireContext())
@@ -167,58 +171,9 @@ class HomeFragment : Fragment() {
             .showOnly()
     }
 
-    private fun setupKeyboard() {
-        val onKeyClicked = View.OnClickListener {
-            val currentText = binding.idInputEt.text.toString()
-            val key = (it as Button).text.toString()
-
-            binding.idInputEt.setText(currentText + key)
-        }
-
-        binding.enPadLayout.children.forEach { children ->
-            when (children) {
-                is ViewGroup -> {
-                    children.children.forEach {
-                        if (it is Button) {
-                            it.setOnClickListener(onKeyClicked)
-                        }
-                    }
-                }
-                is Button -> {
-                    children.setOnClickListener(onKeyClicked)
-                }
-            }
-        }
-
-        binding.numberPadLayout.children.forEach { children ->
-            when (children) {
-                is ViewGroup -> {
-                    children.children.forEach {
-                        if (it is Button) {
-                            it.setOnClickListener(onKeyClicked)
-                        }
-                    }
-                }
-                is Button -> {
-                    children.setOnClickListener(onKeyClicked)
-                }
-            }
-        }
-
-        binding.backspaceButton.setOnClickListener {
-            val currentText = binding.idInputEt.text.toString()
-
-            binding.idInputEt.setText(currentText.dropLast(1))
-        }
-
-        binding.enterButton.setOnClickListener {
-            val patient = binding.idInputEt.text.toString().trim()
-
-            if (patient.isNotBlank()) {
-                binding.idInputEt.text = null
-
-                (requireActivity() as MainActivity).getPatients(patient)
-            }
+    private fun makeGetPatientRequest(patient:String) {
+        if (patient.isNotBlank()) {
+            (requireActivity() as MainActivity).getPatients(patient)
         }
     }
 
@@ -227,11 +182,5 @@ class HomeFragment : Fragment() {
         return if (this.theme.resolveAttribute(attr, typedValue, true))
             TypedValue.complexToDimensionPixelSize(typedValue.data, this.resources.displayMetrics)
         else 0
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        _binding = null
     }
 }
