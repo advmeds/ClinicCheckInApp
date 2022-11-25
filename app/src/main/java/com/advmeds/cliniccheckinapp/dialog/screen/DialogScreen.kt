@@ -25,34 +25,46 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.advmeds.cliniccheckinapp.R
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CheckingDialogFragmentScreen() {
-    Box(
-        modifier = Modifier.padding(start = 146.dp, end = 146.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Card(
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
+    val openDialog = remember { mutableStateOf(true) }
+
+    if (openDialog.value) {
+
+        Dialog(onDismissRequest = {
+            openDialog.value = false
+        },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                dismissOnBackPress = false,
             ),
-            shape = RoundedCornerShape(10.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(20.dp), verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_baseline_change_circle),
-                    contentDescription = "change_circle"
-                )
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.checking),
-                    color = colorResource(id = R.color.dark_gray),
-                    fontSize = 72.sp,
-                )
+            content = {
+                Card(
+                    modifier = Modifier.padding(start = 146.dp, end = 146.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(20.dp), verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_baseline_change_circle),
+                            contentDescription = "change_circle"
+                        )
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.checking),
+                            color = colorResource(id = R.color.dark_gray),
+                            fontSize = 72.sp,
+                        )
+                    }
+                }
             }
-        }
+        )
     }
 }
 
@@ -114,47 +126,60 @@ fun ErrorDialogFragmentScreen(message: String, closeDialog: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SuccessDialogFragmentScreen(closeDialog: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 146.dp, end = 146.dp)
-            .clickable(onClick = closeDialog),
-        contentAlignment = Alignment.Center
-    ) {
-        Card(
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-            ),
-            shape = RoundedCornerShape(10.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(20.dp), verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_baseline_check_circle),
-                    contentDescription = "check_circle"
-                )
-                Column(modifier = Modifier.padding(start = 8.dp)) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.success_to_check),
-                        color = colorResource(id = R.color.colorPrimary),
-                        fontSize = 48.sp
-                    )
 
-                    Text(
+    val openDialog = remember { mutableStateOf(true) }
+
+    if (openDialog.value) {
+
+        Dialog(onDismissRequest = {
+            openDialog.value = false
+            closeDialog()
+        },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                dismissOnBackPress = false,
+            ),
+            content =
+            {
+                Card(
+                    modifier = Modifier
+                        .padding(start = 146.dp, end = 146.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Row(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 4.dp),
-                        text = stringResource(id = R.string.success_to_check_message),
-                        color = Color.Black,
-                        fontSize = 36.sp
-                    )
+                            .padding(20.dp), verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_baseline_check_circle),
+                            contentDescription = "check_circle"
+                        )
+                        Column(modifier = Modifier.padding(start = 8.dp)) {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = stringResource(id = R.string.success_to_check),
+                                color = colorResource(id = R.color.colorPrimary),
+                                fontSize = 48.sp
+                            )
+
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 4.dp),
+                                text = stringResource(id = R.string.success_to_check_message),
+                                color = Color.Black,
+                                fontSize = 36.sp
+                            )
+                        }
+                    }
                 }
             }
-        }
+        )
     }
 }
