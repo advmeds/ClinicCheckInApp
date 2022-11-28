@@ -43,4 +43,8 @@
     <string name="mScheduler_api_error_10007">病患生日格式錯誤</string>
     <string name="mScheduler_api_error_10008">病患身分證為空</string>
     <string name="mScheduler_api_error_10009">指定時段格式錯誤</string>
+
+    <string name="error_default_message">
+        "尚未到 <font color='#c55a54'>下午</font> 報到時間，請於 <font color='#58929d'>13:00~17:00</font> 前往報到 或洽服務人員
+    </string>
 </resources>

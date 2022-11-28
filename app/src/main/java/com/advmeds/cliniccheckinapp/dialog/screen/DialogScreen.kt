@@ -1,26 +1,29 @@
 package com.advmeds.cliniccheckinapp.dialog.screen
 
+import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.advmeds.cliniccheckinapp.R
@@ -70,7 +73,7 @@ fun CheckingDialogFragmentScreen() {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ErrorDialogFragmentScreen(message: String, closeDialog: () -> Unit) {
+fun ErrorDialogFragmentScreen(message: CharSequence, closeDialog: () -> Unit) {
 
     val openDialog = remember { mutableStateOf(true) }
 
@@ -110,20 +113,41 @@ fun ErrorDialogFragmentScreen(message: String, closeDialog: () -> Unit) {
                                 fontSize = 48.sp
                             )
 
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 4.dp),
-                                text = if (message == null || message == "") "尚未到 下午 報到時間，請於 13:00~17:00 前往報到 或洽服務人員" else message,
-                                color = Color.Black,
-                                fontSize = 36.sp
-                            )
+                            if (message.isEmpty()) {
+                                StylingText(getTextErrorDefaultResource(id = R.string.error_default_message))
+                            }
+                            else {
+                                StylingText(message)
+                            }
                         }
                     }
                 }
             }
         )
     }
+}
+
+@Composable
+@ReadOnlyComposable
+fun getTextErrorDefaultResource(@StringRes id: Int): CharSequence =
+    LocalContext.current.resources.getText(id)
+
+@Composable
+fun StylingText(text: CharSequence, modifier: Modifier = Modifier) {
+    AndroidView(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp),
+        factory = { context ->
+            TextView(context).apply {
+                this.textSize = 36f
+                this.setTextColor(resources.getColor(R.color.black))
+            }
+        },
+        update = {
+            it.text = text
+        }
+    )
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
