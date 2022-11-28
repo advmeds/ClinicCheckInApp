@@ -44,7 +44,7 @@ class ErrorDialogFragment(
 
         composeView.setContent {
             ErrorDialogFragmentScreen(
-                message = message.toString(),
+                message = message,
                 closeDialog = {
                     dismiss()
                 }
