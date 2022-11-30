@@ -105,6 +105,7 @@ class HomeFragment : Fragment() {
         }
         editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
         editText.hint = "https://example.com"
+        editText.setText(viewModel.mSchedulerServerDomain)
 
         val layout = LinearLayout(requireContext())
         val padding = requireContext().getDimensionFrom(R.attr.dialogPreferredPadding)
@@ -145,6 +146,8 @@ class HomeFragment : Fragment() {
         } else {
             editText.setTextAppearance(requireContext(), R.style.TextAppearance_AppCompat_Subhead)
         }
+
+        editText.setText(viewModel.orgId)
 
         val layout = LinearLayout(requireContext())
         val padding = requireContext().getDimensionFrom(R.attr.dialogPreferredPadding)

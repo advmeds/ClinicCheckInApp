@@ -11,7 +11,12 @@ enum class ApiError(val rawValue: Int) {
     PATIENT_MOBILE_NULL(10006),
     PATIENT_BIRTH_NULL(10007),
     PATIENT_NATIONAL_ID_NULL(10008),
-    DATETIME_WRONG(10009);
+    DATETIME_WRONG(10009),
+    APPOINTMENT_NOT_FOUND(10010),
+    CHECK_IN_OVERTIME(10011),
+    CHECK_IN_TIME_NOT_UP(10012),
+    CHECK_IN_AGAIN(10013),
+    SCHEDULE_NOT_FOUND(10014);
 
     companion object {
         fun initWith(rawValue: Int) = values().find { it.rawValue == rawValue }
@@ -28,5 +33,10 @@ enum class ApiError(val rawValue: Int) {
             PATIENT_BIRTH_NULL -> R.string.mScheduler_api_error_10007
             PATIENT_NATIONAL_ID_NULL -> R.string.mScheduler_api_error_10008
             DATETIME_WRONG -> R.string.mScheduler_api_error_10009
+            APPOINTMENT_NOT_FOUND -> R.string.mScheduler_api_error_10010
+            CHECK_IN_OVERTIME -> R.string.mScheduler_api_error_10011
+            CHECK_IN_TIME_NOT_UP -> R.string.mScheduler_api_error_10012
+            CHECK_IN_AGAIN -> R.string.mScheduler_api_error_10013
+            SCHEDULE_NOT_FOUND -> R.string.mScheduler_api_error_10014
         }
 }

@@ -7,10 +7,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.lifecycle.lifecycleScope
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.SuccessDialogFragmentBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class SuccessDialogFragment : AppCompatDialogFragment() {
+class SuccessDialogFragment(
+    private val title: CharSequence,
+    private val message: CharSequence,
+) : AppCompatDialogFragment() {
 
     private var _binding: SuccessDialogFragmentBinding? = null
 
@@ -31,9 +39,26 @@ class SuccessDialogFragment : AppCompatDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.argb((255 * 0.5).toInt(), 0 , 0, 0)))
+        dialog?.window?.setBackgroundDrawable(
+            ColorDrawable(
+                Color.argb(
+                    (255 * 0.2).toInt(),
+                    0,
+                    0,
+                    0
+                )
+            )
+        )
 
         _binding = SuccessDialogFragmentBinding.inflate(inflater, container, false)
+
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                delay(5000)
+            }
+
+            dismiss()
+        }
 
         return binding.root
     }
@@ -44,6 +69,9 @@ class SuccessDialogFragment : AppCompatDialogFragment() {
         binding.root.setOnClickListener {
             dismiss()
         }
+
+        binding.fragmentTitleTv.text = title
+        binding.fragmentMessageTv.text = message
     }
 
     override fun onDestroyView() {

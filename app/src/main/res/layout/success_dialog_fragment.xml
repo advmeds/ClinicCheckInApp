@@ -22,39 +22,42 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="20dp">
+            android:orientation="vertical"
+            android:padding="80dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="40dp"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/ic_baseline_check_circle" />
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/fragment_title_tv"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:orientation="vertical">
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="40dp"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/colorPrimary"
+                android:textSize="72sp"
+                tools:text="@string/success_to_check" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/fragment_title_tv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/success_to_check"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="48sp" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/fragment_message_tv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/success_to_check_message"
-                    android:textColor="@android:color/black"
-                    android:textSize="36sp" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/fragment_message_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="48sp"
+                tools:text="@string/success_to_check_message" />
         </androidx.appcompat.widget.LinearLayoutCompat>
+
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

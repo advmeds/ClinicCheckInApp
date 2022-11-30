@@ -7,11 +7,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.lifecycle.lifecycleScope
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.ErrorDialogFragmentBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ErrorDialogFragment(
-    private val message: CharSequence
+    private val title: CharSequence,
+    private val message: CharSequence,
+    private val onActionButtonClicked: ((isCancelled: Boolean) -> Unit)? = null
 ) : AppCompatDialogFragment() {
 
     private var _binding: ErrorDialogFragmentBinding? = null
@@ -33,9 +40,28 @@ class ErrorDialogFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.argb((255 * 0.5).toInt(), 0 , 0, 0)))
+        dialog?.window?.setBackgroundDrawable(
+            ColorDrawable(
+                Color.argb(
+                    (255 * 0.2).toInt(),
+                    0,
+                    0,
+                    0
+                )
+            )
+        )
 
         _binding = ErrorDialogFragmentBinding.inflate(inflater, container, false)
+
+        if (onActionButtonClicked == null) {
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    delay(5000)
+                }
+
+                dismiss()
+            }
+        }
 
         return binding.root
     }
@@ -43,10 +69,20 @@ class ErrorDialogFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.fragmentMessageTv.text = message
-
         binding.root.setOnClickListener {
             dismiss()
+        }
+
+        binding.fragmentTitleTv.text = title
+        binding.fragmentMessageTv.text = message
+
+        binding.actionButtonsLayout.visibility =
+            if (onActionButtonClicked == null) View.GONE else View.VISIBLE
+        binding.cancelButton.setOnClickListener {
+            onActionButtonClicked?.let { it1 -> it1(true) }
+        }
+        binding.confirmButton.setOnClickListener {
+            onActionButtonClicked?.let { it1 -> it1(false) }
         }
     }
 

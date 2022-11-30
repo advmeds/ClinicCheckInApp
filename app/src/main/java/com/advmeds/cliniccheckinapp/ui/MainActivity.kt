@@ -1,7 +1,10 @@
 package com.advmeds.cliniccheckinapp.ui
 
 import android.app.PendingIntent
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 import android.os.Build
@@ -20,20 +23,25 @@ import androidx.lifecycle.lifecycleScope
 import com.advmeds.cardreadermodule.AcsResponseModel
 import com.advmeds.cardreadermodule.UsbDeviceCallback
 import com.advmeds.cardreadermodule.acs.usb.AcsUsbDevice
-import com.advmeds.cardreadermodule.acs.usb.decoder.*
+import com.advmeds.cardreadermodule.acs.usb.decoder.AcsUsbTWDecoder
 import com.advmeds.cardreadermodule.castles.CastlesUsbDevice
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.ActivityMainBinding
 import com.advmeds.cliniccheckinapp.dialog.CheckingDialogFragment
 import com.advmeds.cliniccheckinapp.dialog.ErrorDialogFragment
+import com.advmeds.cliniccheckinapp.dialog.ScheduleListDialogFragment
 import com.advmeds.cliniccheckinapp.dialog.SuccessDialogFragment
-import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiError
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.printerlib.usb.BPT3XPrinterService
 import com.advmeds.printerlib.usb.UsbPrinterService
 import com.advmeds.printerlib.utils.PrinterBuffer
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.*
 
@@ -46,6 +54,8 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
 
     private lateinit var binding: ActivityMainBinding
+
+    private var dialog: AppCompatDialogFragment? = null
 
     private val detectUsbDeviceReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -120,12 +130,11 @@ class MainActivity : AppCompatActivity() {
 
         override fun onReceiveResult(result: Result<AcsResponseModel>) {
             result.onSuccess {
-                if (!usbPrinterService.isConnected) {
-                    Snackbar.make(binding.root, "The printer is disconnect.", Snackbar.LENGTH_LONG).show()
-                    return
-                }
-                
-                getPatients(it.icId)
+                getPatients(
+                    nationalId = it.icId,
+                    birth = it.birthday?.let { dateBean -> "${dateBean.year}-${dateBean.month}-${dateBean.day}" } ?: "",
+                    name = it.name
+                )
             }.onFailure {
                 it.message?.let { it1 ->
                     Snackbar.make(binding.root, it1, Snackbar.LENGTH_LONG).show()
@@ -221,49 +230,147 @@ class MainActivity : AppCompatActivity() {
         setupUSB()
 //        setupBluetooth()
 
-        var dialog: AppCompatDialogFragment? = null
-
         viewModel.checkInStatus.observe(this) {
             dialog?.dismiss()
-            dialog = null
 
-            when (it) {
+            dialog = when (it) {
                 is MainViewModel.CheckInStatus.NotChecking -> {
-                    if (it.response.success) {
-                        dialog = SuccessDialogFragment()
-                        dialog?.showNow(supportFragmentManager, null)
-
-                        it.response.patients.forEach { patient ->
-                            printPatient(patient)
-                        }
+                    if (it.response == null) {
+                        null
                     } else {
-                        dialog = ErrorDialogFragment(
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
-                            } else {
-                                Html.fromHtml(it.response.message)
+                        if (it.response.success) {
+                            SuccessDialogFragment(
+                                title = getString(R.string.success_to_check),
+                                message = getString(R.string.success_to_check_message)
+                            )
+                        } else {
+                            when (ApiError.initWith(it.response.code)) {
+                                ApiError.APPOINTMENT_NOT_FOUND -> ErrorDialogFragment(
+                                    title = getString(R.string.schedule_not_found),
+                                    message = getString(R.string.make_appointment_now)
+                                ) { isCancelled ->
+                                    if (!isCancelled) {
+                                        viewModel.getSchedule()
+                                    } else {
+                                        dialog?.dismiss()
+                                        dialog = null
+                                    }
+                                }
+                                else -> ErrorDialogFragment(
+                                    title = getString(R.string.fail_to_check),
+                                    message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                        Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
+                                    } else {
+                                        Html.fromHtml(it.response.message)
+                                    }
+                                )
                             }
-                        )
-
-                        dialog?.showNow(supportFragmentManager, null)
+                        }
                     }
                 }
                 MainViewModel.CheckInStatus.Checking -> {
-                    dialog = CheckingDialogFragment()
-                    dialog?.showNow(supportFragmentManager, null)
+                    CheckingDialogFragment()
                 }
                 is MainViewModel.CheckInStatus.Fail -> {
-                    if (it.throwable is CancellationException) {
-
-                    } else {
-                        dialog = ErrorDialogFragment(
-                            it.throwable.message ?: "Unknown"
-                        )
-
-                        dialog?.showNow(supportFragmentManager, null)
-                    }
+                    ErrorDialogFragment(
+                        title = getString(R.string.fail_to_check),
+                        message = it.throwable.message ?: "Unknown"
+                    )
                 }
             }
+
+            dialog?.showNow(supportFragmentManager, null)
+        }
+
+        viewModel.getSchedulesStatus.observe(this) {
+            dialog?.dismiss()
+
+            dialog = when (it) {
+                is MainViewModel.GetSchedulesStatus.NotChecking -> {
+                    if (it.response == null) {
+                        null
+                    } else {
+                        if (it.response.success) {
+                            ScheduleListDialogFragment(
+                                schedules = it.response.schedules
+                            ) { checkedSchedule ->
+                                if (checkedSchedule != null) {
+                                    viewModel.createAppointment(
+                                        doctor = checkedSchedule.doctor,
+                                        division = checkedSchedule.division,
+                                        startsAt = checkedSchedule.startsAt,
+                                        endsAt = checkedSchedule.endsAt
+                                    ) { createAppointmentResponse ->
+                                        printPatient(division = createAppointmentResponse.doctor, serialNo = createAppointmentResponse.serialNo)
+                                    }
+                                } else {
+                                    dialog?.dismiss()
+                                    dialog = null
+                                }
+                            }
+                        } else {
+                            ErrorDialogFragment(
+                                title = "",
+                                message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
+                                } else {
+                                    Html.fromHtml(it.response.message)
+                                }
+                            )
+                        }
+                    }
+                }
+                MainViewModel.GetSchedulesStatus.Checking -> {
+                    CheckingDialogFragment()
+                }
+                is MainViewModel.GetSchedulesStatus.Fail -> {
+                    ErrorDialogFragment(
+                        title = "",
+                        message = it.throwable.message ?: "Unknown"
+                    )
+                }
+            }
+
+            dialog?.showNow(supportFragmentManager, null)
+        }
+
+        viewModel.createAppointmentStatus.observe(this) {
+            dialog?.dismiss()
+
+            dialog = when (it) {
+                is MainViewModel.CreateAppointmentStatus.NotChecking -> {
+                    if (it.response == null) {
+                        null
+                    } else {
+                        if (it.response.success) {
+                            SuccessDialogFragment(
+                                title = getString(R.string.success_to_make_appointment),
+                                message = getString(R.string.success_to_make_appointment_message)
+                            )
+                        } else {
+                            ErrorDialogFragment(
+                                title = getString(R.string.fail_to_make_appointment),
+                                message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
+                                } else {
+                                    Html.fromHtml(it.response.message)
+                                }
+                            )
+                        }
+                    }
+                }
+                MainViewModel.CreateAppointmentStatus.Checking -> {
+                    CheckingDialogFragment()
+                }
+                is MainViewModel.CreateAppointmentStatus.Fail -> {
+                    ErrorDialogFragment(
+                        title = getString(R.string.fail_to_make_appointment),
+                        message = it.throwable.message ?: "Unknown"
+                    )
+                }
+            }
+
+            dialog?.showNow(supportFragmentManager, null)
         }
     }
 
@@ -310,7 +417,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /** 列印患者報到資訊 */
-    private fun printPatient(patient: GetPatientsResponse.PatientBean) {
+    private fun printPatient(division: String, serialNo: Int) {
         val now = Date()
         val formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
 
@@ -325,7 +432,7 @@ class MainActivity : AppCompatActivity() {
 
             PrinterBuffer.setLineSpacing(160),
             PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
-            strToBytes(patient.division),
+            strToBytes(division),
             PrinterBuffer.printAndFeedLine(),
 
             PrinterBuffer.setLineSpacing(120),
@@ -335,7 +442,7 @@ class MainActivity : AppCompatActivity() {
 
             PrinterBuffer.setLineSpacing(160),
             PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
-            strToBytes(String.format("%04d", patient.serialNo)),
+            strToBytes(String.format("%04d", serialNo)),
             PrinterBuffer.printAndFeedLine(),
 
             PrinterBuffer.setLineSpacing(120),
@@ -452,8 +559,29 @@ class MainActivity : AppCompatActivity() {
 //    }
 
     /** 取得病患今天預約掛號資訊 */
-    fun getPatients(nationalId: String, checkInCompletion: (() -> Unit)? = null) {
-        viewModel.getPatients(nationalId, checkInCompletion)
+    fun getPatients(nationalId: String, name: String = "", birth: String = "") {
+//        if (!usbPrinterService.isConnected) {
+//            Snackbar.make(
+//                binding.root,
+//                getString(R.string.printer_not_connect),
+//                Snackbar.LENGTH_LONG
+//            ).show()
+//            return
+//        }
+
+        viewModel.getPatients(
+            patient = CreateAppointmentRequest.Patient(
+                nationalId = nationalId,
+                name = name.ifBlank { nationalId },
+                birthday = birth
+            )
+        ) {
+            if (it.success) {
+                it.patients.forEach { patient ->
+                    printPatient(division = patient.division, serialNo = patient.serialNo)
+                }
+            }
+        }
     }
 
     private fun hideSystemUI() {

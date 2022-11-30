@@ -32,7 +32,17 @@ class CheckingDialogFragment : AppCompatDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.argb((255 * 0.5).toInt(), 0 , 0, 0)))
+        dialog?.window?.setBackgroundDrawable(
+            ColorDrawable(
+                Color.argb(
+                    (255 * 0.2).toInt(),
+                    0,
+                    0,
+                    0
+                )
+            )
+        )
+
         dialog?.setOnKeyListener { _, keyCode, _ ->
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 true
@@ -44,10 +54,6 @@ class CheckingDialogFragment : AppCompatDialogFragment() {
         _binding = CheckingDialogFragmentBinding.inflate(inflater, container, false)
 
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onDestroyView() {

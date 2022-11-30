@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:paddingStart="146dp"
-    android:paddingEnd="146dp">
+    android:clipToPadding="false">
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
@@ -22,22 +20,26 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="20dp">
+            android:orientation="vertical"
+            android:padding="80dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_gravity="center_horizontal"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/ic_baseline_change_circle" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/fragment_title_tv"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
                 android:text="@string/checking"
                 android:textColor="@color/dark_gray"
                 android:textSize="72sp" />

@@ -1,8 +1,13 @@
 package com.advmeds.cliniccheckinapp.models.remote.mScheduler
 
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface ApiService {
@@ -22,4 +27,28 @@ interface ApiService {
         @Query("patient")
         nationalId: String
     ): Response<GetPatientsResponse>
+
+    /**
+     * 取得現在可以掛號的門診。
+     *
+     * @param clinicId 診所代碼
+     * @return 現在可以掛號的門診資訊
+     */
+    @GET("api/v1/clinics/get_schedule")
+    suspend fun getSchedules(
+        @Query("clinic_id")
+        clinicId: String,
+    ): Response<GetScheduleResponse>
+
+    /**
+     * 建立預約
+     *
+     * @param request 建立預約需要的請求
+     * @return 成功與否
+     */
+    @POST("api/v1/clinics/creates_appointment")
+    suspend fun createAppointment(
+        @Body
+        request: CreateAppointmentRequest
+    ): Response<CreateAppointmentResponse>
 }

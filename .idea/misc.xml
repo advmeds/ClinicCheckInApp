@@ -6,18 +6,28 @@
         <entry key="../../../../layout/custom_preview.xml" value="0.5018518518518519" />
         <entry key="../../Library/Android/sdk/platforms/android-30/data/res/layout/alert_dialog.xml" value="0.22352216748768472" />
         <entry key="../../Library/Android/sdk/platforms/android-30/data/res/layout/alert_dialog_title_material.xml" value="0.22352216748768472" />
+        <entry key="..\:/AndroidStudioProjects/ClinicCheckInApp/app/src/main/res/layout/checking_dialog_fragment.xml" value="0.128515625" />
+        <entry key="..\:/AndroidStudioProjects/ClinicCheckInApp/app/src/main/res/layout/error_dialog_fragment.xml" value="0.128515625" />
+        <entry key="..\:/AndroidStudioProjects/ClinicCheckInApp/app/src/main/res/layout/home_fragment.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/ClinicCheckInApp/app/src/main/res/layout/success_dialog_fragment.xml" value="0.128515625" />
         <entry key="app/src/main/res/drawable/ic_baseline_arrow_forward.xml" value="0.40546875" />
         <entry key="app/src/main/res/drawable/ic_baseline_backspace.xml" value="0.40546875" />
         <entry key="app/src/main/res/drawable/ic_baseline_change_circle.xml" value="0.40546875" />
+        <entry key="app/src/main/res/drawable/ic_baseline_change_circle_100.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_check_circle.xml" value="0.40546875" />
         <entry key="app/src/main/res/drawable/ic_baseline_error.xml" value="0.40546875" />
+        <entry key="app/src/main/res/drawable/ic_baseline_error_100.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.365" />
+        <entry key="app/src/main/res/drawable/ic_open_select_hand_gesture.xml" value="0.108" />
         <entry key="app/src/main/res/drawable/id_input_border.xml" value="0.32125" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2204433497536946" />
-        <entry key="app/src/main/res/layout/checking_dialog_fragment.xml" value="0.26354679802955666" />
-        <entry key="app/src/main/res/layout/error_dialog_fragment.xml" value="0.26354679802955666" />
-        <entry key="app/src/main/res/layout/home_fragment.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/success_dialog_fragment.xml" value="0.26354679802955666" />
+        <entry key="app/src/main/res/drawable/schedule_toggle_selector.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.17830290010741137" />
+        <entry key="app/src/main/res/layout/checking_dialog_fragment.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/error_dialog_fragment.xml" value="0.16" />
+        <entry key="app/src/main/res/layout/home_fragment.xml" value="0.14" />
+        <entry key="app/src/main/res/layout/schedule_item.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/schedules_fragment.xml" value="0.16" />
+        <entry key="app/src/main/res/layout/success_dialog_fragment.xml" value="0.14" />
       </map>
     </option>
   </component>

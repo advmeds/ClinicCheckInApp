@@ -12,6 +12,7 @@
     <string name="national_id_input_title">如您未攜帶健保卡，可輕觸螢幕輸入%s</string>
     <string name="national_id_input_hint">請輸入%s</string>
     <string name="submit">送出</string>
+    <string name="printer_not_connect">尚未連接取票機</string>
     <string name="get_patient_not_found">查無此身分證號或病歷號之排檢資訊。</string>
 
     <string name="print_serial_no">檢查號碼</string>
@@ -20,9 +21,18 @@
     <string name="checking">資料辨識中…</string>
 
     <string name="success_to_check">報到成功</string>
-    <string name="success_to_check_message">請拿取號碼牌</string>
+    <string name="success_to_check_message">請記得拿取號碼牌</string>
 
     <string name="fail_to_check">報到失敗</string>
+    <string name="schedule_not_found">查無排檢紀錄</string>
+    <string name="make_appointment_now">是否現場取號？</string>
+
+    <string name="select_schedules_title">請選擇要進行的檢查項目</string>
+
+    <string name="success_to_make_appointment">已完成現場取號</string>
+    <string name="success_to_make_appointment_message">請記得拿取號碼單，並等候檢查人員叫號時，進入檢查室。</string>
+
+    <string name="fail_to_make_appointment">掛號失敗</string>
 
     <string name="server_domain">伺服器網域</string>
     <string name="org_id">機構代碼</string>
@@ -43,4 +53,9 @@
     <string name="mScheduler_api_error_10007">病患生日格式錯誤</string>
     <string name="mScheduler_api_error_10008">病患身分證為空</string>
     <string name="mScheduler_api_error_10009">指定時段格式錯誤</string>
+    <string name="mScheduler_api_error_10010">查無資料，請重新輸入號碼或洽服務人員，謝謝</string>
+    <string name="mScheduler_api_error_10011">報到時間已過，請洽服務人員</string>
+    <string name="mScheduler_api_error_10012">尚未到 %s 報到時間，%s 前往報到或洽服務人員</string>
+    <string name="mScheduler_api_error_10013">重複報到，若有問題請洽服務人員</string>
+    <string name="mScheduler_api_error_10014">查無可用時段</string>
 </resources>
