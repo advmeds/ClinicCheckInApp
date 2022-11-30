@@ -1,15 +1,10 @@
 package com.advmeds.cliniccheckinapp.ui
 
 import android.app.Application
-import android.os.Build
-import android.text.Html
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.advmeds.cliniccheckinapp.R
-import com.advmeds.cliniccheckinapp.dialog.ErrorDialogFragment
-import com.advmeds.cliniccheckinapp.dialog.SuccessDialogFragment
-import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiError
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiService
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
@@ -18,7 +13,9 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetSchedul
 import com.advmeds.cliniccheckinapp.repositories.ServerRepository
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

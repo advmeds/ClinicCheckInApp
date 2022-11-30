@@ -560,14 +560,14 @@ class MainActivity : AppCompatActivity() {
 
     /** 取得病患今天預約掛號資訊 */
     fun getPatients(nationalId: String, name: String = "", birth: String = "") {
-//        if (!usbPrinterService.isConnected) {
-//            Snackbar.make(
-//                binding.root,
-//                getString(R.string.printer_not_connect),
-//                Snackbar.LENGTH_LONG
-//            ).show()
-//            return
-//        }
+        if (!usbPrinterService.isConnected) {
+            Snackbar.make(
+                binding.root,
+                getString(R.string.printer_not_connect),
+                Snackbar.LENGTH_LONG
+            ).show()
+            return
+        }
 
         viewModel.getPatients(
             patient = CreateAppointmentRequest.Patient(
