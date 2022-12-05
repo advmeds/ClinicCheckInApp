@@ -17,6 +17,15 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        release {
+            storeFile file((project.rootDir.toString() + '\\key\\release'))
+            storePassword '123456'
+            keyPassword '123456'
+            keyAlias = 'KeyAlias'
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
@@ -31,14 +40,18 @@ android {
             minifyEnabled false
             debuggable = false
 
+            signingConfig signingConfigs.release
+
             buildConfigField "String", "MS_DOMAIN", "\"https://test.mscheduler.com/\""
-            buildConfigField "String", "ORG_ID", "\"1034\""
+            buildConfigField "String", "ORG_ID", "\"\""
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
         ptch {
             initWith release
+
+            buildConfigField "String", "ORG_ID", "\"1034\""
         }
     }
     buildFeatures {
@@ -50,6 +63,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def fileName = "ClinicCheckInApp_${defaultConfig.versionCode}_${defaultConfig.versionName}_${variant.buildType.name}.apk"
+            outputFileName = fileName
+        }
     }
 }
 
