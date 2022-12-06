@@ -33,7 +33,7 @@ android {
             debuggable = true
 
             buildConfigField "String", "MS_DOMAIN", "\"https://test.mscheduler.com/\""
-            buildConfigField "String", "ORG_ID", "\"1\""
+            buildConfigField "String", "ORG_ID", "\"1034\""
         }
 
         release {
@@ -43,7 +43,7 @@ android {
             signingConfig signingConfigs.release
 
             buildConfigField "String", "MS_DOMAIN", "\"https://test.mscheduler.com/\""
-            buildConfigField "String", "ORG_ID", "\"1\""
+            buildConfigField "String", "ORG_ID", "\"1034\""
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -51,7 +51,7 @@ android {
         ptch {
             initWith release
 
-            buildConfigField "String", "ORG_ID", "\"1034\""
+            buildConfigField "String", "ORG_ID", "\"1\""
         }
     }
     buildFeatures {

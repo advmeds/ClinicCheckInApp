@@ -301,7 +301,12 @@ class MainActivity : AppCompatActivity() {
                                         startsAt = checkedSchedule.startsAt,
                                         endsAt = checkedSchedule.endsAt
                                     ) { createAppointmentResponse ->
-                                        printPatient(division = createAppointmentResponse.doctor, serialNo = createAppointmentResponse.serialNo)
+                                        if (createAppointmentResponse.success) {
+                                            printPatient(
+                                                division = createAppointmentResponse.doctor,
+                                                serialNo = createAppointmentResponse.serialNo
+                                            )
+                                        }
                                     }
                                 } else {
                                     dialog?.dismiss()
