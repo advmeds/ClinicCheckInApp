@@ -51,6 +51,7 @@ android {
         ptch {
             initWith release
 
+            buildConfigField "String", "MS_DOMAIN", "\"http://129.34.70.92:3000/\""
             buildConfigField "String", "ORG_ID", "\"1\""
         }
 
