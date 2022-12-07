@@ -53,6 +53,12 @@ android {
 
             buildConfigField "String", "ORG_ID", "\"1\""
         }
+
+        ksph {
+            initWith release
+
+            buildConfigField "String", "ORG_ID", "\"3\""
+        }
     }
     buildFeatures {
         viewBinding true
