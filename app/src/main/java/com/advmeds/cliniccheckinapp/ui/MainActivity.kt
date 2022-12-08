@@ -432,7 +432,7 @@ class MainActivity : AppCompatActivity() {
 
             PrinterBuffer.setLineSpacing(120),
             PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
-            strToBytes("屏東基督教醫院"),
+            strToBytes(getString(R.string.print_hospital_name)),
             PrinterBuffer.printAndFeedLine(),
 
             PrinterBuffer.setLineSpacing(160),
