@@ -1,6 +1,9 @@
 package com.advmeds.cliniccheckinapp.ui.home
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
@@ -19,6 +22,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import coil.load
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
 import com.advmeds.cliniccheckinapp.ui.MainActivity
@@ -26,6 +31,11 @@ import com.advmeds.cliniccheckinapp.utils.showOnly
 import okhttp3.HttpUrl
 
 class HomeFragment : Fragment() {
+    companion object {
+        const val RELOAD_CLINIC_LOGO_ACTION = "reload_clinic_logo_action"
+        const val CLINIC_LOGO_URL_KEY = "clinic_logo_url"
+    }
+
     private val viewModel: HomeViewModel by viewModels()
 
     private var _binding: HomeFragmentBinding? = null
@@ -34,12 +44,24 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private val reloadClinicLogoReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val clinicLogoUrl = intent?.getStringExtra(CLINIC_LOGO_URL_KEY)
+            binding.logoImageView.load(clinicLogoUrl)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = HomeFragmentBinding.inflate(inflater, container, false)
+
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+            reloadClinicLogoReceiver,
+            IntentFilter(RELOAD_CLINIC_LOGO_ACTION)
+        )
 
         return binding.root
     }
@@ -52,7 +74,6 @@ class HomeFragment : Fragment() {
 
     private fun setupUI() {
         binding.logoImageView.setOnLongClickListener {
-
             AlertDialog.Builder(requireContext())
                 .setTitle(R.string.setting)
                 .setItems(R.array.setting_items) { _, index ->
@@ -124,6 +145,11 @@ class HomeFragment : Fragment() {
                     HttpUrl.get(domain)
 
                     viewModel.mSchedulerServerDomain = domain
+
+                    val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
+
+                    LocalBroadcastManager.getInstance(requireContext())
+                        .sendBroadcast(intent)
                 } catch (e: Exception) {
                     AlertDialog.Builder(requireContext())
                         .setMessage(e.message)
@@ -164,6 +190,11 @@ class HomeFragment : Fragment() {
 
                 if (id.isNotBlank()) {
                     viewModel.orgId = id
+
+                    val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
+
+                    LocalBroadcastManager.getInstance(requireContext())
+                        .sendBroadcast(intent)
                 }
             }
             .setNegativeButton(R.string.cancel, null)
@@ -234,6 +265,8 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(reloadClinicLogoReceiver)
 
         _binding = null
     }

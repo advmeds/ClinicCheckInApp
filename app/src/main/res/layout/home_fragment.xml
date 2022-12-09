@@ -34,7 +34,9 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                app:srcCompat="@drawable/app_logo" />
+                android:minWidth="740dp"
+                android:minHeight="150dp"
+                app:srcCompat="@drawable/clinic_logo_default" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
@@ -615,6 +617,7 @@
                         android:layout_marginBottom="6dp"
                         android:layout_weight="1"
                         android:translationZ="2dp"
+                        app:cardBackgroundColor="@color/error"
                         app:cardCornerRadius="4dp"
                         app:cardElevation="1dp">
 
@@ -648,7 +651,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_horizontal"
                                     android:text="@string/backspace"
-                                    android:textColor="@color/keyboard_text_color"
+                                    android:textColor="@color/white"
                                     android:textSize="28sp" />
 
                             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -663,6 +666,7 @@
                         android:layout_marginBottom="6dp"
                         android:layout_weight="1"
                         android:translationZ="2dp"
+                        app:cardBackgroundColor="@color/colorPrimary"
                         app:cardCornerRadius="4dp"
                         app:cardElevation="1dp">
 
@@ -696,7 +700,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_horizontal"
                                     android:text="@string/enter"
-                                    android:textColor="@color/keyboard_text_color"
+                                    android:textColor="@color/white"
                                     android:textSize="28sp" />
 
                             </androidx.appcompat.widget.LinearLayoutCompat>

@@ -41,6 +41,4 @@ data class CreateAppointmentResponse(
     /** 看診號碼 */
     @SerialName("serial_num")
     val serialNo: Int = 0
-) {
-
-}
+)

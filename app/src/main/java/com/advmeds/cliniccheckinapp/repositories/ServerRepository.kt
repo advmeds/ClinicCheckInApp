@@ -5,6 +5,11 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppoi
 
 class ServerRepository(private val service: ApiService) {
 
+    /** @see ApiService.getClinicGuardian */
+    suspend fun getClinicGuardian(
+        clinicId: String,
+    ) = service.getClinicGuardian(clinicId)
+
     /** @see ApiService.getPatients */
     suspend fun getPatients(
         clinicId: String,

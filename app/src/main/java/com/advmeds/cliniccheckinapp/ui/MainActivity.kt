@@ -20,6 +20,9 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.findNavController
+import coil.load
 import com.advmeds.cardreadermodule.AcsResponseModel
 import com.advmeds.cardreadermodule.UsbDeviceCallback
 import com.advmeds.cardreadermodule.acs.usb.AcsUsbDevice
@@ -34,6 +37,8 @@ import com.advmeds.cliniccheckinapp.dialog.ScheduleListDialogFragment
 import com.advmeds.cliniccheckinapp.dialog.SuccessDialogFragment
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiError
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.ui.home.HomeFragment.Companion.CLINIC_LOGO_URL_KEY
+import com.advmeds.cliniccheckinapp.ui.home.HomeFragment.Companion.RELOAD_CLINIC_LOGO_ACTION
 import com.advmeds.printerlib.usb.BPT3XPrinterService
 import com.advmeds.printerlib.usb.UsbPrinterService
 import com.advmeds.printerlib.utils.PrinterBuffer
@@ -49,11 +54,14 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val USB_PERMISSION = "${BuildConfig.APPLICATION_ID}.USB_PERMISSION"
 //        private const val SCAN_TIME_OUT: Long = 15
+
+        const val RELOAD_CLINIC_DATA_ACTION = "reload_clinic_data_action"
     }
 
     private val viewModel: MainViewModel by viewModels()
 
     private lateinit var binding: ActivityMainBinding
+    private val navHostFragment by lazy { findNavController(R.id.nav_host_fragment) }
 
     private var dialog: AppCompatDialogFragment? = null
 
@@ -203,8 +211,19 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var usbPrinterService: UsbPrinterService
 
+    private val reloadClinicDataReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            viewModel.getClinicGuardian()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            reloadClinicDataReceiver,
+            IntentFilter(RELOAD_CLINIC_DATA_ACTION)
+        )
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -229,6 +248,51 @@ class MainActivity : AppCompatActivity() {
 
         setupUSB()
 //        setupBluetooth()
+
+        viewModel.getClinicGuardian()
+
+        viewModel.clinicGuardian.observe(this) {
+            val intent = Intent(RELOAD_CLINIC_LOGO_ACTION).apply {
+                putExtra(CLINIC_LOGO_URL_KEY, it?.logo)
+            }
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+        }
+
+        viewModel.getGuardianStatus.observe(this) {
+            dialog?.dismiss()
+
+            dialog = when (it) {
+                is MainViewModel.GetGuardianStatus.NotChecking -> {
+                    if (it.response == null) {
+                        null
+                    } else {
+                        if (it.response.success) {
+                            null
+                        } else {
+                            ErrorDialogFragment(
+                                title = "",
+                                message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
+                                } else {
+                                    Html.fromHtml(it.response.message)
+                                }
+                            )
+                        }
+                    }
+                }
+                MainViewModel.GetGuardianStatus.Checking -> {
+                    CheckingDialogFragment()
+                }
+                is MainViewModel.GetGuardianStatus.Fail -> {
+                    ErrorDialogFragment(
+                        title = "",
+                        message = it.throwable.message ?: "Unknown"
+                    )
+                }
+            }
+
+            dialog?.showNow(supportFragmentManager, null)
+        }
 
         viewModel.checkInStatus.observe(this) {
             dialog?.dismiss()
@@ -432,7 +496,7 @@ class MainActivity : AppCompatActivity() {
 
             PrinterBuffer.setLineSpacing(120),
             PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
-            strToBytes(getString(R.string.print_hospital_name)),
+            strToBytes(viewModel.clinicGuardian.value!!.name),
             PrinterBuffer.printAndFeedLine(),
 
             PrinterBuffer.setLineSpacing(160),
@@ -574,6 +638,15 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
+        if (viewModel.clinicGuardian.value == null) {
+            Snackbar.make(
+                binding.root,
+                getString(R.string.clinic_data_not_found),
+                Snackbar.LENGTH_LONG
+            ).show()
+            return
+        }
+
         viewModel.getPatients(
             patient = CreateAppointmentRequest.Patient(
                 nationalId = nationalId,
@@ -645,6 +718,8 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(reloadClinicDataReceiver)
 
 //        try {
 //            unregisterReceiver(detectBluetoothStateReceiver)

@@ -33,7 +33,7 @@ android {
             debuggable = true
 
             buildConfigField "String", "MS_DOMAIN", "\"https://test.mscheduler.com/\""
-            buildConfigField "String", "ORG_ID", "\"1034\""
+            buildConfigField "String", "ORG_ID", "\"1\""
         }
 
         release {
@@ -43,22 +43,9 @@ android {
             signingConfig signingConfigs.release
 
             buildConfigField "String", "MS_DOMAIN", "\"https://test.mscheduler.com/\""
-            buildConfigField "String", "ORG_ID", "\"1034\""
+            buildConfigField "String", "ORG_ID", "\"1\""
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-
-        ptch {
-            initWith release
-
-            buildConfigField "String", "MS_DOMAIN", "\"http://129.34.70.92:3000/\""
-            buildConfigField "String", "ORG_ID", "\"1\""
-        }
-
-        ksph {
-            initWith release
-
-            buildConfigField "String", "ORG_ID", "\"3\""
         }
     }
     buildFeatures {
@@ -117,6 +104,10 @@ dependencies {
     // lottie
     def lottie_version = "5.0.1"
     implementation "com.airbnb.android:lottie:$lottie_version"
+
+    // lottie
+    def coil_version = "1.4.0"
+    implementation "io.coil-kt:coil:$coil_version"
 
     implementation "com.jakewharton.timber:timber:4.7.1"
 

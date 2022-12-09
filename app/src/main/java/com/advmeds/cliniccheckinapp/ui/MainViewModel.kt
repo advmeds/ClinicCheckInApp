@@ -8,6 +8,7 @@ import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiService
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetClinicGuardianResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
 import com.advmeds.cliniccheckinapp.repositories.ServerRepository
@@ -29,30 +30,6 @@ import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
-    sealed class CheckInStatus {
-        object Checking : CheckInStatus()
-
-        data class NotChecking(val response: GetPatientsResponse?) : CheckInStatus()
-
-        data class Fail(val throwable: Throwable) : CheckInStatus()
-    }
-
-    sealed class GetSchedulesStatus {
-        object Checking : GetSchedulesStatus()
-
-        data class NotChecking(val response: GetScheduleResponse?) : GetSchedulesStatus()
-
-        data class Fail(val throwable: Throwable) : GetSchedulesStatus()
-    }
-
-    sealed class CreateAppointmentStatus {
-        object Checking : CreateAppointmentStatus()
-
-        data class NotChecking(val response: CreateAppointmentResponse?) : CreateAppointmentStatus()
-
-        data class Fail(val throwable: Throwable) : CreateAppointmentStatus()
-    }
-
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
 
     private val format = Json {
@@ -93,17 +70,92 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
 
+    val getGuardianStatus = MutableLiveData<GetGuardianStatus>()
     val checkInStatus = MutableLiveData<CheckInStatus>()
     val getSchedulesStatus = MutableLiveData<GetSchedulesStatus>()
     val createAppointmentStatus = MutableLiveData<CreateAppointmentStatus>()
 
+    private var getGuardianJob: Job? = null
     private var checkJob: Job? = null
     private var getSchedulesJob: Job? = null
     private var createAppointmentJob: Job? = null
 
+    val clinicGuardian = MutableLiveData<GetClinicGuardianResponse?>()
     private var patient: CreateAppointmentRequest.Patient? = null
 
+    fun getClinicGuardian(completion: ((GetClinicGuardianResponse) -> Unit)? = null) {
+        createAppointmentJob?.cancel()
+        getSchedulesJob?.cancel()
+        checkJob?.cancel()
+        getGuardianJob?.cancel()
+
+        getGuardianJob = viewModelScope.launch {
+            getGuardianStatus.value = GetGuardianStatus.Checking
+
+            val response = try {
+                val result = serverRepo.getClinicGuardian(sharedPreferencesRepo.orgId)
+
+                Timber.d("Status code: ${result.code()}")
+                Timber.d("Response: ${format.encodeToString(result.body())}")
+
+                if (result.isSuccessful) {
+                    result.body()!!
+                } else {
+                    GetClinicGuardianResponse(
+                        success = false,
+                        code = result.code(),
+                        message = result.message()
+                    )
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+
+                GetClinicGuardianResponse(
+                    success = false,
+                    code = 0,
+                    message = when (e) {
+                        is UnknownHostException -> {
+                            getApplication<MainApplication>().getString(
+                                R.string.no_internet
+                            )
+                        }
+                        is SocketTimeoutException -> {
+                            getApplication<MainApplication>().getString(
+                                R.string.service_timeout
+                            )
+                        }
+                        else -> {
+                            e.localizedMessage
+                        }
+                    }
+                )
+            }
+
+            clinicGuardian.value = response.takeIf { it.success }
+
+            completion?.let { it(response) }
+
+            getGuardianStatus.value = GetGuardianStatus.NotChecking(response)
+        }
+
+        getGuardianJob?.invokeOnCompletion {
+            it ?: return@invokeOnCompletion
+
+            Timber.e(it)
+
+            clinicGuardian.value = null
+
+            getGuardianStatus.value = if (it !is CancellationException) {
+                GetGuardianStatus.Fail(it)
+            } else {
+                GetGuardianStatus.NotChecking(null)
+            }
+        }
+    }
+
     fun getPatients(patient: CreateAppointmentRequest.Patient, completion: ((GetPatientsResponse) -> Unit)? = null) {
+        if (getGuardianJob?.isActive == true) return
+
         createAppointmentJob?.cancel()
         getSchedulesJob?.cancel()
         checkJob?.cancel()
@@ -119,7 +171,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 Timber.d("Status code: ${result.code()}")
                 Timber.d("Response: ${format.encodeToString(result.body())}")
 
-                result.body()!!
+                if (result.isSuccessful) {
+                    result.body()!!
+                } else {
+                    GetPatientsResponse(
+                        success = false,
+                        code = result.code(),
+                        message = result.message()
+                    )
+                }
             } catch (e: Exception) {
                 Timber.e(e)
 
@@ -140,8 +200,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         else -> {
                             e.localizedMessage
                         }
-                    },
-                    patients = emptyList()
+                    }
                 )
             }
 
@@ -164,6 +223,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getSchedule(completion: ((GetScheduleResponse) -> Unit)? = null) {
+        if (checkJob?.isActive == true) return
+
+        createAppointmentJob?.cancel()
         getSchedulesJob?.cancel()
 
         getSchedulesJob = viewModelScope.launch {
@@ -175,7 +237,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 Timber.d("Status code: ${result.code()}")
                 Timber.d("Response: ${format.encodeToString(result.body())}")
 
-                result.body()!!
+                if (result.isSuccessful) {
+                    result.body()!!
+                } else {
+                    GetScheduleResponse(
+                        success = false,
+                        code = result.code(),
+                        message = result.message()
+                    )
+                }
             } catch (e: Exception) {
                 Timber.e(e)
 
@@ -196,8 +266,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         else -> {
                             e.localizedMessage
                         }
-                    },
-                    schedules = emptyList()
+                    }
                 )
             }
 
@@ -227,6 +296,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         endsAt: String,
         completion: ((CreateAppointmentResponse) -> Unit)? = null
     ) {
+        if (getSchedulesJob?.isActive == true) return
+
         createAppointmentJob?.cancel()
 
         createAppointmentJob = viewModelScope.launch {
@@ -247,7 +318,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 Timber.d("Status code: ${result.code()}")
                 Timber.d("Response: ${format.encodeToString(result.body())}")
 
-                result.body()!!
+                if (result.isSuccessful) {
+                    result.body()!!
+                } else {
+                    CreateAppointmentResponse(
+                        success = false,
+                        code = result.code(),
+                        message = result.message()
+                    )
+                }
             } catch (e: Exception) {
                 Timber.e(e)
 
@@ -289,5 +368,29 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 CreateAppointmentStatus.NotChecking(null)
             }
         }
+    }
+
+    sealed class GetGuardianStatus {
+        object Checking : GetGuardianStatus()
+        data class NotChecking(val response: GetClinicGuardianResponse?) : GetGuardianStatus()
+        data class Fail(val throwable: Throwable) : GetGuardianStatus()
+    }
+
+    sealed class CheckInStatus {
+        object Checking : CheckInStatus()
+        data class NotChecking(val response: GetPatientsResponse?) : CheckInStatus()
+        data class Fail(val throwable: Throwable) : CheckInStatus()
+    }
+
+    sealed class GetSchedulesStatus {
+        object Checking : GetSchedulesStatus()
+        data class NotChecking(val response: GetScheduleResponse?) : GetSchedulesStatus()
+        data class Fail(val throwable: Throwable) : GetSchedulesStatus()
+    }
+
+    sealed class CreateAppointmentStatus {
+        object Checking : CreateAppointmentStatus()
+        data class NotChecking(val response: CreateAppointmentResponse?) : CreateAppointmentStatus()
+        data class Fail(val throwable: Throwable) : CreateAppointmentStatus()
     }
 }

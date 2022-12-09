@@ -2,15 +2,27 @@ package com.advmeds.cliniccheckinapp.models.remote.mScheduler
 
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetClinicGuardianResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
+
+    /**
+     * 取得該診間的相關設定，例如LOGO、語系
+     * @param clinicId 診所代碼
+     */
+    @GET("api/v1/clinics/{id}/guardians")
+    suspend fun getClinicGuardian(
+        @Path("id")
+        clinicId: String
+    ): Response<GetClinicGuardianResponse>
 
     /**
      * 帶入身分證或病歷號查詢病患今天預約掛號資訊。

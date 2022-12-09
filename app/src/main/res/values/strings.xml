@@ -8,12 +8,13 @@
     <string name="enter">送出</string>
 
     <string name="present_card_remind">檢查前請先插健保卡報到</string>
-    <string name="national_id">身分證、病歷號</string>
+    <string name="national_id">身份證字號、病歷號</string>
     <string name="national_id_input_title">如您未攜帶健保卡，可輕觸螢幕輸入%s</string>
     <string name="national_id_input_hint">請輸入%s</string>
     <string name="submit">送出</string>
     <string name="printer_not_connect">尚未連接取票機</string>
-    <string name="get_patient_not_found">查無此身分證號或病歷號之排檢資訊。</string>
+    <string name="get_patient_not_found">查無此身份證字號或病歷號之排檢資訊。</string>
+    <string name="clinic_data_not_found">找不到診所資料</string>
 
     <string name="print_hospital_name">屏東基督教醫院</string>
     <string name="print_serial_no">檢查號碼</string>
