@@ -618,7 +618,7 @@
                         android:layout_weight="1"
                         android:translationZ="2dp"
                         app:cardBackgroundColor="@color/error"
-                        app:cardCornerRadius="4dp"
+                        app:cardCornerRadius="6dp"
                         app:cardElevation="1dp">
 
                         <FrameLayout
@@ -667,7 +667,7 @@
                         android:layout_weight="1"
                         android:translationZ="2dp"
                         app:cardBackgroundColor="@color/colorPrimary"
-                        app:cardCornerRadius="4dp"
+                        app:cardCornerRadius="6dp"
                         app:cardElevation="1dp">
 
                         <FrameLayout
