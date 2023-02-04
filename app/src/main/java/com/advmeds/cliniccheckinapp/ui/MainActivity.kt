@@ -22,7 +22,6 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.findNavController
-import coil.load
 import com.advmeds.cardreadermodule.AcsResponseModel
 import com.advmeds.cardreadermodule.UsbDeviceCallback
 import com.advmeds.cardreadermodule.acs.usb.AcsUsbDevice
@@ -85,7 +84,11 @@ class MainActivity : AppCompatActivity() {
                                     usbPrinterService.connectDevice(usbDevice)
                                 } catch (e: Exception) {
                                     e.printStackTrace()
-                                    Snackbar.make(binding.root, "Fail to connect the usb printer.", Snackbar.LENGTH_LONG).show()
+                                    Snackbar.make(
+                                        binding.root,
+                                        "Fail to connect the usb printer.",
+                                        Snackbar.LENGTH_LONG
+                                    ).show()
                                 }
                             }
                         }
@@ -133,14 +136,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onFailToConnectDevice() {
-            Snackbar.make(binding.root, "Fail to connect usb card reader.", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(binding.root, "Fail to connect usb card reader.", Snackbar.LENGTH_LONG)
+                .show()
         }
 
         override fun onReceiveResult(result: Result<AcsResponseModel>) {
             result.onSuccess {
                 getPatients(
                     nationalId = it.icId,
-                    birth = it.birthday?.let { dateBean -> "${dateBean.year}-${dateBean.month}-${dateBean.day}" } ?: "",
+                    birth = it.birthday?.let { dateBean -> "${dateBean.year}-${dateBean.month}-${dateBean.day}" }
+                        ?: "",
                     name = it.name
                 )
             }.onFailure {
@@ -323,7 +328,10 @@ class MainActivity : AppCompatActivity() {
                                 else -> ErrorDialogFragment(
                                     title = getString(R.string.fail_to_check),
                                     message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                        Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
+                                        Html.fromHtml(
+                                            it.response.message,
+                                            Html.FROM_HTML_MODE_COMPACT
+                                        )
                                     } else {
                                         Html.fromHtml(it.response.message)
                                     }
@@ -367,7 +375,10 @@ class MainActivity : AppCompatActivity() {
                                     ) { createAppointmentResponse ->
                                         if (createAppointmentResponse.success) {
                                             printPatient(
-                                                division = createAppointmentResponse.doctor,
+                                                division = when (BuildConfig.BUILD_TYPE) {
+                                                    "ptch" -> createAppointmentResponse.doctor
+                                                    else -> createAppointmentResponse.division
+                                                },
                                                 serialNo = createAppointmentResponse.serialNo
                                             )
                                         }
@@ -663,9 +674,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideSystemUI() {
-        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView) ?: return
+        val windowInsetsController =
+            WindowCompat.getInsetsController(window, window.decorView) ?: return
         // Configure the behavior of the hidden system bars
-        windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        windowInsetsController.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         // Hide both the status bar and the navigation bar
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
     }

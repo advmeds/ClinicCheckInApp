@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.recyclerview.widget.RecyclerView
+import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.ScheduleItemBinding
 import com.advmeds.cliniccheckinapp.databinding.SchedulesFragmentBinding
@@ -110,9 +111,14 @@ class ScheduleListDialogFragment(
             RecyclerView.ViewHolder(binding.root) {
 
             fun bind(item: GetScheduleResponse.ScheduleBean) {
-                binding.toggleButton.text = item.doctorName
-                binding.toggleButton.textOn = item.doctorName
-                binding.toggleButton.textOff = item.doctorName
+                val name = when(BuildConfig.BUILD_TYPE) {
+                    "ptch" -> item.doctorName
+                    else -> item.divisionName
+                }
+
+                binding.toggleButton.text = name
+                binding.toggleButton.textOn = name
+                binding.toggleButton.textOff = name
             }
         }
 

@@ -47,6 +47,17 @@ android {
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
+        ptch { // 屏基，醫師與掛號科別名稱顛倒
+            initWith release
+        }
+
+        rende { // 台南仁德，將與檢查室有關的部分字串顯示改成門診
+            initWith release
+
+            buildConfigField "String", "MS_DOMAIN", "\"https://www.mscheduler.com/\""
+            buildConfigField "String", "ORG_ID", "\"103\""
+        }
     }
     buildFeatures {
         viewBinding true
