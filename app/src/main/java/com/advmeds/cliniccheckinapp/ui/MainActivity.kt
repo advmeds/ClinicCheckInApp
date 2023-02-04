@@ -667,7 +667,13 @@ class MainActivity : AppCompatActivity() {
         ) {
             if (it.success) {
                 it.patients.forEach { patient ->
-                    printPatient(division = patient.division, serialNo = patient.serialNo)
+                    printPatient(
+                        division = when (BuildConfig.BUILD_TYPE) {
+                            "ptch" -> patient.doctor
+                            else -> patient.division
+                        },
+                        serialNo = patient.serialNo
+                    )
                 }
             }
         }
