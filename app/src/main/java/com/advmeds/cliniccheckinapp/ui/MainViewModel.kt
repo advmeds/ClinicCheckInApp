@@ -1,6 +1,9 @@
 package com.advmeds.cliniccheckinapp.ui
 
 import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import androidx.core.content.getSystemService
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -14,9 +17,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetSchedul
 import com.advmeds.cliniccheckinapp.repositories.ServerRepository
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -93,6 +94,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             getGuardianStatus.value = GetGuardianStatus.Checking
 
             val response = try {
+                val connectivityManager = getApplication<MainApplication>().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+                while (connectivityManager.activeNetworkInfo?.isConnected != true) {
+                    withContext(Dispatchers.IO) { delay(1000) }
+                }
+
                 val result = serverRepo.getClinicGuardian(sharedPreferencesRepo.orgId)
 
                 Timber.d("Status code: ${result.code()}")
