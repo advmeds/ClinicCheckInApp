@@ -36,27 +36,26 @@ android {
             buildConfigField "String", "ORG_ID", "\"1\""
         }
 
-        release {
+        release { // 門診取號機
             minifyEnabled false
             debuggable = false
 
             signingConfig signingConfigs.release
 
-            buildConfigField "String", "MS_DOMAIN", "\"https://test.mscheduler.com/\""
+            buildConfigField "String", "MS_DOMAIN", "\"https://www.mscheduler.com/\""
             buildConfigField "String", "ORG_ID", "\"1\""
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
-        ptch { // 屏基，醫師與掛號科別名稱顛倒
+        // 屏基
+        // 落地雲
+        // 將門診相關文字顯示改成檢查室
+        // 並且醫師與科別顛倒
+        ptch {
             initWith release
-        }
 
-        rende { // 台南仁德，將與檢查室有關的部分字串顯示改成門診
-            initWith release
-
-            buildConfigField "String", "MS_DOMAIN", "\"https://www.mscheduler.com/\""
-            buildConfigField "String", "ORG_ID", "\"103\""
+            buildConfigField "String", "MS_DOMAIN", "\"http://129.34.70.92:3000\""
         }
     }
     buildFeatures {
