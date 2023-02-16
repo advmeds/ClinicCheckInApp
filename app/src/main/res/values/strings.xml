@@ -6,8 +6,10 @@
     <string name="setting">設定</string>
     <string name="backspace">刪除</string>
     <string name="enter">送出</string>
+    <string name="or">或</string>
 
     <string name="present_card_remind">看診前請插健保卡取號</string>
+    <string name="check_in_now">點我現場取號</string>
     <string name="national_id">身份證字號</string>
     <string name="national_id_input_title">如您未攜帶健保卡，可輕觸螢幕輸入%s</string>
     <string name="national_id_input_hint">請輸入%s</string>
@@ -60,4 +62,5 @@
     <string name="mScheduler_api_error_10012">尚未到 %s 報到時間，%s 前往報到或洽服務人員</string>
     <string name="mScheduler_api_error_10013">重複報到，若有問題請洽服務人員</string>
     <string name="mScheduler_api_error_10014">查無可用時段</string>
+
 </resources>

@@ -21,12 +21,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import coil.load
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
 import com.advmeds.cliniccheckinapp.ui.MainActivity
+import com.advmeds.cliniccheckinapp.ui.MainViewModel
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import okhttp3.HttpUrl
 
@@ -37,6 +39,7 @@ class HomeFragment : Fragment() {
     }
 
     private val viewModel: HomeViewModel by viewModels()
+    private val activityViewModel: MainViewModel by activityViewModels()
 
     private var _binding: HomeFragmentBinding? = null
 
@@ -89,6 +92,10 @@ class HomeFragment : Fragment() {
                 .showOnly()
 
             return@setOnLongClickListener true
+        }
+
+        binding.checkInButton.setOnClickListener {
+            activityViewModel.getSchedule()
         }
 
         val arg = getString(R.string.national_id)

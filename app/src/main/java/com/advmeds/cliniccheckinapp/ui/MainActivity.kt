@@ -21,7 +21,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.navigation.findNavController
 import com.advmeds.cardreadermodule.AcsResponseModel
 import com.advmeds.cardreadermodule.UsbDeviceCallback
 import com.advmeds.cardreadermodule.acs.usb.AcsUsbDevice
@@ -60,7 +59,6 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
 
     private lateinit var binding: ActivityMainBinding
-    private val navHostFragment by lazy { findNavController(R.id.nav_host_fragment) }
 
     private var dialog: AppCompatDialogFragment? = null
 
@@ -640,7 +638,8 @@ class MainActivity : AppCompatActivity() {
 
     /** 取得病患今天預約掛號資訊 */
     fun getPatients(nationalId: String, name: String = "", birth: String = "") {
-        if (!usbPrinterService.isConnected) {
+        if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
+            // 若有開啟取號功能，則必須要有連線取票機才會去報到
             Snackbar.make(
                 binding.root,
                 getString(R.string.printer_not_connect),
