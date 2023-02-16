@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
+import android.media.AudioManager
+import android.media.SoundPool
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
@@ -220,8 +222,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private lateinit var soundPool: SoundPool
+    private var successSoundId: Int = 0
+    private var failSoundId: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        soundPool = SoundPool(
+            6,
+            AudioManager.STREAM_MUSIC,
+            0
+        )
+
+        successSoundId = soundPool.load(assets.openFd("success.mp3"), 1)
+        failSoundId = soundPool.load(assets.openFd("fail.mp3"), 1)
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
             reloadClinicDataReceiver,
@@ -311,21 +326,18 @@ class MainActivity : AppCompatActivity() {
                                 message = getString(R.string.success_to_check_message)
                             )
                         } else {
-                            when (ApiError.initWith(it.response.code)) {
-                                ApiError.APPOINTMENT_NOT_FOUND -> ErrorDialogFragment(
-                                    title = getString(R.string.schedule_not_found),
-                                    message = getString(R.string.make_appointment_now)
-                                ) { isCancelled ->
-                                    if (!isCancelled) {
-                                        viewModel.getSchedule()
-                                    } else {
-                                        dialog?.dismiss()
-                                        dialog = null
-                                    }
-                                }
-                                else -> ErrorDialogFragment(
-                                    title = getString(R.string.fail_to_check),
-                                    message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            val apiError = ApiError.initWith(it.response.code)
+
+                            ErrorDialogFragment(
+                                title = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
+                                    getString(R.string.schedule_not_found)
+                                } else {
+                                    getString(R.string.fail_to_check)
+                                },
+                                message = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
+                                    getString(R.string.make_appointment_now)
+                                } else {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                         Html.fromHtml(
                                             it.response.message,
                                             Html.FROM_HTML_MODE_COMPACT
@@ -333,8 +345,20 @@ class MainActivity : AppCompatActivity() {
                                     } else {
                                         Html.fromHtml(it.response.message)
                                     }
-                                )
-                            }
+                                },
+                                onActionButtonClicked = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND){
+                                    { isCancelled ->
+                                        if (!isCancelled) {
+                                            viewModel.getSchedule()
+                                        } else {
+                                            dialog?.dismiss()
+                                            dialog = null
+                                        }
+                                    }
+                                } else {
+                                    null
+                                }
+                            )
                         }
                     }
                 }
@@ -675,6 +699,19 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
             }
+
+            soundPool.play(
+                if (it.success) {
+                    successSoundId
+                } else {
+                    failSoundId
+                },
+                1f,
+                1f,
+                0,
+                0,
+                1f
+            )
         }
     }
 

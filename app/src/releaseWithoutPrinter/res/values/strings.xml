@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">門診報到機</string>
+    <string name="present_card_remind">看診前請從下方插入健保卡報到</string>
+    <string name="success_to_check_message" />
+</resources>

@@ -25,6 +25,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import coil.load
+import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
 import com.advmeds.cliniccheckinapp.ui.MainActivity
@@ -76,6 +77,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupUI() {
+        binding.checkInLayout.visibility = if (BuildConfig.PRINT_ENABLED) View.VISIBLE else View.GONE
+
         binding.logoImageView.setOnLongClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle(R.string.setting)

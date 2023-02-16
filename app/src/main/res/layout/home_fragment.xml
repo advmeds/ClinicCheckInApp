@@ -108,40 +108,49 @@
                     app:lottie_fileName="card_present.json"
                     app:lottie_loop="true" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/materialTextView2"
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/check_in_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="40dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:gravity="center"
-                    android:lines="1"
-                    android:text="@string/or"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="48sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:orientation="horizontal">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/check_in_button"
-                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="40dp"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
-                    android:paddingStart="24dp"
-                    android:paddingTop="10dp"
-                    android:paddingEnd="24dp"
-                    android:paddingBottom="10dp"
-                    android:text="@string/check_in_now"
-                    android:textSize="36sp"
-                    app:backgroundTint="@color/alert"
-                    app:cornerRadius="8dp"
-                    tools:ignore="SpeakableTextPresentCheck" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/materialTextView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center"
+                        android:lines="1"
+                        android:text="@string/or"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="48sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/check_in_button"
+                        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="40dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:paddingStart="24dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="24dp"
+                        android:paddingBottom="10dp"
+                        android:text="@string/check_in_now"
+                        android:textSize="36sp"
+                        app:backgroundTint="@color/alert"
+                        app:cornerRadius="8dp"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
