@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private var dialog: AppCompatDialogFragment? = null
+    var dialog: AppCompatDialogFragment? = null
 
     private val detectUsbDeviceReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {

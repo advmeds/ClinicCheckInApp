@@ -19,17 +19,17 @@ data class GetScheduleResponse(
 ) {
     @Serializable
     data class ScheduleBean(
-        /** 檢查室代號 */
+        /** 醫生代號 */
         val doctor: String = "",
 
-        /** 檢查室名稱 */
+        /** 醫生名稱 */
         @SerialName("doctor_name")
         val doctorName: String = "",
 
-        /** 醫生代號 */
+        /** 檢查室代號 */
         val division: String = "",
 
-        /** 醫生名稱 */
+        /** 檢查室名稱 */
         @SerialName("division_name")
         val divisionName: String = "",
 

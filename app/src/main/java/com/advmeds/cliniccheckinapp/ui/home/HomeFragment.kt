@@ -28,6 +28,7 @@ import coil.load
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
+import com.advmeds.cliniccheckinapp.dialog.CheckInDialogFragment
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.MainViewModel
 import com.advmeds.cliniccheckinapp.utils.showOnly
@@ -98,7 +99,10 @@ class HomeFragment : Fragment() {
         }
 
         binding.checkInButton.setOnClickListener {
-            activityViewModel.getSchedule()
+            val activity = requireActivity() as MainActivity
+            activity.dialog?.dismiss()
+            activity.dialog = CheckInDialogFragment()
+            activity.dialog?.showNow(parentFragmentManager, null)
         }
 
         val arg = getString(R.string.national_id)

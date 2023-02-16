@@ -144,7 +144,7 @@
                         android:paddingTop="10dp"
                         android:paddingEnd="24dp"
                         android:paddingBottom="10dp"
-                        android:text="@string/check_in_now"
+                        android:text="@string/make_appointment_right_now"
                         android:textSize="36sp"
                         app:backgroundTint="@color/alert"
                         app:cornerRadius="8dp"

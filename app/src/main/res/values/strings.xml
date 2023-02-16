@@ -7,9 +7,11 @@
     <string name="backspace">刪除</string>
     <string name="enter">送出</string>
     <string name="or">或</string>
+    <string name="got_it">了解</string>
 
     <string name="present_card_remind">看診前請插健保卡取號</string>
-    <string name="check_in_now">點我現場取號</string>
+
+    <string name="health_card">健保卡</string>
     <string name="national_id">身份證字號</string>
     <string name="national_id_input_title">如您未攜帶健保卡，可輕觸螢幕輸入%s</string>
     <string name="national_id_input_hint">請輸入%s</string>
@@ -33,6 +35,9 @@
 
     <string name="select_schedules_title">請選擇要掛號的科別</string>
 
+    <string name="make_appointment">現場取號方法</string>
+    <string name="make_appointment_right_now">點我現場取號</string>
+    <string name="make_appointment_message">請直接插%s，或手動輸入%s</string>
     <string name="success_to_make_appointment">已完成現場取號</string>
     <string name="success_to_make_appointment_message">請記得拿取號碼單，並等候診間人員叫號時，進入診間看診。</string>
 
