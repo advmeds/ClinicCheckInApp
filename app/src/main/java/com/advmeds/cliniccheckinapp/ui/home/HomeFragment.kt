@@ -31,6 +31,8 @@ import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
 import com.advmeds.cliniccheckinapp.dialog.CheckInDialogFragment
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.MainViewModel
+import com.advmeds.cliniccheckinapp.utils.NationIdTransformationMethod
+import com.advmeds.cliniccheckinapp.utils.isNationId
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import okhttp3.HttpUrl
 
@@ -78,7 +80,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupUI() {
-        binding.checkInLayout.visibility = if (BuildConfig.PRINT_ENABLED) View.VISIBLE else View.GONE
+        binding.checkInLayout.visibility =
+            if (BuildConfig.PRINT_ENABLED) View.VISIBLE else View.GONE
 
         binding.logoImageView.setOnLongClickListener {
             AlertDialog.Builder(requireContext())
@@ -123,6 +126,7 @@ class HomeFragment : Fragment() {
 
         binding.idInputTitleTv.text = spannable
         binding.idInputEt.hint = String.format(getString(R.string.national_id_input_hint), arg)
+        binding.idInputEt.transformationMethod = NationIdTransformationMethod()
 
         setupKeyboard()
     }
@@ -138,7 +142,8 @@ class HomeFragment : Fragment() {
         } else {
             editText.setTextAppearance(requireContext(), R.style.TextAppearance_AppCompat_Subhead)
         }
-        editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+        editText.inputType =
+            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
         editText.hint = "https://example.com"
         editText.setText(viewModel.mSchedulerServerDomain)
 
@@ -261,11 +266,8 @@ class HomeFragment : Fragment() {
 
         binding.enterButton.setOnClickListener {
             val patient = binding.idInputEt.text.toString().trim()
-
-            if (patient.isNotBlank()) {
+            (requireActivity() as MainActivity).getPatients(patient) {
                 binding.idInputEt.text = null
-
-                (requireActivity() as MainActivity).getPatients(patient)
             }
         }
     }
@@ -280,7 +282,8 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
 
-        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(reloadClinicLogoReceiver)
+        LocalBroadcastManager.getInstance(requireContext())
+            .unregisterReceiver(reloadClinicLogoReceiver)
 
         _binding = null
     }

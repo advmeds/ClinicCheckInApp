@@ -128,7 +128,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onCardAbsent() {
-
+            viewModel.cancelJobOnCardAbsent()
+            dialog?.dismiss()
+            dialog = null
         }
 
         override fun onConnectDevice() {
@@ -214,7 +216,7 @@ class MainActivity : AppCompatActivity() {
 
 //    private lateinit var printService: BluetoothPrinterService
 
-    private lateinit var usbPrinterService: UsbPrinterService
+    lateinit var usbPrinterService: UsbPrinterService
 
     private val reloadClinicDataReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -661,21 +663,12 @@ class MainActivity : AppCompatActivity() {
 //    }
 
     /** 取得病患今天預約掛號資訊 */
-    fun getPatients(nationalId: String, name: String = "", birth: String = "") {
+    fun getPatients(nationalId: String, name: String = "", birth: String = "", completion: (() -> Unit)? = null) {
         if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
             // 若有開啟取號功能，則必須要有連線取票機才會去報到
             Snackbar.make(
                 binding.root,
                 getString(R.string.printer_not_connect),
-                Snackbar.LENGTH_LONG
-            ).show()
-            return
-        }
-
-        if (viewModel.clinicGuardian.value == null) {
-            Snackbar.make(
-                binding.root,
-                getString(R.string.clinic_data_not_found),
                 Snackbar.LENGTH_LONG
             ).show()
             return
@@ -688,6 +681,8 @@ class MainActivity : AppCompatActivity() {
                 birthday = birth
             )
         ) {
+            completion?.let { it1 -> it1() }
+
             if (it.success && BuildConfig.PRINT_ENABLED) {
                 it.patients.forEach { patient ->
                     printPatient(
@@ -767,6 +762,10 @@ class MainActivity : AppCompatActivity() {
 //        printService.disconnect()
 
 //        stopScan()
+
+        acsUsbDevice.disconnect()
+        ezUsbDevice.disconnect()
+        usbPrinterService.disconnect()
 
         try {
             unregisterReceiver(detectUsbDeviceReceiver)

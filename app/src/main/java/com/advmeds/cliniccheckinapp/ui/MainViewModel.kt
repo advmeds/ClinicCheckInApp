@@ -3,10 +3,10 @@ package com.advmeds.cliniccheckinapp.ui
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
-import androidx.core.content.getSystemService
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiService
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
@@ -16,6 +16,8 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatient
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
 import com.advmeds.cliniccheckinapp.repositories.ServerRepository
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
+import com.advmeds.cliniccheckinapp.utils.isNationId
+import com.advmeds.cliniccheckinapp.utils.isPTCHCaseId
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -94,7 +96,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             getGuardianStatus.value = GetGuardianStatus.Checking
 
             val response = try {
-                val connectivityManager = getApplication<MainApplication>().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                val connectivityManager =
+                    getApplication<MainApplication>().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
                 while (connectivityManager.activeNetworkInfo?.isConnected != true) {
                     withContext(Dispatchers.IO) { delay(1000) }
@@ -160,7 +163,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getPatients(patient: CreateAppointmentRequest.Patient, completion: ((GetPatientsResponse) -> Unit)? = null) {
+    fun getPatients(
+        patient: CreateAppointmentRequest.Patient,
+        completion: ((GetPatientsResponse) -> Unit)? = null
+    ) {
         if (getGuardianJob?.isActive == true) return
 
         createAppointmentJob?.cancel()
@@ -170,6 +176,47 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         this.patient = patient
 
         checkJob = viewModelScope.launch {
+            val application = getApplication<MainApplication>()
+
+            if (clinicGuardian.value == null) {
+                checkInStatus.value = CheckInStatus.NotChecking(
+                    response = GetPatientsResponse(
+                        success = false,
+                        code = 0,
+                        message = application.getString(R.string.clinic_data_not_found)
+                    )
+                )
+                return@launch
+            }
+
+            if (patient.nationalId.isBlank()) {
+                checkInStatus.value = CheckInStatus.NotChecking(
+                    response = GetPatientsResponse(
+                        success = false,
+                        code = 0,
+                        message = String.format(
+                            application.getString(R.string.national_id_input_hint),
+                            application.getString(R.string.national_id)
+                        )
+                    )
+                )
+                return@launch
+            }
+
+            if (!(patient.nationalId.isNationId || (BuildConfig.BUILD_TYPE == "ptch" && patient.nationalId.isPTCHCaseId))) {
+                checkInStatus.value = CheckInStatus.NotChecking(
+                    response = GetPatientsResponse(
+                        success = false,
+                        code = 0,
+                        message = String.format(
+                            application.getString(R.string.national_id_format_invalid),
+                            application.getString(R.string.national_id)
+                        )
+                    )
+                )
+                return@launch
+            }
+
             checkInStatus.value = CheckInStatus.Checking
 
             val response = try {
@@ -375,6 +422,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 CreateAppointmentStatus.NotChecking(null)
             }
         }
+    }
+
+    fun cancelJobOnCardAbsent() {
+        createAppointmentJob?.cancel()
+        getSchedulesJob?.cancel()
+        checkJob?.cancel()
     }
 
     sealed class GetGuardianStatus {
