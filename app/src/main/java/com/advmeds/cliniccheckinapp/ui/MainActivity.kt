@@ -688,7 +688,7 @@ class MainActivity : AppCompatActivity() {
                 birthday = birth
             )
         ) {
-            if (it.success) {
+            if (it.success && BuildConfig.PRINT_ENABLED) {
                 it.patients.forEach { patient ->
                     printPatient(
                         division = when (BuildConfig.BUILD_TYPE) {
