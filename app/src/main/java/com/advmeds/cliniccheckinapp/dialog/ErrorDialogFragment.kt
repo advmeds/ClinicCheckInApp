@@ -56,7 +56,7 @@ class ErrorDialogFragment(
         if (onActionButtonClicked == null) {
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
-                    delay(5000)
+                    delay(10000)
                 }
 
                 dismiss()
