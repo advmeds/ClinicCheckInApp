@@ -1,4 +1,4 @@
-package com.advmeds.cliniccheckinapp.ui.home
+package com.advmeds.cliniccheckinapp.ui.fragments
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -19,5 +19,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         get() = sharedPreferencesRepo.orgId
         set(value) {
             sharedPreferencesRepo.orgId = value
+        }
+
+    /** @see SharedPreferencesRepo.logoUrl */
+    var logoUrl: String?
+        get() = sharedPreferencesRepo.logoUrl
+        set(value) {
+            sharedPreferencesRepo.logoUrl = value
         }
 }

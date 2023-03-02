@@ -73,7 +73,9 @@ class ErrorDialogFragment(
             dismiss()
         }
 
+        binding.fragmentTitleTv.visibility = if (title.isNotBlank()) View.VISIBLE else View.GONE
         binding.fragmentTitleTv.text = title
+        binding.fragmentMessageTv.visibility = if (message.isNotBlank()) View.VISIBLE else View.GONE
         binding.fragmentMessageTv.text = message
 
         binding.actionButtonsLayout.visibility =

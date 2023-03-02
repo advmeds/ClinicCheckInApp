@@ -13,9 +13,15 @@
 
     <string name="health_card">健保卡</string>
     <string name="national_id">身份證字號</string>
+    <string name="present_health_card">請直接插入%s取號</string>
+    <string name="no_health_card">無健保卡</string>
+    <string name="manual_input">手動取號</string>
+    <string name="home_right_bottom_card_view_title">虛擬健保卡</string>
+    <string name="home_right_bottom_card_view_body">報到</string>
     <string name="national_id_input_title">如您未攜帶健保卡，可輕觸螢幕輸入%s</string>
     <string name="national_id_input_hint">請輸入%s</string>
     <string name="national_id_format_invalid">%s格式錯誤</string>
+    <string name="national_id_input_cancel">取消手動輸入</string>
     <string name="submit">送出</string>
     <string name="printer_not_connect">尚未連接取票機</string>
     <string name="get_patient_not_found">查無此身份證字號之預約資訊。</string>
@@ -68,5 +74,7 @@
     <string name="mScheduler_api_error_10012">尚未到 %s 報到時間，%s 前往報到或洽服務人員</string>
     <string name="mScheduler_api_error_10013">重複報到，若有問題請洽服務人員</string>
     <string name="mScheduler_api_error_10014">查無可用時段</string>
+    <string name="mScheduler_api_error_10014_ptch_ca">請於<font color='#E54B4B'>每星期三 13:00 ~ 17:00</font> 再進行取號</string>
 
+    <string name="coming_soon">功能尚未開放</string>
 </resources>

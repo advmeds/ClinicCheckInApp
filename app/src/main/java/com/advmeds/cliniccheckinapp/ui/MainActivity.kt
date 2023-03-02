@@ -37,8 +37,10 @@ import com.advmeds.cliniccheckinapp.dialog.ScheduleListDialogFragment
 import com.advmeds.cliniccheckinapp.dialog.SuccessDialogFragment
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiError
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
-import com.advmeds.cliniccheckinapp.ui.home.HomeFragment.Companion.CLINIC_LOGO_URL_KEY
-import com.advmeds.cliniccheckinapp.ui.home.HomeFragment.Companion.RELOAD_CLINIC_LOGO_ACTION
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
+import com.advmeds.cliniccheckinapp.ui.fragments.HomeFragment.Companion.CLINIC_LOGO_URL_KEY
+import com.advmeds.cliniccheckinapp.ui.fragments.HomeFragment.Companion.RELOAD_CLINIC_LOGO_ACTION
 import com.advmeds.printerlib.usb.BPT3XPrinterService
 import com.advmeds.printerlib.usb.UsbPrinterService
 import com.advmeds.printerlib.utils.PrinterBuffer
@@ -48,6 +50,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -391,22 +394,7 @@ class MainActivity : AppCompatActivity() {
                                 schedules = it.response.schedules
                             ) { checkedSchedule ->
                                 if (checkedSchedule != null) {
-                                    viewModel.createAppointment(
-                                        doctor = checkedSchedule.doctor,
-                                        division = checkedSchedule.division,
-                                        startsAt = checkedSchedule.startsAt,
-                                        endsAt = checkedSchedule.endsAt
-                                    ) { createAppointmentResponse ->
-                                        if (createAppointmentResponse.success) {
-                                            printPatient(
-                                                division = when (BuildConfig.BUILD_TYPE) {
-                                                    "ptch" -> createAppointmentResponse.doctor
-                                                    else -> createAppointmentResponse.division
-                                                },
-                                                serialNo = createAppointmentResponse.serialNo
-                                            )
-                                        }
-                                    }
+                                    createAppointment(checkedSchedule)
                                 } else {
                                     dialog?.dismiss()
                                     dialog = null
@@ -708,6 +696,97 @@ class MainActivity : AppCompatActivity() {
                 1f
             )
         }
+    }
+
+    /** 無健保卡，手動取號 */
+    private fun createAppointment(
+        schedule: GetScheduleResponse.ScheduleBean,
+        patient: CreateAppointmentRequest.Patient? = null,
+        completion: ((CreateAppointmentResponse) -> Unit)? = null
+    ) {
+        if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
+            // 若有開啟取號功能，則必須要有連線取票機才會去報到
+            Snackbar.make(
+                binding.root,
+                getString(R.string.printer_not_connect),
+                Snackbar.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        viewModel.createAppointment(
+            schedule = schedule,
+            patient = patient
+        ) { createAppointmentResponse ->
+            completion?.invoke(createAppointmentResponse)
+
+            if (createAppointmentResponse.success) {
+                printPatient(
+                    division = when (BuildConfig.BUILD_TYPE) {
+                        "ptch" -> createAppointmentResponse.doctor
+                        else -> createAppointmentResponse.division
+                    },
+                    serialNo = createAppointmentResponse.serialNo
+                )
+            }
+        }
+    }
+
+    /** 小兒心臟超音波手動取號 */
+    fun createBabyAppointment() {
+        val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").apply {
+            timeZone = TimeZone.getTimeZone("GMT+0")
+        }
+
+        val calendar = Calendar.getInstance().apply {
+            timeZone = TimeZone.getTimeZone("GMT+0")
+        }
+
+        calendar.set(Calendar.HOUR_OF_DAY, 5)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+
+        val startAt = dateTimeFormatter.format(calendar.time)
+
+        calendar.set(Calendar.HOUR_OF_DAY, 9)
+
+        val endAt = dateTimeFormatter.format(calendar.time)
+
+        val serialNo = viewModel.babySerialNo
+
+        createAppointment(
+            schedule = GetScheduleResponse.ScheduleBean(
+                doctor = "CA",
+                division = "0000",
+                startsAt = startAt,
+                endsAt = endAt
+            ),
+            patient = CreateAppointmentRequest.Patient(
+                name = "新生兒",
+                nationalId = "Baby${String.format("%06d", serialNo)}"
+            )
+        ) { createAppointmentResponse ->
+            if (createAppointmentResponse.success) {
+                viewModel.babySerialNo = if (serialNo >= 999999) {
+                    0
+                } else {
+                    serialNo + 1
+                }
+            }
+        }
+    }
+
+    /** 虛擬健保卡報到 */
+    fun checkInWithVirtualCard() {
+        dialog?.dismiss()
+
+        dialog = ErrorDialogFragment(
+            title = getString(R.string.coming_soon),
+            message = ""
+        )
+
+        dialog?.showNow(supportFragmentManager, null)
     }
 
     private fun hideSystemUI() {

@@ -35,6 +35,13 @@ import java.util.concurrent.TimeUnit
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
 
+    /** @see SharedPreferencesRepo.babySerialNo */
+    var babySerialNo: Int
+        get() = sharedPreferencesRepo.babySerialNo
+        set(value) {
+            sharedPreferencesRepo.babySerialNo = value
+        }
+
     private val format = Json {
         isLenient = true
         coerceInputValues = true
@@ -109,7 +116,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 Timber.d("Response: ${format.encodeToString(result.body())}")
 
                 if (result.isSuccessful) {
-                    result.body()!!
+                    result.body()!!.also {
+                        sharedPreferencesRepo.logoUrl = it.logo
+                    }
                 } else {
                     GetClinicGuardianResponse(
                         success = false,
@@ -344,10 +353,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun createAppointment(
-        doctor: String,
-        division: String,
-        startsAt: String,
-        endsAt: String,
+        schedule: GetScheduleResponse.ScheduleBean,
+        patient: CreateAppointmentRequest.Patient? = null,
         completion: ((CreateAppointmentResponse) -> Unit)? = null
     ) {
         if (getSchedulesJob?.isActive == true) return
@@ -360,11 +367,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             val response = try {
                 val request = CreateAppointmentRequest(
                     clinicId = sharedPreferencesRepo.orgId,
-                    doctor = doctor,
-                    division = division,
-                    startsAt = startsAt,
-                    endsAt = endsAt,
-                    patient = patient ?: CreateAppointmentRequest.Patient()
+                    doctor = schedule.doctor,
+                    division = schedule.division,
+                    startsAt = schedule.startsAt,
+                    endsAt = schedule.endsAt,
+                    patient = requireNotNull(patient ?: this@MainViewModel.patient) {
+                        getApplication<MainApplication>().getString(R.string.mScheduler_api_error_10008)
+                    }
                 )
 
                 val result = serverRepo.createsAppointment(request)
@@ -373,7 +382,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 Timber.d("Response: ${format.encodeToString(result.body())}")
 
                 if (result.isSuccessful) {
-                    result.body()!!
+                    val response = result.body()!!
+
+                    if (!response.success &&
+                        response.code == 10014 &&
+                        schedule.doctor == "CA" &&
+                        schedule.division == "0000"
+                    ) {
+                        response.copy(
+                            message = getApplication<MainApplication>().getString(R.string.mScheduler_api_error_10014_ptch_ca)
+                        )
+                    } else {
+                        response
+                    }
                 } else {
                     CreateAppointmentResponse(
                         success = false,

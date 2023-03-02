@@ -1,4 +1,4 @@
-package com.advmeds.cliniccheckinapp.ui.home
+package com.advmeds.cliniccheckinapp.ui.fragments
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -14,25 +14,19 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.fragment.findNavController
 import coil.load
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
-import com.advmeds.cliniccheckinapp.dialog.CheckInDialogFragment
 import com.advmeds.cliniccheckinapp.ui.MainActivity
-import com.advmeds.cliniccheckinapp.ui.MainViewModel
-import com.advmeds.cliniccheckinapp.utils.NationIdTransformationMethod
-import com.advmeds.cliniccheckinapp.utils.isNationId
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import okhttp3.HttpUrl
 
@@ -43,7 +37,6 @@ class HomeFragment : Fragment() {
     }
 
     private val viewModel: HomeViewModel by viewModels()
-    private val activityViewModel: MainViewModel by activityViewModels()
 
     private var _binding: HomeFragmentBinding? = null
 
@@ -80,9 +73,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupUI() {
-        binding.checkInLayout.visibility =
-            if (BuildConfig.PRINT_ENABLED) View.VISIBLE else View.GONE
-
+        binding.logoImageView.load(viewModel.logoUrl)
         binding.logoImageView.setOnLongClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle(R.string.setting)
@@ -101,18 +92,11 @@ class HomeFragment : Fragment() {
             return@setOnLongClickListener true
         }
 
-        binding.checkInButton.setOnClickListener {
-            val activity = requireActivity() as MainActivity
-            activity.dialog?.dismiss()
-            activity.dialog = CheckInDialogFragment()
-            activity.dialog?.showNow(parentFragmentManager, null)
-        }
-
-        val arg = getString(R.string.national_id)
-        val text = String.format(getString(R.string.national_id_input_title), arg)
+        val arg = getString(R.string.health_card)
+        val text = String.format(getString(R.string.present_health_card), arg)
         val textColor = ContextCompat.getColor(
             requireContext(),
-            R.color.colorPrimary
+            R.color.error
         )
         val textStart = text.indexOf(arg)
         val textEnd = textStart + arg.length
@@ -124,11 +108,19 @@ class HomeFragment : Fragment() {
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
-        binding.idInputTitleTv.text = spannable
-        binding.idInputEt.hint = String.format(getString(R.string.national_id_input_hint), arg)
-        binding.idInputEt.transformationMethod = NationIdTransformationMethod()
+        binding.presentTitleTextView.text = spannable
 
-        setupKeyboard()
+        binding.checkInCardView.setOnClickListener {
+            findNavController().navigate(R.id.manualInputFragment)
+        }
+
+        binding.babyCheckInCardView.setOnClickListener {
+            if (BuildConfig.BUILD_TYPE == "ptch") {
+                (requireActivity() as MainActivity).createBabyAppointment()
+            } else {
+                (requireActivity() as MainActivity).checkInWithVirtualCard()
+            }
+        }
     }
 
     private fun onSetServerDomainItemClicked() {
@@ -218,58 +210,6 @@ class HomeFragment : Fragment() {
             }
             .setNegativeButton(R.string.cancel, null)
             .showOnly()
-    }
-
-    private fun setupKeyboard() {
-        val onKeyClicked = View.OnClickListener {
-            val currentText = binding.idInputEt.text.toString()
-            val key = (it as Button).text.toString()
-
-            binding.idInputEt.setText(currentText + key)
-        }
-
-        binding.enPadLayout.children.forEach { children ->
-            when (children) {
-                is ViewGroup -> {
-                    children.children.forEach {
-                        if (it is Button) {
-                            it.setOnClickListener(onKeyClicked)
-                        }
-                    }
-                }
-                is Button -> {
-                    children.setOnClickListener(onKeyClicked)
-                }
-            }
-        }
-
-        binding.numberPadLayout.children.forEach { children ->
-            when (children) {
-                is ViewGroup -> {
-                    children.children.forEach {
-                        if (it is Button) {
-                            it.setOnClickListener(onKeyClicked)
-                        }
-                    }
-                }
-                is Button -> {
-                    children.setOnClickListener(onKeyClicked)
-                }
-            }
-        }
-
-        binding.backspaceButton.setOnClickListener {
-            val currentText = binding.idInputEt.text.toString()
-
-            binding.idInputEt.setText(currentText.dropLast(1))
-        }
-
-        binding.enterButton.setOnClickListener {
-            val patient = binding.idInputEt.text.toString().trim()
-            (requireActivity() as MainActivity).getPatients(patient) {
-                binding.idInputEt.text = null
-            }
-        }
     }
 
     private fun Context.getDimensionFrom(attr: Int): Int {

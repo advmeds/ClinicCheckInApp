@@ -14,6 +14,12 @@ class SharedPreferencesRepo(
         /** 從SharedPreferences取得『機構代碼』的KEY */
         const val ORG_ID = "org_id"
 
+        /** 從SharedPreferences取得『機構LOGO連結』的KEY */
+        const val LOGO_URL = "logo_url"
+
+        /** 從SharedPreferences取得『小兒流水號』的KEY */
+        const val BABY_SERIAL_NO = "baby_serial_no"
+
         /** 以Volatile註解表示此INSTANCE變數僅會在主記憶體中讀寫，可避免進入cache被不同執行緒讀寫而造成問題 */
         @Volatile
         private var INSTANCE: SharedPreferencesRepo? = null
@@ -41,11 +47,30 @@ class SharedPreferencesRepo(
                 .putString(MS_SERVER_DOMAIN, value)
                 .apply()
 
+    /** 機構代碼 */
     var orgId: String
         get() =
             sharedPreferences.getString(ORG_ID, null) ?: BuildConfig.ORG_ID
         set(value) =
             sharedPreferences.edit()
                 .putString(ORG_ID, value)
+                .apply()
+
+    /** 機構LOGO */
+    var logoUrl: String?
+        get() =
+            sharedPreferences.getString(LOGO_URL, null)
+        set(value) =
+            sharedPreferences.edit()
+                .putString(LOGO_URL, value)
+                .apply()
+
+    /** 小兒流水號 */
+    var babySerialNo: Int
+        get() =
+            sharedPreferences.getInt(BABY_SERIAL_NO, 0)
+        set(value) =
+            sharedPreferences.edit()
+                .putInt(BABY_SERIAL_NO, value)
                 .apply()
 }
