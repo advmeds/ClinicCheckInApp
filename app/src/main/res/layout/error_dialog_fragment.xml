@@ -100,6 +100,23 @@
                     app:elevation="0dp" />
 
             </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/got_it_button"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp"
+                android:layout_weight="1"
+                android:paddingStart="120dp"
+                android:paddingTop="24dp"
+                android:paddingEnd="120dp"
+                android:paddingBottom="24dp"
+                android:text="@string/got_it"
+                android:textSize="40sp"
+                app:cornerRadius="8dp"
+                app:elevation="0dp" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.cardview.widget.CardView>

@@ -86,6 +86,11 @@ class ErrorDialogFragment(
         binding.confirmButton.setOnClickListener {
             onActionButtonClicked?.let { it1 -> it1(false) }
         }
+
+        binding.gotItButton.visibility = if (onActionButtonClicked == null) View.VISIBLE else View.GONE
+        binding.gotItButton.setOnClickListener {
+            dismiss()
+        }
     }
 
     override fun onDestroyView() {
