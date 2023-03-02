@@ -35,7 +35,6 @@ import com.advmeds.cliniccheckinapp.dialog.CheckingDialogFragment
 import com.advmeds.cliniccheckinapp.dialog.ErrorDialogFragment
 import com.advmeds.cliniccheckinapp.dialog.ScheduleListDialogFragment
 import com.advmeds.cliniccheckinapp.dialog.SuccessDialogFragment
-import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiError
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
@@ -331,39 +330,52 @@ class MainActivity : AppCompatActivity() {
                                 message = getString(R.string.success_to_check_message)
                             )
                         } else {
-                            val apiError = ApiError.initWith(it.response.code)
-
                             ErrorDialogFragment(
-                                title = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
-                                    getString(R.string.schedule_not_found)
+                                title = getString(R.string.fail_to_check),
+                                message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    Html.fromHtml(
+                                        it.response.message,
+                                        Html.FROM_HTML_MODE_COMPACT
+                                    )
                                 } else {
-                                    getString(R.string.fail_to_check)
+                                    Html.fromHtml(it.response.message)
                                 },
-                                message = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
-                                    getString(R.string.make_appointment_now)
-                                } else {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                        Html.fromHtml(
-                                            it.response.message,
-                                            Html.FROM_HTML_MODE_COMPACT
-                                        )
-                                    } else {
-                                        Html.fromHtml(it.response.message)
-                                    }
-                                },
-                                onActionButtonClicked = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND){
-                                    { isCancelled ->
-                                        if (!isCancelled) {
-                                            viewModel.getSchedule()
-                                        } else {
-                                            dialog?.dismiss()
-                                            dialog = null
-                                        }
-                                    }
-                                } else {
-                                    null
-                                }
+                                onActionButtonClicked = null
                             )
+
+//                            val apiError = ApiError.initWith(it.response.code)
+//
+//                            ErrorDialogFragment(
+//                                title = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
+//                                    getString(R.string.schedule_not_found)
+//                                } else {
+//                                    getString(R.string.fail_to_check)
+//                                },
+//                                message = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
+//                                    getString(R.string.make_appointment_now)
+//                                } else {
+//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                                        Html.fromHtml(
+//                                            it.response.message,
+//                                            Html.FROM_HTML_MODE_COMPACT
+//                                        )
+//                                    } else {
+//                                        Html.fromHtml(it.response.message)
+//                                    }
+//                                },
+//                                onActionButtonClicked = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND){
+//                                    { isCancelled ->
+//                                        if (!isCancelled) {
+//                                            viewModel.getSchedule()
+//                                        } else {
+//                                            dialog?.dismiss()
+//                                            dialog = null
+//                                        }
+//                                    }
+//                                } else {
+//                                    null
+//                                }
+//                            )
                         }
                     }
                 }
@@ -441,7 +453,11 @@ class MainActivity : AppCompatActivity() {
                             )
                         } else {
                             ErrorDialogFragment(
-                                title = getString(R.string.fail_to_make_appointment),
+                                title = if (it.response.code == 10014) {
+                                    getString(R.string.mScheduler_api_error_10014)
+                                } else {
+                                    getString(R.string.fail_to_make_appointment)
+                                },
                                 message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                     Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
                                 } else {
