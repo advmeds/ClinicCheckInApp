@@ -324,6 +324,19 @@ class MainActivity : AppCompatActivity() {
                     if (it.response == null) {
                         null
                     } else {
+                        soundPool.play(
+                            if (it.response.success) {
+                                successSoundId
+                            } else {
+                                failSoundId
+                            },
+                            1f,
+                            1f,
+                            0,
+                            0,
+                            1f
+                        )
+
                         if (it.response.success) {
                             SuccessDialogFragment(
                                 title = getString(R.string.success_to_check),
@@ -698,19 +711,6 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
             }
-
-            soundPool.play(
-                if (it.success) {
-                    successSoundId
-                } else {
-                    failSoundId
-                },
-                1f,
-                1f,
-                0,
-                0,
-                1f
-            )
         }
     }
 
