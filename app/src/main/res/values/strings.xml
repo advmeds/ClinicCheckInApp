@@ -52,9 +52,11 @@
 
     <string name="server_domain">伺服器網域</string>
     <string name="org_id">機構代碼</string>
+    <string name="rooms">診間(可複數，用逗號區隔)</string>
     <string-array name="setting_items">
         <item>@string/server_domain</item>
         <item>@string/org_id</item>
+        <item>@string/rooms</item>
     </string-array>
 
     <string name="no_internet">需要有網路連線，請確認。</string>

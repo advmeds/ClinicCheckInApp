@@ -14,6 +14,9 @@ class SharedPreferencesRepo(
         /** 從SharedPreferences取得『機構代碼』的KEY */
         const val ORG_ID = "org_id"
 
+        /** 從SharedPreferences取得『綁定的診間』的KEY */
+        const val ROOMS = "rooms"
+
         /** 從SharedPreferences取得『機構LOGO連結』的KEY */
         const val LOGO_URL = "logo_url"
 
@@ -54,6 +57,15 @@ class SharedPreferencesRepo(
         set(value) =
             sharedPreferences.edit()
                 .putString(ORG_ID, value)
+                .apply()
+
+    /** 綁定的診間 */
+    var rooms: Set<String>
+        get() =
+            sharedPreferences.getStringSet(ROOMS, emptySet()) ?: emptySet()
+        set(value) =
+            sharedPreferences.edit()
+                .putStringSet(ROOMS, value)
                 .apply()
 
     /** 機構LOGO */

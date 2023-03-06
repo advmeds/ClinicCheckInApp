@@ -25,6 +25,7 @@ interface ApiService {
      *
      * @param clinicId 診所代碼
      * @param nationalId 身分證或病歷號
+     * @param rooms 診間陣列
      * @return 病患今天預約掛號資訊
      */
     @GET("api/v1/clinics/get_patients")
@@ -33,7 +34,10 @@ interface ApiService {
         clinicId: String,
 
         @Query("patient")
-        nationalId: String
+        nationalId: String,
+
+        @Query("rooms[]")
+        rooms: Array<Int>
     ): Response<GetPatientsResponse>
 
     /**

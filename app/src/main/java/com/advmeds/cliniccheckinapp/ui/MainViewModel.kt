@@ -229,7 +229,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             checkInStatus.value = CheckInStatus.Checking
 
             val response = try {
-                val result = serverRepo.getPatients(sharedPreferencesRepo.orgId, patient.nationalId)
+                val result = serverRepo.getPatients(
+                    sharedPreferencesRepo.orgId,
+                    patient.nationalId,
+                    sharedPreferencesRepo.rooms.mapNotNull { it.toIntOrNull() }.toTypedArray()
+                )
 
                 Timber.d("Status code: ${result.code()}")
                 Timber.d("Response: ${format.encodeToString(result.body())}")

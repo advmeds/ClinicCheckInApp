@@ -85,6 +85,9 @@ class HomeFragment : Fragment() {
                         1 -> {
                             onSetOrgIDItemClicked()
                         }
+                        2 -> {
+                            onSetRoomsItemClicked()
+                        }
                     }
                 }
                 .showOnly()
@@ -207,6 +210,39 @@ class HomeFragment : Fragment() {
                     LocalBroadcastManager.getInstance(requireContext())
                         .sendBroadcast(intent)
                 }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .showOnly()
+    }
+
+    private fun onSetRoomsItemClicked() {
+        val editText = EditText(requireContext())
+        editText.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            editText.setTextAppearance(R.style.TextAppearance_AppCompat_Subhead)
+        } else {
+            editText.setTextAppearance(requireContext(), R.style.TextAppearance_AppCompat_Subhead)
+        }
+
+        editText.setText(viewModel.rooms.joinToString(","))
+
+        val layout = LinearLayout(requireContext())
+        val padding = requireContext().getDimensionFrom(R.attr.dialogPreferredPadding)
+        layout.setPaddingRelative(padding, 0, padding, 0)
+        layout.addView(editText)
+
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.org_id)
+            .setView(layout)
+            .setPositiveButton(
+                R.string.confirm
+            ) { _, _ ->
+                val rooms = editText.text.toString().trim()
+
+                viewModel.rooms = rooms.split(",").toSet()
             }
             .setNegativeButton(R.string.cancel, null)
             .showOnly()
