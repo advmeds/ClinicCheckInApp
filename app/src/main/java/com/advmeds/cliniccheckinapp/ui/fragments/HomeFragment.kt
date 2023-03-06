@@ -235,7 +235,7 @@ class HomeFragment : Fragment() {
         layout.addView(editText)
 
         AlertDialog.Builder(requireContext())
-            .setTitle(R.string.org_id)
+            .setTitle(R.string.rooms)
             .setView(layout)
             .setPositiveButton(
                 R.string.confirm
