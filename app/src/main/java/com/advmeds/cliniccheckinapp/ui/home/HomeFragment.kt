@@ -83,23 +83,23 @@ class HomeFragment : Fragment() {
         binding.checkInLayout.visibility =
             if (BuildConfig.PRINT_ENABLED) View.VISIBLE else View.GONE
 
-        binding.logoImageView.setOnLongClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle(R.string.setting)
-                .setItems(R.array.setting_items) { _, index ->
-                    when (index) {
-                        0 -> {
-                            onSetServerDomainItemClicked()
-                        }
-                        1 -> {
-                            onSetOrgIDItemClicked()
-                        }
-                    }
-                }
-                .showOnly()
-
-            return@setOnLongClickListener true
-        }
+//        binding.logoImageView.setOnLongClickListener {
+//            AlertDialog.Builder(requireContext())
+//                .setTitle(R.string.setting)
+//                .setItems(R.array.setting_items) { _, index ->
+//                    when (index) {
+//                        0 -> {
+//                            onSetServerDomainItemClicked()
+//                        }
+//                        1 -> {
+//                            onSetOrgIDItemClicked()
+//                        }
+//                    }
+//                }
+//                .showOnly()
+//
+//            return@setOnLongClickListener true
+//        }
 
         binding.checkInButton.setOnClickListener {
             val activity = requireActivity() as MainActivity

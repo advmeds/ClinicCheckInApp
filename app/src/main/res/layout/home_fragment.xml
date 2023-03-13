@@ -197,118 +197,30 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/q_button"
-                            style="@style/MyApp.Keyboard"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:text="Q" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/w_button"
-                            style="@style/MyApp.Keyboard"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="6dp"
-                            android:layout_weight="1"
-                            android:text="W" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/e_button"
-                            style="@style/MyApp.Keyboard"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="6dp"
-                            android:layout_weight="1"
-                            android:text="E" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/r_button"
-                            style="@style/MyApp.Keyboard"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="6dp"
-                            android:layout_weight="1"
-                            android:text="R" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/t_button"
-                            style="@style/MyApp.Keyboard"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="6dp"
-                            android:layout_weight="1"
-                            android:text="T" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/y_button"
-                            style="@style/MyApp.Keyboard"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="6dp"
-                            android:layout_weight="1"
-                            android:text="Y" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/u_button"
-                            style="@style/MyApp.Keyboard"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="6dp"
-                            android:layout_weight="1"
-                            android:text="U" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:clipToPadding="false"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/i_button"
-                            style="@style/MyApp.Keyboard"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:text="I" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/o_button"
-                            style="@style/MyApp.Keyboard"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="6dp"
-                            android:layout_weight="1"
-                            android:text="O" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/p_button"
-                            style="@style/MyApp.Keyboard"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="6dp"
-                            android:layout_weight="1"
-                            android:text="P" />
-
-                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/a_button"
                             style="@style/MyApp.Keyboard"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="6dp"
                             android:layout_weight="1"
                             android:text="A" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/s_button"
+                            android:id="@+id/b_button"
                             style="@style/MyApp.Keyboard"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:text="S" />
+                            android:text="B" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/c_button"
+                            style="@style/MyApp.Keyboard"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:text="C" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/d_button"
@@ -320,6 +232,15 @@
                             android:text="D" />
 
                         <com.google.android.material.button.MaterialButton
+                            android:id="@+id/e_button"
+                            style="@style/MyApp.Keyboard"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:text="E" />
+
+                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/f_button"
                             style="@style/MyApp.Keyboard"
                             android:layout_width="0dp"
@@ -327,6 +248,15 @@
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
                             android:text="F" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/g_button"
+                            style="@style/MyApp.Keyboard"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:text="G" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -337,21 +267,21 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/g_button"
+                            android:id="@+id/h_button"
                             style="@style/MyApp.Keyboard"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:text="G" />
+                            android:text="H" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/h_button"
+                            android:id="@+id/i_button"
                             style="@style/MyApp.Keyboard"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:text="H" />
+                            android:text="I" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/j_button"
@@ -381,22 +311,22 @@
                             android:text="L" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/z_button"
+                            android:id="@+id/m_button"
                             style="@style/MyApp.Keyboard"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:text="Z" />
+                            android:text="M" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/x_button"
+                            android:id="@+id/n_button"
                             style="@style/MyApp.Keyboard"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:text="X" />
+                            android:text="N" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -407,48 +337,118 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/c_button"
+                            android:id="@+id/o_button"
                             style="@style/MyApp.Keyboard"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:text="C" />
+                            android:text="O" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/p_button"
+                            style="@style/MyApp.Keyboard"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:text="P" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/q_button"
+                            style="@style/MyApp.Keyboard"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:text="Q" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/r_button"
+                            style="@style/MyApp.Keyboard"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:text="R" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/s_button"
+                            style="@style/MyApp.Keyboard"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:text="S" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/t_button"
+                            style="@style/MyApp.Keyboard"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:text="T" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/u_button"
+                            style="@style/MyApp.Keyboard"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:text="U" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:clipToPadding="false"
+                        android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/v_button"
                             style="@style/MyApp.Keyboard"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="6dp"
                             android:layout_weight="1"
                             android:text="V" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/b_button"
+                            android:id="@+id/w_button"
                             style="@style/MyApp.Keyboard"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:text="B" />
+                            android:text="W" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/n_button"
+                            android:id="@+id/x_button"
                             style="@style/MyApp.Keyboard"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:text="N" />
+                            android:text="X" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/m_button"
+                            android:id="@+id/y_button"
                             style="@style/MyApp.Keyboard"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:text="M" />
+                            android:text="Y" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/z_button"
+                            style="@style/MyApp.Keyboard"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:text="Z" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/dash_button"
