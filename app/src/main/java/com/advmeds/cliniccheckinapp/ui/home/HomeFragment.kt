@@ -80,8 +80,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupUI() {
-        binding.checkInLayout.visibility =
-            if (BuildConfig.PRINT_ENABLED) View.VISIBLE else View.GONE
+        //binding.checkInLayout.visibility =
+        //    if (BuildConfig.PRINT_ENABLED) View.VISIBLE else View.GONE
 
 //        binding.logoImageView.setOnLongClickListener {
 //            AlertDialog.Builder(requireContext())
