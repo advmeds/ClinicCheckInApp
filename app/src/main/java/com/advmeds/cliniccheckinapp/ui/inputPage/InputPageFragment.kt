@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.fragment.findNavController
 import coil.load
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.InputPageFragmentBinding
@@ -99,11 +100,16 @@ class InputPageFragment : Fragment() {
 //            return@setOnLongClickListener true
 //        }
 
-        binding.checkInButton.setOnClickListener {
-            val activity = requireActivity() as MainActivity
-            activity.dialog?.dismiss()
-            activity.dialog = CheckInDialogFragment()
-            activity.dialog?.showNow(parentFragmentManager, null)
+//        binding.checkInButton.setOnClickListener {
+//            val activity = requireActivity() as MainActivity
+//            activity.dialog?.dismiss()
+//            activity.dialog = CheckInDialogFragment()
+//            activity.dialog?.showNow(parentFragmentManager, null)
+//        }
+
+        binding.backToHomePageButton.setOnClickListener {
+            val action = InputPageFragmentDirections.actionInputPageFragmentToHomeFragment()
+            findNavController().navigate(action)
         }
 
         val arg = getString(R.string.national_id)
