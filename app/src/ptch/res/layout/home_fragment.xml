@@ -107,7 +107,7 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/check_in_card_view"
+                android:id="@+id/home_right_top_card_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_margin="20dp"
@@ -142,7 +142,7 @@
                             android:layout_gravity="center_horizontal"
                             android:gravity="center"
                             android:lines="1"
-                            android:text="@string/no_health_card"
+                            android:text="@string/home_right_top_card_view_title"
                             android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textSize="48sp"
@@ -154,7 +154,7 @@
                             android:layout_gravity="center_horizontal"
                             android:gravity="center"
                             android:lines="1"
-                            android:text="@string/manual_input"
+                            android:text="@string/home_right_top_card_view_body"
                             android:textAlignment="center"
                             android:textColor="@color/error"
                             android:textSize="48sp"
@@ -165,7 +165,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/baby_check_in_card_view"
+                android:id="@+id/home_roght_bottom_card_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_margin="20dp"

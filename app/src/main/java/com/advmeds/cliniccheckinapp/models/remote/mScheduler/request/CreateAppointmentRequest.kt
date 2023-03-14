@@ -15,14 +15,6 @@ data class CreateAppointmentRequest(
     /** 醫生代號 */
     val division: String = "",
 
-    /** 門診起始時間 */
-    @SerialName("starts_at")
-    val startsAt: String = "",
-
-    /** 門診結束時間 */
-    @SerialName("ends_at")
-    val endsAt: String = "",
-
     /** 病患資訊 */
     val patient: Patient = Patient()
 ) {

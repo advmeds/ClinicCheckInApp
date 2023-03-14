@@ -373,8 +373,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     clinicId = sharedPreferencesRepo.orgId,
                     doctor = schedule.doctor,
                     division = schedule.division,
-                    startsAt = schedule.startsAt,
-                    endsAt = schedule.endsAt,
                     patient = requireNotNull(patient ?: this@MainViewModel.patient) {
                         getApplication<MainApplication>().getString(R.string.mScheduler_api_error_10008)
                     }
