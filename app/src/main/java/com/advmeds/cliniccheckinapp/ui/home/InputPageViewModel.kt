@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 
-class HomeViewModel(application: Application) : AndroidViewModel(application) {
+class InputPageViewModel(application: Application) : AndroidViewModel(application) {
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
 
     /** @see SharedPreferencesRepo.mSchedulerServerDomain */

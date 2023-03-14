@@ -25,27 +25,25 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import coil.load
-import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
-import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
+import com.advmeds.cliniccheckinapp.databinding.InputPageFragmentBinding
 import com.advmeds.cliniccheckinapp.dialog.CheckInDialogFragment
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.MainViewModel
 import com.advmeds.cliniccheckinapp.utils.NationIdTransformationMethod
-import com.advmeds.cliniccheckinapp.utils.isNationId
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import okhttp3.HttpUrl
 
-class HomeFragment : Fragment() {
+class InputPageFragment : Fragment() {
     companion object {
         const val RELOAD_CLINIC_LOGO_ACTION = "reload_clinic_logo_action"
         const val CLINIC_LOGO_URL_KEY = "clinic_logo_url"
     }
 
-    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: InputPageViewModel by viewModels()
     private val activityViewModel: MainViewModel by activityViewModels()
 
-    private var _binding: HomeFragmentBinding? = null
+    private var _binding: InputPageFragmentBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -63,7 +61,7 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = HomeFragmentBinding.inflate(inflater, container, false)
+        _binding = InputPageFragmentBinding.inflate(inflater, container, false)
 
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
             reloadClinicLogoReceiver,
@@ -277,7 +275,7 @@ class HomeFragment : Fragment() {
             else {
                 (requireActivity() as MainActivity).showNoValidIdErrorDialog (
                     title = "id is invalid",
-                    message = "please, check id again, may be it have error"
+                    message = "please, check id again, it may have error"
                 )
                 binding.idInputEt.text = null
             }
