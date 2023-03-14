@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import coil.load
@@ -23,6 +24,8 @@ import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.ManualInputFragmentBinding
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.utils.NationIdTransformationMethod
+import kotlinx.coroutines.*
+import java.util.concurrent.TimeUnit
 
 class ManualInputFragment : Fragment() {
 
@@ -40,6 +43,8 @@ class ManualInputFragment : Fragment() {
             binding.logoImageView.load(clinicLogoUrl)
         }
     }
+
+    private var idleFireJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,6 +64,8 @@ class ManualInputFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupUI()
+
+        startIdleCountDown()
     }
 
     private fun setupUI() {
@@ -93,6 +100,8 @@ class ManualInputFragment : Fragment() {
 
     private fun setupKeyboard() {
         val onKeyClicked = View.OnClickListener {
+            startIdleCountDown()
+
             val currentText = binding.idInputEt.text.toString()
             val key = (it as Button).text.toString()
 
@@ -130,12 +139,16 @@ class ManualInputFragment : Fragment() {
         }
 
         binding.backspaceButton.setOnClickListener {
+            startIdleCountDown()
+
             val currentText = binding.idInputEt.text.toString()
 
             binding.idInputEt.setText(currentText.dropLast(1))
         }
 
         binding.enterButton.setOnClickListener {
+            startIdleCountDown()
+
             val patient = binding.idInputEt.text.toString().trim()
             (requireActivity() as MainActivity).getPatients(patient) {
                 binding.idInputEt.text = null
@@ -143,8 +156,22 @@ class ManualInputFragment : Fragment() {
         }
     }
 
+    /** 在手輸介面待機30秒回到首頁 */
+    private fun startIdleCountDown() {
+        idleFireJob?.cancel()
+        idleFireJob = lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                delay(TimeUnit.SECONDS.toMillis(30))
+            }
+
+            findNavController().navigateUp()
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+
+        idleFireJob?.cancel()
 
         LocalBroadcastManager.getInstance(requireContext())
             .unregisterReceiver(reloadClinicLogoReceiver)
