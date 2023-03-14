@@ -169,6 +169,7 @@ class HomeFragment : Fragment() {
 
                     LocalBroadcastManager.getInstance(requireContext())
                         .sendBroadcast(intent)
+
                 } catch (e: Exception) {
                     AlertDialog.Builder(requireContext())
                         .setMessage(e.message)
@@ -266,10 +267,27 @@ class HomeFragment : Fragment() {
 
         binding.enterButton.setOnClickListener {
             val patient = binding.idInputEt.text.toString().trim()
-            (requireActivity() as MainActivity).getPatients(patient) {
+            val result = patientValidCheck(patient)
+
+            if (result) {
+                (requireActivity() as MainActivity).getPatients(patient) {
+                    binding.idInputEt.text = null
+                }
+            }
+            else {
+                (requireActivity() as MainActivity).showNoValidIdErrorDialog (
+                    title = "id is invalid",
+                    message = "please, check id again, may be it have error"
+                )
                 binding.idInputEt.text = null
             }
+
         }
+    }
+
+    private fun patientValidCheck(patient: String): Boolean {
+        val regex = Regex("[A-Z][12]\\\\d{8}")
+        return patient.length == 10 && regex.matches(patient)
     }
 
     private fun Context.getDimensionFrom(attr: Int): Int {

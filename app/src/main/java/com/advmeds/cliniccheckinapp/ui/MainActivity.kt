@@ -671,7 +671,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.printer_not_connect),
                 Snackbar.LENGTH_LONG
             ).show()
-            return
+                return
         }
 
         viewModel.getPatients(
@@ -708,6 +708,14 @@ class MainActivity : AppCompatActivity() {
                 1f
             )
         }
+    }
+
+    fun showNoValidIdErrorDialog(title: CharSequence = "", message: CharSequence = "") {
+        dialog = ErrorDialogFragment(
+            title = title,
+            message = message
+        )
+        dialog?.showNow(supportFragmentManager, null)
     }
 
     private fun hideSystemUI() {
