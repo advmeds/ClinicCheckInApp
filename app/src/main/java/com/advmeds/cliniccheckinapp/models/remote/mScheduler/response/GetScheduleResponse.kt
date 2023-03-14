@@ -2,6 +2,8 @@ package com.advmeds.cliniccheckinapp.models.remote.mScheduler.response
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Serializable
 data class GetScheduleResponse(
@@ -44,5 +46,111 @@ data class GetScheduleResponse(
         /** 門診結束時間 */
         @SerialName("ends_at")
         val endsAt: String = "",
-    )
+    ) {
+        companion object {
+            /** 屏基小兒心超 */
+            val PTCH_BABY = Calendar.getInstance().let {
+                val timeZone = TimeZone.getTimeZone("GMT+0")
+                it.timeZone = timeZone
+
+                val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").apply {
+                    this.timeZone = timeZone
+                }
+
+                it.set(Calendar.HOUR_OF_DAY, 5)
+                it.set(Calendar.MINUTE, 0)
+                it.set(Calendar.SECOND, 0)
+                it.set(Calendar.MILLISECOND, 0)
+                val startAt = dateTimeFormatter.format(it.time)
+
+                it.set(Calendar.HOUR_OF_DAY, 9)
+                val endAt = dateTimeFormatter.format(it.time)
+
+                ScheduleBean(
+                    doctor = "CA",
+                    division = "0000",
+                    startsAt = startAt,
+                    endsAt = endAt
+                )
+            }
+
+            /** 仁德插入健保卡後，唯一的門診預約 */
+            val RENDE_DIVISION_ONLY = Calendar.getInstance().let {
+                val timeZone = TimeZone.getTimeZone("GMT+0")
+                it.timeZone = timeZone
+
+                val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").apply {
+                    this.timeZone = timeZone
+                }
+
+                it.set(Calendar.HOUR_OF_DAY, 0)
+                it.set(Calendar.MINUTE, 30)
+                it.set(Calendar.SECOND, 0)
+                it.set(Calendar.MILLISECOND, 0)
+                val startAt = dateTimeFormatter.format(it.time)
+
+                it.set(Calendar.HOUR_OF_DAY, 3)
+                val endAt = dateTimeFormatter.format(it.time)
+
+                ScheduleBean(
+                    doctor = "e666",
+                    division = "399",
+                    startsAt = startAt,
+                    endsAt = endAt
+                )
+            }
+
+            /** 仁德疫苗施打 */
+            val RENDE_VACCINE = Calendar.getInstance().let {
+                val timeZone = TimeZone.getTimeZone("GMT+0")
+                it.timeZone = timeZone
+
+                val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").apply {
+                    this.timeZone = timeZone
+                }
+
+                it.set(Calendar.HOUR_OF_DAY, 0)
+                it.set(Calendar.MINUTE, 30)
+                it.set(Calendar.SECOND, 0)
+                it.set(Calendar.MILLISECOND, 0)
+                val startAt = dateTimeFormatter.format(it.time)
+
+                it.set(Calendar.HOUR_OF_DAY, 3)
+                val endAt = dateTimeFormatter.format(it.time)
+
+                ScheduleBean(
+                    doctor = "e666",
+                    division = "398",
+                    startsAt = startAt,
+                    endsAt = endAt
+                )
+            }
+
+            /** 仁德體檢 */
+            val RENDE_CHECK_UP = Calendar.getInstance().let {
+                val timeZone = TimeZone.getTimeZone("GMT+0")
+                it.timeZone = timeZone
+
+                val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").apply {
+                    this.timeZone = timeZone
+                }
+
+                it.set(Calendar.HOUR_OF_DAY, 0)
+                it.set(Calendar.MINUTE, 30)
+                it.set(Calendar.SECOND, 0)
+                it.set(Calendar.MILLISECOND, 0)
+                val startAt = dateTimeFormatter.format(it.time)
+
+                it.set(Calendar.HOUR_OF_DAY, 3)
+                val endAt = dateTimeFormatter.format(it.time)
+
+                ScheduleBean(
+                    doctor = "e666",
+                    division = "400",
+                    startsAt = startAt,
+                    endsAt = endAt
+                )
+            }
+        }
+    }
 }

@@ -26,6 +26,7 @@ import coil.load
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import okhttp3.HttpUrl
@@ -113,15 +114,34 @@ class HomeFragment : Fragment() {
 
         binding.presentTitleTextView.text = spannable
 
-        binding.checkInCardView.setOnClickListener {
-            findNavController().navigate(R.id.manualInputFragment)
+        binding.homeRightTopCardView.setOnClickListener {
+            when(BuildConfig.BUILD_TYPE) {
+                "rende" -> {
+                    (requireActivity() as MainActivity).createFakeAppointment(
+                        schedule = GetScheduleResponse.ScheduleBean.RENDE_VACCINE
+                    )
+                }
+                else -> {
+                    findNavController().navigate(R.id.manualInputFragment)
+                }
+            }
         }
 
-        binding.babyCheckInCardView.setOnClickListener {
-            if (BuildConfig.BUILD_TYPE == "ptch") {
-                (requireActivity() as MainActivity).createBabyAppointment()
-            } else {
-                (requireActivity() as MainActivity).checkInWithVirtualCard()
+        binding.homeRoghtBottomCardView.setOnClickListener {
+            when(BuildConfig.BUILD_TYPE) {
+                "ptch" -> {
+                    (requireActivity() as MainActivity).createFakeAppointment(
+                        schedule = GetScheduleResponse.ScheduleBean.PTCH_BABY
+                    )
+                }
+                "rende" -> {
+                    (requireActivity() as MainActivity).createFakeAppointment(
+                        schedule = GetScheduleResponse.ScheduleBean.RENDE_CHECK_UP
+                    )
+                }
+                else -> {
+                    (requireActivity() as MainActivity).checkInWithVirtualCard()
+                }
             }
         }
     }

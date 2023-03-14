@@ -23,6 +23,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.fragment.findNavController
 import com.advmeds.cardreadermodule.AcsResponseModel
 import com.advmeds.cardreadermodule.UsbDeviceCallback
 import com.advmeds.cardreadermodule.acs.usb.AcsUsbDevice
@@ -38,6 +39,7 @@ import com.advmeds.cliniccheckinapp.dialog.SuccessDialogFragment
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse.ScheduleBean.Companion.RENDE_DIVISION_ONLY
 import com.advmeds.cliniccheckinapp.ui.fragments.HomeFragment.Companion.CLINIC_LOGO_URL_KEY
 import com.advmeds.cliniccheckinapp.ui.fragments.HomeFragment.Companion.RELOAD_CLINIC_LOGO_ACTION
 import com.advmeds.printerlib.usb.BPT3XPrinterService
@@ -49,7 +51,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -146,12 +147,27 @@ class MainActivity : AppCompatActivity() {
 
         override fun onReceiveResult(result: Result<AcsResponseModel>) {
             result.onSuccess {
-                getPatients(
-                    nationalId = it.icId,
-                    birth = it.birthday?.let { dateBean -> "${dateBean.year}-${dateBean.month}-${dateBean.day}" }
-                        ?: "",
-                    name = it.name
-                )
+                when(BuildConfig.BUILD_TYPE) {
+                    "rende" -> {
+                        createAppointment(
+                            schedule = RENDE_DIVISION_ONLY,
+                            patient = CreateAppointmentRequest.Patient(
+                                nationalId = it.icId,
+                                birthday = it.birthday?.let { dateBean -> "${dateBean.year}-${dateBean.month}-${dateBean.day}" }
+                                    ?: "",
+                                name = it.name
+                            )
+                        )
+                    }
+                    else -> {
+                        getPatients(
+                            nationalId = it.icId,
+                            birth = it.birthday?.let { dateBean -> "${dateBean.year}-${dateBean.month}-${dateBean.day}" }
+                                ?: "",
+                            name = it.name
+                        )
+                    }
+                }
             }.onFailure {
                 it.message?.let { it1 ->
                     Snackbar.make(binding.root, it1, Snackbar.LENGTH_LONG).show()
@@ -748,43 +764,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** 小兒心臟超音波手動取號 */
-    fun createBabyAppointment() {
-        val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").apply {
-            timeZone = TimeZone.getTimeZone("GMT+0")
-        }
-
-        val calendar = Calendar.getInstance().apply {
-            timeZone = TimeZone.getTimeZone("GMT+0")
-        }
-
-        calendar.set(Calendar.HOUR_OF_DAY, 5)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-
-        val startAt = dateTimeFormatter.format(calendar.time)
-
-        calendar.set(Calendar.HOUR_OF_DAY, 9)
-
-        val endAt = dateTimeFormatter.format(calendar.time)
-
-        val serialNo = viewModel.babySerialNo
+    /** 用於部分場域的直接取流水號 */
+    fun createFakeAppointment(schedule: GetScheduleResponse.ScheduleBean) {
+        val serialNo = viewModel.checkInSerialNo
 
         createAppointment(
-            schedule = GetScheduleResponse.ScheduleBean(
-                doctor = "CA",
-                division = "0000",
-                startsAt = startAt,
-                endsAt = endAt
-            ),
+            schedule = schedule,
             patient = CreateAppointmentRequest.Patient(
-                name = "新生兒",
-                nationalId = "Baby${String.format("%06d", serialNo)}"
+                name = "手動取號",
+                nationalId = "Fake${String.format("%06d", serialNo)}"
             )
         ) { createAppointmentResponse ->
             if (createAppointmentResponse.success) {
-                viewModel.babySerialNo = if (serialNo >= 999999) {
+                viewModel.checkInSerialNo = if (serialNo >= 999999) {
                     0
                 } else {
                     serialNo + 1

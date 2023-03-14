@@ -67,6 +67,15 @@ android {
 
             buildConfigField "String", "MS_DOMAIN", "\"http://129.34.70.92:3000\""
         }
+
+        // 仁德衛生所
+        // 介面有調整
+        // 而且門診取號為固定的
+        rende {
+            initWith release
+
+            buildConfigField "String", "ORG_ID", "\"103\""
+        }
     }
     buildFeatures {
         viewBinding true

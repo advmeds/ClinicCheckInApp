@@ -35,11 +35,11 @@ import java.util.concurrent.TimeUnit
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
 
-    /** @see SharedPreferencesRepo.babySerialNo */
-    var babySerialNo: Int
-        get() = sharedPreferencesRepo.babySerialNo
+    /** @see SharedPreferencesRepo.checkInSerialNo */
+    var checkInSerialNo: Int
+        get() = sharedPreferencesRepo.checkInSerialNo
         set(value) {
-            sharedPreferencesRepo.babySerialNo = value
+            sharedPreferencesRepo.checkInSerialNo = value
         }
 
     private val format = Json {
@@ -390,8 +390,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
                     if (!response.success &&
                         response.code == 10014 &&
-                        schedule.doctor == "CA" &&
-                        schedule.division == "0000"
+                        schedule == GetScheduleResponse.ScheduleBean.PTCH_BABY
                     ) {
                         response.copy(
                             message = getApplication<MainApplication>().getString(R.string.mScheduler_api_error_10014_ptch_ca)

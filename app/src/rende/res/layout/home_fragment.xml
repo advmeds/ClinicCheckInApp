@@ -25,11 +25,13 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/logo_imageView"
-                android:layout_width="850dp"
-                android:layout_height="200dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
+                android:minWidth="740dp"
+                android:minHeight="150dp"
                 app:srcCompat="@drawable/clinic_logo_default" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -124,8 +126,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_margin="20dp"
-                        app:srcCompat="@drawable/ic_baseline_keyboard"
-                        app:tint="@color/alert" />
+                        app:srcCompat="@drawable/ic_baseline_how_to_reg" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="0dp"
@@ -143,7 +144,7 @@
                             android:lines="1"
                             android:text="@string/home_right_top_card_view_title"
                             android:textAlignment="center"
-                            android:textColor="@color/alert"
+                            android:textColor="@color/black"
                             android:textSize="48sp"
                             android:textStyle="bold" />
 
@@ -155,7 +156,7 @@
                             android:lines="1"
                             android:text="@string/home_right_top_card_view_body"
                             android:textAlignment="center"
-                            android:textColor="@android:color/black"
+                            android:textColor="@color/alert"
                             android:textSize="48sp"
                             android:textStyle="bold" />
 
@@ -183,8 +184,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_margin="20dp"
-                        app:srcCompat="@drawable/ic_baseline_qr_code"
-                        app:tint="@color/success" />
+                        app:srcCompat="@drawable/ic_baseline_how_to_reg" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="0dp"
@@ -202,7 +202,7 @@
                             android:lines="1"
                             android:text="@string/home_right_bottom_card_view_title"
                             android:textAlignment="center"
-                            android:textColor="@color/success"
+                            android:textColor="@color/black"
                             android:textSize="48sp"
                             android:textStyle="bold" />
 
@@ -214,7 +214,7 @@
                             android:lines="1"
                             android:text="@string/home_right_bottom_card_view_body"
                             android:textAlignment="center"
-                            android:textColor="@android:color/black"
+                            android:textColor="@color/alert"
                             android:textSize="48sp"
                             android:textStyle="bold" />
 

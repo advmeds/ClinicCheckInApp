@@ -20,8 +20,8 @@ class SharedPreferencesRepo(
         /** 從SharedPreferences取得『機構LOGO連結』的KEY */
         const val LOGO_URL = "logo_url"
 
-        /** 從SharedPreferences取得『小兒流水號』的KEY */
-        const val BABY_SERIAL_NO = "baby_serial_no"
+        /** 從SharedPreferences取得『用來直接取號的流水號』的KEY */
+        const val CHECK_IN_SERIAL_NO = "check_in_serial_no"
 
         /** 以Volatile註解表示此INSTANCE變數僅會在主記憶體中讀寫，可避免進入cache被不同執行緒讀寫而造成問題 */
         @Volatile
@@ -78,11 +78,11 @@ class SharedPreferencesRepo(
                 .apply()
 
     /** 小兒流水號 */
-    var babySerialNo: Int
+    var checkInSerialNo: Int
         get() =
-            sharedPreferences.getInt(BABY_SERIAL_NO, 0)
+            sharedPreferences.getInt(CHECK_IN_SERIAL_NO, 0)
         set(value) =
             sharedPreferences.edit()
-                .putInt(BABY_SERIAL_NO, value)
+                .putInt(CHECK_IN_SERIAL_NO, value)
                 .apply()
 }

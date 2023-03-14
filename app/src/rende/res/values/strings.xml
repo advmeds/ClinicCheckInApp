@@ -1,0 +1,5 @@
+<resources>
+    <string name="home_right_top_card_view_title">疫苗施打</string>
+    <string name="home_right_bottom_card_view_title">體檢</string>
+    <string name="home_right_bottom_card_view_body">手動取號</string>
+</resources>
