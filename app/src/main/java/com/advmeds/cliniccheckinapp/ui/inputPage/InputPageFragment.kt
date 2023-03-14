@@ -1,4 +1,4 @@
-package com.advmeds.cliniccheckinapp.ui.home
+package com.advmeds.cliniccheckinapp.ui.inputPage
 
 import android.content.BroadcastReceiver
 import android.content.Context

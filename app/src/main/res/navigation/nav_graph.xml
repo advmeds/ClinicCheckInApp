@@ -3,10 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/inputPageFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/inputPageFragment"
-        android:name="com.advmeds.cliniccheckinapp.ui.home.InputPageFragment"
+        android:name="com.advmeds.cliniccheckinapp.ui.inputPage.InputPageFragment"
         tools:layout="@layout/input_page_fragment" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.advmeds.cliniccheckinapp.ui.home.HomeFragment"
+        android:label="home_fragment"
+        tools:layout="@layout/home_fragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_inputPageFragment"
+            app:destination="@id/inputPageFragment" />
+    </fragment>
 </navigation>
