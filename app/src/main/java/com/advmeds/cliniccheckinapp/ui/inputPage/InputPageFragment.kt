@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.text.InputType
 import android.text.Spannable
 import android.text.SpannableString
@@ -28,12 +29,12 @@ import androidx.navigation.fragment.findNavController
 import coil.load
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.InputPageFragmentBinding
-import com.advmeds.cliniccheckinapp.dialog.CheckInDialogFragment
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.MainViewModel
 import com.advmeds.cliniccheckinapp.utils.NationIdTransformationMethod
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import okhttp3.HttpUrl
+import timber.log.Timber
 
 class InputPageFragment : Fragment() {
     companion object {
@@ -57,6 +58,8 @@ class InputPageFragment : Fragment() {
         }
     }
 
+    private var handler: Handler? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -69,7 +72,32 @@ class InputPageFragment : Fragment() {
             IntentFilter(RELOAD_CLINIC_LOGO_ACTION)
         )
 
+        setUpHandler()
+
         return binding.root
+    }
+
+    private fun setUpHandler() {
+        handler = Handler()
+
+        // Post a delayed action to navigate to the home fragment after 30 seconds
+        setTimer()
+
+        // Add a touch listener to reset the handler when the view is touched
+        binding.root.setOnClickListener {
+            resetHandler()
+        }
+    }
+
+    private fun setTimer() {
+        handler?.postDelayed({
+            goToHomePage()
+        }, 30000)
+    }
+
+    private fun resetHandler() {
+        handler?.removeCallbacksAndMessages(null)
+        setTimer()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -108,8 +136,7 @@ class InputPageFragment : Fragment() {
 //        }
 
         binding.backToHomePageButton.setOnClickListener {
-            val action = InputPageFragmentDirections.actionInputPageFragmentToHomeFragment()
-            findNavController().navigate(action)
+            goToHomePage()
         }
 
         val arg = getString(R.string.national_id)
@@ -133,6 +160,11 @@ class InputPageFragment : Fragment() {
         binding.idInputEt.transformationMethod = NationIdTransformationMethod()
 
         setupKeyboard()
+    }
+
+    private fun goToHomePage() {
+        val action = InputPageFragmentDirections.actionInputPageFragmentToHomeFragment()
+        findNavController().navigate(action)
     }
 
     private fun onSetServerDomainItemClicked() {
@@ -230,6 +262,8 @@ class InputPageFragment : Fragment() {
             val currentText = binding.idInputEt.text.toString()
             val key = (it as Button).text.toString()
 
+            resetHandler()
+
             binding.idInputEt.setText(currentText + key)
         }
 
@@ -265,6 +299,8 @@ class InputPageFragment : Fragment() {
 
         binding.backspaceButton.setOnClickListener {
             val currentText = binding.idInputEt.text.toString()
+
+            resetHandler()
 
             binding.idInputEt.setText(currentText.dropLast(1))
         }
@@ -306,7 +342,8 @@ class InputPageFragment : Fragment() {
 
         LocalBroadcastManager.getInstance(requireContext())
             .unregisterReceiver(reloadClinicLogoReceiver)
-
+        handler?.removeCallbacksAndMessages(null)
         _binding = null
     }
+
 }
