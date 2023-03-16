@@ -110,23 +110,6 @@ class InputPageFragment : Fragment() {
         //binding.checkInLayout.visibility =
         //    if (BuildConfig.PRINT_ENABLED) View.VISIBLE else View.GONE
 
-//        binding.logoImageView.setOnLongClickListener {
-//            AlertDialog.Builder(requireContext())
-//                .setTitle(R.string.setting)
-//                .setItems(R.array.setting_items) { _, index ->
-//                    when (index) {
-//                        0 -> {
-//                            onSetServerDomainItemClicked()
-//                        }
-//                        1 -> {
-//                            onSetOrgIDItemClicked()
-//                        }
-//                    }
-//                }
-//                .showOnly()
-//
-//            return@setOnLongClickListener true
-//        }
 
 //        binding.checkInButton.setOnClickListener {
 //            val activity = requireActivity() as MainActivity
@@ -165,96 +148,6 @@ class InputPageFragment : Fragment() {
     private fun goToHomePage() {
         val action = InputPageFragmentDirections.actionInputPageFragmentToHomeFragment()
         findNavController().navigate(action)
-    }
-
-    private fun onSetServerDomainItemClicked() {
-        val editText = EditText(requireContext())
-        editText.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            editText.setTextAppearance(R.style.TextAppearance_AppCompat_Subhead)
-        } else {
-            editText.setTextAppearance(requireContext(), R.style.TextAppearance_AppCompat_Subhead)
-        }
-        editText.inputType =
-            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-        editText.hint = "https://example.com"
-        editText.setText(viewModel.mSchedulerServerDomain)
-
-        val layout = LinearLayout(requireContext())
-        val padding = requireContext().getDimensionFrom(R.attr.dialogPreferredPadding)
-        layout.setPaddingRelative(padding, 0, padding, 0)
-        layout.addView(editText)
-
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.server_domain)
-            .setView(layout)
-            .setPositiveButton(
-                R.string.confirm
-            ) { _, _ ->
-                val domain = editText.text.toString().trim()
-
-                try {
-                    HttpUrl.get(domain)
-
-                    viewModel.mSchedulerServerDomain = domain
-
-                    val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
-
-                    LocalBroadcastManager.getInstance(requireContext())
-                        .sendBroadcast(intent)
-
-                } catch (e: Exception) {
-                    AlertDialog.Builder(requireContext())
-                        .setMessage(e.message)
-                        .setPositiveButton(R.string.confirm, null)
-                        .showOnly()
-                }
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .showOnly()
-    }
-
-    private fun onSetOrgIDItemClicked() {
-        val editText = EditText(requireContext())
-        editText.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            editText.setTextAppearance(R.style.TextAppearance_AppCompat_Subhead)
-        } else {
-            editText.setTextAppearance(requireContext(), R.style.TextAppearance_AppCompat_Subhead)
-        }
-
-        editText.setText(viewModel.orgId)
-
-        val layout = LinearLayout(requireContext())
-        val padding = requireContext().getDimensionFrom(R.attr.dialogPreferredPadding)
-        layout.setPaddingRelative(padding, 0, padding, 0)
-        layout.addView(editText)
-
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.org_id)
-            .setView(layout)
-            .setPositiveButton(
-                R.string.confirm
-            ) { _, _ ->
-                val id = editText.text.toString().trim()
-
-                if (id.isNotBlank()) {
-                    viewModel.orgId = id
-
-                    val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
-
-                    LocalBroadcastManager.getInstance(requireContext())
-                        .sendBroadcast(intent)
-                }
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .showOnly()
     }
 
     private fun setupKeyboard() {
@@ -328,13 +221,6 @@ class InputPageFragment : Fragment() {
     private fun patientValidCheck(patient: String): Boolean {
         val regex = Regex("[A-Z][12]\\\\d{8}")
         return patient.length == 10 && regex.matches(patient)
-    }
-
-    private fun Context.getDimensionFrom(attr: Int): Int {
-        val typedValue = TypedValue()
-        return if (this.theme.resolveAttribute(attr, typedValue, true))
-            TypedValue.complexToDimensionPixelSize(typedValue.data, this.resources.displayMetrics)
-        else 0
     }
 
     override fun onDestroyView() {
