@@ -12,7 +12,7 @@ class NationIdTransformationMethod : PasswordTransformationMethod() {
         override val length: Int
             get() = source.length
 
-        override fun get(index: Int): Char = if (2 < index && index < length - 3) {
+        override fun get(index: Int): Char = if (index in 4..6) {
             '*'
         } else {
             source[index]
