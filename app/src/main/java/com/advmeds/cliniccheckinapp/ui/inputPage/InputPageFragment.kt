@@ -214,7 +214,6 @@ class InputPageFragment : Fragment() {
                 )
                 binding.idInputEt.text = null
             }
-
         }
     }
 

@@ -72,6 +72,27 @@ class HomeFragment : Fragment() {
 
     private fun setupUI() {
 
+        // Text Views
+
+        val cardInfoText = getString(R.string.home_page_card_info_label)
+        val cardInfoArg = getString(R.string.home_page_card_info_label_arg)
+        val cardInfoSpannable = getTextWithRedPiece(cardInfoText, cardInfoArg)
+
+        val manuallyInputText = getString(R.string.home_page_manually_input_card_label)
+        val manuallyInputArg = getString(R.string.home_page_manually_input_card_label_arg)
+        val manuallyInputSpannable = getTextWithRedPiece(manuallyInputText, manuallyInputArg)
+
+        val pcuCheckText = getString(R.string.home_page_pcu_check_label)
+        val pcuCheckArg = getString(R.string.home_page_pcu_check_label_arg)
+        val pcuCheckSpannable = getTextWithRedPiece(pcuCheckText, pcuCheckArg)
+
+        binding.homePageCardInfoTitle.text = cardInfoSpannable
+        binding.homePageManuallyInputTitle.text = manuallyInputSpannable
+        binding.homePagePcuCheckTitle.text = pcuCheckSpannable
+
+
+        // Buttons
+
         binding.logoImageView.setOnLongClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle(R.string.setting)
@@ -90,25 +111,13 @@ class HomeFragment : Fragment() {
             return@setOnLongClickListener true
         }
 
-        val cardInfoText = getString(R.string.home_page_card_info_label)
-        val cardInfoArg = getString(R.string.home_page_card_info_label_arg)
-        val cardInfoSpannable = getTextWithRedPiece(cardInfoText, cardInfoArg)
-
-        val manuallyInputText = getString(R.string.home_page_manually_input_card_label)
-        val manuallyInputArg = getString(R.string.home_page_manually_input_card_label_arg)
-        val manuallyInputSpannable = getTextWithRedPiece(manuallyInputText, manuallyInputArg)
-
-        val pcuCheckText = getString(R.string.home_page_pcu_check_label)
-        val pcuCheckArg = getString(R.string.home_page_pcu_check_label_arg)
-        val pcuCheckSpannable = getTextWithRedPiece(pcuCheckText, pcuCheckArg)
-
-        binding.homePageCardInfoTitle.text = cardInfoSpannable
-        binding.homePageManuallyInputTitle.text = manuallyInputSpannable
-        binding.homePagePcuCheckTitle.text = pcuCheckSpannable
-
         binding.manuallyInputCard.setOnClickListener {
             val action = HomeFragmentDirections.actionHomeFragmentToInputPageFragment()
             findNavController().navigate(action)
+        }
+
+        binding.pcuCheckInCard.setOnClickListener {
+            (requireActivity() as MainActivity).createAppointment()
         }
     }
 
