@@ -326,7 +326,7 @@ class InputPageFragment : Fragment() {
     }
 
     private fun patientValidCheck(patient: String): Boolean {
-        val regex = Regex("[A-Z][12]\\\\d{8}")
+        val regex = Regex("[A-Z][12]\\d{8}")
         return patient.length == 10 && regex.matches(patient)
     }
 
