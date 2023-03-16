@@ -316,8 +316,8 @@ class InputPageFragment : Fragment() {
             }
             else {
                 (requireActivity() as MainActivity).showNoValidIdErrorDialog (
-                    title = "id is invalid",
-                    message = "please, check id again, it may have error"
+                    title = getString(R.string.id_is_invalid_title),
+                    message = getString(R.string.id_is_invalid_message)
                 )
                 binding.idInputEt.text = null
             }

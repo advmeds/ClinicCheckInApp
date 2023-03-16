@@ -71,5 +71,16 @@
     <string name="mScheduler_api_error_10014">查無可用時段</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="id_is_invalid_title">id is invalid</string>
+    <string name="id_is_invalid_message">please, check id again, it may have error</string>
+    
+    <string name="home_page_card_info_label">請直接插入%s取號</string>
+    <string name="home_page_card_info_label_arg">健保卡</string>
+
+    <string name="home_page_manually_input_card_label">無健保卡\n%s</string>
+    <string name="home_page_manually_input_card_label_arg">手動取號</string>
+
+    <string name="home_page_pcu_check_label">小兒心臟超音波\n%s</string>
+    <string name="home_page_pcu_check_label_arg">手動取號</string>
 
 </resources>
