@@ -36,6 +36,7 @@ import com.advmeds.cliniccheckinapp.dialog.CheckingDialogFragment
 import com.advmeds.cliniccheckinapp.dialog.ErrorDialogFragment
 import com.advmeds.cliniccheckinapp.dialog.ScheduleListDialogFragment
 import com.advmeds.cliniccheckinapp.dialog.SuccessDialogFragment
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiError
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
@@ -307,9 +308,11 @@ class MainActivity : AppCompatActivity() {
                         if (it.response.success) {
                             null
                         } else {
+                            val apiError = ApiError.initWith(it.response.code)
+
                             ErrorDialogFragment(
                                 title = "",
-                                message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                message = apiError?.resStringID?.let { it1 -> getString(it1) } ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                     Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
                                 } else {
                                     Html.fromHtml(it.response.message)
@@ -442,9 +445,11 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                         } else {
+                            val apiError = ApiError.initWith(it.response.code)
+
                             ErrorDialogFragment(
                                 title = "",
-                                message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                message = apiError?.resStringID?.let { it1 -> getString(it1) } ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                     Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
                                 } else {
                                     Html.fromHtml(it.response.message)
@@ -481,13 +486,15 @@ class MainActivity : AppCompatActivity() {
                                 message = getString(R.string.success_to_make_appointment_message)
                             )
                         } else {
+                            val apiError = ApiError.initWith(it.response.code)
+
                             ErrorDialogFragment(
                                 title = if (it.response.code == 10014) {
                                     getString(R.string.mScheduler_api_error_10014)
                                 } else {
                                     getString(R.string.fail_to_make_appointment)
                                 },
-                                message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                message = apiError?.resStringID?.let { it1 -> getString(it1) } ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                     Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
                                 } else {
                                     Html.fromHtml(it.response.message)
