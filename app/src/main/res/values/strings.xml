@@ -49,6 +49,7 @@
     <string name="success_to_make_appointment_message">請記得拿取號碼單，並等候診間人員叫號時，進入診間看診。</string>
 
     <string name="fail_to_make_appointment">掛號失敗</string>
+    <string name="fail_to_make_appointment_10014">非取號時段</string>
 
     <string name="server_domain">伺服器網域</string>
     <string name="org_id">機構代碼</string>
@@ -75,7 +76,7 @@
     <string name="mScheduler_api_error_10011">報到時間已過，請洽服務人員</string>
     <string name="mScheduler_api_error_10012">尚未到 %s 報到時間，%s 前往報到或洽服務人員</string>
     <string name="mScheduler_api_error_10013">重複報到，若有問題請洽服務人員</string>
-    <string name="mScheduler_api_error_10014">非取號時段</string>
+    <string name="mScheduler_api_error_10014">目前不提供本服務</string>
     <string name="mScheduler_api_error_10014_ptch_ca"><![CDATA[請於<font color=\'#E54B4B\'>每星期三 13:00 ~ 17:00</font> 再進行取號]]></string>
     <string name="mScheduler_api_error_10015">掛號人數已滿，或請洽服務人員</string>
     <string name="mScheduler_api_error_10016">重複掛號，若有問題請洽服務人員</string>

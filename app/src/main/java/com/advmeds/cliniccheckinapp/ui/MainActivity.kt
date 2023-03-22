@@ -23,7 +23,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.navigation.fragment.findNavController
 import com.advmeds.cardreadermodule.AcsResponseModel
 import com.advmeds.cardreadermodule.UsbDeviceCallback
 import com.advmeds.cardreadermodule.acs.usb.AcsUsbDevice
@@ -490,7 +489,7 @@ class MainActivity : AppCompatActivity() {
 
                             ErrorDialogFragment(
                                 title = if (it.response.code == 10014) {
-                                    getString(R.string.mScheduler_api_error_10014)
+                                    getString(R.string.fail_to_make_appointment_10014)
                                 } else {
                                     getString(R.string.fail_to_make_appointment)
                                 },
