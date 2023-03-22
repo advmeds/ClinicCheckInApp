@@ -10,4 +10,7 @@
 
     <color name="keyboard_background">#FFE0E0E0</color>
     <color name="keyboard_text_color">#FF606060</color>
+
+    <color name="red">#FFE54B4B</color>
+    <color name="black_alter">#FF333333</color>
 </resources>

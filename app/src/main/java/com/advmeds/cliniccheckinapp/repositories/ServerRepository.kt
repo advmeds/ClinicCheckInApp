@@ -2,6 +2,7 @@ package com.advmeds.cliniccheckinapp.repositories
 
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiService
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentShortRequest
 
 class ServerRepository(private val service: ApiService) {
 
@@ -24,5 +25,9 @@ class ServerRepository(private val service: ApiService) {
     /** @see ApiService.createAppointment */
     suspend fun createsAppointment(
         request: CreateAppointmentRequest
+    ) = service.createAppointment(request)
+
+    suspend fun createsAppointment(
+        request: CreateAppointmentShortRequest
     ) = service.createAppointment(request)
 }
