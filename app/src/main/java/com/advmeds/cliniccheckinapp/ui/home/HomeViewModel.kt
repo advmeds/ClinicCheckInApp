@@ -21,6 +21,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             sharedPreferencesRepo.orgId = value
         }
 
+    /** @see SharedPreferencesRepo.logo */
     var logo: String?
         get() = sharedPreferencesRepo.logo
         set(value) {
