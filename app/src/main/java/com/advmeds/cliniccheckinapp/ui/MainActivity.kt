@@ -328,39 +328,47 @@ class MainActivity : AppCompatActivity() {
                                 message = getString(R.string.success_to_check_message)
                             )
                         } else {
-                            val apiError = ApiError.initWith(it.response.code)
 
                             ErrorDialogFragment(
-                                title = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
-                                    getString(R.string.schedule_not_found)
-                                } else {
-                                    getString(R.string.fail_to_check)
-                                },
-                                message = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
-                                    getString(R.string.make_appointment_now)
-                                } else {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                        Html.fromHtml(
-                                            it.response.message,
-                                            Html.FROM_HTML_MODE_COMPACT
-                                        )
-                                    } else {
-                                        Html.fromHtml(it.response.message)
-                                    }
-                                },
-                                onActionButtonClicked = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND){
-                                    { isCancelled ->
-                                        if (!isCancelled) {
-                                            viewModel.getSchedule()
-                                        } else {
-                                            dialog?.dismiss()
-                                            dialog = null
-                                        }
-                                    }
-                                } else {
-                                    null
-                                }
+                                title = "報到失敗",
+                                message = "查無資料，請重新輸入號碼，\n" +
+                                        "或洽服務人員"
                             )
+                            /*
+                                val apiError = ApiError.initWith(it.response.code)
+
+                                ErrorDialogFragment(
+                                    title = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
+                                        getString(R.string.schedule_not_found)
+                                    } else {
+                                        getString(R.string.fail_to_check)
+                                    },
+                                    message = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
+                                        getString(R.string.make_appointment_now)
+                                    } else {
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                            Html.fromHtml(
+                                                it.response.message,
+                                                Html.FROM_HTML_MODE_COMPACT
+                                            )
+                                        } else {
+                                            Html.fromHtml(it.response.message)
+                                        }
+                                    },
+                                    onActionButtonClicked = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND){
+                                        { isCancelled ->
+                                            if (!isCancelled) {
+                                                viewModel.getSchedule()
+                                            } else {
+                                                dialog?.dismiss()
+                                                dialog = null
+                                            }
+                                        }
+                                    } else {
+                                        null
+                                    }
+                                )
+                            */
                         }
                     }
                 }
