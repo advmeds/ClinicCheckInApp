@@ -330,9 +330,8 @@ class MainActivity : AppCompatActivity() {
                         } else {
 
                             ErrorDialogFragment(
-                                title = "報到失敗",
-                                message = "查無資料，請重新輸入號碼，\n" +
-                                        "或洽服務人員"
+                                title = getString(R.string.fail_to_check),
+                                message = getString(R.string.fail_to_check_message)
                             )
                             /*
                                 val apiError = ApiError.initWith(it.response.code)
