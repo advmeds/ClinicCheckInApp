@@ -42,7 +42,7 @@
                 android:layout_marginBottom="40dp"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/colorPrimary"
-                android:textSize="72sp"
+                android:textSize="@dimen/font_size_h2"
                 tools:text="@string/success_to_check" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -55,7 +55,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
-                android:textSize="48sp"
+                android:textSize="@dimen/font_size_h3"
                 tools:text="@string/success_to_check_message" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 

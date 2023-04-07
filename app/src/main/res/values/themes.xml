@@ -20,16 +20,16 @@
     </style>
 
     <style name="TextAppearance.AppCompat.Title" parent="Base.TextAppearance.AppCompat.Title">
-        <item name="android:textSize">40sp</item>
+        <item name="android:textSize">@dimen/font_size_h3</item>
     </style>
     <!-- AlertDialog Message TextAppearance -->
     <style name="TextAppearance.AppCompat.Subhead" parent="Base.TextAppearance.AppCompat.Subhead">
-        <item name="android:textSize">32sp</item>
+        <item name="android:textSize">@dimen/font_size_h4</item>
     </style>
 
     <!-- AlertDialog Button Style -->
     <style name="MyApp.buttonBarButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">@dimen/font_size_h5</item>
     </style>
 
     <style name="MyApp.Keyboard" parent="Widget.MaterialComponents.Button.TextButton">
@@ -38,7 +38,7 @@
         <item name="elevation">1dp</item>
         <item name="android:translationZ">2dp</item>
         <item name="backgroundTint">@color/white</item>
-        <item name="android:textSize">36sp</item>
+        <item name="android:textSize">@dimen/font_size_h4</item>
         <item name="android:textColor">@color/keyboard_text_color</item>
     </style>
 

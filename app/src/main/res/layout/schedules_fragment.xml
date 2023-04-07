@@ -46,7 +46,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/select_schedules_title"
                 android:textColor="@color/colorPrimary"
-                android:textSize="48sp" />
+                android:textSize="@dimen/font_size_h3" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/schedules_recycler_view"
@@ -78,7 +78,7 @@
                     android:paddingEnd="120dp"
                     android:paddingBottom="24dp"
                     android:text="@string/cancel"
-                    android:textSize="40sp"
+                    android:textSize="@dimen/font_size_h3"
                     app:cornerRadius="8dp"
                     app:strokeColor="@color/colorPrimary"
                     app:strokeWidth="2dp" />
@@ -95,7 +95,7 @@
                     android:paddingEnd="120dp"
                     android:paddingBottom="24dp"
                     android:text="@string/confirm"
-                    android:textSize="40sp"
+                    android:textSize="@dimen/font_size_h3"
                     app:cornerRadius="8dp"
                     app:elevation="0dp" />
 

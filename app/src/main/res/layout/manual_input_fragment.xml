@@ -18,36 +18,45 @@
         app:cardCornerRadius="10dp"
         app:cardElevation="4dp">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/logo_height"
             android:layout_gravity="center_horizontal">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/logo_imageView"
-                android:layout_width="850dp"
-                android:layout_height="200dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="w,850:200"
+                app:layout_constraintEnd_toStartOf="@+id/appCompatTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/clinic_logo_default" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginStart="20dp"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
                 android:lines="1"
                 android:text="@string/app_name"
                 android:textColor="@color/colorPrimary"
-                android:textSize="60sp"
-                android:textStyle="bold" />
+                android:textSize="@dimen/font_size_h2"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/logo_imageView"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 
@@ -72,7 +81,7 @@
                 android:lines="1"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="60sp"
+                android:textSize="@dimen/font_size_h2"
                 tools:text="@string/national_id_input_title" />
 
             <androidx.appcompat.widget.AppCompatEditText
@@ -91,7 +100,7 @@
                 android:padding="14dp"
                 android:singleLine="true"
                 android:textAlignment="center"
-                android:textSize="36sp" />
+                android:textSize="@dimen/font_size_h4" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/dismiss_button"
@@ -107,7 +116,7 @@
                 android:paddingEnd="138dp"
                 android:paddingBottom="16dp"
                 android:text="@string/national_id_input_cancel"
-                android:textSize="36sp"
+                android:textSize="@dimen/font_size_h4"
                 app:backgroundTint="@color/alert"
                 app:cornerRadius="8dp"
                 tools:ignore="SpeakableTextPresentCheck" />

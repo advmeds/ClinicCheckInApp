@@ -15,7 +15,7 @@
         android:singleLine="true"
         android:textAllCaps="false"
         android:textColor="@color/schedule_toggle_text_color"
-        android:textSize="40sp"
+        android:textSize="@dimen/font_size_h3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
