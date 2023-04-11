@@ -8,13 +8,13 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:padding="@dimen/card_view_half_spacing"
     tools:context=".ui.fragments.ManualInputFragment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="@dimen/card_view_half_spacing"
         app:cardCornerRadius="10dp"
         app:cardElevation="4dp">
 
@@ -63,7 +63,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="20dp"
+        android:layout_margin="@dimen/card_view_half_spacing"
         android:layout_weight="1"
         app:cardCornerRadius="10dp"
         app:cardElevation="4dp">
@@ -97,10 +97,10 @@
                 android:focusableInTouchMode="false"
                 android:hint="@string/national_id_input_hint"
                 android:inputType="textCapSentences"
-                android:padding="14dp"
+                android:padding="8dp"
                 android:singleLine="true"
                 android:textAlignment="center"
-                android:textSize="@dimen/font_size_h4" />
+                android:textSize="@dimen/font_size_h3" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/dismiss_button"
@@ -112,11 +112,11 @@
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:paddingStart="138dp"
-                android:paddingTop="16dp"
+                android:paddingTop="8dp"
                 android:paddingEnd="138dp"
-                android:paddingBottom="16dp"
+                android:paddingBottom="8dp"
                 android:text="@string/national_id_input_cancel"
-                android:textSize="@dimen/font_size_h4"
+                android:textSize="@dimen/font_size_h3"
                 app:backgroundTint="@color/alert"
                 app:cornerRadius="8dp"
                 tools:ignore="SpeakableTextPresentCheck" />

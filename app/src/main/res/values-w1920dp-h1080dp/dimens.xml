@@ -3,6 +3,8 @@
     <!-- 專門給10吋以上的工業平板 -->
     <dimen name="logo_height">200dp</dimen>
 
+    <dimen name="card_view_half_spacing">20dp</dimen>
+
     <dimen name="font_size_h2">60sp</dimen>
     <dimen name="font_size_h3">48sp</dimen>
     <dimen name="font_size_h4">34sp</dimen>
