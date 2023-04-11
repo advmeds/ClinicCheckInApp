@@ -80,15 +80,10 @@ class HomeFragment : Fragment() {
                 .setTitle(R.string.setting)
                 .setItems(R.array.setting_items) { _, index ->
                     when (index) {
-                        0 -> {
-                            onSetServerDomainItemClicked()
-                        }
-                        1 -> {
-                            onSetOrgIDItemClicked()
-                        }
-                        2 -> {
-                            onSetRoomsItemClicked()
-                        }
+                        0 -> onSetServerDomainItemClicked()
+                        1 -> onSetOrgIDItemClicked()
+                        2 -> onSetRoomsItemClicked()
+                        3 -> onSetPanelModeItemClicked()
                     }
                 }
                 .showOnly()
@@ -147,95 +142,81 @@ class HomeFragment : Fragment() {
     }
 
     private fun onSetServerDomainItemClicked() {
-        val editText = EditText(requireContext())
-        editText.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            editText.setTextAppearance(R.style.TextAppearance_AppCompat_Subhead)
-        } else {
-            editText.setTextAppearance(requireContext(), R.style.TextAppearance_AppCompat_Subhead)
-        }
-        editText.inputType =
-            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-        editText.hint = "https://example.com"
-        editText.setText(viewModel.mSchedulerServerDomain)
+        showTextInputDialog(
+            titleResId = R.string.clinic_panel_url,
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI,
+            hint = "https://example.com",
+            defaultText = viewModel.mSchedulerServerDomain
+        ) { domain ->
+            try {
+                HttpUrl.get(domain)
 
-        val layout = LinearLayout(requireContext())
-        val padding = requireContext().getDimensionFrom(R.attr.dialogPreferredPadding)
-        layout.setPaddingRelative(padding, 0, padding, 0)
-        layout.addView(editText)
+                viewModel.mSchedulerServerDomain = domain
 
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.server_domain)
-            .setView(layout)
-            .setPositiveButton(
-                R.string.confirm
-            ) { _, _ ->
-                val domain = editText.text.toString().trim()
+                val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
 
-                try {
-                    HttpUrl.get(domain)
-
-                    viewModel.mSchedulerServerDomain = domain
-
-                    val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
-
-                    LocalBroadcastManager.getInstance(requireContext())
-                        .sendBroadcast(intent)
-                } catch (e: Exception) {
-                    AlertDialog.Builder(requireContext())
-                        .setMessage(e.message)
-                        .setPositiveButton(R.string.confirm, null)
-                        .showOnly()
-                }
+                LocalBroadcastManager.getInstance(requireContext())
+                    .sendBroadcast(intent)
+            } catch (e: Exception) {
+                AlertDialog.Builder(requireContext())
+                    .setMessage(e.message)
+                    .setPositiveButton(R.string.confirm, null)
+                    .showOnly()
             }
-            .setNegativeButton(R.string.cancel, null)
-            .showOnly()
+        }
     }
 
     private fun onSetOrgIDItemClicked() {
-        val editText = EditText(requireContext())
-        editText.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            editText.setTextAppearance(R.style.TextAppearance_AppCompat_Subhead)
-        } else {
-            editText.setTextAppearance(requireContext(), R.style.TextAppearance_AppCompat_Subhead)
-        }
+        showTextInputDialog(
+            titleResId = R.string.org_id,
+            defaultText = viewModel.orgId
+        ) { id ->
+            if (id.isNotBlank()) {
+                viewModel.orgId = id
 
-        editText.setText(viewModel.orgId)
+                MainActivity.sharedPresentation?.reload()
 
-        val layout = LinearLayout(requireContext())
-        val padding = requireContext().getDimensionFrom(R.attr.dialogPreferredPadding)
-        layout.setPaddingRelative(padding, 0, padding, 0)
-        layout.addView(editText)
+                val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
 
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.org_id)
-            .setView(layout)
-            .setPositiveButton(
-                R.string.confirm
-            ) { _, _ ->
-                val id = editText.text.toString().trim()
-
-                if (id.isNotBlank()) {
-                    viewModel.orgId = id
-
-                    val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
-
-                    LocalBroadcastManager.getInstance(requireContext())
-                        .sendBroadcast(intent)
-                }
+                LocalBroadcastManager.getInstance(requireContext())
+                    .sendBroadcast(intent)
             }
-            .setNegativeButton(R.string.cancel, null)
-            .showOnly()
+        }
     }
 
     private fun onSetRoomsItemClicked() {
+        showTextInputDialog(
+            titleResId = R.string.rooms,
+            defaultText = viewModel.rooms.joinToString(",")
+        ) { rooms ->
+            viewModel.rooms = rooms.split(",").toSet()
+
+            MainActivity.sharedPresentation?.reload()
+        }
+    }
+
+    private fun onSetPanelModeItemClicked() {
+        showTextInputDialog(
+            titleResId = R.string.clinic_panel_url,
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI,
+            hint = "https://example.com",
+            defaultText = viewModel.clinicPanelUrl ?: ""
+        ) { clinicPanelUrl ->
+            if (clinicPanelUrl.isNotBlank()) {
+                viewModel.clinicPanelUrl = clinicPanelUrl
+
+                MainActivity.sharedPresentation?.reload()
+            }
+        }
+    }
+
+    private fun showTextInputDialog(
+        titleResId: Int,
+        inputType: Int = InputType.TYPE_CLASS_TEXT,
+        hint: String = "",
+        defaultText: String = "",
+        onConfirmClick: (String) -> Unit
+    ) {
         val editText = EditText(requireContext())
         editText.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -247,7 +228,9 @@ class HomeFragment : Fragment() {
             editText.setTextAppearance(requireContext(), R.style.TextAppearance_AppCompat_Subhead)
         }
 
-        editText.setText(viewModel.rooms.joinToString(","))
+        editText.inputType = inputType
+        editText.hint = hint
+        editText.setText(defaultText)
 
         val layout = LinearLayout(requireContext())
         val padding = requireContext().getDimensionFrom(R.attr.dialogPreferredPadding)
@@ -255,14 +238,12 @@ class HomeFragment : Fragment() {
         layout.addView(editText)
 
         AlertDialog.Builder(requireContext())
-            .setTitle(R.string.rooms)
+            .setTitle(titleResId)
             .setView(layout)
             .setPositiveButton(
                 R.string.confirm
             ) { _, _ ->
-                val rooms = editText.text.toString().trim()
-
-                viewModel.rooms = rooms.split(",").toSet()
+                onConfirmClick(editText.text.toString().trim())
             }
             .setNegativeButton(R.string.cancel, null)
             .showOnly()

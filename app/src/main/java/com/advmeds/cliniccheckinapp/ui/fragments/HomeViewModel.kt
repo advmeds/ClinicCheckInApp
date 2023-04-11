@@ -28,6 +28,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             sharedPreferencesRepo.rooms = value
         }
 
+    /** @see SharedPreferencesRepo.clinicPanelUrl */
+    var clinicPanelUrl: String?
+        get() = sharedPreferencesRepo.clinicPanelUrl
+        set(value) {
+            sharedPreferencesRepo.clinicPanelUrl = value
+        }
+
     /** @see SharedPreferencesRepo.logoUrl */
     var logoUrl: String?
         get() = sharedPreferencesRepo.logoUrl

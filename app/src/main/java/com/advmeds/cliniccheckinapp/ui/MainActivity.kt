@@ -42,6 +42,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetSchedul
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse.ScheduleBean.Companion.RENDE_DIVISION_ONLY
 import com.advmeds.cliniccheckinapp.ui.fragments.HomeFragment.Companion.CLINIC_LOGO_URL_KEY
 import com.advmeds.cliniccheckinapp.ui.fragments.HomeFragment.Companion.RELOAD_CLINIC_LOGO_ACTION
+import com.advmeds.cliniccheckinapp.ui.presentations.WebPresentation
 import com.advmeds.printerlib.usb.BPT3XPrinterService
 import com.advmeds.printerlib.usb.UsbPrinterService
 import com.advmeds.printerlib.utils.PrinterBuffer
@@ -59,6 +60,8 @@ class MainActivity : AppCompatActivity() {
 //        private const val SCAN_TIME_OUT: Long = 15
 
         const val RELOAD_CLINIC_DATA_ACTION = "reload_clinic_data_action"
+
+        var sharedPresentation: WebPresentation? = null
     }
 
     private val viewModel: MainViewModel by viewModels()
@@ -515,6 +518,8 @@ class MainActivity : AppCompatActivity() {
 
             dialog?.showNow(supportFragmentManager, null)
         }
+
+        showPresentation()
     }
 
     private fun setupUSB() {
@@ -801,6 +806,11 @@ class MainActivity : AppCompatActivity() {
         )
 
         dialog?.showNow(supportFragmentManager, null)
+    }
+
+    private fun showPresentation() {
+        sharedPresentation = WebPresentation.newInstance(this@MainActivity)
+        sharedPresentation?.show()
     }
 
     private fun hideSystemUI() {

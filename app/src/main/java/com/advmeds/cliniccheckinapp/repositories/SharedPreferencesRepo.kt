@@ -17,6 +17,9 @@ class SharedPreferencesRepo(
         /** 從SharedPreferences取得『綁定的診間』的KEY */
         const val ROOMS = "rooms"
 
+        /** 從SharedPreferences取得『叫號面板網址』的KEY */
+        const val CLINIC_PANEL_MODE = "clinic_panel_mode"
+
         /** 從SharedPreferences取得『機構LOGO連結』的KEY */
         const val LOGO_URL = "logo_url"
 
@@ -66,6 +69,15 @@ class SharedPreferencesRepo(
         set(value) =
             sharedPreferences.edit()
                 .putStringSet(ROOMS, value)
+                .apply()
+
+    /** 叫號面板網址 */
+    var clinicPanelUrl: String?
+        get() =
+            sharedPreferences.getString(CLINIC_PANEL_MODE, null)
+        set(value) =
+            sharedPreferences.edit()
+                .putString(CLINIC_PANEL_MODE, value)
                 .apply()
 
     /** 機構LOGO */

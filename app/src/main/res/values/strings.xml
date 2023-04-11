@@ -54,10 +54,12 @@
     <string name="server_domain">伺服器網域</string>
     <string name="org_id">機構代碼</string>
     <string name="rooms">診間代碼</string>
+    <string name="clinic_panel_url">叫號面板網址</string>
     <string-array name="setting_items">
         <item>@string/server_domain</item>
         <item>@string/org_id</item>
         <item>診間代碼(可複數，用逗號區隔)</item>
+        <item>@string/clinic_panel_url</item>
     </string-array>
 
     <string name="no_internet">需要有網路連線，請確認。</string>
@@ -82,4 +84,6 @@
     <string name="mScheduler_api_error_10016">重複掛號，若有問題請洽服務人員</string>
 
     <string name="coming_soon">功能尚未開放</string>
+
+    <string name="reconnecting">網路連線偵測中，請稍後</string>
 </resources>
