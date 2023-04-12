@@ -78,8 +78,9 @@ class HomeFragment : Fragment() {
                     when (index) {
                         0 -> onSetServerDomainItemClicked()
                         1 -> onSetOrgIDItemClicked()
-                        2 -> onSetRoomsItemClicked()
-                        3 -> onSetPanelModeItemClicked()
+                        2 -> onSetDoctorsItemClicked()
+                        3 -> onSetRoomsItemClicked()
+                        4 -> onSetPanelModeItemClicked()
                     }
                 }
                 .showOnly()
@@ -165,6 +166,15 @@ class HomeFragment : Fragment() {
             if (id.isNotBlank()) {
                 viewModel.orgId = id
             }
+        }
+    }
+
+    private fun onSetDoctorsItemClicked() {
+        showTextInputDialog(
+            titleResId = R.string.doctors,
+            defaultText = viewModel.doctors.joinToString(",")
+        ) { rooms ->
+            viewModel.doctors = rooms.split(",").toSet()
         }
     }
 

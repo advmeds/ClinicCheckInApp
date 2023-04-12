@@ -36,6 +36,9 @@ interface ApiService {
         @Query("patient")
         nationalId: String,
 
+        @Query("doctors[]")
+        doctors: Array<String>,
+
         @Query("rooms[]")
         rooms: Array<Int>
     ): Response<GetPatientsResponse>

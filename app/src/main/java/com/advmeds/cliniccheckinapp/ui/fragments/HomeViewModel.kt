@@ -21,6 +21,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             sharedPreferencesRepo.orgId = value
         }
 
+    /** @see SharedPreferencesRepo.doctors */
+    var doctors: Set<String>
+        get() = sharedPreferencesRepo.doctors
+        set(value) {
+            sharedPreferencesRepo.doctors = value
+        }
+
     /** @see SharedPreferencesRepo.rooms */
     var rooms: Set<String>
         get() = sharedPreferencesRepo.rooms

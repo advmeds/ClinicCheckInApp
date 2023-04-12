@@ -22,6 +22,9 @@ class SharedPreferencesRepo(
         /** 從SharedPreferences取得『機構代碼』的KEY */
         const val ORG_ID = "org_id"
 
+        /** 從SharedPreferences取得『綁定的醫師』的KEY */
+        const val DOCTORS = "doctors"
+
         /** 從SharedPreferences取得『綁定的診間』的KEY */
         const val ROOMS = "rooms"
 
@@ -79,6 +82,21 @@ class SharedPreferencesRepo(
             )
         }
 
+    /** 綁定的醫師 */
+    var doctors: Set<String>
+        get() =
+            sharedPreferences.getStringSet(DOCTORS, emptySet()) ?: emptySet()
+        set(value) {
+            sharedPreferences.edit()
+                .putStringSet(DOCTORS, value)
+                .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(DOCTORS).apply {
+                    putExtra(DOCTORS, value.toTypedArray())
+                }
+            )
+        }
 
     /** 綁定的診間 */
     var rooms: Set<String>

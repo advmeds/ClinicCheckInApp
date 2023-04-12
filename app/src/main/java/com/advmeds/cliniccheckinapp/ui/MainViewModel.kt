@@ -230,9 +230,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
             val response = try {
                 val result = serverRepo.getPatients(
-                    sharedPreferencesRepo.orgId,
-                    patient.nationalId,
-                    sharedPreferencesRepo.rooms.mapNotNull { it.toIntOrNull() }.toTypedArray()
+                    clinicId = sharedPreferencesRepo.orgId,
+                    nationalId = patient.nationalId,
+                    doctors = sharedPreferencesRepo.doctors.toTypedArray(),
+                    rooms = sharedPreferencesRepo.rooms.mapNotNull { it.toIntOrNull() }.toTypedArray()
                 )
 
                 Timber.d("Status code: ${result.code()}")
