@@ -28,7 +28,7 @@ import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
-import com.advmeds.cliniccheckinapp.ui.MainActivity
+import com.advmeds.cliniccheckinapp.ui.CommonActivity
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import okhttp3.HttpUrl
 
@@ -108,7 +108,7 @@ class HomeFragment : Fragment() {
         binding.homeRightTopCardView.setOnClickListener {
             when(BuildConfig.BUILD_TYPE) {
                 "rende" -> {
-                    (requireActivity() as MainActivity).createFakeAppointment(
+                    (requireActivity() as CommonActivity).createFakeAppointment(
                         schedule = GetScheduleResponse.ScheduleBean.RENDE_VACCINE
                     )
                 }
@@ -121,17 +121,17 @@ class HomeFragment : Fragment() {
         binding.homeRoghtBottomCardView.setOnClickListener {
             when(BuildConfig.BUILD_TYPE) {
                 "ptch" -> {
-                    (requireActivity() as MainActivity).createFakeAppointment(
+                    (requireActivity() as CommonActivity).createFakeAppointment(
                         schedule = GetScheduleResponse.ScheduleBean.PTCH_BABY
                     )
                 }
                 "rende" -> {
-                    (requireActivity() as MainActivity).createFakeAppointment(
+                    (requireActivity() as CommonActivity).createFakeAppointment(
                         schedule = GetScheduleResponse.ScheduleBean.RENDE_CHECK_UP
                     )
                 }
                 else -> {
-                    (requireActivity() as MainActivity).checkInWithVirtualCard()
+                    (requireActivity() as CommonActivity).checkInWithVirtualCard()
                 }
             }
         }
@@ -174,8 +174,6 @@ class HomeFragment : Fragment() {
             defaultText = viewModel.rooms.joinToString(",")
         ) { rooms ->
             viewModel.rooms = rooms.split(",").toSet()
-
-            MainActivity.sharedPresentation?.reload()
         }
     }
 
@@ -188,8 +186,6 @@ class HomeFragment : Fragment() {
         ) { clinicPanelUrl ->
             if (clinicPanelUrl.isNotBlank()) {
                 viewModel.clinicPanelUrl = clinicPanelUrl
-
-                MainActivity.sharedPresentation?.reload()
             }
         }
     }

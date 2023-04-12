@@ -23,7 +23,7 @@ import coil.load
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.ManualInputFragmentBinding
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
-import com.advmeds.cliniccheckinapp.ui.MainActivity
+import com.advmeds.cliniccheckinapp.ui.CommonActivity
 import com.advmeds.cliniccheckinapp.utils.NationIdTransformationMethod
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
@@ -151,7 +151,7 @@ class ManualInputFragment : Fragment() {
             startIdleCountDown()
 
             val patient = binding.idInputEt.text.toString().trim()
-            (requireActivity() as MainActivity).getPatients(patient) {
+            (requireActivity() as CommonActivity).getPatients(patient) {
                 binding.idInputEt.text = null
             }
         }

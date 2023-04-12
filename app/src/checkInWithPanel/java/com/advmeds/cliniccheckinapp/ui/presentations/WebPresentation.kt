@@ -1,7 +1,10 @@
 package com.advmeds.cliniccheckinapp.ui.presentations
 
 import android.app.Presentation
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.media.MediaRouter
 import android.os.Build
 import android.os.Bundle
@@ -10,6 +13,8 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import androidx.activity.ComponentActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import coil.load
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import kotlinx.coroutines.Job
@@ -48,9 +53,23 @@ class WebPresentation(
 
     private var autoReloadJob: Job? = null
 
+    private val reloadReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            reload()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.web_presentation)
+
+        LocalBroadcastManager.getInstance(context).registerReceiver(
+            reloadReceiver,
+            IntentFilter(SharedPreferencesRepo.CLINIC_PANEL_MODE).apply {
+                addAction(SharedPreferencesRepo.ORG_ID)
+                addAction(SharedPreferencesRepo.ROOMS)
+            }
+        )
 
         runtime.settings.autoplayDefault = GeckoRuntimeSettings.AUTOPLAY_DEFAULT_ALLOWED
         runtime.settings.javaScriptEnabled = true
@@ -98,7 +117,7 @@ class WebPresentation(
         reload()
     }
 
-    fun reload() {
+    private fun reload() {
         if (session.isOpen) {
             session.loadUri(
                 getUrl(),
@@ -114,6 +133,12 @@ class WebPresentation(
 
     override fun onStop() {
         super.onStop()
+
+        try {
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(reloadReceiver)
+        } catch (ignored: Exception) {
+
+        }
 
         session.progressDelegate = null
         autoReloadJob?.takeIf { it.isActive }?.cancel()

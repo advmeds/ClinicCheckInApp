@@ -14,6 +14,8 @@ android {
         versionCode 1
         versionName "1.0"
 
+        flavorDimensions "mode"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -77,6 +79,17 @@ android {
             buildConfigField "String", "ORG_ID", "\"103\""
         }
     }
+
+    productFlavors {
+        create("checkIn") {
+            dimension = "mode"
+        }
+
+        create("checkInWithPanel") {
+            dimension = "mode"
+        }
+    }
+
     buildFeatures {
         viewBinding true
     }
@@ -145,5 +158,5 @@ dependencies {
 
     implementation 'com.github.advmeds-service:PrinterLib:1.0.4'
 
-    implementation "org.mozilla.geckoview:geckoview:71.0.20200108003105"
+    checkInWithPanelImplementation("org.mozilla.geckoview:geckoview:71.0.20200108003105")
 }
