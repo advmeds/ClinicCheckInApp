@@ -109,7 +109,7 @@ class WebPresentation(
 
     private fun getUrl(): String {
         val url = sharedPreferencesRepo.clinicPanelUrl ?: ""
-        return String.format(url, sharedPreferencesRepo.orgId, sharedPreferencesRepo.rooms.first())
+        return String.format(url, sharedPreferencesRepo.orgId, sharedPreferencesRepo.rooms.firstOrNull())
     }
 
     override fun onStop() {
