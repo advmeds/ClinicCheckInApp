@@ -1,12 +1,20 @@
 package com.advmeds.cliniccheckinapp.repositories
 
 import android.content.Context
-import android.content.SharedPreferences
+import android.content.Intent
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.advmeds.cliniccheckinapp.BuildConfig
 
 class SharedPreferencesRepo(
-    private val sharedPreferences: SharedPreferences
+    context: Context
 ) {
+    private val sharedPreferences = context.getSharedPreferences(
+        BuildConfig.APPLICATION_ID,
+        Context.MODE_PRIVATE
+    )
+
+    private val localBroadcastManager = LocalBroadcastManager.getInstance(context)
+
     companion object {
         /** 從SharedPreferences取得『伺服器網域』的KEY */
         const val MS_SERVER_DOMAIN = "ms_server_domain"
@@ -33,12 +41,7 @@ class SharedPreferencesRepo(
         @Synchronized
         fun getInstance(context: Context): SharedPreferencesRepo {
             if (INSTANCE == null) {
-                INSTANCE = SharedPreferencesRepo(
-                    context.getSharedPreferences(
-                        BuildConfig.APPLICATION_ID,
-                        Context.MODE_PRIVATE
-                    )
-                )
+                INSTANCE = SharedPreferencesRepo(context)
             }
             return INSTANCE!!
         }
@@ -48,53 +51,96 @@ class SharedPreferencesRepo(
     var mSchedulerServerDomain: String
         get() =
             sharedPreferences.getString(MS_SERVER_DOMAIN, null) ?: BuildConfig.MS_DOMAIN
-        set(value) =
+        set(value) {
             sharedPreferences.edit()
                 .putString(MS_SERVER_DOMAIN, value)
                 .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(MS_SERVER_DOMAIN).apply {
+                    putExtra(MS_SERVER_DOMAIN, value)
+                }
+            )
+        }
 
     /** 機構代碼 */
     var orgId: String
         get() =
             sharedPreferences.getString(ORG_ID, null) ?: BuildConfig.ORG_ID
-        set(value) =
+        set(value) {
             sharedPreferences.edit()
                 .putString(ORG_ID, value)
                 .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(ORG_ID).apply {
+                    putExtra(ORG_ID, value)
+                }
+            )
+        }
+
 
     /** 綁定的診間 */
     var rooms: Set<String>
         get() =
             sharedPreferences.getStringSet(ROOMS, emptySet()) ?: emptySet()
-        set(value) =
+        set(value) {
             sharedPreferences.edit()
                 .putStringSet(ROOMS, value)
                 .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(ROOMS).apply {
+                    putExtra(ROOMS, value.toTypedArray())
+                }
+            )
+        }
 
     /** 叫號面板網址 */
     var clinicPanelUrl: String?
         get() =
             sharedPreferences.getString(CLINIC_PANEL_MODE, null)
-        set(value) =
+        set(value) {
             sharedPreferences.edit()
                 .putString(CLINIC_PANEL_MODE, value)
                 .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(CLINIC_PANEL_MODE).apply {
+                    putExtra(CLINIC_PANEL_MODE, value)
+                }
+            )
+        }
 
     /** 機構LOGO */
     var logoUrl: String?
         get() =
             sharedPreferences.getString(LOGO_URL, null)
-        set(value) =
+        set(value) {
             sharedPreferences.edit()
                 .putString(LOGO_URL, value)
                 .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(LOGO_URL).apply {
+                    putExtra(LOGO_URL, value)
+                }
+            )
+        }
 
     /** 小兒流水號 */
     var checkInSerialNo: Int
         get() =
             sharedPreferences.getInt(CHECK_IN_SERIAL_NO, 0)
-        set(value) =
+        set(value) {
             sharedPreferences.edit()
                 .putInt(CHECK_IN_SERIAL_NO, value)
                 .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(CHECK_IN_SERIAL_NO).apply {
+                    putExtra(CHECK_IN_SERIAL_NO, value)
+                }
+            )
+        }
 }

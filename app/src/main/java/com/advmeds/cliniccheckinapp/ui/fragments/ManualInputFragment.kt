@@ -22,6 +22,7 @@ import androidx.navigation.fragment.findNavController
 import coil.load
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.ManualInputFragmentBinding
+import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.utils.NationIdTransformationMethod
 import kotlinx.coroutines.*
@@ -39,7 +40,7 @@ class ManualInputFragment : Fragment() {
 
     private val reloadClinicLogoReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val clinicLogoUrl = intent?.getStringExtra(HomeFragment.CLINIC_LOGO_URL_KEY)
+            val clinicLogoUrl = intent?.getStringExtra(SharedPreferencesRepo.LOGO_URL)
             binding.logoImageView.load(clinicLogoUrl)
         }
     }
@@ -54,7 +55,7 @@ class ManualInputFragment : Fragment() {
 
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
             reloadClinicLogoReceiver,
-            IntentFilter(HomeFragment.RELOAD_CLINIC_LOGO_ACTION)
+            IntentFilter(SharedPreferencesRepo.LOGO_URL)
         )
 
         return binding.root

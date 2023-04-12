@@ -40,8 +40,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppoi
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse.ScheduleBean.Companion.RENDE_DIVISION_ONLY
-import com.advmeds.cliniccheckinapp.ui.fragments.HomeFragment.Companion.CLINIC_LOGO_URL_KEY
-import com.advmeds.cliniccheckinapp.ui.fragments.HomeFragment.Companion.RELOAD_CLINIC_LOGO_ACTION
+import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.presentations.WebPresentation
 import com.advmeds.printerlib.usb.BPT3XPrinterService
 import com.advmeds.printerlib.usb.UsbPrinterService
@@ -58,8 +57,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val USB_PERMISSION = "${BuildConfig.APPLICATION_ID}.USB_PERMISSION"
 //        private const val SCAN_TIME_OUT: Long = 15
-
-        const val RELOAD_CLINIC_DATA_ACTION = "reload_clinic_data_action"
 
         var sharedPresentation: WebPresentation? = null
     }
@@ -263,7 +260,9 @@ class MainActivity : AppCompatActivity() {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
             reloadClinicDataReceiver,
-            IntentFilter(RELOAD_CLINIC_DATA_ACTION)
+            IntentFilter(SharedPreferencesRepo.MS_SERVER_DOMAIN).apply {
+                addAction(SharedPreferencesRepo.ORG_ID)
+            }
         )
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -291,13 +290,6 @@ class MainActivity : AppCompatActivity() {
 //        setupBluetooth()
 
         viewModel.getClinicGuardian()
-
-        viewModel.clinicGuardian.observe(this) {
-            val intent = Intent(RELOAD_CLINIC_LOGO_ACTION).apply {
-                putExtra(CLINIC_LOGO_URL_KEY, it?.logo)
-            }
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
-        }
 
         viewModel.getGuardianStatus.observe(this) {
             dialog?.dismiss()

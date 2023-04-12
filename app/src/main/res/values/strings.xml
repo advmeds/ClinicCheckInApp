@@ -17,7 +17,7 @@
     <string name="home_right_top_card_view_title">無健保卡</string>
     <string name="home_right_top_card_view_body">手動取號</string>
     <string name="home_right_bottom_card_view_title">虛擬健保卡</string>
-    <string name="home_right_bottom_card_view_body">報到</string>
+    <string name="home_right_bottom_card_view_body">取號</string>
     <string name="national_id_input_title">如您未攜帶健保卡，可輕觸螢幕輸入%s</string>
     <string name="national_id_input_hint">請輸入%s</string>
     <string name="national_id_format_invalid">%s格式錯誤</string>

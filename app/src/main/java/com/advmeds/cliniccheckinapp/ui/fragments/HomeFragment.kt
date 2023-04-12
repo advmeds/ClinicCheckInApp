@@ -27,16 +27,12 @@ import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
+import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import okhttp3.HttpUrl
 
 class HomeFragment : Fragment() {
-    companion object {
-        const val RELOAD_CLINIC_LOGO_ACTION = "reload_clinic_logo_action"
-        const val CLINIC_LOGO_URL_KEY = "clinic_logo_url"
-    }
-
     private val viewModel: HomeViewModel by viewModels()
 
     private var _binding: HomeFragmentBinding? = null
@@ -47,7 +43,7 @@ class HomeFragment : Fragment() {
 
     private val reloadClinicLogoReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val clinicLogoUrl = intent?.getStringExtra(CLINIC_LOGO_URL_KEY)
+            val clinicLogoUrl = intent?.getStringExtra(SharedPreferencesRepo.LOGO_URL)
             binding.logoImageView.load(clinicLogoUrl)
         }
     }
@@ -61,7 +57,7 @@ class HomeFragment : Fragment() {
 
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
             reloadClinicLogoReceiver,
-            IntentFilter(RELOAD_CLINIC_LOGO_ACTION)
+            IntentFilter(SharedPreferencesRepo.LOGO_URL)
         )
 
         return binding.root
@@ -152,11 +148,6 @@ class HomeFragment : Fragment() {
                 HttpUrl.get(domain)
 
                 viewModel.mSchedulerServerDomain = domain
-
-                val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
-
-                LocalBroadcastManager.getInstance(requireContext())
-                    .sendBroadcast(intent)
             } catch (e: Exception) {
                 AlertDialog.Builder(requireContext())
                     .setMessage(e.message)
@@ -173,13 +164,6 @@ class HomeFragment : Fragment() {
         ) { id ->
             if (id.isNotBlank()) {
                 viewModel.orgId = id
-
-                MainActivity.sharedPresentation?.reload()
-
-                val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
-
-                LocalBroadcastManager.getInstance(requireContext())
-                    .sendBroadcast(intent)
             }
         }
     }
