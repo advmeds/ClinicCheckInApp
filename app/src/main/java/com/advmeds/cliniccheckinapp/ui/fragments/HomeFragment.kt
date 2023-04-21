@@ -207,6 +207,7 @@ class HomeFragment : Fragment() {
         val checkedItems = choiceItems.map { viewModel.formatCheckedList.contains(it) }
 
         AlertDialog.Builder(requireContext())
+            .setTitle(R.string.format_checked)
             .setMultiChoiceItems(
                 choiceItems.map { getString(it.description) }.toTypedArray(),
                 checkedItems.toBooleanArray()
