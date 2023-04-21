@@ -2,6 +2,7 @@ package com.advmeds.cliniccheckinapp.ui.fragments
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
@@ -47,5 +48,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         get() = sharedPreferencesRepo.logoUrl
         set(value) {
             sharedPreferencesRepo.logoUrl = value
+        }
+
+    /** @see SharedPreferencesRepo.formatCheckedList */
+    var formatCheckedList: List<CreateAppointmentRequest.NationalIdFormat>
+        get() = sharedPreferencesRepo.formatCheckedList
+        set(value) {
+            sharedPreferencesRepo.formatCheckedList = value
         }
 }

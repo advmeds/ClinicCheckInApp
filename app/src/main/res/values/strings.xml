@@ -13,6 +13,7 @@
 
     <string name="health_card">健保卡</string>
     <string name="national_id">身份證字號</string>
+    <string name="chart_no">病歷號</string>
     <string name="present_health_card">請直接插入%s取號</string>
     <string name="home_right_top_card_view_title">無健保卡</string>
     <string name="home_right_top_card_view_body">手動取號</string>
@@ -56,12 +57,14 @@
     <string name="doctors">醫師代碼</string>
     <string name="rooms">診間代碼</string>
     <string name="clinic_panel_url">叫號面板網址</string>
+    <string name="format_checked">報到格式檢查</string>
     <string-array name="setting_items">
         <item>@string/server_domain</item>
         <item>@string/org_id</item>
         <item>醫師代碼(可複數，用逗號區隔)</item>
         <item>診間代碼(可複數，用逗號區隔)</item>
         <item>@string/clinic_panel_url</item>
+        <item>@string/format_checked</item>
     </string-array>
 
     <string name="no_internet">需要有網路連線，請確認。</string>

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.content.ContextCompat
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.CheckInDialogFragmentBinding
+import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 
 class CheckInDialogFragment : AppCompatDialogFragment() {
     private var _binding: CheckInDialogFragmentBinding? = null
@@ -53,9 +54,15 @@ class CheckInDialogFragment : AppCompatDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val sharedPreferencesRepo = SharedPreferencesRepo(requireContext())
+
         val healthCard = getString(R.string.health_card)
-        val nationId = getString(R.string.national_id)
-        val text = String.format(getString(R.string.make_appointment_message), healthCard, nationId)
+        val nationId = sharedPreferencesRepo.formatCheckedList.joinToString("、") { getString(it.description) }
+        val text = String.format(
+            getString(R.string.make_appointment_message),
+            healthCard,
+            nationId
+        )
         val spannable = SpannableString(text)
 
         val textColor = ContextCompat.getColor(

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.advmeds.cliniccheckinapp.BuildConfig
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 
 class SharedPreferencesRepo(
     context: Context
@@ -36,6 +37,9 @@ class SharedPreferencesRepo(
 
         /** 從SharedPreferences取得『用來直接取號的流水號』的KEY */
         const val CHECK_IN_SERIAL_NO = "check_in_serial_no"
+
+        /** 從SharedPreferences取得『取得病患資訊的national_id可輸入格式』的KEY */
+        const val FORMAT_CHECKED_LIST = "format_checked_list"
 
         /** 以Volatile註解表示此INSTANCE變數僅會在主記憶體中讀寫，可避免進入cache被不同執行緒讀寫而造成問題 */
         @Volatile
@@ -158,6 +162,26 @@ class SharedPreferencesRepo(
             localBroadcastManager.sendBroadcast(
                 Intent(CHECK_IN_SERIAL_NO).apply {
                     putExtra(CHECK_IN_SERIAL_NO, value)
+                }
+            )
+        }
+
+    /** 取得病患資訊的national_id可輸入格式 */
+    var formatCheckedList: List<CreateAppointmentRequest.NationalIdFormat>
+        get() =
+            sharedPreferences.getStringSet(FORMAT_CHECKED_LIST, emptySet())
+                ?.map { CreateAppointmentRequest.NationalIdFormat.valueOf(it) }
+                ?.toList()
+                ?.sortedBy { it.ordinal }
+                .orEmpty()
+        set(value) {
+            sharedPreferences.edit()
+                .putStringSet(FORMAT_CHECKED_LIST, value.map { it.name }.toSet())
+                .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(ROOMS).apply {
+                    putExtra(ROOMS, value.toTypedArray())
                 }
             )
         }

@@ -6,7 +6,6 @@ import android.net.ConnectivityManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiService
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
@@ -16,8 +15,6 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatient
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
 import com.advmeds.cliniccheckinapp.repositories.ServerRepository
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
-import com.advmeds.cliniccheckinapp.utils.isNationId
-import com.advmeds.cliniccheckinapp.utils.isPTCHCaseId
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -198,6 +195,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 return@launch
             }
 
+            val formatCheckedList = sharedPreferencesRepo.formatCheckedList
+
             if (patient.nationalId.isBlank()) {
                 checkInStatus.value = CheckInStatus.NotChecking(
                     response = GetPatientsResponse(
@@ -205,24 +204,37 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         code = 0,
                         message = String.format(
                             application.getString(R.string.national_id_input_hint),
-                            application.getString(R.string.national_id)
+                            formatCheckedList.joinToString("、") {
+                                application.getString(
+                                    it.description
+                                )
+                            }
                         )
                     )
                 )
                 return@launch
             }
 
-            if (!(patient.nationalId.isNationId || (BuildConfig.BUILD_TYPE == "ptch" && patient.nationalId.isPTCHCaseId))) {
+            if (formatCheckedList.isNotEmpty() &&
+                formatCheckedList.none {
+                    it.inputFormatAvailable(patient.nationalId)
+                }
+            ) {
                 checkInStatus.value = CheckInStatus.NotChecking(
                     response = GetPatientsResponse(
                         success = false,
                         code = 0,
                         message = String.format(
                             application.getString(R.string.national_id_format_invalid),
-                            application.getString(R.string.national_id)
+                            formatCheckedList.joinToString("、") {
+                                application.getString(
+                                    it.description
+                                )
+                            }
                         )
                     )
                 )
+
                 return@launch
             }
 

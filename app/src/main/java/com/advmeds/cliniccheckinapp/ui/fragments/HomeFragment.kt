@@ -26,6 +26,7 @@ import coil.load
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
@@ -81,6 +82,7 @@ class HomeFragment : Fragment() {
                         2 -> onSetDoctorsItemClicked()
                         3 -> onSetRoomsItemClicked()
                         4 -> onSetPanelModeItemClicked()
+                        5 -> onSetFormatCheckedListItemClicked()
                     }
                 }
                 .showOnly()
@@ -198,6 +200,30 @@ class HomeFragment : Fragment() {
                 viewModel.clinicPanelUrl = clinicPanelUrl
             }
         }
+    }
+
+    private fun onSetFormatCheckedListItemClicked() {
+        val choiceItems = CreateAppointmentRequest.NationalIdFormat.values()
+        val checkedItems = choiceItems.map { viewModel.formatCheckedList.contains(it) }
+
+        AlertDialog.Builder(requireContext())
+            .setMultiChoiceItems(
+                choiceItems.map { getString(it.description) }.toTypedArray(),
+                checkedItems.toBooleanArray()
+            ) { _, index, isChecked ->
+                val list = viewModel.formatCheckedList.toMutableList()
+                val format = choiceItems[index]
+
+                if (isChecked) {
+                    list.add(format)
+                } else {
+                    list.remove(format)
+                }
+
+                viewModel.formatCheckedList = list
+            }
+            .setPositiveButton(R.string.confirm, null)
+            .showOnly()
     }
 
     private fun showTextInputDialog(
