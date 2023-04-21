@@ -1,24 +1,28 @@
 package com.advmeds.cliniccheckinapp.ui.home
 
+import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.text.InputType
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.TypedValue
-import androidx.fragment.app.Fragment
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.RadioGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
@@ -28,6 +32,7 @@ import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.inputPage.InputPageFragment
 import com.advmeds.cliniccheckinapp.utils.showOnly
+import kotlinx.android.synthetic.main.change_domain_dialog.*
 import okhttp3.HttpUrl
 
 
@@ -122,53 +127,65 @@ class HomeFragment : Fragment() {
     }
 
     private fun onSetServerDomainItemClicked() {
-        val editText = EditText(requireContext())
-        editText.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            editText.setTextAppearance(R.style.TextAppearance_AppCompat_Subhead)
-        } else {
-            editText.setTextAppearance(requireContext(), R.style.TextAppearance_AppCompat_Subhead)
-        }
-        editText.inputType =
-            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-        editText.hint = "https://example.com"
-        editText.setText(viewModel.mSchedulerServerDomain)
 
-        val layout = LinearLayout(requireContext())
-        val padding = requireContext().getDimensionFrom(R.attr.dialogPreferredPadding)
-        layout.setPaddingRelative(padding, 0, padding, 0)
-        layout.addView(editText)
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.change_domain_dialog)
 
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.server_domain)
-            .setView(layout)
-            .setPositiveButton(
-                R.string.confirm
-            ) { _, _ ->
-                val domain = editText.text.toString().trim()
+        if (dialog.window == null)
+            return
 
-                try {
-                    HttpUrl.get(domain)
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-                    viewModel.mSchedulerServerDomain = domain
+        val radioGroup = dialog.domain_service_radio_group
+        val urlContainer = dialog.domain_service_url_input_container
 
-                    val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
-
-                    LocalBroadcastManager.getInstance(requireContext())
-                        .sendBroadcast(intent)
-
-                } catch (e: Exception) {
-                    AlertDialog.Builder(requireContext())
-                        .setMessage(e.message)
-                        .setPositiveButton(R.string.confirm, null)
-                        .showOnly()
+        radioGroup.setOnCheckedChangeListener(
+            RadioGroup.OnCheckedChangeListener { radioGroup, checkedId ->
+                when (checkedId) {
+                    R.id.domain_service_official_site -> urlContainer.visibility = View.GONE
+                    R.id.domain_service_testing_site -> urlContainer.visibility = View.GONE
+                    R.id.domain_service_customize -> urlContainer.visibility = View.VISIBLE
                 }
             }
-            .setNegativeButton(R.string.cancel, null)
-            .showOnly()
+        )
+
+        val saveButton = dialog.btn_domain_service_save
+        val cancelButton = dialog.btn_domain_service_cancel
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        saveButton.setOnClickListener {
+
+            val domain = when (radioGroup.checkedRadioButtonId) {
+                R.id.domain_service_official_site -> "https://www.mscheduler.com"
+                R.id.domain_service_testing_site -> "https://test.mscheduler.com"
+                R.id.domain_service_customize ->
+                    dialog.et_domain_service_url_input.text.toString().trim()
+                else -> "https://www.mscheduler.com"
+            }
+
+            try {
+                HttpUrl.get(domain)
+
+                viewModel.mSchedulerServerDomain = domain
+
+                val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
+
+                LocalBroadcastManager.getInstance(requireContext())
+                    .sendBroadcast(intent)
+
+            } catch (e: Exception) {
+                AlertDialog.Builder(requireContext())
+                    .setMessage(e.message)
+                    .setPositiveButton(R.string.confirm, null)
+                    .showOnly()
+            }
+        }
+
+        dialog.show()
     }
 
     private fun onSetOrgIDItemClicked() {

@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">看診取號機</string>
     <string name="app_name_title_in_home_fragment">檢查取號機</string>
 
@@ -68,7 +70,7 @@
 
     <string name="id_is_invalid_title">id is invalid</string>
     <string name="id_is_invalid_message">please, check id again, it may have error</string>
-    
+
     <string name="home_page_card_info_label">請直接插入%s取號</string>
     <string name="home_page_card_info_label_arg">健保卡</string>
 
@@ -86,7 +88,7 @@
     </string-array>
 
     <!-- Service Domain -->
-    <string name="server_domain">伺服器網域</string>
+    <string name="server_domain">Service Domain</string>
     <string name="customize_url_hint">http://example.com</string>
     <string name="domain_service_official_site">Official Site</string>
     <string name="domain_service_testing_site">Testing Site</string>
@@ -94,5 +96,4 @@
     <string name="domain_service_url_label">URL</string>
     <string name="domain_service_cancel_button">Cancel</string>
     <string name="domain_service_save_button">Save</string>
-
 </resources>
