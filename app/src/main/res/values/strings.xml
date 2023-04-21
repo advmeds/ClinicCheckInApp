@@ -45,7 +45,7 @@
 
     <string name="fail_to_make_appointment">掛號失敗</string>
 
-    <string name="org_id">機構代碼</string>
+
 
 
     <string name="no_internet">需要有網路連線，請確認。</string>
@@ -85,14 +85,20 @@
         <item>@string/org_id</item>
     </string-array>
 
-    <!-- Service Domain -->
+    <!-- Settings Dialogs -->
+    <string name="dialog_cancel_button">Cancel</string>
+    <string name="dialog_save_button">Save</string>
+
+    <string name="dialog_id_label">ID</string>
+
+    <!-- Service Domain Dialog -->
     <string name="server_domain">伺服器網域</string>
     <string name="customize_url_hint">http://example.com</string>
     <string name="domain_service_official_site">Official Site</string>
     <string name="domain_service_testing_site">Testing Site</string>
     <string name="domain_service_customize">Customize</string>
     <string name="domain_service_url_label">URL</string>
-    <string name="domain_service_cancel_button">Cancel</string>
-    <string name="domain_service_save_button">Save</string>
 
+    <!-- Change Clinic Id Dialog  -->
+    <string name="org_id">機構代碼</string>
 </resources>

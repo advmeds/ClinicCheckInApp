@@ -20,70 +20,31 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/server_domain"
+                android:text="@string/org_id"
                 android:textSize="40sp"
                 />
 
-
-                <RadioGroup
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/domain_service_radio_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:checkedButton="@id/domain_service_official_site"
-                    android:padding="15dp">
-
-                    <RadioButton
-                        android:id="@+id/domain_service_official_site"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:textSize="24sp"
-                        android:text="@string/domain_service_official_site"/>
-
-                    <RadioButton
-                        android:id="@+id/domain_service_testing_site"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:textSize="24sp"
-                        android:text="@string/domain_service_testing_site"/>
-
-                    <RadioButton
-                        android:id="@+id/domain_service_customize"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:textSize="24sp"
-                        android:text="@string/domain_service_customize"/>
-
-                </RadioGroup>
-
-
             <LinearLayout
-                android:id="@+id/domain_service_url_input_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_marginVertical="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/domain_service_url_label"
+                    android:text="@string/dialog_id_label"
                     android:textColor="@color/colorPrimary"
                     android:textSize="24sp"
                     />
 
                 <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/et_domain_service_url_input"
+                    android:id="@+id/et_clinic_id_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/id_input_border"
-                    android:hint="@string/customize_url_hint"
                     android:padding="20dp"
+                    android:inputType="number"
                     android:singleLine="true"
                     android:textSize="24sp" />
 
@@ -98,7 +59,7 @@
                 android:gravity="end">
 
                 <Button
-                    android:id="@+id/btn_domain_service_cancel"
+                    android:id="@+id/btn_change_clinic_id_dialog_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/dialog_cancel_button"
@@ -108,7 +69,7 @@
                     />
 
                 <Button
-                    android:id="@+id/btn_domain_service_save"
+                    android:id="@+id/btn_change_clinic_id_dialog_save"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/dialog_save_button"
