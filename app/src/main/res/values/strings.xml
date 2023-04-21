@@ -4,7 +4,6 @@
 
     <string name="confirm">確認</string>
     <string name="cancel">取消</string>
-    <string name="setting">設定</string>
     <string name="backspace">刪除</string>
     <string name="enter">送出</string>
     <string name="or">或</string>
@@ -83,13 +82,16 @@
     <string-array name="setting_items">
         <item>@string/server_domain</item>
         <item>@string/org_id</item>
+        <item>@string/doctor_id</item>
+        <item>@string/room_id</item>
     </string-array>
 
     <!-- Settings Dialogs -->
+    <string name="setting">設定</string>
     <string name="dialog_cancel_button">Cancel</string>
     <string name="dialog_save_button">Save</string>
-
     <string name="dialog_id_label">ID</string>
+    <string name="dialog_description">To enter multiple ID, use commas to separate eahc ID.</string>
 
     <!-- Service Domain Dialog -->
     <string name="server_domain">伺服器網域</string>
@@ -101,4 +103,10 @@
 
     <!-- Change Clinic Id Dialog  -->
     <string name="org_id">機構代碼</string>
+
+    <!-- Change Doctor Id Dialog -->
+    <string name="doctor_id">Doctor ID</string>
+
+    <!-- Change Room Id Dialog -->
+    <string name="room_id">Room ID</string>
 </resources>

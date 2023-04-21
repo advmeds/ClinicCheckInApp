@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -17,8 +16,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.LinearLayout
+import android.widget.ArrayAdapter
 import android.widget.RadioGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -32,7 +30,11 @@ import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.inputPage.InputPageFragment
 import com.advmeds.cliniccheckinapp.utils.showOnly
+import kotlinx.android.synthetic.main.change_clinic_id_dialog.*
+import kotlinx.android.synthetic.main.change_doctor_id_dialog.*
 import kotlinx.android.synthetic.main.change_domain_dialog.*
+import kotlinx.android.synthetic.main.change_room_id_dialog.*
+import kotlinx.android.synthetic.main.settings_dialog.*
 import okhttp3.HttpUrl
 
 
@@ -99,19 +101,35 @@ class HomeFragment : Fragment() {
         // Buttons
 
         binding.logoImageView.setOnLongClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle(R.string.setting)
-                .setItems(R.array.setting_items) { _, index ->
-                    when (index) {
-                        0 -> {
-                            onSetServerDomainItemClicked()
-                        }
-                        1 -> {
-                            onSetOrgIDItemClicked()
-                        }
-                    }
+
+            val dialog = Dialog(requireContext())
+            dialog.setContentView(R.layout.settings_dialog)
+
+            if (dialog.window == null)
+                return@setOnLongClickListener true
+
+            dialog.window!!.setGravity(Gravity.CENTER)
+            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            val settingItems = requireContext().resources.getStringArray(R.array.setting_items)
+
+            val arrayAdapter = ArrayAdapter(requireContext(), R.layout.settings_list_item, settingItems)
+
+            dialog.setting_options_list_view.adapter = arrayAdapter
+
+            dialog.setting_options_list_view.setOnItemClickListener { parent, view, position, id ->
+
+                dialog.dismiss()
+
+                when (position) {
+                    0 -> onSetServerDomainItemClicked()
+                    1 -> onSetOrgIDItemClicked()
+                    2 -> onSetDoctorIDItemClicked()
+                    3 -> onSetRoomIDItemClicked()
                 }
-                .showOnly()
+            }
+
+            dialog.show()
 
             return@setOnLongClickListener true
         }
@@ -137,11 +155,13 @@ class HomeFragment : Fragment() {
         dialog.window!!.setGravity(Gravity.CENTER)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
+        dialog.et_domain_service_url_input.setText(viewModel.mSchedulerServerDomain)
+
         val radioGroup = dialog.domain_service_radio_group
         val urlContainer = dialog.domain_service_url_input_container
 
         radioGroup.setOnCheckedChangeListener(
-            RadioGroup.OnCheckedChangeListener { radioGroup, checkedId ->
+            RadioGroup.OnCheckedChangeListener { _, checkedId ->
                 when (checkedId) {
                     R.id.domain_service_official_site -> urlContainer.visibility = View.GONE
                     R.id.domain_service_testing_site -> urlContainer.visibility = View.GONE
@@ -158,16 +178,16 @@ class HomeFragment : Fragment() {
         }
 
         saveButton.setOnClickListener {
-
             val domain = when (radioGroup.checkedRadioButtonId) {
                 R.id.domain_service_official_site -> "https://www.mscheduler.com"
                 R.id.domain_service_testing_site -> "https://test.mscheduler.com"
                 R.id.domain_service_customize ->
                     dialog.et_domain_service_url_input.text.toString().trim()
-                else -> "https://www.mscheduler.com"
+                else -> "https://test.mscheduler.com"
             }
 
             try {
+                dialog.dismiss()
                 HttpUrl.get(domain)
 
                 viewModel.mSchedulerServerDomain = domain
@@ -178,6 +198,7 @@ class HomeFragment : Fragment() {
                     .sendBroadcast(intent)
 
             } catch (e: Exception) {
+                dialog.dismiss()
                 AlertDialog.Builder(requireContext())
                     .setMessage(e.message)
                     .setPositiveButton(R.string.confirm, null)
@@ -189,43 +210,112 @@ class HomeFragment : Fragment() {
     }
 
     private fun onSetOrgIDItemClicked() {
-        val editText = EditText(requireContext())
-        editText.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            editText.setTextAppearance(R.style.TextAppearance_AppCompat_Subhead)
-        } else {
-            editText.setTextAppearance(requireContext(), R.style.TextAppearance_AppCompat_Subhead)
+
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.change_clinic_id_dialog)
+
+        if (dialog.window == null)
+            return
+
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        dialog.et_clinic_id_input.setText(viewModel.orgId)
+
+        val saveButton = dialog.btn_change_clinic_id_dialog_save
+        val cancelButton = dialog.btn_change_clinic_id_dialog_cancel
+
+        saveButton.setOnClickListener {
+            val id = dialog.et_clinic_id_input.text.toString()
+            dialog.dismiss()
+            if (id.isNotBlank()) {
+                viewModel.orgId = id
+
+                val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
+
+                LocalBroadcastManager.getInstance(requireContext())
+                    .sendBroadcast(intent)
+            }
         }
 
-        editText.setText(viewModel.orgId)
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
 
-        val layout = LinearLayout(requireContext())
-        val padding = requireContext().getDimensionFrom(R.attr.dialogPreferredPadding)
-        layout.setPaddingRelative(padding, 0, padding, 0)
-        layout.addView(editText)
+        dialog.show()
+    }
 
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.org_id)
-            .setView(layout)
-            .setPositiveButton(
-                R.string.confirm
-            ) { _, _ ->
-                val id = editText.text.toString().trim()
+    private fun onSetDoctorIDItemClicked() {
 
-                if (id.isNotBlank()) {
-                    viewModel.orgId = id
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.change_doctor_id_dialog)
 
-                    val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
+        if (dialog.window == null)
+            return
 
-                    LocalBroadcastManager.getInstance(requireContext())
-                        .sendBroadcast(intent)
-                }
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .showOnly()
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        //dialog.et_clinic_id_input.setText(viewModel.orgId)
+
+        val saveButton = dialog.btn_change_doctor_id_dialog_save
+        val cancelButton = dialog.btn_change_doctor_id_dialog_cancel
+
+        saveButton.setOnClickListener {
+            val id = dialog.et_doctor_id_input.text.toString()
+            dialog.dismiss()
+//            if (id.isNotBlank()) {
+//                viewModel.orgId = id
+//
+//                val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
+//
+//                LocalBroadcastManager.getInstance(requireContext())
+//                    .sendBroadcast(intent)
+//            }
+        }
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+
+    private fun onSetRoomIDItemClicked() {
+
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.change_room_id_dialog)
+
+        if (dialog.window == null)
+            return
+
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        //dialog.et_clinic_id_input.setText(viewModel.orgId)
+
+        val saveButton = dialog.btn_change_room_id_dialog_save
+        val cancelButton = dialog.btn_change_room_id_dialog_cancel
+
+        saveButton.setOnClickListener {
+            val id = dialog.et_room_id_input.text.toString()
+            dialog.dismiss()
+//            if (id.isNotBlank()) {
+//                viewModel.orgId = id
+//
+//                val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
+//
+//                LocalBroadcastManager.getInstance(requireContext())
+//                    .sendBroadcast(intent)
+//            }
+        }
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
 
@@ -250,7 +340,10 @@ class HomeFragment : Fragment() {
     private fun Context.getDimensionFrom(attr: Int): Int {
         val typedValue = TypedValue()
         return if (this.theme.resolveAttribute(attr, typedValue, true))
-            TypedValue.complexToDimensionPixelSize(typedValue.data, this.resources.displayMetrics)
+            TypedValue.complexToDimensionPixelSize(
+                typedValue.data,
+                this.resources.displayMetrics
+            )
         else 0
     }
 
