@@ -19,7 +19,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/doctor_id"
+                android:text="@string/dept_id"
                 android:textColor="@color/black"
                 android:textSize="40sp" />
 
@@ -27,8 +27,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="20dp"
-                android:text="@string/dialog_description"
                 android:textColor="@color/black"
+                android:text="@string/dialog_description"
                 android:textSize="24sp" />
 
             <TextView
@@ -40,7 +40,7 @@
                 android:textSize="24sp" />
 
             <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/et_doctor_id_input"
+                android:id="@+id/et_dept_id_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/id_input_border"
@@ -59,7 +59,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btn_change_doctor_id_dialog_cancel"
+                    android:id="@+id/btn_change_dept_id_dialog_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -68,7 +68,7 @@
                     android:textSize="30sp" />
 
                 <Button
-                    android:id="@+id/btn_change_doctor_id_dialog_save"
+                    android:id="@+id/btn_change_dept_id_dialog_save"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"

@@ -21,6 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/org_id"
+                android:textColor="@color/black"
                 android:textSize="40sp"
                 />
 
@@ -45,6 +46,7 @@
                     android:background="@drawable/id_input_border"
                     android:padding="20dp"
                     android:inputType="number"
+                    android:textColor="@color/black"
                     android:singleLine="true"
                     android:textSize="24sp" />
 

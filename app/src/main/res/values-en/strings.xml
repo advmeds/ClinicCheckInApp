@@ -83,6 +83,8 @@
         <item>@string/org_id</item>
         <item>@string/doctor_id</item>
         <item>@string/room_id</item>
+        <item>@string/dept_id</item>
+        <item>@string/queueing_board_setting</item>
     </string-array>
 
     <!-- Settings Dialogs -->
@@ -91,6 +93,8 @@
     <string name="dialog_save_button">Save</string>
     <string name="dialog_id_label">ID</string>
     <string name="dialog_description">To enter multiple ID, use commas to separate eahc ID.</string>
+    <string name="dialog_enable_label">Enable</string>
+    <string name="dialog_url_label">URL</string>
 
     <!-- Service Domain -->
     <string name="server_domain">Service Domain</string>
@@ -98,7 +102,6 @@
     <string name="domain_service_official_site">Official Site</string>
     <string name="domain_service_testing_site">Testing Site</string>
     <string name="domain_service_customize">Customize</string>
-    <string name="domain_service_url_label">URL</string>
 
     <!-- Change Clinic Id Dialog  -->
     <string name="org_id">Clinic ID</string>
@@ -108,4 +111,10 @@
 
     <!-- Change Room Id Dialog -->
     <string name="room_id">Room ID</string>
+
+    <!-- Change Dept Id Dialog -->
+    <string name="dept_id">Dept. ID</string>
+
+    <!-- Queueing Board Setting -->
+    <string name="queueing_board_setting">Queueing Board Setting</string>
 </resources>

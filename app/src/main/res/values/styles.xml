@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ExposedDropdownMenuGray" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxStrokeWidth">4dp</item>
+        <item name="cardCornerRadius">10dp</item>
+        <item name="boxStrokeColor">#E0E0E0</item>
+        <item name="boxBackgroundColor">#fff</item>
+    </style>
+    
+    
+</resources>

@@ -21,6 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/server_domain"
+                android:textColor="@color/black"
                 android:textSize="40sp"
                 />
 
@@ -40,6 +41,7 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:textSize="24sp"
+                        android:textColor="@color/black"
                         android:text="@string/domain_service_official_site"/>
 
                     <RadioButton
@@ -48,6 +50,7 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:textSize="24sp"
+                        android:textColor="@color/black"
                         android:text="@string/domain_service_testing_site"/>
 
                     <RadioButton
@@ -56,6 +59,7 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:textSize="24sp"
+                        android:textColor="@color/black"
                         android:text="@string/domain_service_customize"/>
 
                 </RadioGroup>
@@ -72,7 +76,7 @@
                     android:layout_marginVertical="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/domain_service_url_label"
+                    android:text="@string/dialog_url_label"
                     android:textColor="@color/colorPrimary"
                     android:textSize="24sp"
                     />
@@ -85,7 +89,8 @@
                     android:hint="@string/customize_url_hint"
                     android:padding="20dp"
                     android:singleLine="true"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    android:textColor="@color/black"/>
 
             </LinearLayout>
 
