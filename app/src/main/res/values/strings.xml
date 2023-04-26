@@ -86,6 +86,7 @@
         <item>@string/room_id</item>
         <item>@string/dept_id</item>
         <item>@string/queueing_board_setting</item>
+        <item>@string/queueing_machine_setting</item>
     </string-array>
 
     <!-- Settings Dialogs -->
@@ -118,4 +119,13 @@
 
     <!-- Queueing Board Setting -->
     <string name="queueing_board_setting">Queueing Board Setting</string>
+    <string name="qbs_screen_rotation">Screen Rotation</string>
+
+    <!-- Queueing Machine Setting -->
+    <string name="queueing_machine_setting">Queueing Machine Setting</string>
+    <string name="qms_ticket_information">Ticket Information</string>
+    <string name="qms_time_label">Time</string>
+    <string name="qms_dept_label">Dept.</string>
+    <string name="qms_doctor_label">Doctor</string>
+    <string name="qms_organization_label">Organization</string>
 </resources>

@@ -37,6 +37,7 @@ import kotlinx.android.synthetic.main.change_doctor_id_dialog.*
 import kotlinx.android.synthetic.main.change_domain_dialog.*
 import kotlinx.android.synthetic.main.change_room_id_dialog.*
 import kotlinx.android.synthetic.main.queueing_board_setting_dialog.*
+import kotlinx.android.synthetic.main.queueing_machine_setting_dialog.*
 import kotlinx.android.synthetic.main.settings_dialog.*
 import okhttp3.HttpUrl
 
@@ -132,6 +133,7 @@ class HomeFragment : Fragment() {
                     3 -> onSetRoomIDItemClicked()
                     4 -> onSetDeptIDItemClicked()
                     5 -> onSetQueueingBoardSettingItemClicked()
+                    6 -> onSetQueueingMachineSettingItemClicked()
                 }
             }
 
@@ -370,6 +372,42 @@ class HomeFragment : Fragment() {
             val domain = dialog.et_qbs_irl_input.text.toString()
             dialog.dismiss()
 
+        }
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun onSetQueueingMachineSettingItemClicked() {
+
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.queueing_machine_setting_dialog)
+
+        if (dialog.window == null)
+            return
+
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+        dialog.queueing_machine_setting_switcher.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked)
+                dialog.queueing_machine_setting_container.visibility = View.VISIBLE
+            else
+                dialog.queueing_machine_setting_container.visibility = View.GONE
+        }
+
+        //dialog.et_clinic_id_input.setText(viewModel.orgId)
+
+        val saveButton = dialog.btn_qms_dialog_save
+        val cancelButton = dialog.btn_qms_dialog_cancel
+
+        saveButton.setOnClickListener {
+            val domain = dialog.et_qbs_irl_input.text.toString()
+            dialog.dismiss()
         }
 
         cancelButton.setOnClickListener {
