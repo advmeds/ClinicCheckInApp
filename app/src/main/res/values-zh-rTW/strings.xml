@@ -46,6 +46,7 @@
 
     <string name="fail_to_make_appointment">掛號失敗</string>
 
+
     <string name="no_internet">需要有網路連線，請確認。</string>
     <string name="service_timeout">伺服器連線逾時，請確認。</string>
 
@@ -90,7 +91,7 @@
     </string-array>
 
     <!-- Settings Dialogs -->
-    <string name="setting">Setting</string>
+    <string name="setting">設定</string>
     <string name="dialog_cancel_button">Cancel</string>
     <string name="dialog_save_button">Save</string>
     <string name="dialog_id_label">ID</string>
@@ -98,15 +99,15 @@
     <string name="dialog_enable_label">Enable</string>
     <string name="dialog_url_label">URL</string>
 
-    <!-- Service Domain -->
-    <string name="server_domain">Service Domain</string>
+    <!-- Service Domain Dialog -->
+    <string name="server_domain">伺服器網域</string>
     <string name="customize_url_hint">http://example.com</string>
     <string name="domain_service_official_site">Official Site</string>
     <string name="domain_service_testing_site">Testing Site</string>
     <string name="domain_service_customize">Customize</string>
 
     <!-- Change Clinic Id Dialog  -->
-    <string name="org_id">Clinic ID</string>
+    <string name="org_id">機構代碼</string>
 
     <!-- Change Doctor Id Dialog -->
     <string name="doctor_id">Doctor ID</string>
@@ -134,11 +135,12 @@
     <string name="version_setting_dialog_select_version_label">Select Version</string>
     <string name="version_setting_dialog_select_language_label">Select Language</string>
 
-    <string name="zh_tw_language">Traditional Chinese</string>
-    <string name="en_language">English</string>
+    <string name="zh_tw_language">繁體中文</string>
+    <string name="en_language">英语语言(en)</string>
 
     <string-array name="language_items">
         <item>@string/zh_tw_language</item>
         <item>@string/en_language</item>
     </string-array>
+
 </resources>

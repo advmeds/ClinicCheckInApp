@@ -45,8 +45,6 @@
     <string name="fail_to_make_appointment">掛號失敗</string>
 
 
-
-
     <string name="no_internet">需要有網路連線，請確認。</string>
     <string name="service_timeout">伺服器連線逾時，請確認。</string>
 
@@ -67,7 +65,7 @@
 
     <string name="id_is_invalid_title">id is invalid</string>
     <string name="id_is_invalid_message">please, check id again, it may have error</string>
-    
+
     <string name="home_page_card_info_label">請直接插入%s取號</string>
     <string name="home_page_card_info_label_arg">健保卡</string>
 
@@ -87,6 +85,7 @@
         <item>@string/dept_id</item>
         <item>@string/queueing_board_setting</item>
         <item>@string/queueing_machine_setting</item>
+        <item>@string/version_setting</item>
     </string-array>
 
     <!-- Settings Dialogs -->
@@ -119,7 +118,7 @@
 
     <!-- Queueing Board Setting -->
     <string name="queueing_board_setting">Queueing Board Setting</string>
-    <string name="qbs_screen_rotation">Screen Rotation</string>
+    <string name="qbs_screen_rotation_label">Screen Rotation</string>
 
     <!-- Queueing Machine Setting -->
     <string name="queueing_machine_setting">Queueing Machine Setting</string>
@@ -128,4 +127,17 @@
     <string name="qms_dept_label">Dept.</string>
     <string name="qms_doctor_label">Doctor</string>
     <string name="qms_organization_label">Organization</string>
+
+    <!-- Version Setting -->
+    <string name="version_setting">Version Setting</string>
+    <string name="version_setting_dialog_select_version_label">Select Version</string>
+    <string name="version_setting_dialog_select_language_label">Select Language</string>
+
+    <string name="zh_tw_language">繁體中文</string>
+    <string name="en_language">English</string>
+
+    <string-array name="language_items">
+        <item>@string/zh_tw_language</item>
+        <item>@string/en_language</item>
+    </string-array>
 </resources>

@@ -16,7 +16,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.RadioGroup
 import androidx.appcompat.app.AlertDialog
@@ -30,6 +30,7 @@ import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.inputPage.InputPageFragment
+import com.advmeds.cliniccheckinapp.utils.Converter
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import kotlinx.android.synthetic.main.change_clinic_id_dialog.*
 import kotlinx.android.synthetic.main.change_dept_id_dialog.*
@@ -39,6 +40,7 @@ import kotlinx.android.synthetic.main.change_room_id_dialog.*
 import kotlinx.android.synthetic.main.queueing_board_setting_dialog.*
 import kotlinx.android.synthetic.main.queueing_machine_setting_dialog.*
 import kotlinx.android.synthetic.main.settings_dialog.*
+import kotlinx.android.synthetic.main.version_setting_dialog.*
 import okhttp3.HttpUrl
 
 
@@ -134,6 +136,7 @@ class HomeFragment : Fragment() {
                     4 -> onSetDeptIDItemClicked()
                     5 -> onSetQueueingBoardSettingItemClicked()
                     6 -> onSetQueueingMachineSettingItemClicked()
+                    7 -> onSetVersionSettingItemClicked()
                 }
             }
 
@@ -407,6 +410,80 @@ class HomeFragment : Fragment() {
 
         saveButton.setOnClickListener {
             val domain = dialog.et_qbs_irl_input.text.toString()
+            dialog.dismiss()
+        }
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun onSetVersionSettingItemClicked() {
+
+        val items = arrayOf("1.0", "2.0", "3.0")
+        var currentLanguage = viewModel.language
+        var currentVersion = items[0]
+
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.version_setting_dialog)
+
+        if (dialog.window == null)
+            return
+
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        // language setting
+        val languageDropDownAdapter =
+            ArrayAdapter(
+                requireContext(),
+                R.layout.support_simple_spinner_dropdown_item,
+                resources.getStringArray(R.array.language_items)
+            )
+
+        dialog.version_setting_select_language_tv.setAdapter(languageDropDownAdapter)
+
+        dialog.version_setting_select_language_tv.setText(
+            Converter.language_lang_code_to_name(
+                requireContext(),
+                viewModel.language
+            ), false
+        )
+
+        dialog.version_setting_select_language_tv.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, _, position, _ ->
+                val item = parent.getItemAtPosition(position).toString()
+                currentLanguage = Converter.language_name_to_lang_code(requireContext(), item)
+            }
+
+        // version setting
+        val versionDropDownAdapter =
+            ArrayAdapter(
+                requireContext(),
+                R.layout.support_simple_spinner_dropdown_item,
+                items
+            )
+
+        dialog.version_setting_select_version_tv.setAdapter(versionDropDownAdapter)
+        dialog.version_setting_select_version_tv.setText(currentVersion, false)
+
+        dialog.version_setting_select_version_tv.onItemClickListener =
+            AdapterView.OnItemClickListener{ parent, _, position, _ ->
+                val item = parent.getItemAtPosition(position).toString()
+                currentVersion = item
+            }
+
+        val saveButton = dialog.btn_version_setting_dialog_save
+        val cancelButton = dialog.btn_version_setting_dialog_cancel
+
+        saveButton.setOnClickListener {
+            if (currentLanguage != viewModel.language) {
+                (requireActivity() as MainActivity).setLanguage(language = currentLanguage)
+                viewModel.language = currentLanguage
+            }
+
             dialog.dismiss()
         }
 

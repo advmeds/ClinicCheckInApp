@@ -20,4 +20,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         set(value) {
             sharedPreferencesRepo.orgId = value
         }
+
+    var language: String
+        get() = sharedPreferencesRepo.language
+        set(value) {
+            sharedPreferencesRepo.language = value
+        }
 }
