@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <dimen name="text_size_subhead_material">20sp</dimen>
     <dimen name="setting_dialog_width">780dp</dimen>
 
@@ -22,4 +23,5 @@
     <dimen name="home_page_card_info_text_size">60sp</dimen>
     <dimen name="home_page_manually_input_text_size">40sp</dimen>
     <dimen name="home_page_pcu_check_text_size">40sp</dimen>
+
 </resources>
