@@ -24,28 +24,26 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/logo_imageView"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/logo_image_width"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
                 android:layout_marginTop="@dimen/logo_image_margin"
                 android:layout_marginBottom="@dimen/logo_image_margin"
-                android:minWidth="@dimen/logo_image_min_width"
-                android:minHeight="@dimen/logo_image_min_height"
                 app:srcCompat="@drawable/clinic_logo_default" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="40dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:fontFamily="sans-serif-medium"
-                android:gravity="center"
+                android:gravity="start"
+                android:layout_gravity="center"
                 android:lines="1"
                 android:text="@string/app_name_title_in_home_fragment"
                 android:textColor="@color/colorPrimary"
@@ -61,7 +59,7 @@
         android:layout_height="0dp"
         android:layout_weight="4"
         android:orientation="horizontal"
-        android:layout_margin="@dimen/home_screen_panel_margin">
+        android:layout_margin="@dimen/screen_panel_margin">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_info_view"

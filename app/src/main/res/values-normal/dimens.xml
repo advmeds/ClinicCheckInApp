@@ -4,22 +4,50 @@
     <dimen name="setting_dialog_width">780dp</dimen>
 
     <dimen name="screen_padding">7dp</dimen>
+    <dimen name="screen_panel_margin">7dp</dimen>
 
     <!-- Logo -->
     <dimen name="logo_margin">7dp</dimen>
 
     <!-- Logo image -->
+    <dimen name="logo_image_width">255dp</dimen>
     <dimen name="logo_image_margin">10dp</dimen>
-    <dimen name="logo_image_min_width">200dp</dimen>
+    <dimen name="logo_image_min_width">50dp</dimen>
     <dimen name="logo_image_min_height">150dp</dimen>
 
     <!-- Logo text -->
     <dimen name="logo_text_size">40sp</dimen>
 
     <!-- Home Page -->
-    <dimen name="home_screen_panel_margin">7dp</dimen>
     <dimen name="home_screen_panel_distance_between_elements">7dp</dimen>
     <dimen name="home_page_card_info_text_size">35sp</dimen>
     <dimen name="home_page_manually_input_text_size">20sp</dimen>
     <dimen name="home_page_pcu_check_text_size">20sp</dimen>
+
+    <!-- Input Page -->
+    <dimen name="input_page_panel_title">15sp</dimen>
+    <dimen name="input_page_input_title_top_margin">10dp</dimen>
+
+    <dimen name="input_page_input_text_size">15sp</dimen>
+    <dimen name="input_page_input_et_vertical_margin">5dp</dimen>
+    <dimen name="input_page_input_et_horizontal_margin">10dp</dimen>
+    <dimen name="input_page_input_et_padding">15dp</dimen>
+
+    <dimen name="input_page_back_to_home_button_text_size">15sp</dimen>
+    <dimen name="input_page_back_to_home_horizontal_padding">15dp</dimen>
+    <dimen name="input_page_back_to_home_vertical_padding">0dp</dimen>
+    <dimen name="input_page_back_to_home_margin">0dp</dimen>
+
+    <dimen name="input_page_keyboard_padding">0dp</dimen>
+
+    <dimen name="input_page_key_text_size">15sp</dimen>
+
+    <dimen name="input_page_clear_symbol_button_image_width">15dp</dimen>
+    <dimen name="input_page_clear_symbol_button_image_height">15dp</dimen>
+    <dimen name="input_page_clear_symbol_button_label_text_size">10sp</dimen>
+
+    <dimen name="input_page_enter_button_image_width">15dp</dimen>
+    <dimen name="input_page_enter_button_image_height">15dp</dimen>
+    <dimen name="input_page_enter_button_label_text_size">10sp</dimen>
+
 </resources>
