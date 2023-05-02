@@ -50,4 +50,43 @@
     <dimen name="input_page_enter_button_image_height">15dp</dimen>
     <dimen name="input_page_enter_button_label_text_size">10sp</dimen>
 
+    <!-- Success dialog -->
+    <dimen name="success_dialog_screen_padding">100dp</dimen>
+
+    <dimen name="success_dialog_panel_padding">30dp</dimen>
+
+    <dimen name="success_dialog_check_circle_image_width">60dp</dimen>
+    <dimen name="success_dialog_check_circle_image_height">60dp</dimen>
+    <dimen name="success_dialog_check_circle_image_bottom_margin">20dp</dimen>
+
+    <dimen name="success_dialog_title_text_size">40sp</dimen>
+    <dimen name="success_dialog_title_bottom_margin">20dp</dimen>
+
+    <dimen name="success_dialog_message_text_size">30sp</dimen>
+
+    <!-- Error dialog -->
+    <dimen name="error_dialog_screen_padding">100dp</dimen>
+
+    <dimen name="error_dialog_panel_padding">30dp</dimen>
+
+    <dimen name="error_dialog_error_image_width">60dp</dimen>
+    <dimen name="error_dialog_error_image_height">60dp</dimen>
+    <dimen name="error_dialog_error_image_bottom_margin">10dp</dimen>
+
+    <dimen name="error_dialog_title_text_size">40sp</dimen>
+    <dimen name="error_dialog_title_bottom_margin">20dp</dimen>
+
+    <dimen name="error_dialog_message_text_size">20sp</dimen>
+
+    <dimen name="error_dialog_button_text_size">15sp</dimen>
+    <dimen name="error_dialog_button_top_margin">20dp</dimen>
+    <dimen name="error_dialog_button_horizontal_padding">60dp</dimen>
+    <dimen name="error_dialog_button_vertical_padding">15dp</dimen>
+
+    <!-- Checking dialog -->
+    <dimen name="checking_dialog_change_circle_image_width">60dp</dimen>
+    <dimen name="checking_dialog_change_circle_image_height">60dp</dimen>
+    <dimen name="checking_dialog_title_top_margin">20dp</dimen>
+    <dimen name="checking_dialog_title_text_size">40sp</dimen>
+
 </resources>
