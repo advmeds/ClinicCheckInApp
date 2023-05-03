@@ -51,43 +51,111 @@
     <dimen name="input_page_enter_button_label_text_size">28sp</dimen>
     <dimen name="input_page_alphabet_part">10dp</dimen>
 
+
+    <!-- Dialog -->
+    <dimen name="dialog_screen_padding">146dp</dimen>
+
+    <dimen name="dialog_panel_padding">80dp</dimen>
+    <dimen name="dialog_panel_horizontal_padding">40dp</dimen>
+    <dimen name="dialog_panel_vertical_padding">@dimen/dialog_panel_padding</dimen>
+
+    <dimen name="dialog_image_width">150dp</dimen>
+    <dimen name="dialog_image_height">150dp</dimen>
+    <dimen name="dialog_image_bottom_margin">40dp</dimen>
+
+    <dimen name="dialog_title_text_size">72sp</dimen>
+    <dimen name="dialog_title_bottom_margin">40dp</dimen>
+
+    <dimen name="dialog_message_text_size">48sp</dimen>
+
+    <dimen name="dialog_button_text_size">40sp</dimen>
+    <dimen name="dialog_button_horizontal_padding">120dp</dimen>
+    <dimen name="dialog_button_vertical_padding">24dp</dimen>
+
     <!-- Success dialog -->
-    <dimen name="success_dialog_screen_padding">146dp</dimen>
+    <dimen name="success_dialog_screen_padding">@dimen/dialog_screen_padding</dimen>
 
-    <dimen name="success_dialog_panel_padding">80dp</dimen>
+    <dimen name="success_dialog_panel_padding">@dimen/dialog_panel_padding</dimen>
 
-    <dimen name="success_dialog_check_circle_image_width">150dp</dimen>
-    <dimen name="success_dialog_check_circle_image_height">150dp</dimen>
-    <dimen name="success_dialog_check_circle_image_bottom_margin">40dp</dimen>
+    <dimen name="success_dialog_check_circle_image_width">@dimen/dialog_image_width</dimen>
+    <dimen name="success_dialog_check_circle_image_height">@dimen/dialog_image_height</dimen>
+    <dimen name="success_dialog_check_circle_image_bottom_margin">@dimen/dialog_image_bottom_margin</dimen>
 
-    <dimen name="success_dialog_title_text_size">72sp</dimen>
-    <dimen name="success_dialog_title_bottom_margin">40dp</dimen>
+    <dimen name="success_dialog_title_text_size">@dimen/dialog_title_text_size</dimen>
+    <dimen name="success_dialog_title_bottom_margin">@dimen/dialog_title_bottom_margin</dimen>
 
-    <dimen name="success_dialog_message_text_size">48sp</dimen>
+    <dimen name="success_dialog_message_text_size">@dimen/dialog_message_text_size</dimen>
 
     <!-- Error dialog -->
-    <dimen name="error_dialog_screen_padding">146dp</dimen>
+    <dimen name="error_dialog_screen_padding">@dimen/dialog_screen_padding</dimen>
 
-    <dimen name="error_dialog_panel_padding">80dp</dimen>
+    <dimen name="error_dialog_panel_padding">@dimen/dialog_panel_padding</dimen>
 
-    <dimen name="error_dialog_error_image_width">150dp</dimen>
-    <dimen name="error_dialog_error_image_height">150dp</dimen>
-    <dimen name="error_dialog_error_image_bottom_margin">40dp</dimen>
+    <dimen name="error_dialog_error_image_width">@dimen/dialog_image_width</dimen>
+    <dimen name="error_dialog_error_image_height">@dimen/dialog_image_height</dimen>
+    <dimen name="error_dialog_error_image_bottom_margin">@dimen/dialog_image_bottom_margin</dimen>
 
-    <dimen name="error_dialog_title_bottom_margin">40dp</dimen>
-    <dimen name="error_dialog_title_text_size">72sp</dimen>
+    <dimen name="error_dialog_title_bottom_margin">@dimen/dialog_title_bottom_margin</dimen>
+    <dimen name="error_dialog_title_text_size">@dimen/dialog_title_text_size</dimen>
 
-    <dimen name="error_dialog_message_text_size">48sp</dimen>
+    <dimen name="error_dialog_message_text_size">@dimen/dialog_message_text_size</dimen>
 
-    <dimen name="error_dialog_button_text_size">40sp</dimen>
+    <dimen name="error_dialog_button_text_size">@dimen/dialog_button_text_size</dimen>
     <dimen name="error_dialog_button_top_margin">40dp</dimen>
-    <dimen name="error_dialog_button_horizontal_padding">120dp</dimen>
-    <dimen name="error_dialog_button_vertical_padding">24dp</dimen>
+    <dimen name="error_dialog_button_horizontal_padding">@dimen/dialog_button_horizontal_padding</dimen>
+    <dimen name="error_dialog_button_vertical_padding">@dimen/dialog_button_vertical_padding</dimen>
+
 
     <!-- Checking dialog -->
-    <dimen name="checking_dialog_change_circle_image_width">150dp</dimen>
-    <dimen name="checking_dialog_change_circle_image_height">150dp</dimen>
-    <dimen name="checking_dialog_title_top_margin">40dp</dimen>
-    <dimen name="checking_dialog_title_text_size">72sp</dimen>
+    <dimen name="checking_dialog_panel_padding">@dimen/dialog_panel_padding</dimen>
+
+    <dimen name="checking_dialog_change_circle_image_width">@dimen/dialog_image_width</dimen>
+    <dimen name="checking_dialog_change_circle_image_height">@dimen/dialog_image_height</dimen>
+
+    <dimen name="checking_dialog_title_top_margin">@dimen/dialog_title_bottom_margin</dimen>
+    <dimen name="checking_dialog_title_text_size">@dimen/dialog_title_text_size</dimen>
+
+    <!-- Check in dialog -->
+    <dimen name="check_in_dialog_screen_padding">@dimen/dialog_screen_padding</dimen>
+
+    <dimen name="check_in_dialog_panel_horizontal_padding">@dimen/dialog_panel_horizontal_padding</dimen>
+    <dimen name="check_in_dialog_panel_vertical_padding">@dimen/dialog_panel_vertical_padding</dimen>
+
+    <dimen name="check_in_dialog_how_to_reg_image_width">@dimen/dialog_image_width</dimen>
+    <dimen name="check_in_dialog_how_to_reg_image_height">@dimen/dialog_image_height</dimen>
+    <dimen name="check_in_dialog_how_to_reg_image_bottom_margin">@dimen/dialog_image_bottom_margin</dimen>
+
+    <dimen name="check_in_dialog_title_text_size">@dimen/dialog_title_text_size</dimen>
+    <dimen name="check_in_dialog_title_bottom_margin">@dimen/dialog_title_bottom_margin</dimen>
+
+    <dimen name="check_in_dialog_message_text_size">@dimen/dialog_message_text_size</dimen>
+    <dimen name="check_in_dialog_message_bottom_margin">40dp</dimen>
+
+    <dimen name="check_in_dialog_button_text_size">@dimen/dialog_button_text_size</dimen>
+    <dimen name="check_in_dialog_button_horizontal_padding">@dimen/dialog_button_horizontal_padding</dimen>
+    <dimen name="check_in_dialog_button_vertical_padding">@dimen/dialog_button_vertical_padding</dimen>
+
+    <!-- Schedules dialog -->
+    <dimen name="schedules_dialog_screen_padding">@dimen/dialog_screen_padding</dimen>
+
+    <dimen name="schedules_dialog_panel_horizontal_padding">@dimen/dialog_panel_horizontal_padding</dimen>
+    <dimen name="schedules_dialog_panel_vertical_padding">@dimen/dialog_panel_vertical_padding</dimen>
+
+    <dimen name="schedules_dialog_schedules_image_width">@dimen/dialog_image_width</dimen>
+    <dimen name="schedules_dialog_schedules_image_height">@dimen/dialog_image_height</dimen>
+    <dimen name="schedules_dialog_schedules_image_bottom_margin">@dimen/dialog_image_bottom_margin</dimen>
+
+    <dimen name="schedules_dialog_title_text_size">@dimen/dialog_title_text_size</dimen>
+    <dimen name="schedules_dialog_title_bottom_margin">@dimen/dialog_title_bottom_margin</dimen>
+
+    <dimen name="schedules_dialog_button_text_size">@dimen/dialog_button_text_size</dimen>
+    <dimen name="schedules_dialog_button_horizontal_padding">@dimen/dialog_button_horizontal_padding</dimen>
+    <dimen name="schedules_dialog_button_vertical_padding">@dimen/dialog_button_vertical_padding</dimen>
+
+    <dimen name="schedules_dialog_recycler_bottom_margin">40dp</dimen>
+    <dimen name="schedules_dialog_recycler_padding">20dp</dimen>
+    <dimen name="schedules_dialog_recycler_item_padding">24dp</dimen>
+    <dimen name="schedules_dialog_recycler_item_text_size">40sp</dimen>
+    <dimen name="schedules_dialog_recycler_item_margin">20dp</dimen>
 
 </resources>
