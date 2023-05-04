@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="text_size_subhead_material">20sp</dimen>
-    <dimen name="setting_dialog_width">780dp</dimen>
 
     <dimen name="screen_padding">7dp</dimen>
     <dimen name="screen_panel_margin">7dp</dimen>
@@ -87,7 +85,6 @@
 
     <dimen name="success_dialog_message_text_size">@dimen/dialog_message_text_size</dimen>
 
-
     <!-- Error dialog -->
     <dimen name="error_dialog_screen_padding">@dimen/dialog_screen_padding</dimen>
 
@@ -142,12 +139,14 @@
     <!-- Schedules dialog -->
     <dimen name="schedules_dialog_screen_padding">@dimen/dialog_screen_padding</dimen>
 
-    <dimen name="schedules_dialog_panel_horizontal_padding">@dimen/dialog_panel_horizontal_padding</dimen>
+    <dimen name="schedules_dialog_panel_horizontal_padding">@dimen/dialog_panel_horizontal_padding
+    </dimen>
     <dimen name="schedules_dialog_panel_vertical_padding">@dimen/dialog_panel_padding</dimen>
 
     <dimen name="schedules_dialog_schedules_image_width">@dimen/dialog_image_width</dimen>
     <dimen name="schedules_dialog_schedules_image_height">@dimen/dialog_image_height</dimen>
-    <dimen name="schedules_dialog_schedules_image_bottom_margin">@dimen/dialog_image_bottom_margin</dimen>
+    <dimen name="schedules_dialog_schedules_image_bottom_margin">@dimen/dialog_image_bottom_margin
+    </dimen>
 
     <dimen name="schedules_dialog_title_text_size">@dimen/dialog_title_text_size</dimen>
     <dimen name="schedules_dialog_title_bottom_margin">10dp</dimen>
@@ -157,4 +156,47 @@
     <dimen name="schedules_dialog_recycler_item_padding">5dp</dimen>
     <dimen name="schedules_dialog_recycler_item_text_size">13sp</dimen>
     <dimen name="schedules_dialog_recycler_item_margin">10dp</dimen>
+
+
+    <!-- Dialog(settings, change clinic id, change domain, doctor id, room id, dept id,
+         queueing board setting, queueing machine setting, version setting)  -->
+    <dimen name="setting_dialog_width">500dp</dimen>
+
+
+    <dimen name="setting_dialog_content_margin">20dp</dimen>
+
+    <dimen name="setting_dialog_title_text_size">20sp</dimen>
+    <dimen name="setting_dialog_title_vertical_margin">10dp</dimen>
+
+    <dimen name="setting_dialog_sub_title_text_size">16sp</dimen>
+
+    <dimen name="setting_dialog_description_text_size">16sp</dimen>
+    <dimen name="setting_dialog_description_vertical_margin">10dp</dimen>
+
+    <dimen name="setting_dialog_list_item_text_size">16sp</dimen>
+
+    <dimen name="setting_dialog_input_text_hint_text_size">16sp</dimen>
+
+    <dimen name="setting_dialog_dialog_input_text_size">16sp</dimen>
+    <dimen name="setting_dialog_dialog_input_padding">15dp</dimen>
+
+    <dimen name="setting_dialog_dialog_button_text_size">15sp</dimen>
+    <dimen name="setting_dialog_bottom_margin">30dp</dimen>
+
+    <dimen name="setting_dialog_radio_group_padding">10dp</dimen>
+    <dimen name="setting_dialog_radio_item_text_size">16sp</dimen>
+
+    <dimen name="setting_dialog_switcher_label_text_size">16sp</dimen>
+    <item name="setting_dialog_switcher_scale" format="float" type="dimen">1.0</item>
+    <dimen name="setting_dialog_switcher_content_top_margin">10dp</dimen>
+
+    <dimen name="setting_dialog_dropdown_text_size">16sp</dimen>
+
+    <item name="setting_dialog_check_box_scale" format="float" type="dimen">1.0</item>
+    <dimen name="setting_dialog_check_box_text_size">16sp</dimen>
+    <dimen name="setting_dialog_check_box_margin_top">5dp</dimen>
+    <dimen name="setting_dialog_check_box_margin_bottom">5dp</dimen>
+    <dimen name="setting_dialog_check_box_margin_start">15dp</dimen>
+    <dimen name="setting_dialog_check_box_margin_end">-10dp</dimen>
+
 </resources>

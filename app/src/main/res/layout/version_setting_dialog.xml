@@ -14,11 +14,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="30dp"
+                android:layout_margin="@dimen/setting_dialog_content_margin"
                 android:orientation="vertical">
 
                 <TextView
@@ -26,7 +25,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/version_setting"
                     android:textColor="@color/black"
-                    android:textSize="40sp" />
+                    android:textSize="@dimen/setting_dialog_title_text_size"/>
 
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -40,7 +39,7 @@
                         android:layout_marginVertical="20dp"
                         android:text="@string/version_setting_dialog_select_version_label"
                         android:textColor="@color/black"
-                        android:textSize="24sp" />
+                        android:textSize="@dimen/setting_dialog_sub_title_text_size" />
 
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -58,7 +57,7 @@
                             android:id="@+id/version_setting_select_version_tv"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/setting_dialog_dropdown_text_size"
                             android:clickable="false"
                             android:cursorVisible="false"
                             android:focusable="false"
@@ -80,7 +79,7 @@
                         android:layout_marginVertical="20dp"
                         android:text="@string/version_setting_dialog_select_language_label"
                         android:textColor="@color/black"
-                        android:textSize="24sp" />
+                        android:textSize="@dimen/setting_dialog_sub_title_text_size" />
 
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -99,7 +98,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:clickable="false"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/setting_dialog_dropdown_text_size"
                             android:cursorVisible="false"
                             android:focusable="false"
                             android:inputType="none" />
@@ -114,6 +113,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:layout_marginBottom="@dimen/setting_dialog_bottom_margin"
                     android:gravity="end"
                     android:orientation="horizontal">
 
@@ -124,7 +124,7 @@
                         android:background="@android:color/transparent"
                         android:text="@string/dialog_cancel_button"
                         android:textColor="@color/red"
-                        android:textSize="30sp" />
+                        android:textSize="@dimen/setting_dialog_dialog_button_text_size"/>
 
                     <Button
                         android:id="@+id/btn_version_setting_dialog_save"
@@ -133,7 +133,7 @@
                         android:background="@android:color/transparent"
                         android:text="@string/dialog_save_button"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="30sp" />
+                        android:textSize="@dimen/setting_dialog_dialog_button_text_size"/>
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 

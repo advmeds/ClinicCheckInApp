@@ -140,4 +140,6 @@
         <item>@string/zh_tw_language</item>
         <item>@string/en_language</item>
     </string-array>
+
+    <string name="scale" translatable="false">2</string>
 </resources>

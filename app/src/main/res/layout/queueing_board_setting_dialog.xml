@@ -14,11 +14,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="30dp"
+                android:layout_margin="@dimen/setting_dialog_content_margin"
                 android:orientation="vertical">
 
                 <TextView
@@ -26,31 +25,31 @@
                     android:layout_height="wrap_content"
                     android:text="@string/queueing_board_setting"
                     android:textColor="@color/black"
-                    android:textSize="40sp" />
+                    android:textSize="@dimen/setting_dialog_title_text_size"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
+                    android:layout_marginVertical="@dimen/setting_dialog_switcher_content_top_margin"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="20dp"
                         android:text="@string/dialog_enable_label"
                         android:textColor="@color/black"
-                        android:textSize="24sp" />
+                        android:textSize="@dimen/setting_dialog_switcher_label_text_size" />
 
 
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/queueing_board_setting_switcher"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="20dp"
+                        android:layout_marginHorizontal="20dp"
                         android:saveEnabled="true"
-                        android:scaleX="2"
-                        android:scaleY="2" />
+                        android:scaleX="@dimen/setting_dialog_switcher_scale"
+                        android:scaleY="@dimen/setting_dialog_switcher_scale" />
 
                 </LinearLayout>
 
@@ -70,10 +69,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginVertical="20dp"
+                            android:layout_marginVertical="@dimen/setting_dialog_title_vertical_margin"
                             android:text="@string/qbs_screen_rotation_label"
                             android:textColor="@color/black"
-                            android:textSize="24sp" />
+                            android:textSize="@dimen/setting_dialog_sub_title_text_size" />
 
                         <androidx.appcompat.widget.LinearLayoutCompat
                             android:layout_width="match_parent"
@@ -95,6 +94,7 @@
                                     android:id="@+id/queueing_board_setting_auto_complete_tv"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:textSize="@dimen/setting_dialog_dropdown_text_size"
                                     android:clickable="false"
                                     android:cursorVisible="false"
                                     android:focusable="false"
@@ -117,22 +117,24 @@
                         android:layout_marginVertical="10dp"
                         android:text="@string/dialog_url_label"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="24sp" />
+                        android:textSize="@dimen/setting_dialog_input_text_hint_text_size" />
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_qbs_irl_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/id_input_border"
-                        android:padding="20dp"
+                        android:padding="@dimen/setting_dialog_dialog_input_padding"
                         android:singleLine="true"
-                        android:textSize="24sp" />
+                        android:textSize="@dimen/setting_dialog_dialog_input_text_size"
+                        android:textColor="@color/black"/>
 
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
+                        android:layout_marginBottom="@dimen/setting_dialog_bottom_margin"
                         android:gravity="end"
                         android:orientation="horizontal">
 
@@ -143,7 +145,7 @@
                             android:background="@android:color/transparent"
                             android:text="@string/dialog_cancel_button"
                             android:textColor="@color/red"
-                            android:textSize="30sp" />
+                            android:textSize="@dimen/setting_dialog_dialog_button_text_size"/>
 
                         <Button
                             android:id="@+id/btn_qbs_dialog_save"
@@ -152,7 +154,7 @@
                             android:background="@android:color/transparent"
                             android:text="@string/dialog_save_button"
                             android:textColor="@color/colorPrimary"
-                            android:textSize="30sp" />
+                            android:textSize="@dimen/setting_dialog_dialog_button_text_size" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

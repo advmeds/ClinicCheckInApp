@@ -17,7 +17,7 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="30dp"
+                android:layout_margin="@dimen/setting_dialog_content_margin"
                 android:orientation="vertical">
 
                 <TextView
@@ -25,31 +25,31 @@
                     android:layout_height="wrap_content"
                     android:text="@string/queueing_machine_setting"
                     android:textColor="@color/black"
-                    android:textSize="40sp" />
+                    android:textSize="@dimen/setting_dialog_title_text_size" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
+                    android:layout_marginVertical="@dimen/setting_dialog_switcher_content_top_margin"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="20dp"
                         android:text="@string/dialog_enable_label"
                         android:textColor="@color/black"
-                        android:textSize="24sp" />
+                        android:textSize="@dimen/setting_dialog_switcher_label_text_size" />
 
 
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/queueing_machine_setting_switcher"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="20dp"
+                        android:layout_marginHorizontal="20dp"
                         android:saveEnabled="true"
-                        android:scaleX="2"
-                        android:scaleY="2" />
+                        android:scaleX="@dimen/setting_dialog_switcher_scale"
+                        android:scaleY="@dimen/setting_dialog_switcher_scale" />
 
                 </LinearLayout>
 
@@ -68,10 +68,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginVertical="20dp"
+                            android:layout_marginVertical="@dimen/setting_dialog_title_vertical_margin"
                             android:text="@string/qms_ticket_information"
                             android:textColor="@color/black"
-                            android:textSize="24sp" />
+                            android:textSize="@dimen/setting_dialog_title_text_size" />
 
                         <androidx.appcompat.widget.LinearLayoutCompat
                             android:layout_width="match_parent"
@@ -84,19 +84,19 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:scaleX="2"
-                                android:scaleY="2"
-                                android:layout_marginEnd="-10dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginBottom="10dp"
-                                android:layout_marginStart="30dp"
+                                android:scaleX="@dimen/setting_dialog_check_box_scale"
+                                android:scaleY="@dimen/setting_dialog_check_box_scale"
+                                android:layout_marginEnd="@dimen/setting_dialog_check_box_margin_end"
+                                android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
+                                android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
+                                android:layout_marginStart="@dimen/setting_dialog_check_box_margin_start"
                                 />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/black"
-                                android:textSize="24sp"
+                                android:textSize="@dimen/setting_dialog_check_box_text_size"
                                 android:text="@string/qms_organization_label"
                                 />
                             <com.google.android.material.checkbox.MaterialCheckBox
@@ -104,39 +104,40 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:scaleX="2"
-                                android:scaleY="2"
-                                android:layout_marginEnd="-10dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginBottom="10dp"
-                                android:layout_marginStart="40dp"
+                                android:scaleX="@dimen/setting_dialog_check_box_scale"
+                                android:scaleY="@dimen/setting_dialog_check_box_scale"
+                                android:layout_marginEnd="@dimen/setting_dialog_check_box_margin_end"
+                                android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
+                                android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
+                                android:layout_marginStart="@dimen/setting_dialog_check_box_margin_start"
                                 />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/black"
-                                android:textSize="24sp"
+                                android:textSize="@dimen/setting_dialog_check_box_text_size"
                                 android:text="@string/qms_doctor_label"
                                 />
+
                             <com.google.android.material.checkbox.MaterialCheckBox
                                 android:id="@+id/qms_cb_dept"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:scaleX="2"
-                                android:scaleY="2"
-                                android:layout_marginEnd="-10dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginBottom="10dp"
-                                android:layout_marginStart="40dp"
+                                android:scaleX="@dimen/setting_dialog_check_box_scale"
+                                android:scaleY="@dimen/setting_dialog_check_box_scale"
+                                android:layout_marginEnd="@dimen/setting_dialog_check_box_margin_end"
+                                android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
+                                android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
+                                android:layout_marginStart="@dimen/setting_dialog_check_box_margin_start"
                                 />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/black"
-                                android:textSize="24sp"
+                                android:textSize="@dimen/setting_dialog_check_box_text_size"
                                 android:text="@string/qms_dept_label"
                                 />
 
@@ -145,19 +146,19 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:scaleX="2"
-                                android:scaleY="2"
-                                android:layout_marginEnd="-10dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginBottom="10dp"
-                                android:layout_marginStart="40dp"
+                                android:scaleX="@dimen/setting_dialog_check_box_scale"
+                                android:scaleY="@dimen/setting_dialog_check_box_scale"
+                                android:layout_marginEnd="@dimen/setting_dialog_check_box_margin_end"
+                                android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
+                                android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
+                                android:layout_marginStart="@dimen/setting_dialog_check_box_margin_start"
                                 />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/black"
-                                android:textSize="24sp"
+                                android:textSize="@dimen/setting_dialog_check_box_text_size"
                                 android:text="@string/qms_time_label"
                                 />
 
@@ -182,7 +183,7 @@
                         android:background="@android:color/transparent"
                         android:text="@string/dialog_cancel_button"
                         android:textColor="@color/red"
-                        android:textSize="30sp" />
+                        android:textSize="@dimen/setting_dialog_dialog_button_text_size"/>
 
                     <Button
                         android:id="@+id/btn_qms_dialog_save"
@@ -191,7 +192,7 @@
                         android:background="@android:color/transparent"
                         android:text="@string/dialog_save_button"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="30sp" />
+                        android:textSize="@dimen/setting_dialog_dialog_button_text_size" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
