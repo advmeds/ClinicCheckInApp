@@ -130,35 +130,38 @@
                         android:textColor="@color/black"/>
 
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="@dimen/setting_dialog_bottom_margin"
-                        android:gravity="end"
-                        android:orientation="horizontal">
-
-                        <Button
-                            android:id="@+id/btn_qbs_dialog_cancel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@android:color/transparent"
-                            android:text="@string/dialog_cancel_button"
-                            android:textColor="@color/red"
-                            android:textSize="@dimen/setting_dialog_dialog_button_text_size"/>
-
-                        <Button
-                            android:id="@+id/btn_qbs_dialog_save"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@android:color/transparent"
-                            android:text="@string/dialog_save_button"
-                            android:textColor="@color/colorPrimary"
-                            android:textSize="@dimen/setting_dialog_dialog_button_text_size" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="@dimen/setting_dialog_bottom_margin"
+                    android:gravity="end"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_qbs_dialog_cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:text="@string/dialog_cancel_button"
+                        android:textColor="@color/red"
+                        android:textSize="@dimen/setting_dialog_dialog_button_text_size"/>
+
+                    <Button
+                        android:id="@+id/btn_qbs_dialog_save"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:text="@string/dialog_save_button"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/setting_dialog_dialog_button_text_size" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </ScrollView>

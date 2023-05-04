@@ -39,6 +39,7 @@
     <dimen name="input_page_keyboard_padding">10dp</dimen>
 
     <dimen name="input_page_key_text_size">35sp</dimen>
+    <dimen name="input_page_key_button_corner_radius">6dp</dimen>
 
     <dimen name="input_page_clear_symbol_button_image_width">50dp</dimen>
     <dimen name="input_page_clear_symbol_button_image_height">50dp</dimen>
@@ -48,10 +49,6 @@
     <dimen name="input_page_enter_button_image_height">50dp</dimen>
     <dimen name="input_page_enter_button_label_text_size">28sp</dimen>
     <dimen name="input_page_alphabet_part">10dp</dimen>
-
-
-
-
 
 
     <!-- Dialog (success, error, checking, check in, schedule) -->

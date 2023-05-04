@@ -65,7 +65,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/error_dialog_button_top_margin"
                 android:orientation="horizontal"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/cancel_button"
@@ -102,7 +102,7 @@
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:visibility="gone"
+                android:visibility="visible"
                 android:id="@+id/got_it_button"
                 style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="wrap_content"

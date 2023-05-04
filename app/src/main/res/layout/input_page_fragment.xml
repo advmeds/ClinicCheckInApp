@@ -79,6 +79,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/input_page_input_title_top_margin"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:lines="1"
                     android:textAlignment="center"
                     android:textSize="@dimen/input_page_panel_title"
