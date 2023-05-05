@@ -25,6 +25,9 @@ class SharedPreferencesRepo(
         const val QUEUEING_MACHINE_SETTING_TIME = "queueing_machine_setting_organization_time"
 
         const val LANGUAGE_KEY = "language"
+        
+        /** SharedPreferences logo KEY */
+        const val LOGO_KEY = "logo_key"
 
         /** 以Volatile註解表示此INSTANCE變數僅會在主記憶體中讀寫，可避免進入cache被不同執行緒讀寫而造成問題 */
         @Volatile
@@ -129,5 +132,11 @@ class SharedPreferencesRepo(
         set(value) =
             sharedPreferences.edit()
                 .putString(LANGUAGE_KEY, value)
+    var logo: String?
+        get() =
+            sharedPreferences.getString(LOGO_KEY, null)
+        set(value) =
+            sharedPreferences.edit()
+                .putString(LOGO_KEY, value)
                 .apply()
 }

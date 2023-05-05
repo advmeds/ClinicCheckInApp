@@ -52,5 +52,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         get() = sharedPreferencesRepo.language
         set(value) {
             sharedPreferencesRepo.language = value
+            
+    /** @see SharedPreferencesRepo.logo */
+    var logo: String?
+        get() = sharedPreferencesRepo.logo
+        set(value) {
+            sharedPreferencesRepo.logo = value
         }
 }
