@@ -2,6 +2,7 @@ package com.advmeds.cliniccheckinapp.ui.home
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharePreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
@@ -20,6 +21,32 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         set(value) {
             sharedPreferencesRepo.orgId = value
         }
+
+    var doctorIds: List<String>
+        get() = sharedPreferencesRepo.doctorIds
+        set(value) {
+            sharedPreferencesRepo.doctorIds = value
+        }
+
+    var roomIds: List<String>
+        get() = sharedPreferencesRepo.roomIds
+        set(value) {
+            sharedPreferencesRepo.roomIds = value
+        }
+
+    var deptId: String
+        get() = sharedPreferencesRepo.deptId
+        set(value) {
+            sharedPreferencesRepo.deptId = value
+        }
+
+    var queueingMachineSettings: QueueingMachineSettingModel
+        get() = sharedPreferencesRepo.queueingMachineSetting
+        set(value) {
+            sharedPreferencesRepo.queueingMachineSetting = value
+        }
+
+
 
     var language: String
         get() = sharedPreferencesRepo.language

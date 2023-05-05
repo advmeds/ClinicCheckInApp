@@ -44,7 +44,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/id_input_border"
-                android:inputType="number"
                 android:padding="@dimen/setting_dialog_dialog_input_padding"
                 android:singleLine="true"
                 android:textSize="@dimen/setting_dialog_dialog_input_text_size"

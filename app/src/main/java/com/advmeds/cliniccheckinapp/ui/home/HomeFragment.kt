@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -28,6 +29,7 @@ import androidx.navigation.fragment.findNavController
 import coil.load
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharePreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.inputPage.InputPageFragment
 import com.advmeds.cliniccheckinapp.utils.Converter
@@ -49,6 +51,7 @@ class HomeFragment : Fragment() {
     private var _binding: HomeFragmentBinding? = null
 
     private val viewModel: HomeViewModel by viewModels()
+    private lateinit var dialog: Dialog
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -107,7 +110,7 @@ class HomeFragment : Fragment() {
 
         binding.logoImageView.setOnLongClickListener {
 
-            val dialog = Dialog(requireContext())
+            dialog = Dialog(requireContext())
             dialog.setContentView(R.layout.settings_dialog)
 
             if (dialog.window == null)
@@ -156,7 +159,7 @@ class HomeFragment : Fragment() {
 
     private fun onSetServerDomainItemClicked() {
 
-        val dialog = Dialog(requireContext())
+        dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.change_domain_dialog)
 
         if (dialog.window == null)
@@ -196,8 +199,12 @@ class HomeFragment : Fragment() {
                 else -> "https://test.mscheduler.com"
             }
 
+            dialog.dismiss()
+
+            if (domain == viewModel.mSchedulerServerDomain)
+                return@setOnClickListener
+
             try {
-                dialog.dismiss()
                 HttpUrl.get(domain)
 
                 viewModel.mSchedulerServerDomain = domain
@@ -208,7 +215,6 @@ class HomeFragment : Fragment() {
                     .sendBroadcast(intent)
 
             } catch (e: Exception) {
-                dialog.dismiss()
                 AlertDialog.Builder(requireContext())
                     .setMessage(e.message)
                     .setPositiveButton(R.string.confirm, null)
@@ -221,7 +227,7 @@ class HomeFragment : Fragment() {
 
     private fun onSetOrgIDItemClicked() {
 
-        val dialog = Dialog(requireContext())
+        dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.change_clinic_id_dialog)
 
         if (dialog.window == null)
@@ -236,9 +242,14 @@ class HomeFragment : Fragment() {
         val cancelButton = dialog.btn_change_clinic_id_dialog_cancel
 
         saveButton.setOnClickListener {
-            val id = dialog.et_clinic_id_input.text.toString()
+            val id = dialog.et_clinic_id_input.text.toString().trim()
             dialog.dismiss()
+
             if (id.isNotBlank()) {
+
+                if (viewModel.orgId == id)
+                    return@setOnClickListener
+
                 viewModel.orgId = id
 
                 val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
@@ -257,7 +268,7 @@ class HomeFragment : Fragment() {
 
     private fun onSetDoctorIDItemClicked() {
 
-        val dialog = Dialog(requireContext())
+        dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.change_doctor_id_dialog)
 
         if (dialog.window == null)
@@ -272,8 +283,23 @@ class HomeFragment : Fragment() {
         val cancelButton = dialog.btn_change_doctor_id_dialog_cancel
 
         saveButton.setOnClickListener {
-            val id = dialog.et_doctor_id_input.text.toString()
+            val editText = dialog.et_doctor_id_input.text.toString().trim()
             dialog.dismiss()
+
+            if (editText.isNotBlank()) {
+                val doctorSpaceLess = editText.replace(" ", "")
+                val doctorList = doctorSpaceLess.split(",")
+
+                if (viewModel.doctorIds == doctorList)
+                    return@setOnClickListener
+
+                viewModel.doctorIds = doctorList
+
+                val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
+
+                LocalBroadcastManager.getInstance(requireContext())
+                    .sendBroadcast(intent)
+            }
         }
 
         cancelButton.setOnClickListener {
@@ -286,7 +312,7 @@ class HomeFragment : Fragment() {
 
     private fun onSetRoomIDItemClicked() {
 
-        val dialog = Dialog(requireContext())
+        dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.change_room_id_dialog)
 
         if (dialog.window == null)
@@ -301,8 +327,24 @@ class HomeFragment : Fragment() {
         val cancelButton = dialog.btn_change_room_id_dialog_cancel
 
         saveButton.setOnClickListener {
-            val id = dialog.et_room_id_input.text.toString()
+
+            val editText = dialog.et_room_id_input.text.toString().trim()
             dialog.dismiss()
+
+            if (editText.isNotBlank()) {
+                val roomSpaceLess = editText.replace(" ", "")
+                val roomList = roomSpaceLess.split(",")
+
+                if (viewModel.roomIds == roomList)
+                    return@setOnClickListener
+
+                viewModel.roomIds = roomList
+
+                val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
+
+                LocalBroadcastManager.getInstance(requireContext())
+                    .sendBroadcast(intent)
+            }
         }
 
         cancelButton.setOnClickListener {
@@ -314,7 +356,7 @@ class HomeFragment : Fragment() {
 
     private fun onSetDeptIDItemClicked() {
 
-        val dialog = Dialog(requireContext())
+        dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.change_dept_id_dialog)
 
         if (dialog.window == null)
@@ -323,14 +365,24 @@ class HomeFragment : Fragment() {
         dialog.window!!.setGravity(Gravity.CENTER)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        //dialog.et_clinic_id_input.setText(viewModel.orgId)
-
         val saveButton = dialog.btn_change_dept_id_dialog_save
         val cancelButton = dialog.btn_change_dept_id_dialog_cancel
 
         saveButton.setOnClickListener {
-            val id = dialog.et_dept_id_input.text.toString()
+            val editText = dialog.et_dept_id_input.text.toString().trim()
             dialog.dismiss()
+
+            if (editText.isNotBlank()) {
+                if (viewModel.deptId == editText)
+                    return@setOnClickListener
+
+                viewModel.deptId = editText
+
+                val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
+
+                LocalBroadcastManager.getInstance(requireContext())
+                    .sendBroadcast(intent)
+            }
         }
 
         cancelButton.setOnClickListener {
@@ -341,10 +393,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun onSetQueueingBoardSettingItemClicked() {
-
+        //TODO set correct data
         val items = arrayListOf("Portrait", "Landscape")
 
-        val dialog = Dialog(requireContext())
+        dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.queueing_board_setting_dialog)
 
         if (dialog.window == null)
@@ -358,20 +410,40 @@ class HomeFragment : Fragment() {
         dialog.queueing_board_setting_auto_complete_tv.setAdapter(adapter)
 
 
-        dialog.queueing_board_setting_switcher.setOnCheckedChangeListener { buttonView, isChecked ->
+        dialog.queueing_board_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
                 dialog.queueing_board_setting_container.visibility = View.VISIBLE
             else
                 dialog.queueing_board_setting_container.visibility = View.GONE
         }
 
-        //dialog.et_clinic_id_input.setText(viewModel.orgId)
-
         val saveButton = dialog.btn_qbs_dialog_save
         val cancelButton = dialog.btn_qbs_dialog_cancel
 
         saveButton.setOnClickListener {
-            val domain = dialog.et_qbs_irl_input.text.toString()
+            val domain = dialog.et_qbs_irl_input.text.toString().trim()
+
+
+//            TODO ask about that field
+//            try {
+//                dialog.dismiss()
+//                HttpUrl.get(domain)
+//
+//                viewModel.mSchedulerServerDomain = domain
+//
+//                val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
+//
+//                LocalBroadcastManager.getInstance(requireContext())
+//                    .sendBroadcast(intent)
+//
+//            } catch (e: Exception) {
+//                dialog.dismiss()
+//                AlertDialog.Builder(requireContext())
+//                    .setMessage(e.message)
+//                    .setPositiveButton(R.string.confirm, null)
+//                    .showOnly()
+//            }
+
             dialog.dismiss()
 
         }
@@ -385,7 +457,7 @@ class HomeFragment : Fragment() {
 
     private fun onSetQueueingMachineSettingItemClicked() {
 
-        val dialog = Dialog(requireContext())
+        dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.queueing_machine_setting_dialog)
 
         if (dialog.window == null)
@@ -394,22 +466,49 @@ class HomeFragment : Fragment() {
         dialog.window!!.setGravity(Gravity.CENTER)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
+        val queueingMachineSettingModel = viewModel.queueingMachineSettings
 
-        dialog.queueing_machine_setting_switcher.setOnCheckedChangeListener { buttonView, isChecked ->
+        dialog.qms_cb_organization.isChecked = queueingMachineSettingModel.organization
+        dialog.qms_cb_doctor.isChecked = queueingMachineSettingModel.doctor
+        dialog.qms_cb_dept.isChecked = queueingMachineSettingModel.dept
+        dialog.qms_cb_time.isChecked = queueingMachineSettingModel.time
+
+
+        dialog.queueing_machine_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
                 dialog.queueing_machine_setting_container.visibility = View.VISIBLE
             else
                 dialog.queueing_machine_setting_container.visibility = View.GONE
         }
 
-        //dialog.et_clinic_id_input.setText(viewModel.orgId)
-
         val saveButton = dialog.btn_qms_dialog_save
         val cancelButton = dialog.btn_qms_dialog_cancel
 
         saveButton.setOnClickListener {
-            val domain = dialog.et_qbs_irl_input.text.toString()
+
+            val organization: Boolean = dialog.qms_cb_organization.isChecked
+            val doctor: Boolean = dialog.qms_cb_doctor.isChecked
+            val dept: Boolean = dialog.qms_cb_dept.isChecked
+            val time: Boolean = dialog.qms_cb_time.isChecked
+
             dialog.dismiss()
+
+            val queueingMachineSettingModel = QueueingMachineSettingModel(
+                organization = organization,
+                doctor = doctor,
+                dept = dept,
+                time = time
+            )
+
+            if (!queueingMachineSettingModel.isNotSame(viewModel.queueingMachineSettings))
+                return@setOnClickListener
+
+            viewModel.queueingMachineSettings = queueingMachineSettingModel
+
+            val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
+
+            LocalBroadcastManager.getInstance(requireContext())
+                .sendBroadcast(intent)
         }
 
         cancelButton.setOnClickListener {
@@ -425,7 +524,7 @@ class HomeFragment : Fragment() {
         var currentLanguage = viewModel.language
         var currentVersion = items[0]
 
-        val dialog = Dialog(requireContext())
+        dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.version_setting_dialog)
 
         if (dialog.window == null)
@@ -469,7 +568,7 @@ class HomeFragment : Fragment() {
         dialog.version_setting_select_version_tv.setText(currentVersion, false)
 
         dialog.version_setting_select_version_tv.onItemClickListener =
-            AdapterView.OnItemClickListener{ parent, _, position, _ ->
+            AdapterView.OnItemClickListener { parent, _, position, _ ->
                 val item = parent.getItemAtPosition(position).toString()
                 currentVersion = item
             }
@@ -492,7 +591,6 @@ class HomeFragment : Fragment() {
 
         dialog.show()
     }
-
 
     private fun getTextWithRedPiece(rawText: String, arg: String): SpannableString {
         val text = String.format(rawText, arg)
