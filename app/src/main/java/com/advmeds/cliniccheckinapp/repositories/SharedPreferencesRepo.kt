@@ -132,6 +132,9 @@ class SharedPreferencesRepo(
         set(value) =
             sharedPreferences.edit()
                 .putString(LANGUAGE_KEY, value)
+                .apply()
+
+
     var logo: String?
         get() =
             sharedPreferences.getString(LOGO_KEY, null)

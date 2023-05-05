@@ -115,7 +115,7 @@ class HomeFragment : Fragment() {
 
         // Buttons
 
-        binding.logoImageView.setOnLongClickListener {
+        binding.topCardView.setOnLongClickListener {
 
             dialog = Dialog(requireContext())
             dialog.setContentView(R.layout.settings_dialog)
