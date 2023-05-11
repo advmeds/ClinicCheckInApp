@@ -18,6 +18,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -49,6 +50,12 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private val reloadRoomsReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            setupUI()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -59,6 +66,11 @@ class HomeFragment : Fragment() {
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
             reloadClinicLogoReceiver,
             IntentFilter(SharedPreferencesRepo.LOGO_URL)
+        )
+
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+            reloadRoomsReceiver,
+            IntentFilter(SharedPreferencesRepo.ROOMS)
         )
 
         return binding.root
@@ -108,6 +120,11 @@ class HomeFragment : Fragment() {
 
         binding.presentTitleTextView.text = spannable
 
+        binding.homeRightTopCardView.isGone = when(BuildConfig.BUILD_TYPE) {
+            "rende" -> viewModel.rooms.isNotEmpty() &&
+                    !viewModel.rooms.contains(GetScheduleResponse.ScheduleBean.RENDE_VACCINE.division)
+            else -> false
+        }
         binding.homeRightTopCardView.setOnClickListener {
             when(BuildConfig.BUILD_TYPE) {
                 "rende" -> {
@@ -121,6 +138,13 @@ class HomeFragment : Fragment() {
             }
         }
 
+        binding.homeRoghtBottomCardView.isGone = when(BuildConfig.BUILD_TYPE) {
+            "ptch" -> viewModel.rooms.isNotEmpty() &&
+                    !viewModel.rooms.contains(GetScheduleResponse.ScheduleBean.PTCH_BABY.doctor)
+            "rende" -> viewModel.rooms.isNotEmpty() &&
+                    !viewModel.rooms.contains(GetScheduleResponse.ScheduleBean.RENDE_CHECK_UP.division)
+            else -> false
+        }
         binding.homeRoghtBottomCardView.setOnClickListener {
             when(BuildConfig.BUILD_TYPE) {
                 "ptch" -> {
@@ -176,7 +200,7 @@ class HomeFragment : Fragment() {
             titleResId = R.string.doctors,
             defaultText = viewModel.doctors.joinToString(",")
         ) { rooms ->
-            viewModel.doctors = rooms.split(",").toSet()
+            viewModel.doctors = rooms.split(",").filter { it.isNotBlank() }.toSet()
         }
     }
 
@@ -185,7 +209,7 @@ class HomeFragment : Fragment() {
             titleResId = R.string.rooms,
             defaultText = viewModel.rooms.joinToString(",")
         ) { rooms ->
-            viewModel.rooms = rooms.split(",").toSet()
+            viewModel.rooms = rooms.split(",").filter { it.isNotBlank() }.toSet()
         }
     }
 
@@ -278,6 +302,8 @@ class HomeFragment : Fragment() {
 
         LocalBroadcastManager.getInstance(requireContext())
             .unregisterReceiver(reloadClinicLogoReceiver)
+        LocalBroadcastManager.getInstance(requireContext())
+            .unregisterReceiver(reloadRoomsReceiver)
 
         _binding = null
     }
