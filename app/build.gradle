@@ -100,6 +100,13 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    variantFilter { variant ->
+        def names = variant.flavors*.name
+        def ignorePanel = names.contains("checkInWithPanel") && variant.buildType.name == "ptch"
+        if (ignorePanel) {
+            setIgnore(true)
+        }
+    }
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
             def fileName = "ClinicCheckInApp_${defaultConfig.versionCode}_${defaultConfig.versionName}_${variant.buildType.name}.apk"
