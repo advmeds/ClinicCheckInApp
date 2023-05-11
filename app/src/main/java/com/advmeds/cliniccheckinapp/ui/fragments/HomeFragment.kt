@@ -50,7 +50,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private val reloadRoomsReceiver = object : BroadcastReceiver() {
+    private val reloadRightCardViewReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             setupUI()
         }
@@ -69,8 +69,10 @@ class HomeFragment : Fragment() {
         )
 
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
-            reloadRoomsReceiver,
-            IntentFilter(SharedPreferencesRepo.ROOMS)
+            reloadRightCardViewReceiver,
+            IntentFilter(SharedPreferencesRepo.ROOMS).apply {
+                addAction(SharedPreferencesRepo.DOCTORS)
+            }
         )
 
         return binding.root
@@ -139,8 +141,8 @@ class HomeFragment : Fragment() {
         }
 
         binding.homeRoghtBottomCardView.isGone = when(BuildConfig.BUILD_TYPE) {
-            "ptch" -> viewModel.rooms.isNotEmpty() &&
-                    !viewModel.rooms.contains(GetScheduleResponse.ScheduleBean.PTCH_BABY.doctor)
+            "ptch" -> viewModel.doctors.isNotEmpty() &&
+                    !viewModel.doctors.contains(GetScheduleResponse.ScheduleBean.PTCH_BABY.doctor)
             "rende" -> viewModel.rooms.isNotEmpty() &&
                     !viewModel.rooms.contains(GetScheduleResponse.ScheduleBean.RENDE_CHECK_UP.division)
             else -> false
@@ -303,7 +305,7 @@ class HomeFragment : Fragment() {
         LocalBroadcastManager.getInstance(requireContext())
             .unregisterReceiver(reloadClinicLogoReceiver)
         LocalBroadcastManager.getInstance(requireContext())
-            .unregisterReceiver(reloadRoomsReceiver)
+            .unregisterReceiver(reloadRightCardViewReceiver)
 
         _binding = null
     }
