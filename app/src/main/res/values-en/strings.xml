@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">看診取號機</string>
     <string name="app_name_title_in_home_fragment">檢查取號機</string>
 
@@ -31,7 +33,6 @@
     <string name="success_to_check_message">請記得拿取號碼牌</string>
 
     <string name="fail_to_check">報到失敗</string>
-    <string name="fail_to_check_message">查無資料，請重新輸入號碼，\n或洽服務人員</string>
     <string name="schedule_not_found">查無預約紀錄</string>
     <string name="make_appointment_now">是否現場取號？</string>
 
@@ -44,7 +45,6 @@
     <string name="success_to_make_appointment_message">請記得拿取號碼單，並等候診間人員叫號時，進入診間看診。</string>
 
     <string name="fail_to_make_appointment">掛號失敗</string>
-
 
     <string name="no_internet">需要有網路連線，請確認。</string>
     <string name="service_timeout">伺服器連線逾時，請確認。</string>
@@ -90,7 +90,7 @@
     </string-array>
 
     <!-- Settings Dialogs -->
-    <string name="setting">設定</string>
+    <string name="setting">Setting</string>
     <string name="dialog_cancel_button">Cancel</string>
     <string name="dialog_save_button">Save</string>
     <string name="dialog_id_label">ID</string>
@@ -98,15 +98,15 @@
     <string name="dialog_enable_label">Enable</string>
     <string name="dialog_url_label">URL</string>
 
-    <!-- Service Domain Dialog -->
-    <string name="server_domain">伺服器網域</string>
+    <!-- Service Domain -->
+    <string name="server_domain">Service Domain</string>
     <string name="customize_url_hint">http://example.com</string>
     <string name="domain_service_official_site">Official Site</string>
     <string name="domain_service_testing_site">Testing Site</string>
     <string name="domain_service_customize">Customize</string>
 
     <!-- Change Clinic Id Dialog  -->
-    <string name="org_id">機構代碼</string>
+    <string name="org_id">Clinic ID</string>
 
     <!-- Change Doctor Id Dialog -->
     <string name="doctor_id">Doctor ID</string>
@@ -134,13 +134,11 @@
     <string name="version_setting_dialog_select_version_label">Select Version</string>
     <string name="version_setting_dialog_select_language_label">Select Language</string>
 
-    <string name="zh_tw_language">繁體中文</string>
+    <string name="zh_tw_language">Traditional Chinese</string>
     <string name="en_language">English</string>
 
     <string-array name="language_items">
         <item>@string/zh_tw_language</item>
         <item>@string/en_language</item>
     </string-array>
-
-    <string name="scale" translatable="false">2</string>
 </resources>

@@ -38,6 +38,7 @@ android {
             buildConfigField "boolean", "PRINT_ENABLED", "true"
             buildConfigField "String", "MS_DOMAIN", "\"https://test.mscheduler.com/\""
             buildConfigField "String", "ORG_ID", "\"1\""
+            buildConfigField "String", "DEFAULT_LANGUAGE", "\"en\""
         }
 
         // 門診取號機
@@ -50,6 +51,7 @@ android {
             buildConfigField "boolean", "PRINT_ENABLED", "true"
             buildConfigField "String", "MS_DOMAIN", "\"https://www.mscheduler.com/\""
             buildConfigField "String", "ORG_ID", "\"1\""
+            buildConfigField "String", "DEFAULT_LANGUAGE", "\"en\""
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

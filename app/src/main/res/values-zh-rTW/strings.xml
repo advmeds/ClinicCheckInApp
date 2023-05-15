@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">看診取號機</string>
     <string name="app_name_title_in_home_fragment">檢查取號機</string>
 
@@ -31,7 +33,6 @@
     <string name="success_to_check_message">請記得拿取號碼牌</string>
 
     <string name="fail_to_check">報到失敗</string>
-    <string name="fail_to_check_message">查無資料，請重新輸入號碼，\n或洽服務人員</string>
     <string name="schedule_not_found">查無預約紀錄</string>
     <string name="make_appointment_now">是否現場取號？</string>
 
@@ -135,12 +136,11 @@
     <string name="version_setting_dialog_select_language_label">Select Language</string>
 
     <string name="zh_tw_language">繁體中文</string>
-    <string name="en_language">English</string>
+    <string name="en_language">英语语言(en)</string>
 
     <string-array name="language_items">
         <item>@string/zh_tw_language</item>
         <item>@string/en_language</item>
     </string-array>
 
-    <string name="scale" translatable="false">2</string>
 </resources>
