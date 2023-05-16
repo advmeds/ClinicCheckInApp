@@ -4,7 +4,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.advmeds.cliniccheckinapp.BuildConfig
+import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class SharedPreferencesRepo(
     context: Context
@@ -40,6 +44,9 @@ class SharedPreferencesRepo(
 
         /** 從SharedPreferences取得『取得病患資訊的national_id可輸入格式』的KEY */
         const val FORMAT_CHECKED_LIST = "format_checked_list"
+
+        /** 從SharedPreferences取得『首頁的直接取號項目』的KEY */
+        val CHECK_IN_ITEM_LIST = "check_in_item_list"
 
         /** 以Volatile註解表示此INSTANCE變數僅會在主記憶體中讀寫，可避免進入cache被不同執行緒讀寫而造成問題 */
         @Volatile
@@ -182,6 +189,25 @@ class SharedPreferencesRepo(
             localBroadcastManager.sendBroadcast(
                 Intent(ROOMS).apply {
                     putExtra(ROOMS, value.toTypedArray())
+                }
+            )
+        }
+
+    var checkInItemList: List<EditCheckInItemDialog.EditCheckInItem>
+        get() = sharedPreferences.getString(CHECK_IN_ITEM_LIST, null)
+            ?.takeIf { it.isNotBlank() }
+            ?.let {
+                Json.decodeFromString(ListSerializer(EditCheckInItemDialog.EditCheckInItem.serializer()), it)
+            }.orEmpty()
+        set(value) {
+            val json = Json.encodeToString(value)
+            sharedPreferences.edit()
+                .putString(CHECK_IN_ITEM_LIST, json)
+                .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(CHECK_IN_ITEM_LIST).apply {
+                    putExtra(CHECK_IN_ITEM_LIST, json)
                 }
             )
         }

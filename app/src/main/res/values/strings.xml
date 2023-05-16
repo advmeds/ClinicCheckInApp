@@ -15,10 +15,14 @@
     <string name="national_id">身份證字號</string>
     <string name="chart_no">病歷號</string>
     <string name="present_health_card">請直接插入%s取號</string>
-    <string name="home_right_top_card_view_title">無健保卡</string>
-    <string name="home_right_top_card_view_body">手動取號</string>
-    <string name="home_right_bottom_card_view_title">虛擬健保卡</string>
-    <string name="home_right_bottom_card_view_body">取號</string>
+    <string name="check_in_item_display_name">科別名稱</string>
+    <string name="check_in_item_manual_title">無健保卡</string>
+    <string name="check_in_item_manual_body">手動取號</string>
+    <string name="check_in_item_virtual_title">虛擬健保卡</string>
+    <string name="check_in_item_virtual_body">取號</string>
+    <string name="check_in_type_manual">手動輸入</string>
+    <string name="check_in_type_custom">指定科別</string>
+    <string name="check_in_type_virtual_card">虛擬健保卡</string>
     <string name="national_id_input_title">如您未攜帶健保卡，可輕觸螢幕輸入%s</string>
     <string name="national_id_input_hint">請輸入%s</string>
     <string name="national_id_format_invalid">%s格式錯誤</string>
@@ -27,6 +31,8 @@
     <string name="printer_not_connect">尚未連接取票機</string>
     <string name="get_patient_not_found">查無此身份證字號之預約資訊。</string>
     <string name="clinic_data_not_found">找不到診所資料</string>
+
+    <string name="delete_item_title">確認刪除此項目嗎？</string>
 
     <string name="print_hospital_name">屏東基督教醫院</string>
     <string name="print_serial_no">看診號碼</string>

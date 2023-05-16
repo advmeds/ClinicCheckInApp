@@ -42,4 +42,13 @@
         <item name="android:textColor">@color/keyboard_text_color</item>
     </style>
 
+    <!-- Text Input Layout -->
+    <style name="TextInputLayoutAppearance" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="colorPrimary">@color/colorPrimary</item>
+    </style>
+
+    <style name="TextInputLayoutHintTextAppearance" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">@dimen/font_size_h4</item>
+    </style>
+
 </resources>

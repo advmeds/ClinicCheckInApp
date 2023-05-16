@@ -2,6 +2,7 @@ package com.advmeds.cliniccheckinapp.ui.fragments
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 
@@ -55,5 +56,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         get() = sharedPreferencesRepo.formatCheckedList
         set(value) {
             sharedPreferencesRepo.formatCheckedList = value
+        }
+
+    /** @see SharedPreferencesRepo.formatCheckedList */
+    var checkInItemList: List<EditCheckInItemDialog.EditCheckInItem>
+        get() = sharedPreferencesRepo.checkInItemList
+        set(value) {
+            sharedPreferencesRepo.checkInItemList = value
         }
 }

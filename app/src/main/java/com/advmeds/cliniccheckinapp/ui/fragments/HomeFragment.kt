@@ -15,18 +15,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import coil.load
-import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
+import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
@@ -72,6 +74,7 @@ class HomeFragment : Fragment() {
             reloadRightCardViewReceiver,
             IntentFilter(SharedPreferencesRepo.ROOMS).apply {
                 addAction(SharedPreferencesRepo.DOCTORS)
+                addAction(SharedPreferencesRepo.CHECK_IN_ITEM_LIST)
             }
         )
 
@@ -85,6 +88,15 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupUI() {
+        binding.root.setOnLongClickListener {
+            EditCheckInItemDialog(
+                onConfirmClick = {
+                    viewModel.checkInItemList = viewModel.checkInItemList.plus(it)
+                }
+            ).showNow(childFragmentManager, null)
+            return@setOnLongClickListener true
+        }
+
         binding.logoImageView.load(viewModel.logoUrl)
         binding.logoImageView.setOnLongClickListener {
             AlertDialog.Builder(requireContext())
@@ -122,45 +134,90 @@ class HomeFragment : Fragment() {
 
         binding.presentTitleTextView.text = spannable
 
-        binding.homeRightTopCardView.isGone = when(BuildConfig.BUILD_TYPE) {
-            "rende" -> viewModel.rooms.isNotEmpty() &&
-                    !viewModel.rooms.contains(GetScheduleResponse.ScheduleBean.RENDE_VACCINE.division)
-            else -> false
-        }
-        binding.homeRightTopCardView.setOnClickListener {
-            when(BuildConfig.BUILD_TYPE) {
-                "rende" -> {
-                    (requireActivity() as MainActivity).createFakeAppointment(
-                        schedule = GetScheduleResponse.ScheduleBean.RENDE_VACCINE
-                    )
+        binding.checkInLayout.removeAllViews()
+        val itemList = viewModel.checkInItemList.filter {
+            when (it.type) {
+                EditCheckInItemDialog.CheckInItemType.MANUAL_INPUT -> {
+                    true
                 }
-                else -> {
-                    findNavController().navigate(R.id.manualInputFragment)
+                EditCheckInItemDialog.CheckInItemType.CUSTOM -> {
+                    (viewModel.rooms.isEmpty() || viewModel.rooms.contains(it.divisionId)) &&
+                            (viewModel.doctors.isEmpty() || viewModel.doctors.contains(it.doctorId))
+                }
+                EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
+                    true
                 }
             }
         }
+        itemList.forEach { checkInItem ->
+            layoutInflater.inflate(if (itemList.size > 1) {
+                R.layout.check_in_item_card_view_horizontal
+            } else {
+                R.layout.check_in_item_card_view_vertical
+            }, null, false).apply {
+                val itemImg = findViewById<ImageView>(R.id.item_image_view)
+                val itemTitle = findViewById<TextView>(R.id.item_title_tv)
+                val itemBody = findViewById<TextView>(R.id.item_body_tv)
 
-        binding.homeRoghtBottomCardView.isGone = when(BuildConfig.BUILD_TYPE) {
-            "ptch" -> viewModel.doctors.isNotEmpty() &&
-                    !viewModel.doctors.contains(GetScheduleResponse.ScheduleBean.PTCH_BABY.doctor)
-            "rende" -> viewModel.rooms.isNotEmpty() &&
-                    !viewModel.rooms.contains(GetScheduleResponse.ScheduleBean.RENDE_CHECK_UP.division)
-            else -> false
-        }
-        binding.homeRoghtBottomCardView.setOnClickListener {
-            when(BuildConfig.BUILD_TYPE) {
-                "ptch" -> {
-                    (requireActivity() as MainActivity).createFakeAppointment(
-                        schedule = GetScheduleResponse.ScheduleBean.PTCH_BABY
-                    )
+                when (checkInItem.type) {
+                    EditCheckInItemDialog.CheckInItemType.MANUAL_INPUT -> {
+                        itemImg.setImageResource(R.drawable.ic_baseline_keyboard)
+                        itemTitle.setText(R.string.check_in_item_manual_title)
+                        itemBody.setText(R.string.check_in_item_manual_body)
+                    }
+                    EditCheckInItemDialog.CheckInItemType.CUSTOM -> {
+                        itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
+                        itemTitle.text = checkInItem.title
+                        itemBody.setText(R.string.check_in_item_manual_body)
+                    }
+                    EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
+                        itemImg.setImageResource(R.drawable.ic_baseline_qr_code)
+                        itemTitle.setText(R.string.check_in_item_virtual_title)
+                        itemBody.setText(R.string.check_in_item_virtual_body)
+                    }
                 }
-                "rende" -> {
-                    (requireActivity() as MainActivity).createFakeAppointment(
-                        schedule = GetScheduleResponse.ScheduleBean.RENDE_CHECK_UP
-                    )
+
+                binding.checkInLayout.addView(
+                    this,
+                    LinearLayoutCompat.LayoutParams(
+                        LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                        0,
+                        1f
+                    ).apply {
+                        val margin = (resources.getDimension(R.dimen.card_view_half_spacing) / resources.displayMetrics.density).toInt()
+                        setMargins(margin, margin, margin, margin)
+                    }
+                )
+
+                setOnClickListener {
+                    when (checkInItem.type) {
+                        EditCheckInItemDialog.CheckInItemType.MANUAL_INPUT -> {
+                            findNavController().navigate(R.id.manualInputFragment)
+                        }
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM -> {
+                            (requireActivity() as MainActivity).createFakeAppointment(
+                                schedule = GetScheduleResponse.ScheduleBean(
+                                    doctor = checkInItem.doctorId,
+                                    division = checkInItem.divisionId
+                                )
+                            )
+                        }
+                        EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
+                            (requireActivity() as MainActivity).checkInWithVirtualCard()
+                        }
+                    }
                 }
-                else -> {
-                    (requireActivity() as MainActivity).checkInWithVirtualCard()
+
+                setOnLongClickListener {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle(R.string.delete_item_title)
+                        .setPositiveButton(R.string.confirm) { _, _ ->
+                            viewModel.checkInItemList = viewModel.checkInItemList.minus(checkInItem)
+                        }
+                        .setNegativeButton(R.string.cancel, null)
+                        .showOnly()
+
+                    true
                 }
             }
         }
