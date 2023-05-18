@@ -14,8 +14,15 @@ class ServerRepository(private val service: ApiService) {
     /** @see ApiService.getPatients */
     suspend fun getPatients(
         clinicId: String,
-        nationalId: String
-    ) = service.getPatients(clinicId, nationalId)
+        nationalId: String,
+        rooms: List<String>,
+        doctors: List<String>
+    ) = service.getPatients(
+        clinicId = clinicId,
+        nationalId = nationalId,
+        rooms = rooms,
+        doctors = doctors
+    )
 
     /** @see ApiService.getSchedules */
     suspend fun getSchedules(
