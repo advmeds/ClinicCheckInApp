@@ -1,7 +1,6 @@
 package com.advmeds.cliniccheckinapp.models.remote.mScheduler
 
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
-import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentShortRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetClinicGuardianResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
@@ -59,11 +58,5 @@ interface ApiService {
     suspend fun createAppointment(
         @Body
         request: CreateAppointmentRequest
-    ): Response<CreateAppointmentResponse>
-
-    @POST("api/v1/clinics/creates_appointment")
-    suspend fun createAppointment(
-        @Body
-        request: CreateAppointmentShortRequest
     ): Response<CreateAppointmentResponse>
 }

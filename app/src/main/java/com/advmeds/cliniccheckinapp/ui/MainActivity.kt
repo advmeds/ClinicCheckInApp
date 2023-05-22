@@ -718,10 +718,6 @@ class MainActivity : AppCompatActivity() {
         dialog?.showNow(supportFragmentManager, null)
     }
 
-    fun createAppointment() {
-        viewModel.createAppointment()
-    }
-
     private fun hideSystemUI() {
         val windowInsetsController =
             WindowCompat.getInsetsController(window, window.decorView) ?: return

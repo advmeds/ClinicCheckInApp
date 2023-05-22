@@ -10,7 +10,6 @@ import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiService
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
-import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentShortRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetClinicGuardianResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
@@ -340,79 +339,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 GetSchedulesStatus.Fail(it)
             } else {
                 GetSchedulesStatus.NotChecking(null)
-            }
-        }
-    }
-
-    fun createAppointment(
-        completion: ((CreateAppointmentResponse) -> Unit)? = null
-    ) {
-        createAppointmentJob?.cancel()
-
-        createAppointmentJob = viewModelScope.launch {
-            createAppointmentStatus.value = CreateAppointmentStatus.Checking
-
-            val response = try {
-                val request = CreateAppointmentShortRequest(
-                    clinicId = sharedPreferencesRepo.orgId,
-                    doctor = "CA",
-                    division = "0000",
-                    patient = patient ?: CreateAppointmentRequest.Patient()
-                )
-
-                val result = serverRepo.createsAppointment(request)
-
-                Timber.d("Status code: ${result.code()}")
-                Timber.d("Response: ${format.encodeToString(result.body())}")
-
-                if (result.isSuccessful) {
-                    result.body()!!
-                } else {
-                    CreateAppointmentResponse(
-                        success = false,
-                        code = result.code(),
-                        message = result.message()
-                    )
-                }
-            } catch (e: Exception) {
-                Timber.e(e)
-
-                CreateAppointmentResponse(
-                    success = false,
-                    code = 0,
-                    message = when (e) {
-                        is UnknownHostException -> {
-                            getApplication<MainApplication>().getString(
-                                R.string.no_internet
-                            )
-                        }
-                        is SocketTimeoutException -> {
-                            getApplication<MainApplication>().getString(
-                                R.string.service_timeout
-                            )
-                        }
-                        else -> {
-                            e.localizedMessage
-                        }
-                    }
-                )
-            }
-
-            completion?.let { it(response) }
-
-            createAppointmentStatus.value = CreateAppointmentStatus.NotChecking(response)
-        }
-
-        createAppointmentJob?.invokeOnCompletion {
-
-            it ?: return@invokeOnCompletion
-
-            Timber.e(it)
-
-            createAppointmentStatus.value = if (it !is CancellationException) {
-                CreateAppointmentStatus.Fail(it)
-            } else {
-                CreateAppointmentStatus.NotChecking(null)
             }
         }
     }

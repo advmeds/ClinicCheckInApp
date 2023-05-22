@@ -60,50 +60,21 @@
         android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/card_info_view"
+            android:id="@+id/bottom_card_view"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="20dp"
-            android:layout_weight="6"
+            android:layout_weight="1"
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/home_page_card_info_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:layout_gravity="center"
-                    android:layout_margin="20dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:lines="1"
-                    android:text="@string/home_page_card_info_label"
-                    android:textColor="@color/black_alter"
-                    android:textSize="60sp"
-                    android:textStyle="bold"/>
-
-                <com.airbnb.lottie.LottieAnimationView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    app:lottie_autoPlay="true"
-                    app:lottie_fileName="card_present.json"
-                    app:lottie_loop="true" />
-
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.cardview.widget.CardView>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="4"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_weight="0.7">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/manually_input_card"
@@ -113,38 +84,6 @@
                 android:layout_weight="1"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="4dp">
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="10dp">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:layout_marginStart="40dp"
-                        android:tint="@color/colorPrimary"
-                        app:srcCompat="@drawable/baseline_keyboard_24" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/home_page_manually_input_title"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:layout_weight="3"
-                        android:fontFamily="sans-serif-medium"
-                        android:lines="2"
-                        android:text="@string/home_page_manually_input_card_label"
-                        android:textAlignment="center"
-                        android:textColor="@color/black_alter"
-                        android:textSize="40sp"
-                        android:textStyle="bold" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
 
             </androidx.cardview.widget.CardView>
 
@@ -156,39 +95,6 @@
                 android:layout_weight="1"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="4dp">
-
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="10dp">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:layout_marginStart="40dp"
-                        android:tint="@color/colorPrimary"
-                        app:srcCompat="@drawable/baseline_how_to_reg_24" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/home_page_pcu_check_title"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:layout_weight="3"
-                        android:fontFamily="sans-serif-medium"
-                        android:lines="2"
-                        android:text="@string/home_page_manually_input_card_label"
-                        android:textAlignment="center"
-                        android:textColor="@color/black_alter"
-                        android:textSize="40sp"
-                        android:textStyle="bold" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
 
             </androidx.cardview.widget.CardView>
 
