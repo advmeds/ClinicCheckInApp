@@ -1,10 +1,10 @@
-package com.advmeds.cliniccheckinapp.ui.inputPage
+package com.advmeds.cliniccheckinapp.ui.home
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 
-class InputPageViewModel(application: Application) : AndroidViewModel(application) {
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
 
     /** @see SharedPreferencesRepo.mSchedulerServerDomain */

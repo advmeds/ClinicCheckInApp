@@ -37,8 +37,8 @@ import com.advmeds.cliniccheckinapp.dialog.ScheduleListDialogFragment
 import com.advmeds.cliniccheckinapp.dialog.SuccessDialogFragment
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiError
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
-import com.advmeds.cliniccheckinapp.ui.inputPage.InputPageFragment.Companion.CLINIC_LOGO_URL_KEY
-import com.advmeds.cliniccheckinapp.ui.inputPage.InputPageFragment.Companion.RELOAD_CLINIC_LOGO_ACTION
+import com.advmeds.cliniccheckinapp.ui.home.HomeFragment.Companion.CLINIC_LOGO_URL_KEY
+import com.advmeds.cliniccheckinapp.ui.home.HomeFragment.Companion.RELOAD_CLINIC_LOGO_ACTION
 import com.advmeds.printerlib.usb.BPT3XPrinterService
 import com.advmeds.printerlib.usb.UsbPrinterService
 import com.advmeds.printerlib.utils.PrinterBuffer
@@ -671,7 +671,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.printer_not_connect),
                 Snackbar.LENGTH_LONG
             ).show()
-                return
+            return
         }
 
         viewModel.getPatients(
@@ -708,14 +708,6 @@ class MainActivity : AppCompatActivity() {
                 1f
             )
         }
-    }
-
-    fun showNoValidIdErrorDialog(title: CharSequence = "", message: CharSequence = "") {
-        dialog = ErrorDialogFragment(
-            title = title,
-            message = message
-        )
-        dialog?.showNow(supportFragmentManager, null)
     }
 
     private fun hideSystemUI() {

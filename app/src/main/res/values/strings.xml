@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">看診取號機</string>
-    <string name="app_name_title_in_home_fragment">檢查取號機</string>
 
     <string name="confirm">確認</string>
     <string name="cancel">取消</string>
@@ -13,7 +12,7 @@
     <string name="present_card_remind">看診前請插健保卡取號</string>
 
     <string name="health_card">健保卡</string>
-    <string name="national_id">身分證、病歷號</string>
+    <string name="national_id">身份證字號</string>
     <string name="national_id_input_title">如您未攜帶健保卡，可輕觸螢幕輸入%s</string>
     <string name="national_id_input_hint">請輸入%s</string>
     <string name="national_id_format_invalid">%s格式錯誤</string>
@@ -38,7 +37,7 @@
     <string name="select_schedules_title">請選擇要掛號的科別</string>
 
     <string name="make_appointment">現場取號方法</string>
-    <string name="make_appointment_right_now">取消手動輸入</string>
+    <string name="make_appointment_right_now">點我現場取號</string>
     <string name="make_appointment_message">請直接插%s，或手動輸入%s</string>
     <string name="success_to_make_appointment">已完成現場取號</string>
     <string name="success_to_make_appointment_message">請記得拿取號碼單，並等候診間人員叫號時，進入診間看診。</string>
@@ -54,7 +53,7 @@
 
     <string name="no_internet">需要有網路連線，請確認。</string>
     <string name="service_timeout">伺服器連線逾時，請確認。</string>
-
+    
     <string name="mScheduler_api_error_10001">主要欄位為空</string>
     <string name="mScheduler_api_error_10002">找不到指定機構</string>
     <string name="mScheduler_api_error_10003">找不到指定醫師</string>
@@ -69,7 +68,5 @@
     <string name="mScheduler_api_error_10012">尚未到 %s 報到時間，%s 前往報到或洽服務人員</string>
     <string name="mScheduler_api_error_10013">重複報到，若有問題請洽服務人員</string>
     <string name="mScheduler_api_error_10014">查無可用時段</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
