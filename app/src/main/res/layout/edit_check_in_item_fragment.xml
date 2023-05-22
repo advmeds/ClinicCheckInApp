@@ -168,7 +168,7 @@
                     android:paddingTop="24dp"
                     android:paddingEnd="120dp"
                     android:paddingBottom="24dp"
-                    android:text="@string/confirm"
+                    android:text="@string/save"
                     android:textSize="@dimen/font_size_h3"
                     app:cornerRadius="8dp"
                     app:elevation="0dp" />

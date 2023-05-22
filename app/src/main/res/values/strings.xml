@@ -1,89 +1,89 @@
 <resources>
     <string name="app_name">看診取號機</string>
 
-    <string name="confirm">確認</string>
-    <string name="cancel">取消</string>
-    <string name="setting">設定</string>
-    <string name="backspace">刪除</string>
-    <string name="enter">送出</string>
-    <string name="or">或</string>
-    <string name="got_it">了解</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="setting">Setting</string>
+    <string name="save">Save</string>
+    <string name="backspace">Backspace</string>
+    <string name="enter">Enter</string>
+    <string name="or">Or</string>
+    <string name="got_it">Got It</string>
 
-    <string name="present_card_remind">看診前請插健保卡取號</string>
+    <string name="present_card_remind">Please insert NHI Card to take a number before seeing a doctor</string>
 
-    <string name="health_card">健保卡</string>
-    <string name="national_id">身份證字號</string>
-    <string name="chart_no">病歷號</string>
-    <string name="present_health_card">請直接插入%s取號</string>
-    <string name="check_in_item_display_name">科別名稱</string>
-    <string name="check_in_item_manual_title">無健保卡</string>
-    <string name="check_in_item_manual_body">手動取號</string>
-    <string name="check_in_item_virtual_title">虛擬健保卡</string>
-    <string name="check_in_item_virtual_body">取號</string>
-    <string name="check_in_type_manual">手動輸入</string>
-    <string name="check_in_type_custom">指定科別</string>
-    <string name="check_in_type_virtual_card">虛擬健保卡</string>
-    <string name="national_id_input_title">如您未攜帶健保卡，可輕觸螢幕輸入%s</string>
-    <string name="national_id_input_hint">請輸入%s</string>
-    <string name="national_id_format_invalid">%s格式錯誤</string>
-    <string name="national_id_input_cancel">取消手動輸入</string>
-    <string name="submit">送出</string>
-    <string name="printer_not_connect">尚未連接取票機</string>
-    <string name="get_patient_not_found">查無此身份證字號之預約資訊。</string>
-    <string name="clinic_data_not_found">找不到診所資料</string>
+    <string name="health_card">NHI Card</string>
+    <string name="national_id">National ID</string>
+    <string name="chart_no">Chart No</string>
+    <string name="present_health_card">Please insert %s to take a number</string>
+    <string name="check_in_item_display_name">Division name</string>
+    <string name="check_in_item_manual_title">No NHI Card</string>
+    <string name="check_in_item_manual_body">Manual Take Number</string>
+    <string name="check_in_item_virtual_title">Virtual NHI Card</string>
+    <string name="check_in_item_virtual_body">Take Number</string>
+    <string name="check_in_type_manual">Manual enter</string>
+    <string name="check_in_type_custom">Division</string>
+    <string name="check_in_type_virtual_card">Virtual NHI Card</string>
+    <string name="national_id_input_title">If you do not have NHI Card, you can click the screen to enter %s</string>
+    <string name="national_id_input_hint">Please enter %s</string>
+    <string name="national_id_format_invalid">%s format invalid</string>
+    <string name="national_id_input_cancel">Cancel manual enter</string>
+    <string name="submit">Submit</string>
+    <string name="printer_not_connect">Please connect ticket machine</string>
+    <string name="get_patient_not_found">Can not find appointment information for this National ID</string>
+    <string name="clinic_data_not_found">Clinic Not Found</string>
 
-    <string name="delete_item_title">確認刪除此項目嗎？</string>
+    <string name="delete_item_title">Are you sure want to delete this item?</string>
 
-    <string name="print_hospital_name">屏東基督教醫院</string>
-    <string name="print_serial_no">看診號碼</string>
-    <string name="print_footer">請依叫號 等候辦理</string>
+    <string name="print_serial_no">Queue Number</string>
+    <string name="print_footer">Please take a seat and we will attend to you shortly</string>
 
-    <string name="checking">資料辨識中…</string>
+    <string name="checking">Checking…</string>
 
-    <string name="success_to_check">報到成功</string>
-    <string name="success_to_check_message">請記得拿取號碼牌</string>
+    <string name="success_to_check">Checked in successfully</string>
+    <string name="success_to_check_message">Please remember to take number</string>
 
-    <string name="fail_to_check">報到失敗</string>
-    <string name="schedule_not_found">查無預約紀錄</string>
+    <string name="fail_to_check">Failed to checked in</string>
+    <string name="schedule_not_found">Appointment not found</string>
     <string name="make_appointment_now">是否現場取號？</string>
 
-    <string name="select_schedules_title">請選擇要掛號的科別</string>
+    <string name="select_schedules_title">Please select division to make an appointment</string>
 
     <string name="make_appointment">現場取號方法</string>
     <string name="make_appointment_right_now">點我現場取號</string>
-    <string name="make_appointment_message">請直接插%s，或手動輸入%s</string>
+    <string name="make_appointment_message">Please insert %s, or manual enter %s</string>
     <string name="success_to_make_appointment">已完成現場取號</string>
-    <string name="success_to_make_appointment_message">請記得拿取號碼單，並等候診間人員叫號時，進入診間看診。</string>
+    <string name="success_to_make_appointment_message">Please remember take number and wait for your number to be called.</string>
 
-    <string name="fail_to_make_appointment">掛號失敗</string>
+    <string name="fail_to_make_appointment">Failed to checked in</string>
     <string name="fail_to_make_appointment_10014">非取號時段</string>
 
-    <string name="server_domain">伺服器網域</string>
-    <string name="org_id">機構代碼</string>
-    <string name="doctors">醫師代碼</string>
-    <string name="rooms">診間代碼</string>
-    <string name="clinic_panel_url">叫號面板網址</string>
+    <string name="server_domain">Service domain</string>
+    <string name="org_id">Clinic ID</string>
+    <string name="doctors">Doctor ID</string>
+    <string name="rooms">Room ID</string>
+    <string name="clinic_panel_url">Clinic Panel Url</string>
     <string name="format_checked">報到格式檢查</string>
     <string-array name="setting_items">
         <item>@string/server_domain</item>
         <item>@string/org_id</item>
-        <item>醫師代碼(可複數，用逗號區隔)</item>
-        <item>診間代碼(可複數，用逗號區隔)</item>
+        <item>Doctor ID(To enter multiple ID, use commas to separate each ID.)</item>
+        <item>Room ID(To enter multiple ID, use commas to separate each ID.)</item>
         <item>@string/clinic_panel_url</item>
         <item>@string/format_checked</item>
     </string-array>
 
-    <string name="no_internet">需要有網路連線，請確認。</string>
-    <string name="service_timeout">伺服器連線逾時，請確認。</string>
+    <string name="no_internet">No Internet</string>
+    <string name="service_timeout">Connect Timeout</string>
     
     <string name="mScheduler_api_error_10001">主要欄位為空</string>
-    <string name="mScheduler_api_error_10002">找不到指定機構</string>
-    <string name="mScheduler_api_error_10003">找不到指定醫師</string>
-    <string name="mScheduler_api_error_10004">找不到指定科別</string>
-    <string name="mScheduler_api_error_10005">病患名稱為空</string>
-    <string name="mScheduler_api_error_10006">病患手機為空</string>
-    <string name="mScheduler_api_error_10007">病患生日格式錯誤</string>
-    <string name="mScheduler_api_error_10008">病患身分證為空</string>
+    <string name="mScheduler_api_error_10002">Organization Not Found</string>
+    <string name="mScheduler_api_error_10003">Doctor Not Found</string>
+    <string name="mScheduler_api_error_10004">Division Not Found</string>
+    <string name="mScheduler_api_error_10005">Patient name can not be blank</string>
+    <string name="mScheduler_api_error_10006">Patient mobile can not be blank</string>
+    <string name="mScheduler_api_error_10007">Patient date of birth is invalid</string>
+    <string name="mScheduler_api_error_10008">Patient national id can not be blank</string>
     <string name="mScheduler_api_error_10009">指定時段格式錯誤</string>
     <string name="mScheduler_api_error_10010">查無資料，請重新輸入號碼或洽服務人員，謝謝</string>
     <string name="mScheduler_api_error_10011">報到時間已過，請洽服務人員</string>

@@ -306,7 +306,7 @@ class HomeFragment : Fragment() {
 
                 viewModel.formatCheckedList = list
             }
-            .setPositiveButton(R.string.confirm, null)
+            .setPositiveButton(R.string.save, null)
             .showOnly()
     }
 
@@ -341,7 +341,7 @@ class HomeFragment : Fragment() {
             .setTitle(titleResId)
             .setView(layout)
             .setPositiveButton(
-                R.string.confirm
+                R.string.save
             ) { _, _ ->
                 onConfirmClick(editText.text.toString().trim())
             }
