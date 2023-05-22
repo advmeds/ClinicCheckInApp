@@ -32,12 +32,9 @@ interface ApiService {
     suspend fun getPatients(
         @Query("clinic_id")
         clinicId: String,
+
         @Query("patient")
-        nationalId: String,
-        @Query("rooms")
-        rooms: List<String>,
-        @Query("doctors")
-        doctors: List<String>
+        nationalId: String
     ): Response<GetPatientsResponse>
 
     /**
