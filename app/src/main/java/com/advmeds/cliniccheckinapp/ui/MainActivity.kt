@@ -1,6 +1,7 @@
 package com.advmeds.cliniccheckinapp.ui
 
 import android.app.PendingIntent
+import android.app.Presentation
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -8,12 +9,14 @@ import android.content.IntentFilter
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 import android.media.AudioManager
+import android.media.MediaRouter
 import android.media.SoundPool
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.view.MotionEvent
 import android.widget.EditText
+import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialogFragment
@@ -37,8 +40,9 @@ import com.advmeds.cliniccheckinapp.dialog.ScheduleListDialogFragment
 import com.advmeds.cliniccheckinapp.dialog.SuccessDialogFragment
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiError
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
-import com.advmeds.cliniccheckinapp.ui.home.HomeFragment.Companion.CLINIC_LOGO_URL_KEY
-import com.advmeds.cliniccheckinapp.ui.home.HomeFragment.Companion.RELOAD_CLINIC_LOGO_ACTION
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
+import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.printerlib.usb.BPT3XPrinterService
 import com.advmeds.printerlib.usb.UsbPrinterService
 import com.advmeds.printerlib.utils.PrinterBuffer
@@ -49,13 +53,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.*
+import kotlin.reflect.full.primaryConstructor
 
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val USB_PERMISSION = "${BuildConfig.APPLICATION_ID}.USB_PERMISSION"
 //        private const val SCAN_TIME_OUT: Long = 15
-
-        const val RELOAD_CLINIC_DATA_ACTION = "reload_clinic_data_action"
     }
 
     private val viewModel: MainViewModel by viewModels()
@@ -144,12 +147,27 @@ class MainActivity : AppCompatActivity() {
 
         override fun onReceiveResult(result: Result<AcsResponseModel>) {
             result.onSuccess {
-                getPatients(
-                    nationalId = it.icId,
-                    birth = it.birthday?.let { dateBean -> "${dateBean.year}-${dateBean.month}-${dateBean.day}" }
-                        ?: "",
-                    name = it.name
-                )
+                when(BuildConfig.BUILD_TYPE) {
+                    "rende" -> {
+                        createAppointment(
+                            schedule = GetScheduleResponse.ScheduleBean.RENDE_DIVISION_ONLY,
+                            patient = CreateAppointmentRequest.Patient(
+                                nationalId = it.icId,
+                                birthday = it.birthday?.let { dateBean -> "${dateBean.year}-${dateBean.month}-${dateBean.day}" }
+                                    ?: "",
+                                name = it.name
+                            )
+                        )
+                    }
+                    else -> {
+                        getPatients(
+                            nationalId = it.icId,
+                            birth = it.birthday?.let { dateBean -> "${dateBean.year}-${dateBean.month}-${dateBean.day}" }
+                                ?: "",
+                            name = it.name
+                        )
+                    }
+                }
             }.onFailure {
                 it.message?.let { it1 ->
                     Snackbar.make(binding.root, it1, Snackbar.LENGTH_LONG).show()
@@ -242,7 +260,9 @@ class MainActivity : AppCompatActivity() {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
             reloadClinicDataReceiver,
-            IntentFilter(RELOAD_CLINIC_DATA_ACTION)
+            IntentFilter(SharedPreferencesRepo.MS_SERVER_DOMAIN).apply {
+                addAction(SharedPreferencesRepo.ORG_ID)
+            }
         )
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -271,13 +291,6 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.getClinicGuardian()
 
-        viewModel.clinicGuardian.observe(this) {
-            val intent = Intent(RELOAD_CLINIC_LOGO_ACTION).apply {
-                putExtra(CLINIC_LOGO_URL_KEY, it?.logo)
-            }
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
-        }
-
         viewModel.getGuardianStatus.observe(this) {
             dialog?.dismiss()
 
@@ -289,9 +302,11 @@ class MainActivity : AppCompatActivity() {
                         if (it.response.success) {
                             null
                         } else {
+                            val apiError = ApiError.initWith(it.response.code)
+
                             ErrorDialogFragment(
                                 title = "",
-                                message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                message = apiError?.resStringID?.let { it1 -> getString(it1) } ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                     Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
                                 } else {
                                     Html.fromHtml(it.response.message)
@@ -322,45 +337,71 @@ class MainActivity : AppCompatActivity() {
                     if (it.response == null) {
                         null
                     } else {
+                        soundPool.play(
+                            if (it.response.success) {
+                                successSoundId
+                            } else {
+                                failSoundId
+                            },
+                            1f,
+                            1f,
+                            0,
+                            0,
+                            1f
+                        )
+
                         if (it.response.success) {
                             SuccessDialogFragment(
                                 title = getString(R.string.success_to_check),
                                 message = getString(R.string.success_to_check_message)
                             )
                         } else {
-                            val apiError = ApiError.initWith(it.response.code)
-
                             ErrorDialogFragment(
-                                title = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
-                                    getString(R.string.schedule_not_found)
+                                title = getString(R.string.fail_to_check),
+                                message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    Html.fromHtml(
+                                        it.response.message,
+                                        Html.FROM_HTML_MODE_COMPACT
+                                    )
                                 } else {
-                                    getString(R.string.fail_to_check)
+                                    Html.fromHtml(it.response.message)
                                 },
-                                message = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
-                                    getString(R.string.make_appointment_now)
-                                } else {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                        Html.fromHtml(
-                                            it.response.message,
-                                            Html.FROM_HTML_MODE_COMPACT
-                                        )
-                                    } else {
-                                        Html.fromHtml(it.response.message)
-                                    }
-                                },
-                                onActionButtonClicked = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND){
-                                    { isCancelled ->
-                                        if (!isCancelled) {
-                                            viewModel.getSchedule()
-                                        } else {
-                                            dialog?.dismiss()
-                                            dialog = null
-                                        }
-                                    }
-                                } else {
-                                    null
-                                }
+                                onActionButtonClicked = null
                             )
+
+//                            val apiError = ApiError.initWith(it.response.code)
+//
+//                            ErrorDialogFragment(
+//                                title = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
+//                                    getString(R.string.schedule_not_found)
+//                                } else {
+//                                    getString(R.string.fail_to_check)
+//                                },
+//                                message = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
+//                                    getString(R.string.make_appointment_now)
+//                                } else {
+//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                                        Html.fromHtml(
+//                                            it.response.message,
+//                                            Html.FROM_HTML_MODE_COMPACT
+//                                        )
+//                                    } else {
+//                                        Html.fromHtml(it.response.message)
+//                                    }
+//                                },
+//                                onActionButtonClicked = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND){
+//                                    { isCancelled ->
+//                                        if (!isCancelled) {
+//                                            viewModel.getSchedule()
+//                                        } else {
+//                                            dialog?.dismiss()
+//                                            dialog = null
+//                                        }
+//                                    }
+//                                } else {
+//                                    null
+//                                }
+//                            )
                         }
                     }
                 }
@@ -391,31 +432,18 @@ class MainActivity : AppCompatActivity() {
                                 schedules = it.response.schedules
                             ) { checkedSchedule ->
                                 if (checkedSchedule != null) {
-                                    viewModel.createAppointment(
-                                        doctor = checkedSchedule.doctor,
-                                        division = checkedSchedule.division,
-                                        startsAt = checkedSchedule.startsAt,
-                                        endsAt = checkedSchedule.endsAt
-                                    ) { createAppointmentResponse ->
-                                        if (createAppointmentResponse.success) {
-                                            printPatient(
-                                                division = when (BuildConfig.BUILD_TYPE) {
-                                                    "ptch" -> createAppointmentResponse.doctor
-                                                    else -> createAppointmentResponse.division
-                                                },
-                                                serialNo = createAppointmentResponse.serialNo
-                                            )
-                                        }
-                                    }
+                                    createAppointment(checkedSchedule)
                                 } else {
                                     dialog?.dismiss()
                                     dialog = null
                                 }
                             }
                         } else {
+                            val apiError = ApiError.initWith(it.response.code)
+
                             ErrorDialogFragment(
                                 title = "",
-                                message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                message = apiError?.resStringID?.let { it1 -> getString(it1) } ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                     Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
                                 } else {
                                     Html.fromHtml(it.response.message)
@@ -452,9 +480,15 @@ class MainActivity : AppCompatActivity() {
                                 message = getString(R.string.success_to_make_appointment_message)
                             )
                         } else {
+                            val apiError = ApiError.initWith(it.response.code)
+
                             ErrorDialogFragment(
-                                title = getString(R.string.fail_to_make_appointment),
-                                message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                title = if (it.response.code == 10014) {
+                                    getString(R.string.fail_to_make_appointment_10014)
+                                } else {
+                                    getString(R.string.fail_to_make_appointment)
+                                },
+                                message = apiError?.resStringID?.let { it1 -> getString(it1) } ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                     Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
                                 } else {
                                     Html.fromHtml(it.response.message)
@@ -476,6 +510,8 @@ class MainActivity : AppCompatActivity() {
 
             dialog?.showNow(supportFragmentManager, null)
         }
+
+        showPresentation()
     }
 
     private fun setupUSB() {
@@ -694,19 +730,87 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
             }
+        }
+    }
 
-            soundPool.play(
-                if (it.success) {
-                    successSoundId
-                } else {
-                    failSoundId
-                },
-                1f,
-                1f,
-                0,
-                0,
-                1f
+    /** 無健保卡，手動取號 */
+    private fun createAppointment(
+        schedule: GetScheduleResponse.ScheduleBean,
+        patient: CreateAppointmentRequest.Patient? = null,
+        completion: ((CreateAppointmentResponse) -> Unit)? = null
+    ) {
+        if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
+            // 若有開啟取號功能，則必須要有連線取票機才會去報到
+            Snackbar.make(
+                binding.root,
+                getString(R.string.printer_not_connect),
+                Snackbar.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        viewModel.createAppointment(
+            schedule = schedule,
+            patient = patient
+        ) { createAppointmentResponse ->
+            completion?.invoke(createAppointmentResponse)
+
+            if (createAppointmentResponse.success) {
+                printPatient(
+                    division = when (BuildConfig.BUILD_TYPE) {
+                        "ptch" -> createAppointmentResponse.doctor
+                        else -> createAppointmentResponse.division
+                    },
+                    serialNo = createAppointmentResponse.serialNo
+                )
+            }
+        }
+    }
+
+    /** 用於部分場域的直接取流水號 */
+    fun createFakeAppointment(schedule: GetScheduleResponse.ScheduleBean) {
+        val serialNo = viewModel.checkInSerialNo
+
+        createAppointment(
+            schedule = schedule,
+            patient = CreateAppointmentRequest.Patient(
+                name = "手動取號",
+                nationalId = "Fake${String.format("%06d", serialNo)}"
             )
+        ) { createAppointmentResponse ->
+            if (createAppointmentResponse.success) {
+                viewModel.checkInSerialNo = if (serialNo >= 999999) {
+                    0
+                } else {
+                    serialNo + 1
+                }
+            }
+        }
+    }
+
+    /** 虛擬健保卡報到 */
+    fun checkInWithVirtualCard() {
+        dialog?.dismiss()
+
+        dialog = ErrorDialogFragment(
+            title = getString(R.string.coming_soon),
+            message = ""
+        )
+
+        dialog?.showNow(supportFragmentManager, null)
+    }
+
+    private fun showPresentation() {
+        val mediaRouter = getSystemService(ComponentActivity.MEDIA_ROUTER_SERVICE) as MediaRouter
+        val presentationDisplay =
+            mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO).presentationDisplay ?: return
+
+        try {
+            val cls = Class.forName("com.advmeds.cliniccheckinapp.ui.presentations.WebPresentation").kotlin
+            val presentation = cls.primaryConstructor?.call(this, presentationDisplay) as? Presentation
+            presentation?.show()
+        } catch (ignored: ClassNotFoundException) {
+
         }
     }
 

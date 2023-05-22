@@ -16,7 +16,9 @@ enum class ApiError(val rawValue: Int) {
     CHECK_IN_OVERTIME(10011),
     CHECK_IN_TIME_NOT_UP(10012),
     CHECK_IN_AGAIN(10013),
-    SCHEDULE_NOT_FOUND(10014);
+    SCHEDULE_NOT_FOUND(10014),
+    SCHEDULE_FULLY_BOOKED(10015),
+    APPOINTMENT_ALREADY_EXISTS(10016);
 
     companion object {
         fun initWith(rawValue: Int) = values().find { it.rawValue == rawValue }
@@ -38,5 +40,7 @@ enum class ApiError(val rawValue: Int) {
             CHECK_IN_TIME_NOT_UP -> R.string.mScheduler_api_error_10012
             CHECK_IN_AGAIN -> R.string.mScheduler_api_error_10013
             SCHEDULE_NOT_FOUND -> R.string.mScheduler_api_error_10014
+            SCHEDULE_FULLY_BOOKED -> R.string.mScheduler_api_error_10015
+            APPOINTMENT_ALREADY_EXISTS -> R.string.mScheduler_api_error_10016
         }
 }

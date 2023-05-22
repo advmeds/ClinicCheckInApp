@@ -2,6 +2,7 @@ package com.advmeds.cliniccheckinapp.models.remote.mScheduler.response
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.util.*
 
 @Serializable
 data class GetScheduleResponse(
@@ -44,5 +45,31 @@ data class GetScheduleResponse(
         /** 門診結束時間 */
         @SerialName("ends_at")
         val endsAt: String = "",
-    )
+    ) {
+        companion object {
+            /** 屏基小兒心超 */
+            val PTCH_BABY = ScheduleBean(
+                doctor = "CA",
+                division = "0000"
+            )
+
+            /** 仁德插入健保卡後，唯一的門診預約 */
+            val RENDE_DIVISION_ONLY = ScheduleBean(
+                doctor = "e666",
+                division = "399"
+            )
+
+            /** 仁德疫苗施打 */
+            val RENDE_VACCINE = ScheduleBean(
+                doctor = "e666",
+                division = "398"
+            )
+
+            /** 仁德體檢 */
+            val RENDE_CHECK_UP = ScheduleBean(
+                doctor = "e666",
+                division = "400"
+            )
+        }
+    }
 }

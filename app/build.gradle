@@ -14,6 +14,8 @@ android {
         versionCode 1
         versionName "1.0"
 
+        flavorDimensions "mode"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -67,7 +69,27 @@ android {
 
             buildConfigField "String", "MS_DOMAIN", "\"http://129.34.70.92:3000\""
         }
+
+        // 仁德衛生所
+        // 介面有調整
+        // 而且門診取號為固定的
+        rende {
+            initWith release
+
+            buildConfigField "String", "ORG_ID", "\"103\""
+        }
     }
+
+    productFlavors {
+        create("checkIn") {
+            dimension = "mode"
+        }
+
+        create("checkInWithPanel") {
+            dimension = "mode"
+        }
+    }
+
     buildFeatures {
         viewBinding true
     }
@@ -77,6 +99,13 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    variantFilter { variant ->
+        def names = variant.flavors*.name
+        def ignorePanel = names.contains("checkInWithPanel") && variant.buildType.name == "ptch"
+        if (ignorePanel) {
+            setIgnore(true)
+        }
     }
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
@@ -135,4 +164,8 @@ dependencies {
     implementation 'com.github.advmeds-service:CardReaderModule_Android:1.2.6'
 
     implementation 'com.github.advmeds-service:PrinterLib:1.0.4'
+
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    checkInWithPanelImplementation("org.mozilla.geckoview:geckoview:71.0.20200108003105")
 }

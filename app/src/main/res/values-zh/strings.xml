@@ -1,0 +1,100 @@
+<resources>
+    <string name="app_name">看診取號機</string>
+
+    <string name="confirm">確認</string>
+    <string name="cancel">取消</string>
+    <string name="setting">設定</string>
+    <string name="save">保存</string>
+    <string name="backspace">刪除</string>
+    <string name="enter">送出</string>
+    <string name="or">或</string>
+    <string name="got_it">了解</string>
+
+    <string name="present_card_remind">看診前請插健保卡取號</string>
+
+    <string name="health_card">健保卡</string>
+    <string name="national_id">身份證字號</string>
+    <string name="chart_no">病歷號</string>
+    <string name="present_health_card">請直接插入%s取號</string>
+    <string name="check_in_item_display_name">科別名稱</string>
+    <string name="check_in_item_manual_title">無健保卡</string>
+    <string name="check_in_item_manual_body">手動取號</string>
+    <string name="check_in_item_virtual_title">虛擬健保卡</string>
+    <string name="check_in_item_virtual_body">取號</string>
+    <string name="check_in_type_manual">手動輸入</string>
+    <string name="check_in_type_custom">指定科別</string>
+    <string name="check_in_type_virtual_card">虛擬健保卡</string>
+    <string name="national_id_input_title">如您未攜帶健保卡，可輕觸螢幕輸入%s</string>
+    <string name="national_id_input_hint">請輸入%s</string>
+    <string name="national_id_format_invalid">%s格式錯誤</string>
+    <string name="national_id_input_cancel">取消手動輸入</string>
+    <string name="submit">送出</string>
+    <string name="printer_not_connect">尚未連接取票機</string>
+    <string name="get_patient_not_found">查無此身份證字號之預約資訊。</string>
+    <string name="clinic_data_not_found">找不到診所資料</string>
+
+    <string name="delete_item_title">確認刪除此項目嗎？</string>
+
+    <string name="print_serial_no">看診號碼</string>
+    <string name="print_footer">請依叫號 等候辦理</string>
+
+    <string name="checking">資料辨識中…</string>
+
+    <string name="success_to_check">報到成功</string>
+    <string name="success_to_check_message">請記得拿取號碼牌</string>
+
+    <string name="fail_to_check">報到失敗</string>
+    <string name="schedule_not_found">查無預約紀錄</string>
+    <string name="make_appointment_now">是否現場取號？</string>
+
+    <string name="select_schedules_title">請選擇要掛號的科別</string>
+
+    <string name="make_appointment">現場取號方法</string>
+    <string name="make_appointment_right_now">點我現場取號</string>
+    <string name="make_appointment_message">請直接插%s，或手動輸入%s</string>
+    <string name="success_to_make_appointment">已完成現場取號</string>
+    <string name="success_to_make_appointment_message">請記得拿取號碼單，並等候診間人員叫號時，進入診間看診。</string>
+
+    <string name="fail_to_make_appointment">掛號失敗</string>
+    <string name="fail_to_make_appointment_10014">非取號時段</string>
+
+    <string name="server_domain">伺服器網域</string>
+    <string name="org_id">機構代碼</string>
+    <string name="doctors">醫師代碼</string>
+    <string name="rooms">診間代碼</string>
+    <string name="clinic_panel_url">叫號面板網址</string>
+    <string name="format_checked">報到格式檢查</string>
+    <string-array name="setting_items">
+        <item>@string/server_domain</item>
+        <item>@string/org_id</item>
+        <item>醫師代碼(可複數，用逗號區隔)</item>
+        <item>診間代碼(可複數，用逗號區隔)</item>
+        <item>@string/clinic_panel_url</item>
+        <item>@string/format_checked</item>
+    </string-array>
+
+    <string name="no_internet">需要有網路連線，請確認。</string>
+    <string name="service_timeout">伺服器連線逾時，請確認。</string>
+
+    <string name="mScheduler_api_error_10001">主要欄位為空</string>
+    <string name="mScheduler_api_error_10002">找不到指定機構</string>
+    <string name="mScheduler_api_error_10003">找不到指定醫師</string>
+    <string name="mScheduler_api_error_10004">找不到指定科別</string>
+    <string name="mScheduler_api_error_10005">病患名稱為空</string>
+    <string name="mScheduler_api_error_10006">病患手機為空</string>
+    <string name="mScheduler_api_error_10007">病患生日格式錯誤</string>
+    <string name="mScheduler_api_error_10008">病患身分證為空</string>
+    <string name="mScheduler_api_error_10009">指定時段格式錯誤</string>
+    <string name="mScheduler_api_error_10010">查無資料，請重新輸入號碼或洽服務人員，謝謝</string>
+    <string name="mScheduler_api_error_10011">報到時間已過，請洽服務人員</string>
+    <string name="mScheduler_api_error_10012">尚未到 %s 報到時間，%s 前往報到或洽服務人員</string>
+    <string name="mScheduler_api_error_10013">重複報到，若有問題請洽服務人員</string>
+    <string name="mScheduler_api_error_10014">目前不提供本服務</string>
+    <string name="mScheduler_api_error_10014_ptch_ca"><![CDATA[請於<font color=\'#E54B4B\'>每星期三 13:00 ~ 17:00</font> 再進行取號]]></string>
+    <string name="mScheduler_api_error_10015">掛號人數已滿，或請洽服務人員</string>
+    <string name="mScheduler_api_error_10016">重複掛號，若有問題請洽服務人員</string>
+
+    <string name="coming_soon">功能尚未開放</string>
+
+    <string name="reconnecting">網路連線偵測中，請稍後</string>
+</resources>

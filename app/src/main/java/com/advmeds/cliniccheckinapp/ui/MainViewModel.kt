@@ -6,7 +6,6 @@ import android.net.ConnectivityManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiService
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
@@ -16,8 +15,6 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatient
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
 import com.advmeds.cliniccheckinapp.repositories.ServerRepository
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
-import com.advmeds.cliniccheckinapp.utils.isNationId
-import com.advmeds.cliniccheckinapp.utils.isPTCHCaseId
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -34,6 +31,13 @@ import java.util.concurrent.TimeUnit
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
+
+    /** @see SharedPreferencesRepo.checkInSerialNo */
+    var checkInSerialNo: Int
+        get() = sharedPreferencesRepo.checkInSerialNo
+        set(value) {
+            sharedPreferencesRepo.checkInSerialNo = value
+        }
 
     private val format = Json {
         isLenient = true
@@ -109,7 +113,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 Timber.d("Response: ${format.encodeToString(result.body())}")
 
                 if (result.isSuccessful) {
-                    result.body()!!
+                    result.body()!!.also {
+                        sharedPreferencesRepo.logoUrl = it.logo
+                    }
                 } else {
                     GetClinicGuardianResponse(
                         success = false,
@@ -189,6 +195,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 return@launch
             }
 
+            val formatCheckedList = sharedPreferencesRepo.formatCheckedList
+
             if (patient.nationalId.isBlank()) {
                 checkInStatus.value = CheckInStatus.NotChecking(
                     response = GetPatientsResponse(
@@ -196,31 +204,49 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         code = 0,
                         message = String.format(
                             application.getString(R.string.national_id_input_hint),
-                            application.getString(R.string.national_id)
+                            formatCheckedList.joinToString("、") {
+                                application.getString(
+                                    it.description
+                                )
+                            }
                         )
                     )
                 )
                 return@launch
             }
 
-            if (!(patient.nationalId.isNationId || (BuildConfig.BUILD_TYPE == "ptch" && patient.nationalId.isPTCHCaseId))) {
+            if (formatCheckedList.isNotEmpty() &&
+                formatCheckedList.none {
+                    it.inputFormatAvailable(patient.nationalId)
+                }
+            ) {
                 checkInStatus.value = CheckInStatus.NotChecking(
                     response = GetPatientsResponse(
                         success = false,
                         code = 0,
                         message = String.format(
                             application.getString(R.string.national_id_format_invalid),
-                            application.getString(R.string.national_id)
+                            formatCheckedList.joinToString("、") {
+                                application.getString(
+                                    it.description
+                                )
+                            }
                         )
                     )
                 )
+
                 return@launch
             }
 
             checkInStatus.value = CheckInStatus.Checking
 
             val response = try {
-                val result = serverRepo.getPatients(sharedPreferencesRepo.orgId, patient.nationalId)
+                val result = serverRepo.getPatients(
+                    clinicId = sharedPreferencesRepo.orgId,
+                    nationalId = patient.nationalId,
+                    doctors = sharedPreferencesRepo.doctors.toTypedArray(),
+                    rooms = sharedPreferencesRepo.rooms.mapNotNull { it.toIntOrNull() }.toTypedArray()
+                )
 
                 Timber.d("Status code: ${result.code()}")
                 Timber.d("Response: ${format.encodeToString(result.body())}")
@@ -344,10 +370,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun createAppointment(
-        doctor: String,
-        division: String,
-        startsAt: String,
-        endsAt: String,
+        schedule: GetScheduleResponse.ScheduleBean,
+        patient: CreateAppointmentRequest.Patient? = null,
         completion: ((CreateAppointmentResponse) -> Unit)? = null
     ) {
         if (getSchedulesJob?.isActive == true) return
@@ -360,11 +384,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             val response = try {
                 val request = CreateAppointmentRequest(
                     clinicId = sharedPreferencesRepo.orgId,
-                    doctor = doctor,
-                    division = division,
-                    startsAt = startsAt,
-                    endsAt = endsAt,
-                    patient = patient ?: CreateAppointmentRequest.Patient()
+                    doctor = schedule.doctor,
+                    division = schedule.division,
+                    patient = requireNotNull(patient ?: this@MainViewModel.patient) {
+                        getApplication<MainApplication>().getString(R.string.mScheduler_api_error_10008)
+                    }
                 )
 
                 val result = serverRepo.createsAppointment(request)
@@ -373,7 +397,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 Timber.d("Response: ${format.encodeToString(result.body())}")
 
                 if (result.isSuccessful) {
-                    result.body()!!
+                    val response = result.body()!!
+
+                    if (!response.success &&
+                        response.code == 10014 &&
+                        schedule == GetScheduleResponse.ScheduleBean.PTCH_BABY
+                    ) {
+                        response.copy(
+                            message = getApplication<MainApplication>().getString(R.string.mScheduler_api_error_10014_ptch_ca)
+                        )
+                    } else {
+                        response
+                    }
                 } else {
                     CreateAppointmentResponse(
                         success = false,
