@@ -20,11 +20,4 @@ class InputPageViewModel(application: Application) : AndroidViewModel(applicatio
         set(value) {
             sharedPreferencesRepo.orgId = value
         }
-
-    /** @see SharedPreferencesRepo.logo */
-    var logo: String?
-        get() = sharedPreferencesRepo.logo
-        set(value) {
-            sharedPreferencesRepo.logo = value
-        }
 }

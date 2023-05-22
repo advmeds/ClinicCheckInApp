@@ -32,7 +32,6 @@
     <string name="success_to_check_message">請記得拿取號碼牌</string>
 
     <string name="fail_to_check">報到失敗</string>
-    <string name="fail_to_check_message">查無資料，請重新輸入號碼，\n或洽服務人員</string>
     <string name="schedule_not_found">查無預約紀錄</string>
     <string name="make_appointment_now">是否現場取號？</string>
 

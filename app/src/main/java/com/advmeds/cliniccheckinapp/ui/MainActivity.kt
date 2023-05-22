@@ -328,46 +328,39 @@ class MainActivity : AppCompatActivity() {
                                 message = getString(R.string.success_to_check_message)
                             )
                         } else {
+                            val apiError = ApiError.initWith(it.response.code)
 
                             ErrorDialogFragment(
-                                title = getString(R.string.fail_to_check),
-                                message = getString(R.string.fail_to_check_message)
-                            )
-                            /*
-                                val apiError = ApiError.initWith(it.response.code)
-
-                                ErrorDialogFragment(
-                                    title = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
-                                        getString(R.string.schedule_not_found)
+                                title = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
+                                    getString(R.string.schedule_not_found)
+                                } else {
+                                    getString(R.string.fail_to_check)
+                                },
+                                message = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
+                                    getString(R.string.make_appointment_now)
+                                } else {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                        Html.fromHtml(
+                                            it.response.message,
+                                            Html.FROM_HTML_MODE_COMPACT
+                                        )
                                     } else {
-                                        getString(R.string.fail_to_check)
-                                    },
-                                    message = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
-                                        getString(R.string.make_appointment_now)
-                                    } else {
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                            Html.fromHtml(
-                                                it.response.message,
-                                                Html.FROM_HTML_MODE_COMPACT
-                                            )
-                                        } else {
-                                            Html.fromHtml(it.response.message)
-                                        }
-                                    },
-                                    onActionButtonClicked = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND){
-                                        { isCancelled ->
-                                            if (!isCancelled) {
-                                                viewModel.getSchedule()
-                                            } else {
-                                                dialog?.dismiss()
-                                                dialog = null
-                                            }
-                                        }
-                                    } else {
-                                        null
+                                        Html.fromHtml(it.response.message)
                                     }
-                                )
-                            */
+                                },
+                                onActionButtonClicked = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND){
+                                    { isCancelled ->
+                                        if (!isCancelled) {
+                                            viewModel.getSchedule()
+                                        } else {
+                                            dialog?.dismiss()
+                                            dialog = null
+                                        }
+                                    }
+                                } else {
+                                    null
+                                }
+                            )
                         }
                     }
                 }

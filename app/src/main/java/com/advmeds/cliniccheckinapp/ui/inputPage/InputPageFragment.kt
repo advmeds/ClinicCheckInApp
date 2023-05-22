@@ -51,6 +51,13 @@ class InputPageFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private val reloadClinicLogoReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val clinicLogoUrl = intent?.getStringExtra(CLINIC_LOGO_URL_KEY)
+            binding.logoImageView.load(clinicLogoUrl)
+        }
+    }
+
     private var handler: Handler? = null
 
     override fun onCreateView(
@@ -60,7 +67,10 @@ class InputPageFragment : Fragment() {
     ): View {
         _binding = InputPageFragmentBinding.inflate(inflater, container, false)
 
-        binding.logoImageView.load(viewModel.logo)
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+            reloadClinicLogoReceiver,
+            IntentFilter(RELOAD_CLINIC_LOGO_ACTION)
+        )
 
         setUpHandler()
 
@@ -214,6 +224,9 @@ class InputPageFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+
+        LocalBroadcastManager.getInstance(requireContext())
+            .unregisterReceiver(reloadClinicLogoReceiver)
         handler?.removeCallbacksAndMessages(null)
         _binding = null
     }

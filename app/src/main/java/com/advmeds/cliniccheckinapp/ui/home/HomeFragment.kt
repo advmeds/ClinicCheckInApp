@@ -44,13 +44,8 @@ class HomeFragment : Fragment() {
     private val reloadClinicLogoReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val clinicLogoUrl = intent?.getStringExtra(InputPageFragment.CLINIC_LOGO_URL_KEY)
-            setLogo(clinicLogoUrl)
-            viewModel.logo = clinicLogoUrl
+            binding.logoImageView.load(clinicLogoUrl)
         }
-    }
-
-    private fun setLogo(clinicLogoUrl: String?) {
-        binding.logoImageView.load(clinicLogoUrl)
     }
 
 
@@ -65,8 +60,6 @@ class HomeFragment : Fragment() {
             reloadClinicLogoReceiver,
             IntentFilter(InputPageFragment.RELOAD_CLINIC_LOGO_ACTION)
         )
-
-        setLogo(viewModel.logo)
 
         return binding.root
     }

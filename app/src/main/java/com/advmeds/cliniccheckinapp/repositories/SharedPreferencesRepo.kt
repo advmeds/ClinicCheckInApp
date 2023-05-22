@@ -14,9 +14,6 @@ class SharedPreferencesRepo(
         /** 從SharedPreferences取得『機構代碼』的KEY */
         const val ORG_ID = "org_id"
 
-        /** SharedPreferences logo KEY */
-        const val LOGO_KEY = "logo_key"
-
         /** 以Volatile註解表示此INSTANCE變數僅會在主記憶體中讀寫，可避免進入cache被不同執行緒讀寫而造成問題 */
         @Volatile
         private var INSTANCE: SharedPreferencesRepo? = null
@@ -50,13 +47,5 @@ class SharedPreferencesRepo(
         set(value) =
             sharedPreferences.edit()
                 .putString(ORG_ID, value)
-                .apply()
-
-    var logo: String?
-        get() =
-            sharedPreferences.getString(LOGO_KEY, null)
-        set(value) =
-            sharedPreferences.edit()
-                .putString(LOGO_KEY, value)
                 .apply()
 }
