@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,45 +8,46 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:padding="@dimen/screen_padding"
+    android:padding="20dp"
     tools:context=".ui.home.HomeFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/top_card_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_margin="@dimen/logo_margin"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="4dp">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:layout_gravity="center_horizontal">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/logo_imageView"
-                android:layout_width="@dimen/logo_image_width"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/logo_image_margin"
-                android:layout_marginBottom="@dimen/logo_image_margin"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:minWidth="740dp"
+                android:minHeight="150dp"
                 app:srcCompat="@drawable/clinic_logo_default" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="40dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:fontFamily="sans-serif-medium"
-                android:gravity="start"
-                android:layout_gravity="center"
+                android:gravity="center"
                 android:lines="1"
                 android:text="@string/app_name_title_in_home_fragment"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/logo_text_size" />
+                android:textSize="60sp" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -56,16 +56,14 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/screen_panel_margin">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_info_view"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/home_screen_panel_distance_between_elements"
+            android:layout_margin="20dp"
             android:layout_weight="6"
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">
@@ -86,7 +84,7 @@
                     android:lines="1"
                     android:text="@string/home_page_card_info_label"
                     android:textColor="@color/black_alter"
-                    android:textSize="@dimen/home_page_card_info_text_size"
+                    android:textSize="60sp"
                     android:textStyle="bold"/>
 
                 <com.airbnb.lottie.LottieAnimationView
@@ -105,14 +103,13 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
-            android:layout_marginStart="@dimen/home_screen_panel_distance_between_elements"
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/manually_input_card"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginBottom="@dimen/home_screen_panel_distance_between_elements"
+                android:layout_margin="20dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="4dp">
@@ -144,7 +141,7 @@
                         android:text="@string/home_page_manually_input_card_label"
                         android:textAlignment="center"
                         android:textColor="@color/black_alter"
-                        android:textSize="@dimen/home_page_manually_input_text_size"
+                        android:textSize="40sp"
                         android:textStyle="bold" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -155,7 +152,7 @@
                 android:id="@+id/pcu_check_in_card"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="@dimen/home_screen_panel_distance_between_elements"
+                android:layout_margin="20dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="4dp">
@@ -185,10 +182,10 @@
                         android:layout_weight="3"
                         android:fontFamily="sans-serif-medium"
                         android:lines="2"
-                        android:text="@string/home_page_pcu_check_label"
+                        android:text="@string/home_page_manually_input_card_label"
                         android:textAlignment="center"
                         android:textColor="@color/black_alter"
-                        android:textSize="@dimen/home_page_pcu_check_text_size"
+                        android:textSize="40sp"
                         android:textStyle="bold" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

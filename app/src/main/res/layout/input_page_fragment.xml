@@ -4,20 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
     android:clipToPadding="false"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:padding="@dimen/screen_padding"
+    android:padding="20dp"
+    android:clickable="true"
     tools:context=".ui.inputPage.InputPageFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/top_card_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="@dimen/logo_margin"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="4dp">
 
@@ -28,25 +27,28 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/logo_imageView"
-                android:layout_width="@dimen/logo_image_width"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/logo_image_margin"
-                android:layout_marginBottom="@dimen/logo_image_margin"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:minWidth="740dp"
+                android:minHeight="150dp"
                 app:srcCompat="@drawable/clinic_logo_default" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="40dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:fontFamily="sans-serif-medium"
-                android:gravity="start"
+                android:gravity="center"
                 android:lines="1"
                 android:text="@string/app_name_title_in_home_fragment"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/logo_text_size" />
+                android:textSize="60sp" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -56,8 +58,8 @@
         android:id="@+id/bottom_card_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="@dimen/screen_panel_margin"
-        android:layout_weight="4"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
         app:cardCornerRadius="10dp"
         app:cardElevation="4dp">
 
@@ -66,74 +68,139 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <!--
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_gravity="center_horizontal">
-
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/id_input_title_tv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/input_page_input_title_top_margin"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:lines="1"
-                    android:textAlignment="center"
-                    android:textSize="@dimen/input_page_panel_title"
-                    tools:text="@string/national_id_input_title" />
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/id_input_et"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/input_page_input_et_horizontal_margin"
-                    android:layout_marginTop="@dimen/input_page_input_et_vertical_margin"
-                    android:layout_marginEnd="@dimen/input_page_input_et_horizontal_margin"
-                    android:layout_marginBottom="@dimen/input_page_input_et_vertical_margin"
-                    android:background="@drawable/id_input_border"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="@string/national_id_input_hint"
-                    android:inputType="textCapSentences"
-                    android:padding="@dimen/input_page_input_et_padding"
-                    android:singleLine="true"
-                    android:textAlignment="center"
-                    android:textSize="@dimen/input_page_input_text_size" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/back_to_home_page_button"
-                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                    android:id="@+id/materialTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_margin="@dimen/input_page_back_to_home_margin"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
-                    android:paddingStart="@dimen/input_page_back_to_home_horizontal_padding"
-                    android:paddingTop="@dimen/input_page_back_to_home_vertical_padding"
-                    android:paddingEnd="@dimen/input_page_back_to_home_horizontal_padding"
-                    android:paddingBottom="@dimen/input_page_back_to_home_vertical_padding"
-                    android:text="@string/make_appointment_right_now"
-                    android:textSize="@dimen/input_page_back_to_home_button_text_size"
-                    app:backgroundTint="@color/alert"
-                    app:cornerRadius="8dp"
-                    tools:ignore="SpeakableTextPresentCheck" />
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    android:lines="1"
+                    android:text="@string/present_card_remind"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="48sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+                <com.airbnb.lottie.LottieAnimationView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="40dp"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="card_present.json"
+                    app:lottie_loop="true" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/check_in_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="40dp"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/materialTextView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center"
+                        android:lines="1"
+                        android:text="@string/or"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="48sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/check_in_button"
+                        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="40dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:paddingStart="24dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="24dp"
+                        android:paddingBottom="10dp"
+                        android:text="@string/make_appointment_right_now"
+                        android:textSize="36sp"
+                        app:backgroundTint="@color/alert"
+                        app:cornerRadius="8dp"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
             </androidx.appcompat.widget.LinearLayoutCompat>
+            -->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/id_input_title_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:lines="1"
+                android:textAlignment="center"
+                android:textSize="36sp"
+                tools:text="@string/national_id_input_title" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/id_input_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/id_input_border"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/national_id_input_hint"
+                android:inputType="textCapSentences"
+                android:padding="14dp"
+                android:singleLine="true"
+                android:textAlignment="center"
+                android:textSize="36sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/back_to_home_page_button"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="10dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:paddingStart="24dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="24dp"
+                android:paddingBottom="10dp"
+                android:text="@string/make_appointment_right_now"
+                android:textSize="36sp"
+                app:backgroundTint="@color/alert"
+                app:cornerRadius="8dp"
+                tools:ignore="SpeakableTextPresentCheck" />
+
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
                 android:background="@color/keyboard_background"
                 android:clipToPadding="false"
                 android:orientation="horizontal"
-                android:padding="@dimen/input_page_keyboard_padding">
+                android:padding="10dp">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/en_pad_layout"
@@ -142,7 +209,7 @@
                     android:layout_weight="7"
                     android:clipToPadding="true"
                     android:orientation="vertical"
-                    android:padding="@dimen/input_page_alphabet_part">
+                    android:padding="10dp">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
@@ -157,7 +224,6 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="A" />
 
                         <com.google.android.material.button.MaterialButton
@@ -166,7 +232,6 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:layout_weight="1"
                             android:text="B" />
 
@@ -176,7 +241,6 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:layout_weight="1"
                             android:text="C" />
 
@@ -186,7 +250,6 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:layout_weight="1"
                             android:text="D" />
 
@@ -195,7 +258,6 @@
                             style="@style/MyApp.Keyboard"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
                             android:text="E" />
@@ -206,7 +268,6 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:layout_weight="1"
                             android:text="F" />
 
@@ -216,7 +277,6 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:layout_weight="1"
                             android:text="G" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -233,7 +293,6 @@
                             style="@style/MyApp.Keyboard"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:layout_weight="1"
                             android:text="H" />
 
@@ -244,7 +303,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="I" />
 
                         <com.google.android.material.button.MaterialButton
@@ -254,7 +312,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="J" />
 
                         <com.google.android.material.button.MaterialButton
@@ -264,7 +321,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="K" />
 
                         <com.google.android.material.button.MaterialButton
@@ -274,7 +330,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="L" />
 
                         <com.google.android.material.button.MaterialButton
@@ -284,7 +339,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="M" />
 
                         <com.google.android.material.button.MaterialButton
@@ -294,7 +348,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="N" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -303,7 +356,6 @@
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:clipToPadding="false"
-                        android:textSize="@dimen/input_page_key_text_size"
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
@@ -312,7 +364,6 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="O" />
 
                         <com.google.android.material.button.MaterialButton
@@ -322,7 +373,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="P" />
 
                         <com.google.android.material.button.MaterialButton
@@ -332,7 +382,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="Q" />
 
                         <com.google.android.material.button.MaterialButton
@@ -342,7 +391,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="R" />
 
                         <com.google.android.material.button.MaterialButton
@@ -352,7 +400,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="S" />
 
                         <com.google.android.material.button.MaterialButton
@@ -362,7 +409,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="T" />
 
                         <com.google.android.material.button.MaterialButton
@@ -372,7 +418,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="U" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -389,7 +434,6 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="V" />
 
                         <com.google.android.material.button.MaterialButton
@@ -399,7 +443,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="W" />
 
                         <com.google.android.material.button.MaterialButton
@@ -409,7 +452,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="X" />
 
                         <com.google.android.material.button.MaterialButton
@@ -419,7 +461,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="Y" />
 
                         <com.google.android.material.button.MaterialButton
@@ -429,7 +470,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="Z" />
 
                         <com.google.android.material.button.MaterialButton
@@ -439,7 +479,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="-" />
 
                         <com.google.android.material.button.MaterialButton
@@ -474,7 +513,6 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="1" />
 
                         <com.google.android.material.button.MaterialButton
@@ -484,7 +522,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="2" />
 
                         <com.google.android.material.button.MaterialButton
@@ -494,7 +531,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="3" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -512,7 +548,6 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="4" />
 
                         <com.google.android.material.button.MaterialButton
@@ -522,7 +557,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="5" />
 
                         <com.google.android.material.button.MaterialButton
@@ -532,7 +566,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="6" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -550,7 +583,6 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="7" />
 
                         <com.google.android.material.button.MaterialButton
@@ -560,7 +592,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="8" />
 
                         <com.google.android.material.button.MaterialButton
@@ -570,7 +601,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="9" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -596,7 +626,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:textSize="@dimen/input_page_key_text_size"
                             android:text="0" />
 
                         <com.google.android.material.button.MaterialButton
@@ -649,18 +678,18 @@
                                 android:orientation="vertical">
 
                                 <androidx.appcompat.widget.AppCompatImageView
-                                    android:layout_width="@dimen/input_page_clear_symbol_button_image_width"
-                                    android:layout_height="@dimen/input_page_clear_symbol_button_image_height"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:layout_gravity="center_horizontal"
                                     app:srcCompat="@drawable/ic_baseline_backspace" />
 
                                 <androidx.appcompat.widget.AppCompatTextView
                                     android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:layout_gravity="center_horizontal"
                                     android:text="@string/backspace"
                                     android:textColor="@color/white"
-                                    android:textSize="@dimen/input_page_clear_symbol_button_label_text_size" />
+                                    android:textSize="28sp" />
 
                             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -698,8 +727,8 @@
                                 android:orientation="vertical">
 
                                 <androidx.appcompat.widget.AppCompatImageView
-                                    android:layout_width="@dimen/input_page_enter_button_image_width"
-                                    android:layout_height="@dimen/input_page_enter_button_image_height"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:layout_gravity="center_horizontal"
                                     app:srcCompat="@drawable/ic_baseline_arrow_forward" />
 
@@ -709,7 +738,7 @@
                                     android:layout_gravity="center_horizontal"
                                     android:text="@string/enter"
                                     android:textColor="@color/white"
-                                    android:textSize="@dimen/input_page_enter_button_label_text_size" />
+                                    android:textSize="28sp" />
 
                             </androidx.appcompat.widget.LinearLayoutCompat>
 

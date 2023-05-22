@@ -33,7 +33,7 @@
     </style>
 
     <style name="MyApp.Keyboard" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="cornerRadius">@dimen/input_page_key_button_corner_radius</item>
+        <item name="cornerRadius">6dp</item>
         <item name="android:insetTop">0dp</item>
         <item name="elevation">1dp</item>
         <item name="android:translationZ">2dp</item>

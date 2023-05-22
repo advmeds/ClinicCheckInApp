@@ -4,6 +4,7 @@
 
     <string name="confirm">確認</string>
     <string name="cancel">取消</string>
+    <string name="setting">設定</string>
     <string name="backspace">刪除</string>
     <string name="enter">送出</string>
     <string name="or">或</string>
@@ -45,6 +46,12 @@
 
     <string name="fail_to_make_appointment">掛號失敗</string>
 
+    <string name="server_domain">伺服器網域</string>
+    <string name="org_id">機構代碼</string>
+    <string-array name="setting_items">
+        <item>@string/server_domain</item>
+        <item>@string/org_id</item>
+    </string-array>
 
     <string name="no_internet">需要有網路連線，請確認。</string>
     <string name="service_timeout">伺服器連線逾時，請確認。</string>
@@ -63,10 +70,11 @@
     <string name="mScheduler_api_error_10012">尚未到 %s 報到時間，%s 前往報到或洽服務人員</string>
     <string name="mScheduler_api_error_10013">重複報到，若有問題請洽服務人員</string>
     <string name="mScheduler_api_error_10014">查無可用時段</string>
-
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="id_is_invalid_title">id is invalid</string>
     <string name="id_is_invalid_message">please, check id again, it may have error</string>
-
+    
     <string name="home_page_card_info_label">請直接插入%s取號</string>
     <string name="home_page_card_info_label_arg">健保卡</string>
 
@@ -76,71 +84,4 @@
     <string name="home_page_pcu_check_label">小兒心臟超音波\n%s</string>
     <string name="home_page_pcu_check_label_arg">手動取號</string>
 
-
-    <!-- Setting's options -->
-    <string-array name="setting_items">
-        <item>@string/server_domain</item>
-        <item>@string/org_id</item>
-        <item>@string/doctor_id</item>
-        <item>@string/room_id</item>
-        <item>@string/dept_id</item>
-        <item>@string/queueing_board_setting</item>
-        <item>@string/queueing_machine_setting</item>
-        <item>@string/version_setting</item>
-    </string-array>
-
-    <!-- Settings Dialogs -->
-    <string name="setting">設定</string>
-    <string name="dialog_cancel_button">Cancel</string>
-    <string name="dialog_save_button">Save</string>
-    <string name="dialog_id_label">ID</string>
-    <string name="dialog_description">To enter multiple ID, use commas to separate eahc ID.</string>
-    <string name="dialog_enable_label">Enable</string>
-    <string name="dialog_url_label">URL</string>
-
-    <!-- Service Domain Dialog -->
-    <string name="server_domain">伺服器網域</string>
-    <string name="customize_url_hint">http://example.com</string>
-    <string name="domain_service_official_site">Official Site</string>
-    <string name="domain_service_testing_site">Testing Site</string>
-    <string name="domain_service_customize">Customize</string>
-
-    <!-- Change Clinic Id Dialog  -->
-    <string name="org_id">機構代碼</string>
-
-    <!-- Change Doctor Id Dialog -->
-    <string name="doctor_id">Doctor ID</string>
-
-    <!-- Change Room Id Dialog -->
-    <string name="room_id">Room ID</string>
-
-    <!-- Change Dept Id Dialog -->
-    <string name="dept_id">Dept. ID</string>
-
-    <!-- Queueing Board Setting -->
-    <string name="queueing_board_setting">Queueing Board Setting</string>
-    <string name="qbs_screen_rotation_label">Screen Rotation</string>
-
-    <!-- Queueing Machine Setting -->
-    <string name="queueing_machine_setting">Queueing Machine Setting</string>
-    <string name="qms_ticket_information">Ticket Information</string>
-    <string name="qms_time_label">Time</string>
-    <string name="qms_dept_label">Dept.</string>
-    <string name="qms_doctor_label">Doctor</string>
-    <string name="qms_organization_label">Organization</string>
-
-    <!-- Version Setting -->
-    <string name="version_setting">Version Setting</string>
-    <string name="version_setting_dialog_select_version_label">Select Version</string>
-    <string name="version_setting_dialog_select_language_label">Select Language</string>
-
-    <string name="zh_tw_language">繁體中文</string>
-    <string name="en_language">English</string>
-
-    <string-array name="language_items">
-        <item>@string/zh_tw_language</item>
-        <item>@string/en_language</item>
-    </string-array>
-
-    <string name="scale" translatable="false">2</string>
 </resources>

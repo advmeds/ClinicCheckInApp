@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
-    android:paddingStart="@dimen/check_in_dialog_screen_padding"
-    android:paddingEnd="@dimen/check_in_dialog_screen_padding">
+    android:paddingStart="146dp"
+    android:paddingEnd="146dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
@@ -22,17 +23,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingStart="@dimen/check_in_dialog_panel_horizontal_padding"
-            android:paddingTop="@dimen/check_in_dialog_panel_vertical_padding"
-            android:paddingEnd="@dimen/check_in_dialog_panel_horizontal_padding"
-            android:paddingBottom="@dimen/check_in_dialog_panel_vertical_padding">
+            android:paddingStart="40dp"
+            android:paddingTop="80dp"
+            android:paddingEnd="40dp"
+            android:paddingBottom="80dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageView"
-                android:layout_width="@dimen/check_in_dialog_how_to_reg_image_width"
-                android:layout_height="@dimen/check_in_dialog_how_to_reg_image_height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/check_in_dialog_how_to_reg_image_bottom_margin"
+                android:layout_marginBottom="40dp"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/ic_baseline_how_to_reg" />
 
@@ -41,23 +42,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/check_in_dialog_title_bottom_margin"
+                android:layout_marginBottom="40dp"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/make_appointment"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/check_in_dialog_title_text_size" />
+                android:textSize="48sp" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/fragment_message_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/check_in_dialog_message_bottom_margin"
+                android:layout_marginBottom="40dp"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/make_appointment_message"
                 android:textAlignment="center"
                 android:textColor="@color/schedule_toggle_text_color"
-                android:textSize="@dimen/check_in_dialog_message_text_size" />
+                android:textSize="48sp" />
 
 
             <LinearLayout
@@ -73,12 +74,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:paddingStart="@dimen/check_in_dialog_button_horizontal_padding"
-                    android:paddingTop="@dimen/check_in_dialog_button_vertical_padding"
-                    android:paddingEnd="@dimen/check_in_dialog_button_horizontal_padding"
-                    android:paddingBottom="@dimen/check_in_dialog_button_vertical_padding"
+                    android:paddingStart="120dp"
+                    android:paddingTop="24dp"
+                    android:paddingEnd="120dp"
+                    android:paddingBottom="24dp"
                     android:text="@string/got_it"
-                    android:textSize="@dimen/check_in_dialog_button_text_size"
+                    android:textSize="40sp"
                     app:cornerRadius="8dp"
                     app:elevation="0dp" />
 
