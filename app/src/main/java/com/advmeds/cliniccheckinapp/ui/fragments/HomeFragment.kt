@@ -13,20 +13,13 @@ import android.text.InputType
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -239,15 +232,16 @@ class HomeFragment : Fragment() {
     private fun onSetServerDomainItemClicked() {
 
         val hint = requireContext().getString(R.string.customize_url_hint)
+        val inputTextLabel = requireContext().getString(R.string.dialog_url_label)
 
         showTextInputDialog(
             titleResId = R.string.clinic_panel_url,
             inputText = viewModel.mSchedulerServerDomain,
-            inputTextLabel = "Url",
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI,
+            inputTextLabel = inputTextLabel,
             hint = hint,
             showRadioButton = true,
             onConfirmClick = { domain ->
-
                 try {
                     HttpUrl.get(domain)
 
@@ -263,40 +257,58 @@ class HomeFragment : Fragment() {
     }
 
     private fun onSetOrgIDItemClicked() {
+
+        val inputTextLabel = requireContext().getString(R.string.dialog_id_label)
+
         showTextInputDialog(
             titleResId = R.string.org_id,
-            defaultText = viewModel.orgId
-        ) { id ->
-            if (id.isNotBlank()) {
-                viewModel.orgId = id
-            }
-        }
+            inputTextLabel = inputTextLabel,
+            inputText = viewModel.orgId,
+            onConfirmClick = { id ->
+                if (id.isNotBlank()) {
+                    viewModel.orgId = id
+                }
+            })
     }
 
     private fun onSetDoctorsItemClicked() {
+
+        val inputTextLabel = requireContext().getString(R.string.dialog_id_label)
+
         showTextInputDialog(
             titleResId = R.string.doctors,
-            defaultText = viewModel.doctors.joinToString(",")
-        ) { rooms ->
-            viewModel.doctors = rooms.split(",").filter { it.isNotBlank() }.toSet()
-        }
+            inputTextLabel = inputTextLabel,
+            showDescription = true,
+            inputText = viewModel.doctors.joinToString(","),
+            onConfirmClick = { rooms ->
+                viewModel.doctors = rooms.split(",").filter { it.isNotBlank() }.toSet()
+            }
+        )
     }
 
     private fun onSetRoomsItemClicked() {
+
+        val inputTextLabel = requireContext().getString(R.string.dialog_id_label)
+
         showTextInputDialog(
             titleResId = R.string.rooms,
-            defaultText = viewModel.rooms.joinToString(",")
-        ) { rooms ->
-            viewModel.rooms = rooms.split(",").filter { it.isNotBlank() }.toSet()
-        }
+            inputTextLabel = inputTextLabel,
+            inputText = viewModel.rooms.joinToString(","),
+            onConfirmClick = { rooms ->
+                viewModel.rooms = rooms.split(",").filter { it.isNotBlank() }.toSet()
+            })
     }
 
     private fun onSetPanelModeItemClicked() {
+
+        val hint = requireContext().getString(R.string.customize_url_hint)
+
         showTextInputDialog(
             titleResId = R.string.clinic_panel_url,
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI,
-            hint = "https://example.com",
-            defaultText = viewModel.clinicPanelUrl ?: ""
+            hint = hint,
+            inputTextLabel = "",
+            inputText = viewModel.clinicPanelUrl ?: ""
         ) { clinicPanelUrl ->
             if (clinicPanelUrl.isNotBlank()) {
                 viewModel.clinicPanelUrl = clinicPanelUrl
@@ -373,6 +385,7 @@ class HomeFragment : Fragment() {
         inputTextLabel: String,
         inputText: String = "",
         hint: String = "",
+        inputType: Int = InputType.TYPE_CLASS_TEXT,
         showRadioButton: Boolean = false,
         showDescription: Boolean = false,
         onConfirmClick: (String) -> Unit
@@ -390,9 +403,14 @@ class HomeFragment : Fragment() {
         dialog.dialog_title.setText(titleResId)
         dialog.dialog_text_input_label.text = inputTextLabel
         dialog.dialog_input_field.setText(inputText)
+        dialog.dialog_input_field.hint = hint
+        dialog.dialog_input_field.inputType = inputType
+
+        if (showDescription) {
+            dialog.dialog_description.visibility = View.VISIBLE
+        }
 
         if (showRadioButton) {
-
             val urlContainer = dialog.dialog_input_container
 
             dialog.dialog_radio_group.visibility = View.VISIBLE
@@ -414,20 +432,22 @@ class HomeFragment : Fragment() {
         }
 
         dialog.dialog_save_btn.setOnClickListener {
-            if (showRadioButton) {
 
-                val domain = when (dialog.dialog_radio_group.checkedRadioButtonId) {
+            var domain = dialog.dialog_input_field.text.toString().trim()
+
+            if (showRadioButton) {
+                domain = when (dialog.dialog_radio_group.checkedRadioButtonId) {
                     R.id.domain_service_official_site -> "https://www.mscheduler.com"
                     R.id.domain_service_testing_site -> "https://test.mscheduler.com"
                     R.id.domain_service_customize -> dialog.dialog_input_field.text.toString()
                         .trim()
                     else -> "https://www.mscheduler.com"
                 }
-                onConfirmClick(domain)
-
-                dialog.dismiss()
-                return@setOnClickListener
             }
+
+            onConfirmClick(domain)
+
+            dialog.dismiss()
         }
 
         dialog.show()

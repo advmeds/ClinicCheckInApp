@@ -16,6 +16,8 @@
 
     <dimen name="setting_dialog_title_vertical_margin">20dp</dimen>
 
+    <dimen name="setting_dialog_description_vertical_margin">20dp</dimen>
+
     <dimen name="setting_dialog_radio_group_padding">15dp</dimen>
 
     <dimen name="setting_dialog_dialog_input_padding">20dp</dimen>

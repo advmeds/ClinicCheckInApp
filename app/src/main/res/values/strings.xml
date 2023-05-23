@@ -74,6 +74,16 @@
         <item>@string/format_checked</item>
     </string-array>
 
+    
+    <!-- Setting Dialog -->
+    <string name="dialog_id_label">ID</string>
+    <string name="dialog_url_label">URL</string>
+
+    <string name="dialog_description">To enter multiple ID, use commas to separate eahc ID. </string>
+
+    <string name="dialog_cancel_button">Cancel</string>
+    <string name="dialog_save_button">Save</string>
+
 
     <!-- Service Domain Dialog -->
     <string name="customize_url_hint">http://example.com</string>
@@ -81,9 +91,7 @@
     <string name="domain_service_testing_site">Testing Site</string>
     <string name="domain_service_customize">Customize</string>
 
-    <string name="dialog_cancel_button">Cancel</string>
-    <string name="dialog_save_button">Save</string>
-
+    
     <string name="no_internet">No Internet</string>
     <string name="service_timeout">Connect Timeout</string>
     
