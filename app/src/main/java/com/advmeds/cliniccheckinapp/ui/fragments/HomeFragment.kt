@@ -1,24 +1,32 @@
 package com.advmeds.cliniccheckinapp.ui.fragments
 
+import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -34,12 +42,14 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetSchedul
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.utils.showOnly
+import kotlinx.android.synthetic.main.text_input_dialog.*
 import okhttp3.HttpUrl
 
 class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels()
 
     private var _binding: HomeFragmentBinding? = null
+    private lateinit var dialog: Dialog
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -150,11 +160,13 @@ class HomeFragment : Fragment() {
             }
         }
         itemList.forEach { checkInItem ->
-            layoutInflater.inflate(if (itemList.size > 1) {
-                R.layout.check_in_item_card_view_horizontal
-            } else {
-                R.layout.check_in_item_card_view_vertical
-            }, null, false).apply {
+            layoutInflater.inflate(
+                if (itemList.size > 1) {
+                    R.layout.check_in_item_card_view_horizontal
+                } else {
+                    R.layout.check_in_item_card_view_vertical
+                }, null, false
+            ).apply {
                 val itemImg = findViewById<ImageView>(R.id.item_image_view)
                 val itemTitle = findViewById<TextView>(R.id.item_title_tv)
                 val itemBody = findViewById<TextView>(R.id.item_body_tv)
@@ -184,7 +196,8 @@ class HomeFragment : Fragment() {
                         0,
                         1f
                     ).apply {
-                        val margin = (resources.getDimension(R.dimen.card_view_half_spacing) / resources.displayMetrics.density).toInt()
+                        val margin =
+                            (resources.getDimension(R.dimen.card_view_half_spacing) / resources.displayMetrics.density).toInt()
                         setMargins(margin, margin, margin, margin)
                     }
                 )
@@ -224,23 +237,29 @@ class HomeFragment : Fragment() {
     }
 
     private fun onSetServerDomainItemClicked() {
+
+        val hint = requireContext().getString(R.string.customize_url_hint)
+
         showTextInputDialog(
             titleResId = R.string.clinic_panel_url,
-            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI,
-            hint = "https://example.com",
-            defaultText = viewModel.mSchedulerServerDomain
-        ) { domain ->
-            try {
-                HttpUrl.get(domain)
+            inputText = viewModel.mSchedulerServerDomain,
+            inputTextLabel = "Url",
+            hint = hint,
+            showRadioButton = true,
+            onConfirmClick = { domain ->
 
-                viewModel.mSchedulerServerDomain = domain
-            } catch (e: Exception) {
-                AlertDialog.Builder(requireContext())
-                    .setMessage(e.message)
-                    .setPositiveButton(R.string.confirm, null)
-                    .showOnly()
+                try {
+                    HttpUrl.get(domain)
+
+                    viewModel.mSchedulerServerDomain = domain
+                } catch (e: Exception) {
+                    AlertDialog.Builder(requireContext())
+                        .setMessage(e.message)
+                        .setPositiveButton(R.string.confirm, null)
+                        .showOnly()
+                }
             }
-        }
+        )
     }
 
     private fun onSetOrgIDItemClicked() {
@@ -347,6 +366,71 @@ class HomeFragment : Fragment() {
             }
             .setNegativeButton(R.string.cancel, null)
             .showOnly()
+    }
+
+    private fun showTextInputDialog(
+        titleResId: Int,
+        inputTextLabel: String,
+        inputText: String = "",
+        hint: String = "",
+        showRadioButton: Boolean = false,
+        showDescription: Boolean = false,
+        onConfirmClick: (String) -> Unit
+    ) {
+
+        dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.text_input_dialog)
+
+        if (dialog.window == null)
+            return
+
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        dialog.dialog_title.setText(titleResId)
+        dialog.dialog_text_input_label.text = inputTextLabel
+        dialog.dialog_input_field.setText(inputText)
+
+        if (showRadioButton) {
+
+            val urlContainer = dialog.dialog_input_container
+
+            dialog.dialog_radio_group.visibility = View.VISIBLE
+            urlContainer.visibility = View.GONE
+
+            dialog.dialog_radio_group.setOnCheckedChangeListener(
+                RadioGroup.OnCheckedChangeListener { _, checkedId ->
+                    when (checkedId) {
+                        R.id.domain_service_official_site -> urlContainer.visibility = View.GONE
+                        R.id.domain_service_testing_site -> urlContainer.visibility = View.GONE
+                        R.id.domain_service_customize -> urlContainer.visibility = View.VISIBLE
+                    }
+                }
+            )
+        }
+
+        dialog.dialog_cancel_btn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.dialog_save_btn.setOnClickListener {
+            if (showRadioButton) {
+
+                val domain = when (dialog.dialog_radio_group.checkedRadioButtonId) {
+                    R.id.domain_service_official_site -> "https://www.mscheduler.com"
+                    R.id.domain_service_testing_site -> "https://test.mscheduler.com"
+                    R.id.domain_service_customize -> dialog.dialog_input_field.text.toString()
+                        .trim()
+                    else -> "https://www.mscheduler.com"
+                }
+                onConfirmClick(domain)
+
+                dialog.dismiss()
+                return@setOnClickListener
+            }
+        }
+
+        dialog.show()
     }
 
     private fun Context.getDimensionFrom(attr: Int): Int {

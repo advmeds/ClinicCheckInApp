@@ -64,6 +64,7 @@
     <string name="rooms">Room ID</string>
     <string name="clinic_panel_url">Clinic Panel Url</string>
     <string name="format_checked">報到格式檢查</string>
+
     <string-array name="setting_items">
         <item>@string/server_domain</item>
         <item>@string/org_id</item>
@@ -72,6 +73,16 @@
         <item>@string/clinic_panel_url</item>
         <item>@string/format_checked</item>
     </string-array>
+
+
+    <!-- Service Domain Dialog -->
+    <string name="customize_url_hint">http://example.com</string>
+    <string name="domain_service_official_site">Official Site</string>
+    <string name="domain_service_testing_site">Testing Site</string>
+    <string name="domain_service_customize">Customize</string>
+
+    <string name="dialog_cancel_button">Cancel</string>
+    <string name="dialog_save_button">Save</string>
 
     <string name="no_internet">No Internet</string>
     <string name="service_timeout">Connect Timeout</string>

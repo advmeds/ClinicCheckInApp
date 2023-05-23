@@ -8,4 +8,17 @@
     <dimen name="font_size_h3">34sp</dimen>
     <dimen name="font_size_h4">24sp</dimen>
     <dimen name="font_size_h5">20sp</dimen>
+
+    <!-- Dialog -->
+    <dimen name="setting_dialog_width">780dp</dimen>
+
+    <dimen name="setting_dialog_content_margin">30dp</dimen>
+
+    <dimen name="setting_dialog_title_vertical_margin">20dp</dimen>
+
+    <dimen name="setting_dialog_radio_group_padding">15dp</dimen>
+
+    <dimen name="setting_dialog_dialog_input_padding">20dp</dimen>
+
+
 </resources>
