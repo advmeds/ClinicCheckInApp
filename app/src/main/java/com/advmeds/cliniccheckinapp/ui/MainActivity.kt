@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 import android.media.AudioManager
@@ -247,6 +248,9 @@ class MainActivity : AppCompatActivity() {
     private var failSoundId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        setSavedLanguage()
+
         super.onCreate(savedInstanceState)
 
         soundPool = SoundPool(
@@ -513,6 +517,42 @@ class MainActivity : AppCompatActivity() {
 
         showPresentation()
     }
+
+
+    fun setLanguage(language: String) {
+        val locale = checkForCountryInLanguageCode(language)
+
+        val resources = resources
+        val configuration = Configuration(resources.configuration)
+        configuration.setLocale(locale)
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+    }
+
+    private fun checkForCountryInLanguageCode(
+        languageCode: String,
+    ): Locale {
+
+        val langList = languageCode.split("-")
+
+        val locale = if (langList.size > 1) {
+            val countryPart = langList[1]
+            val countryCode = if (countryPart[0] == 'r') countryPart.drop(1) else countryPart
+            Locale(langList[0], countryCode)
+        } else {
+            Locale(langList[0])
+        }
+        return locale
+    }
+
+    private fun setSavedLanguage() {
+        val language = viewModel.getLanguage()
+        if (language.isBlank())
+            setLanguage(language = BuildConfig.DEFAULT_LANGUAGE)
+        else
+            setLanguage(language = language)
+
+    }
+
 
     private fun setupUSB() {
         val usbFilter = IntentFilter(USB_PERMISSION)

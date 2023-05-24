@@ -36,12 +36,14 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetSchedul
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
+import com.advmeds.cliniccheckinapp.utils.Converter
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.android.synthetic.main.format_checked_list.*
 import kotlinx.android.synthetic.main.queueing_board_setting_dialog.*
 import kotlinx.android.synthetic.main.queueing_machine_setting_dialog.*
 import kotlinx.android.synthetic.main.text_input_dialog.*
+import kotlinx.android.synthetic.main.version_setting_dialog.*
 import okhttp3.HttpUrl
 
 
@@ -122,6 +124,7 @@ class HomeFragment : Fragment() {
                         6 -> onSetDeptIDItemClicked()
                         7 -> onSetQueueingBoardSettingItemClicked()
                         8 -> onSetQueueingMachineSettingItemClicked()
+                        9 -> onSetVersionSettingItemClicked()
                     }
                 }
                 .showOnly()
@@ -562,6 +565,82 @@ class HomeFragment : Fragment() {
 
     }
 
+    private fun onSetVersionSettingItemClicked() {
+
+        val items = arrayOf("1.0", "2.0", "3.0")
+        var currentLanguage = viewModel.language
+        var currentVersion = items[0]
+
+        dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.version_setting_dialog)
+
+        if (dialog.window == null)
+            return
+
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        // language setting
+        val languageDropDownAdapter =
+            ArrayAdapter(
+                requireContext(),
+                R.layout.support_simple_spinner_dropdown_item,
+                resources.getStringArray(R.array.language_items)
+            )
+
+        dialog.version_setting_select_language_tv.setAdapter(languageDropDownAdapter)
+
+        dialog.version_setting_select_language_tv.setText(
+            Converter.language_lang_code_to_name(
+                requireContext(),
+                viewModel.language
+            ), false
+        )
+
+        dialog.version_setting_select_language_tv.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, _, position, _ ->
+                val item = parent.getItemAtPosition(position).toString()
+                currentLanguage = Converter.language_name_to_lang_code(requireContext(), item)
+            }
+
+
+        // version
+
+        val versionDropDownAdapter =
+            ArrayAdapter(
+                requireContext(),
+                R.layout.support_simple_spinner_dropdown_item,
+                items
+            )
+
+        dialog.version_setting_select_version_tv.setAdapter(versionDropDownAdapter)
+        dialog.version_setting_select_version_tv.setText(currentVersion, false)
+
+        dialog.version_setting_select_version_tv.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, _, position, _ ->
+                val item = parent.getItemAtPosition(position).toString()
+                currentVersion = item
+            }
+
+        val saveButton = dialog.btn_version_setting_dialog_save
+        val cancelButton = dialog.btn_version_setting_dialog_cancel
+
+        saveButton.setOnClickListener {
+            if (currentLanguage != viewModel.language) {
+                (requireActivity() as MainActivity).setLanguage(language = currentLanguage)
+                viewModel.language = currentLanguage
+            }
+
+            dialog.dismiss()
+        }
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
     private fun Context.getDimensionFrom(attr: Int): Int {
         val typedValue = TypedValue()
         return if (this.theme.resolveAttribute(attr, typedValue, true))
@@ -579,7 +658,10 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun createCheckBox(title: CreateAppointmentRequest.NationalIdFormat, value: Boolean): LinearLayout {
+    private fun createCheckBox(
+        title: CreateAppointmentRequest.NationalIdFormat,
+        value: Boolean
+    ): LinearLayout {
 
         val layoutParameters = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
 
@@ -607,12 +689,12 @@ class HomeFragment : Fragment() {
 
         val outValue = TypedValue()
         resources.getValue(R.dimen.font_size_h4_float, outValue, true)
-        val value = outValue.float
+        val textSize = outValue.float
 
         val textView = TextView(requireContext())
         textView.layoutParams = layoutParameters
         textView.setTextColor(Color.BLACK)
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, value)
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize)
         textView.setText(title.description)
 
         linearLayout.addView(checkBox)

@@ -72,10 +72,17 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         set(value) {
             sharedPreferencesRepo.deptId = value
         }
-
+    /** @see SharedPreferencesRepo.queueingMachineSetting */
     var queueingMachineSettings: QueueingMachineSettingModel
         get() = sharedPreferencesRepo.queueingMachineSetting
         set(value) {
             sharedPreferencesRepo.queueingMachineSetting = value
+        }
+
+    /** @see SharedPreferencesRepo.queueingMachineSetting */
+    var language: String
+        get() = sharedPreferencesRepo.language
+        set(value) {
+            sharedPreferencesRepo.language = value
         }
 }

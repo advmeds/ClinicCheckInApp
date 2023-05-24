@@ -465,6 +465,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         checkJob?.cancel()
     }
 
+    fun getLanguage(): String {
+        return sharedPreferencesRepo.language
+    }
+
+
     sealed class GetGuardianStatus {
         object Checking : GetGuardianStatus()
         data class NotChecking(val response: GetClinicGuardianResponse?) : GetGuardianStatus()

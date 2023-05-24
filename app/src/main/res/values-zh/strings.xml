@@ -76,6 +76,7 @@
         <item>@string/dept_id</item>
         <item>@string/queueing_board_setting</item>
         <item>@string/queueing_machine_setting</item>
+        <item>@string/version_setting</item>
     </string-array>
 
     <!-- Setting Dialog -->
