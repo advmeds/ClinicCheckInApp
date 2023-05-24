@@ -18,10 +18,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RadioGroup
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
@@ -41,6 +38,7 @@ import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.android.synthetic.main.format_checked_list.*
+import kotlinx.android.synthetic.main.queueing_board_setting_dialog.*
 import kotlinx.android.synthetic.main.text_input_dialog.*
 import okhttp3.HttpUrl
 
@@ -120,6 +118,7 @@ class HomeFragment : Fragment() {
                         4 -> onSetPanelModeItemClicked()
                         5 -> onSetFormatCheckedListItemClicked()
                         6 -> onSetDeptIDItemClicked()
+                        7 -> onSetQueueingBoardSettingItemClicked()
                     }
                 }
                 .showOnly()
@@ -433,6 +432,69 @@ class HomeFragment : Fragment() {
 
             onConfirmClick(inputData)
 
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun onSetQueueingBoardSettingItemClicked() {
+        //TODO set correct data
+        val items = arrayListOf("Portrait", "Landscape")
+
+        dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.queueing_board_setting_dialog)
+
+        if (dialog.window == null)
+            return
+
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val adapter =
+            ArrayAdapter(requireContext(), R.layout.support_simple_spinner_dropdown_item, items)
+        dialog.queueing_board_setting_auto_complete_tv.setAdapter(adapter)
+
+
+        dialog.queueing_board_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked)
+                dialog.queueing_board_setting_container.visibility = View.VISIBLE
+            else
+                dialog.queueing_board_setting_container.visibility = View.GONE
+        }
+
+        val saveButton = dialog.btn_qbs_dialog_save
+        val cancelButton = dialog.btn_qbs_dialog_cancel
+
+        saveButton.setOnClickListener {
+            val domain = dialog.et_qbs_irl_input.text.toString().trim()
+
+
+//            TODO ask about that field
+//            try {
+//                dialog.dismiss()
+//                HttpUrl.get(domain)
+//
+//                viewModel.mSchedulerServerDomain = domain
+//
+//                val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
+//
+//                LocalBroadcastManager.getInstance(requireContext())
+//                    .sendBroadcast(intent)
+//
+//            } catch (e: Exception) {
+//                dialog.dismiss()
+//                AlertDialog.Builder(requireContext())
+//                    .setMessage(e.message)
+//                    .setPositiveButton(R.string.confirm, null)
+//                    .showOnly()
+//            }
+
+            dialog.dismiss()
+
+        }
+
+        cancelButton.setOnClickListener {
             dialog.dismiss()
         }
 

@@ -74,6 +74,7 @@
         <item>@string/clinic_panel_url</item>
         <item>@string/format_checked</item>
         <item>@string/dept_id</item>
+        <item>@string/queueing_board_setting</item>
     </string-array>
 
     <!-- Setting Dialog -->
@@ -81,6 +82,8 @@
     <string name="dialog_url_label">URL</string>
 
     <string name="dialog_description">To enter multiple ID, use commas to separate eahc ID. </string>
+
+    <string name="dialog_enable_label">Enable</string>
 
     <string name="dialog_cancel_button">Cancel</string>
     <string name="dialog_save_button">Save</string>
@@ -91,6 +94,30 @@
     <string name="domain_service_testing_site">Testing Site</string>
     <string name="domain_service_customize">Customize</string>
 
+    <!-- Queueing Board Setting -->
+    <string name="queueing_board_setting">Queueing Board Setting</string>
+    <string name="qbs_screen_rotation_label">Screen Rotation</string>
+
+    <!-- Queueing Machine Setting -->
+    <string name="queueing_machine_setting">Queueing Machine Setting</string>
+    <string name="qms_ticket_information">Ticket Information</string>
+    <string name="qms_time_label">Time</string>
+    <string name="qms_dept_label">Dept.</string>
+    <string name="qms_doctor_label">Doctor</string>
+    <string name="qms_organization_label">Organization</string>
+
+    <!-- Version Setting -->
+    <string name="version_setting">Version Setting</string>
+    <string name="version_setting_dialog_select_version_label">Select Version</string>
+    <string name="version_setting_dialog_select_language_label">Select Language</string>
+
+    <string name="zh_tw_language">繁體中文</string>
+    <string name="en_language">English</string>
+
+    <string-array name="language_items">
+        <item>@string/zh_tw_language</item>
+        <item>@string/en_language</item>
+    </string-array>
 
     <string name="no_internet">需要有網路連線，請確認。</string>
     <string name="service_timeout">伺服器連線逾時，請確認。</string>

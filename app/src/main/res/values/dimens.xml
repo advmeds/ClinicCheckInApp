@@ -23,5 +23,11 @@
 
     <dimen name="setting_dialog_dialog_input_padding">20dp</dimen>
 
+    <dimen name="setting_dialog_switcher_content_top_margin">20dp</dimen>
+
+    <item name="switcher_scale" format="float" type="dimen">2.0</item>
+
+    <dimen name="setting_dialog_bottom_margin">0dp</dimen>
+
 
 </resources>
