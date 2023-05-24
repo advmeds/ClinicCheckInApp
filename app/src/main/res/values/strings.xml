@@ -75,6 +75,7 @@
         <item>@string/format_checked</item>
         <item>@string/dept_id</item>
         <item>@string/queueing_board_setting</item>
+        <item>@string/queueing_machine_setting</item>
     </string-array>
 
     

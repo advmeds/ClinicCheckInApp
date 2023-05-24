@@ -6,6 +6,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -50,6 +51,12 @@ class SharedPreferencesRepo(
 
         /** 從SharedPreferences取得『Department ID』的KEY */
         const val DEPT_ID = "dept_id"
+
+        /** SharedPreferences [queue machine setting params] KEY */
+        const val QUEUEING_MACHINE_SETTING_ORGANIZATION = "queueing_machine_setting_organization"
+        const val QUEUEING_MACHINE_SETTING_DOCTOR= "queueing_machine_setting_organization_doctor"
+        const val QUEUEING_MACHINE_SETTING_DEPT = "queueing_machine_setting_organization_dept"
+        const val QUEUEING_MACHINE_SETTING_TIME = "queueing_machine_setting_organization_time"
 
         /** 以Volatile註解表示此INSTANCE變數僅會在主記憶體中讀寫，可避免進入cache被不同執行緒讀寫而造成問題 */
         @Volatile
@@ -230,4 +237,47 @@ class SharedPreferencesRepo(
                 }
             )
         }
+
+    /** QUEUEING MACHINE SETTING */
+    var queueingMachineSetting: QueueingMachineSettingModel
+        get() {
+            val organization: Boolean = sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_ORGANIZATION, false)
+            val doctor: Boolean = sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_DOCTOR, false)
+            val dept: Boolean = sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_DEPT, false)
+            val time: Boolean = sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_TIME, false)
+
+            return QueueingMachineSettingModel(
+                organization = organization,
+                doctor = doctor,
+                dept = dept,
+                time = time
+            )
+        }
+        set(value) {
+            sharedPreferences.edit()
+                .putBoolean(QUEUEING_MACHINE_SETTING_ORGANIZATION, value.organization)
+                .apply()
+
+            sharedPreferences.edit()
+                .putBoolean(QUEUEING_MACHINE_SETTING_DOCTOR, value.doctor)
+                .apply()
+
+            sharedPreferences.edit()
+                .putBoolean(QUEUEING_MACHINE_SETTING_DEPT, value.dept)
+                .apply()
+
+            sharedPreferences.edit()
+                .putBoolean(QUEUEING_MACHINE_SETTING_TIME, value.time)
+                .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(DEPT_ID).apply {
+                    putExtra(QUEUEING_MACHINE_SETTING_ORGANIZATION, value.organization)
+                    putExtra(QUEUEING_MACHINE_SETTING_DOCTOR, value.doctor)
+                    putExtra(QUEUEING_MACHINE_SETTING_DEPT, value.dept)
+                    putExtra(QUEUEING_MACHINE_SETTING_TIME, value.time)
+                }
+            )
+        }
+
 }

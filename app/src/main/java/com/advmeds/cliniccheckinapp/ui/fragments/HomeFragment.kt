@@ -33,12 +33,14 @@ import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.android.synthetic.main.format_checked_list.*
 import kotlinx.android.synthetic.main.queueing_board_setting_dialog.*
+import kotlinx.android.synthetic.main.queueing_machine_setting_dialog.*
 import kotlinx.android.synthetic.main.text_input_dialog.*
 import okhttp3.HttpUrl
 
@@ -119,6 +121,7 @@ class HomeFragment : Fragment() {
                         5 -> onSetFormatCheckedListItemClicked()
                         6 -> onSetDeptIDItemClicked()
                         7 -> onSetQueueingBoardSettingItemClicked()
+                        8 -> onSetQueueingMachineSettingItemClicked()
                     }
                 }
                 .showOnly()
@@ -499,6 +502,64 @@ class HomeFragment : Fragment() {
         }
 
         dialog.show()
+    }
+
+    private fun onSetQueueingMachineSettingItemClicked() {
+
+        dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.queueing_machine_setting_dialog)
+
+        if (dialog.window == null)
+            return
+
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val queueingMachineSettingModel = viewModel.queueingMachineSettings
+
+        dialog.qms_cb_organization.isChecked = queueingMachineSettingModel.organization
+        dialog.qms_cb_doctor.isChecked = queueingMachineSettingModel.doctor
+        dialog.qms_cb_dept.isChecked = queueingMachineSettingModel.dept
+        dialog.qms_cb_time.isChecked = queueingMachineSettingModel.time
+
+        dialog.queueing_machine_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked)
+                dialog.queueing_machine_setting_container.visibility = View.VISIBLE
+            else
+                dialog.queueing_machine_setting_container.visibility = View.GONE
+        }
+
+        val saveButton = dialog.btn_qms_dialog_save
+        val cancelButton = dialog.btn_qms_dialog_cancel
+
+        saveButton.setOnClickListener {
+
+            val organization: Boolean = dialog.qms_cb_organization.isChecked
+            val doctor: Boolean = dialog.qms_cb_doctor.isChecked
+            val dept: Boolean = dialog.qms_cb_dept.isChecked
+            val time: Boolean = dialog.qms_cb_time.isChecked
+
+            dialog.dismiss()
+
+            val queueingMachineSettingModelForSave = QueueingMachineSettingModel(
+                organization = organization,
+                doctor = doctor,
+                dept = dept,
+                time = time
+            )
+
+            if (queueingMachineSettingModelForSave.isSame(viewModel.queueingMachineSettings))
+                return@setOnClickListener
+
+            viewModel.queueingMachineSettings = queueingMachineSettingModelForSave
+        }
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+
     }
 
     private fun Context.getDimensionFrom(attr: Int): Int {
