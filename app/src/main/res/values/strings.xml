@@ -76,7 +76,7 @@
     <string name="no_internet">No Internet</string>
     <string name="service_timeout">Connect Timeout</string>
     
-    <string name="mScheduler_api_error_10001">主要欄位為空</string>
+    <string name="mScheduler_api_error_10001">The key field can not be blank</string>
     <string name="mScheduler_api_error_10002">Organization Not Found</string>
     <string name="mScheduler_api_error_10003">Doctor Not Found</string>
     <string name="mScheduler_api_error_10004">Division Not Found</string>
@@ -85,7 +85,7 @@
     <string name="mScheduler_api_error_10007">Patient date of birth is invalid</string>
     <string name="mScheduler_api_error_10008">Patient national id can not be blank</string>
     <string name="mScheduler_api_error_10009">指定時段格式錯誤</string>
-    <string name="mScheduler_api_error_10010">查無資料，請重新輸入號碼或洽服務人員，謝謝</string>
+    <string name="mScheduler_api_error_10010">Data not found，please re-enter number or contact service staff, thanks.</string>
     <string name="mScheduler_api_error_10011">報到時間已過，請洽服務人員</string>
     <string name="mScheduler_api_error_10012">尚未到 %s 報到時間，%s 前往報到或洽服務人員</string>
     <string name="mScheduler_api_error_10013">重複報到，若有問題請洽服務人員</string>

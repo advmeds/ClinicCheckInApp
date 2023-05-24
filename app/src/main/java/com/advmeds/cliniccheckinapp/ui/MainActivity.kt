@@ -556,7 +556,7 @@ class MainActivity : AppCompatActivity() {
         usbManager.requestPermission(device, mPermissionIntent)
     }
 
-    /** 列印患者報到資訊 */
+    /** print ticket */
     private fun printPatient(division: String, serialNo: Int) {
         val now = Date()
         val formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
@@ -698,7 +698,7 @@ class MainActivity : AppCompatActivity() {
 //        }
 //    }
 
-    /** 取得病患今天預約掛號資訊 */
+    /** get patient appointment */
     fun getPatients(nationalId: String, name: String = "", birth: String = "", completion: (() -> Unit)? = null) {
         if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
             // 若有開啟取號功能，則必須要有連線取票機才會去報到
@@ -733,14 +733,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** 無健保卡，手動取號 */
+    /** Do not have NHI Card, manual check in */
     private fun createAppointment(
         schedule: GetScheduleResponse.ScheduleBean,
         patient: CreateAppointmentRequest.Patient? = null,
         completion: ((CreateAppointmentResponse) -> Unit)? = null
     ) {
+        // if app support print ticket, check ticket machine connection
         if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
-            // 若有開啟取號功能，則必須要有連線取票機才會去報到
             Snackbar.make(
                 binding.root,
                 getString(R.string.printer_not_connect),
@@ -767,7 +767,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** 用於部分場域的直接取流水號 */
+    /** manual check in */
     fun createFakeAppointment(schedule: GetScheduleResponse.ScheduleBean) {
         val serialNo = viewModel.checkInSerialNo
 
@@ -788,7 +788,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** 虛擬健保卡報到 */
+    /** check in with virtual NHI card */
     fun checkInWithVirtualCard() {
         dialog?.dismiss()
 
@@ -800,6 +800,7 @@ class MainActivity : AppCompatActivity() {
         dialog?.showNow(supportFragmentManager, null)
     }
 
+    /** find second display screen, if exist, show queue board on second display screen */
     private fun showPresentation() {
         val mediaRouter = getSystemService(ComponentActivity.MEDIA_ROUTER_SERVICE) as MediaRouter
         val presentationDisplay =

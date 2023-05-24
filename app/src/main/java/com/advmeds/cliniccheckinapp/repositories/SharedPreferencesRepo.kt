@@ -21,32 +21,32 @@ class SharedPreferencesRepo(
     private val localBroadcastManager = LocalBroadcastManager.getInstance(context)
 
     companion object {
-        /** 從SharedPreferences取得『伺服器網域』的KEY */
+        /** mScheduler Server domain key of SharedPreferences */
         const val MS_SERVER_DOMAIN = "ms_server_domain"
 
-        /** 從SharedPreferences取得『機構代碼』的KEY */
+        /** clinic id key of SharedPreferences */
         const val ORG_ID = "org_id"
 
-        /** 從SharedPreferences取得『綁定的醫師』的KEY */
+        /** specify clinic doctor id key of SharedPreferences */
         const val DOCTORS = "doctors"
 
-        /** 從SharedPreferences取得『綁定的診間』的KEY */
+        /** specify clinic room id key of SharedPreferences */
         const val ROOMS = "rooms"
 
-        /** 從SharedPreferences取得『叫號面板網址』的KEY */
+        /** queue board url key of SharedPreferences */
         const val CLINIC_PANEL_MODE = "clinic_panel_mode"
 
-        /** 從SharedPreferences取得『機構LOGO連結』的KEY */
+        /** clinic LOGO url key of SharedPreferences */
         const val LOGO_URL = "logo_url"
 
-        /** 從SharedPreferences取得『用來直接取號的流水號』的KEY */
+        /** manual check-in serial number key of SharedPreferences */
         const val CHECK_IN_SERIAL_NO = "check_in_serial_no"
 
-        /** 從SharedPreferences取得『取得病患資訊的national_id可輸入格式』的KEY */
+        /** patient national id pattern key of SharedPreferences */
         const val FORMAT_CHECKED_LIST = "format_checked_list"
 
-        /** 從SharedPreferences取得『首頁的直接取號項目』的KEY */
-        val CHECK_IN_ITEM_LIST = "check_in_item_list"
+        /** manual check-in item key of SharedPreferences */
+        const val CHECK_IN_ITEM_LIST = "check_in_item_list"
 
         /** 以Volatile註解表示此INSTANCE變數僅會在主記憶體中讀寫，可避免進入cache被不同執行緒讀寫而造成問題 */
         @Volatile
@@ -61,7 +61,7 @@ class SharedPreferencesRepo(
         }
     }
 
-    /** 雲排伺服器網域 */
+    /** mScheduler Server domain */
     var mSchedulerServerDomain: String
         get() =
             sharedPreferences.getString(MS_SERVER_DOMAIN, null) ?: BuildConfig.MS_DOMAIN
@@ -77,7 +77,7 @@ class SharedPreferencesRepo(
             )
         }
 
-    /** 機構代碼 */
+    /** clinic id */
     var orgId: String
         get() =
             sharedPreferences.getString(ORG_ID, null) ?: BuildConfig.ORG_ID
@@ -93,7 +93,7 @@ class SharedPreferencesRepo(
             )
         }
 
-    /** 綁定的醫師 */
+    /** specify clinic doctor id */
     var doctors: Set<String>
         get() =
             sharedPreferences.getStringSet(DOCTORS, emptySet()) ?: emptySet()
@@ -109,7 +109,7 @@ class SharedPreferencesRepo(
             )
         }
 
-    /** 綁定的診間 */
+    /** specify clinic room id */
     var rooms: Set<String>
         get() =
             sharedPreferences.getStringSet(ROOMS, emptySet()) ?: emptySet()
@@ -125,7 +125,7 @@ class SharedPreferencesRepo(
             )
         }
 
-    /** 叫號面板網址 */
+    /** queue board url */
     var clinicPanelUrl: String?
         get() =
             sharedPreferences.getString(CLINIC_PANEL_MODE, null)
@@ -141,7 +141,7 @@ class SharedPreferencesRepo(
             )
         }
 
-    /** 機構LOGO */
+    /** clinic LOGO */
     var logoUrl: String?
         get() =
             sharedPreferences.getString(LOGO_URL, null)
@@ -157,7 +157,7 @@ class SharedPreferencesRepo(
             )
         }
 
-    /** 小兒流水號 */
+    /** manual check-in serial number */
     var checkInSerialNo: Int
         get() =
             sharedPreferences.getInt(CHECK_IN_SERIAL_NO, 0)
@@ -173,7 +173,7 @@ class SharedPreferencesRepo(
             )
         }
 
-    /** 取得病患資訊的national_id可輸入格式 */
+    /** patient national id pattern */
     var formatCheckedList: List<CreateAppointmentRequest.NationalIdFormat>
         get() =
             sharedPreferences.getStringSet(FORMAT_CHECKED_LIST, emptySet())
@@ -193,6 +193,7 @@ class SharedPreferencesRepo(
             )
         }
 
+    /** manual check-in item on [HomeFragment] */
     var checkInItemList: List<EditCheckInItemDialog.EditCheckInItem>
         get() = sharedPreferences.getString(CHECK_IN_ITEM_LIST, null)
             ?.takeIf { it.isNotBlank() }
