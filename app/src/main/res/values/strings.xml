@@ -64,6 +64,7 @@
     <string name="rooms">Room ID</string>
     <string name="clinic_panel_url">Clinic Panel Url</string>
     <string name="format_checked">報到格式檢查</string>
+    <string name="dept_id">Dept ID</string>
 
     <string-array name="setting_items">
         <item>@string/server_domain</item>
@@ -72,6 +73,7 @@
         <item>Room ID(To enter multiple ID, use commas to separate each ID.)</item>
         <item>@string/clinic_panel_url</item>
         <item>@string/format_checked</item>
+        <item>@string/dept_id</item>
     </string-array>
 
     

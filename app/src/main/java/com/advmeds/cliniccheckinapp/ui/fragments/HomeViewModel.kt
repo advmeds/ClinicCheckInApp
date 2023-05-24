@@ -64,4 +64,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         set(value) {
             sharedPreferencesRepo.checkInItemList = value
         }
+
+    /** @see SharedPreferencesRepo.deptId */
+    var deptId: Set<String>
+        get() = sharedPreferencesRepo.deptId
+        set(value) {
+            sharedPreferencesRepo.deptId = value
+        }
 }

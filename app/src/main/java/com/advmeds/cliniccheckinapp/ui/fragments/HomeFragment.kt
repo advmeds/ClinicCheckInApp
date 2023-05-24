@@ -8,19 +8,20 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
@@ -29,6 +30,7 @@ import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import coil.load
+import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
@@ -40,8 +42,6 @@ import com.advmeds.cliniccheckinapp.utils.showOnly
 import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.android.synthetic.main.format_checked_list.*
 import kotlinx.android.synthetic.main.text_input_dialog.*
-import kotlinx.android.synthetic.main.text_input_dialog.dialog_cancel_btn
-import kotlinx.android.synthetic.main.text_input_dialog.dialog_save_btn
 import okhttp3.HttpUrl
 
 
@@ -119,6 +119,7 @@ class HomeFragment : Fragment() {
                         3 -> onSetRoomsItemClicked()
                         4 -> onSetPanelModeItemClicked()
                         5 -> onSetFormatCheckedListItemClicked()
+                        6 -> onSetDeptIDItemClicked()
                     }
                 }
                 .showOnly()
@@ -348,7 +349,23 @@ class HomeFragment : Fragment() {
 
         dialog.show()
     }
-    
+
+    private fun onSetDeptIDItemClicked() {
+
+        val inputTextLabel = requireContext().getString(R.string.dialog_id_label)
+
+        showTextInputDialog(
+            titleResId = R.string.dept_id,
+            inputTextLabel = inputTextLabel,
+            inputText = viewModel.deptId.joinToString(","),
+            showDescription = true,
+            onConfirmClick = { id ->
+                if (id.isNotBlank()) {
+                    viewModel.deptId = id.split(",").filter { it.isNotBlank() }.toSet()
+                }
+            })
+    }
+
     private fun showTextInputDialog(
         titleResId: Int,
         inputTextLabel: String,
@@ -402,19 +419,19 @@ class HomeFragment : Fragment() {
 
         dialog.dialog_save_btn.setOnClickListener {
 
-            var domain = dialog.dialog_input_field.text.toString().trim()
+            var inputData = dialog.dialog_input_field.text.toString().trim()
 
             if (showRadioButton) {
-                domain = when (dialog.dialog_radio_group.checkedRadioButtonId) {
+                inputData = when (dialog.dialog_radio_group.checkedRadioButtonId) {
                     R.id.domain_service_official_site -> "https://www.mscheduler.com"
                     R.id.domain_service_testing_site -> "https://test.mscheduler.com"
                     R.id.domain_service_customize -> dialog.dialog_input_field.text.toString()
                         .trim()
-                    else -> "https://www.mscheduler.com"
+                    else -> BuildConfig.MS_DOMAIN
                 }
             }
 
-            onConfirmClick(domain)
+            onConfirmClick(inputData)
 
             dialog.dismiss()
         }

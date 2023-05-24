@@ -48,6 +48,9 @@ class SharedPreferencesRepo(
         /** 從SharedPreferences取得『首頁的直接取號項目』的KEY */
         val CHECK_IN_ITEM_LIST = "check_in_item_list"
 
+        /** 從SharedPreferences取得『Department ID』的KEY */
+        const val DEPT_ID = "dept_id"
+
         /** 以Volatile註解表示此INSTANCE變數僅會在主記憶體中讀寫，可避免進入cache被不同執行緒讀寫而造成問題 */
         @Volatile
         private var INSTANCE: SharedPreferencesRepo? = null
@@ -208,6 +211,22 @@ class SharedPreferencesRepo(
             localBroadcastManager.sendBroadcast(
                 Intent(CHECK_IN_ITEM_LIST).apply {
                     putExtra(CHECK_IN_ITEM_LIST, json)
+                }
+            )
+        }
+
+    /** DEPARTMENT ID*/
+    var deptId: Set<String>
+        get() =
+            sharedPreferences.getStringSet(DEPT_ID, emptySet()) ?: emptySet()
+        set(value) {
+            sharedPreferences.edit()
+                .putStringSet(DEPT_ID, value)
+                .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(DEPT_ID).apply {
+                    putExtra(DEPT_ID, value.toTypedArray())
                 }
             )
         }
