@@ -9,6 +9,7 @@
     <dimen name="font_size_h4">24sp</dimen>
     <dimen name="font_size_h5">20sp</dimen>
 
+    <item name="font_size_h4_float" format="float" type="dimen" >24.0</item>
     <!-- Dialog -->
     <dimen name="setting_dialog_width">780dp</dimen>
 

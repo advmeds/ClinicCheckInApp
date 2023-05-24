@@ -1,5 +1,6 @@
 package com.advmeds.cliniccheckinapp.ui.fragments
 
+import android.app.ActionBar.LayoutParams
 import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -13,6 +14,7 @@ import android.text.InputType
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -35,8 +37,13 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetSchedul
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.utils.showOnly
+import com.google.android.material.checkbox.MaterialCheckBox
+import kotlinx.android.synthetic.main.format_checked_list.*
 import kotlinx.android.synthetic.main.text_input_dialog.*
+import kotlinx.android.synthetic.main.text_input_dialog.dialog_cancel_btn
+import kotlinx.android.synthetic.main.text_input_dialog.dialog_save_btn
 import okhttp3.HttpUrl
+
 
 class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels()
@@ -320,66 +327,28 @@ class HomeFragment : Fragment() {
         val choiceItems = CreateAppointmentRequest.NationalIdFormat.values()
         val checkedItems = choiceItems.map { viewModel.formatCheckedList.contains(it) }
 
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.format_checked)
-            .setMultiChoiceItems(
-                choiceItems.map { getString(it.description) }.toTypedArray(),
-                checkedItems.toBooleanArray()
-            ) { _, index, isChecked ->
-                val list = viewModel.formatCheckedList.toMutableList()
-                val format = choiceItems[index]
+        dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.format_checked_list)
 
-                if (isChecked) {
-                    list.add(format)
-                } else {
-                    list.remove(format)
-                }
+        if (dialog.window == null)
+            return
 
-                viewModel.formatCheckedList = list
-            }
-            .setPositiveButton(R.string.save, null)
-            .showOnly()
-    }
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-    private fun showTextInputDialog(
-        titleResId: Int,
-        inputType: Int = InputType.TYPE_CLASS_TEXT,
-        hint: String = "",
-        defaultText: String = "",
-        onConfirmClick: (String) -> Unit
-    ) {
-        val editText = EditText(requireContext())
-        editText.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
+        setListOfCheckBox(
+            container = dialog.fcl_check_box_container,
+            names = choiceItems,
+            checks = checkedItems
         )
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            editText.setTextAppearance(R.style.TextAppearance_AppCompat_Subhead)
-        } else {
-            editText.setTextAppearance(requireContext(), R.style.TextAppearance_AppCompat_Subhead)
+
+        dialog.fcl_save_btn.setOnClickListener {
+            dialog.dismiss()
         }
 
-        editText.inputType = inputType
-        editText.hint = hint
-        editText.setText(defaultText)
-
-        val layout = LinearLayout(requireContext())
-        val padding = requireContext().getDimensionFrom(R.attr.dialogPreferredPadding)
-        layout.setPaddingRelative(padding, 0, padding, 0)
-        layout.addView(editText)
-
-        AlertDialog.Builder(requireContext())
-            .setTitle(titleResId)
-            .setView(layout)
-            .setPositiveButton(
-                R.string.save
-            ) { _, _ ->
-                onConfirmClick(editText.text.toString().trim())
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .showOnly()
+        dialog.show()
     }
-
+    
     private fun showTextInputDialog(
         titleResId: Int,
         inputTextLabel: String,
@@ -458,6 +427,58 @@ class HomeFragment : Fragment() {
         return if (this.theme.resolveAttribute(attr, typedValue, true))
             TypedValue.complexToDimensionPixelSize(typedValue.data, this.resources.displayMetrics)
         else 0
+    }
+
+    private fun setListOfCheckBox(
+        container: LinearLayout?,
+        names: Array<CreateAppointmentRequest.NationalIdFormat>,
+        checks: List<Boolean>
+    ) {
+        for (i in 0 until names.size) {
+            container?.addView(createCheckBox(title = names[i], value = checks[i]))
+        }
+    }
+
+    private fun createCheckBox(title: CreateAppointmentRequest.NationalIdFormat, value: Boolean): LinearLayout {
+
+        val layoutParameters = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+
+        val linearLayout = LinearLayout(requireContext())
+        linearLayout.layoutParams = layoutParameters
+        linearLayout.gravity = Gravity.CENTER_VERTICAL
+        linearLayout.orientation = LinearLayout.HORIZONTAL
+
+        val checkBox = MaterialCheckBox(requireContext())
+        checkBox.layoutParams = layoutParameters
+        checkBox.gravity = Gravity.CENTER
+        checkBox.scaleX = 1.0f
+        checkBox.scaleY = 1.0f
+        checkBox.isChecked = value
+
+        checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            val list = viewModel.formatCheckedList.toMutableList()
+            if (isChecked) {
+                list.add(title)
+            } else {
+                list.remove(title)
+            }
+            viewModel.formatCheckedList = list
+        }
+
+        val outValue = TypedValue()
+        resources.getValue(R.dimen.font_size_h4_float, outValue, true)
+        val value = outValue.float
+
+        val textView = TextView(requireContext())
+        textView.layoutParams = layoutParameters
+        textView.setTextColor(Color.BLACK)
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, value)
+        textView.setText(title.description)
+
+        linearLayout.addView(checkBox)
+        linearLayout.addView(textView)
+
+        return linearLayout
     }
 
     override fun onDestroyView() {
