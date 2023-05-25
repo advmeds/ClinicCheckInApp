@@ -209,20 +209,13 @@ class HomeFragment : Fragment() {
                         1f
                     ).apply {
 
-                        val topMargin =
-                            if (index == 0)
-                                (resources.getDimension(R.dimen.zero) / resources.displayMetrics.density).toInt()
-                            else
-                                (resources.getDimension(R.dimen.screen_panel_margin) / resources.displayMetrics.density).toInt()
-
-                        val bottomMargin =
-                            if (index == (itemList.size -1))
-                                (resources.getDimension(R.dimen.zero) / resources.displayMetrics.density).toInt()
-                            else
-                                (resources.getDimension(R.dimen.screen_panel_margin) / resources.displayMetrics.density).toInt()
-
                         val margin =
                             (resources.getDimension(R.dimen.screen_panel_margin) / resources.displayMetrics.density).toInt()
+
+                        val topMargin = if (index == 0) 0 else margin
+
+                        val bottomMargin = if (index == (itemList.size - 1)) 0 else margin
+
                         setMargins(margin, topMargin, margin, bottomMargin)
 
                     }
@@ -713,14 +706,17 @@ class HomeFragment : Fragment() {
         linearLayout.orientation = LinearLayout.HORIZONTAL
 
         val checkBox = MaterialCheckBox(requireContext())
+
         checkBox.layoutParams = layoutParameters
         checkBox.gravity = Gravity.CENTER
         checkBox.scaleX = 1.0f
         checkBox.scaleY = 1.0f
         checkBox.isChecked = value
 
-        checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+        checkBox.setOnCheckedChangeListener { _, isChecked ->
+
             val list = viewModel.formatCheckedList.toMutableList()
+
             if (isChecked) {
                 list.add(title)
             } else {

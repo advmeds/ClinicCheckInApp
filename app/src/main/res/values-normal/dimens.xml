@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!-- Screen -->
+
+    <dimen name="screen_padding">7dp</dimen>
+    <dimen name="screen_panel_margin">7dp</dimen>
+
+    <dimen name="distance_between_panel">7dp</dimen>
+
+
+    <!-- Logo -->
+
+    <dimen name="logo_margin">7dp</dimen>
+    <dimen name="logo_image_width">255dp</dimen>
+    <dimen name="logo_image_margin">10dp</dimen>
+
+
+    <!-- Font -->
+
+    <dimen name="font_size_h1">40sp</dimen>
+    <dimen name="font_size_h2">25sp</dimen>
+    <dimen name="font_size_h3">20sp</dimen>
+    <dimen name="font_size_h4">15sp</dimen>
+    <dimen name="font_size_h5">13sp</dimen>
+
+
+    <!-- Space -->
+
+    <dimen name="space_small">5dp</dimen>
+    <dimen name="space_medium">8dp</dimen>
+    <dimen name="space_normal">10dp</dimen>
+    <dimen name="space_big">15dp</dimen>
+    <dimen name="space_huge">20dp</dimen>
+
+    <item name="font_size_h4_float" format="float" type="dimen">15.0</item>
+
+
+    <!-- Dialog -->
+
+    <dimen name="setting_dialog_width">500dp</dimen>
+
+    <item name="switcher_scale" format="float" type="dimen">1.0</item>
+
+    <item name="check_box_scale" format="float" type="dimen">1.0</item>
+
+    <dimen name="setting_dialog_bottom_margin">0dp</dimen>
+
+    <dimen name="setting_dialog_check_box_margin_top">@dimen/space_small</dimen>
+    <dimen name="setting_dialog_check_box_margin_bottom">@dimen/space_small</dimen>
+    <dimen name="setting_dialog_check_box_margin_start">@dimen/space_big</dimen>
+    <dimen name="setting_dialog_check_box_margin_end">-10dp</dimen>
+
+</resources>
+
