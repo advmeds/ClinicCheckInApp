@@ -104,10 +104,14 @@ class HomeFragment : Fragment() {
             EditCheckInItemDialog(
                 onConfirmClick = {
                     viewModel.checkInItemList = viewModel.checkInItemList.plus(it)
+
+                    changeIsCheckInLayoutWeightIfItEmpty(viewModel.checkInItemList.size)
                 }
             ).showNow(childFragmentManager, null)
             return@setOnLongClickListener true
         }
+
+        changeIsCheckInLayoutWeightIfItEmpty(viewModel.checkInItemList.size)
 
         binding.logoImageView.load(viewModel.logoUrl)
         binding.logoImageView.setOnLongClickListener {
@@ -205,6 +209,7 @@ class HomeFragment : Fragment() {
                         val margin =
                             (resources.getDimension(R.dimen.card_view_half_spacing) / resources.displayMetrics.density).toInt()
                         setMargins(margin, margin, margin, margin)
+
                     }
                 )
 
@@ -232,6 +237,8 @@ class HomeFragment : Fragment() {
                         .setTitle(R.string.delete_item_title)
                         .setPositiveButton(R.string.confirm) { _, _ ->
                             viewModel.checkInItemList = viewModel.checkInItemList.minus(checkInItem)
+
+                            changeIsCheckInLayoutWeightIfItEmpty(viewModel.checkInItemList.size)
                         }
                         .setNegativeButton(R.string.cancel, null)
                         .showOnly()
@@ -240,6 +247,24 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun changeIsCheckInLayoutWeightIfItEmpty(size: Int) {
+
+        val weight = if (size == 0) 0f else 2f
+
+        val oldSize = binding.checkInLayout.childCount
+
+        if (oldSize > 0 && size > 0)
+            return
+
+        val params = LinearLayoutCompat.LayoutParams(
+            0,
+            LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+            weight
+        )
+
+        binding.checkInLayout.layoutParams = params
     }
 
     private fun onSetServerDomainItemClicked() {
@@ -341,6 +366,8 @@ class HomeFragment : Fragment() {
 
         dialog.window!!.setGravity(Gravity.CENTER)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        dialog.fcl_title.setText(R.string.format_checked)
 
         setListOfCheckBox(
             container = dialog.fcl_check_box_container,
