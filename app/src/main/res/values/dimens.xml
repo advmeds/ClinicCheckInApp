@@ -1,15 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <dimen name="zero">0dp</dimen>
+
     <dimen name="logo_height">150dp</dimen>
 
-    <dimen name="card_view_half_spacing">16dp</dimen>
+    <!-- Screen -->
 
+    <dimen name="screen_padding">20dp</dimen>
+    <dimen name="screen_panel_margin">20dp</dimen>
+
+    <dimen name="distance_between_panel">10dp</dimen>
+
+    <!-- Logo -->
+    <dimen name="logo_margin">20dp</dimen>
+    <dimen name="logo_image_width">500dp</dimen>
+    <dimen name="logo_image_margin">20dp</dimen>
+
+
+    <!-- Font -->
+
+    <dimen name="font_size_h1">60sp</dimen>
     <dimen name="font_size_h2">48sp</dimen>
     <dimen name="font_size_h3">34sp</dimen>
     <dimen name="font_size_h4">24sp</dimen>
     <dimen name="font_size_h5">20sp</dimen>
 
     <item name="font_size_h4_float" format="float" type="dimen" >24.0</item>
+
+
+
+
+
     <!-- Dialog -->
     <dimen name="setting_dialog_width">780dp</dimen>
 

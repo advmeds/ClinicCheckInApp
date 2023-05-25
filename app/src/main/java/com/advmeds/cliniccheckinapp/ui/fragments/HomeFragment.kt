@@ -13,6 +13,7 @@ import android.text.InputType
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginStart
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -169,7 +171,7 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-        itemList.forEach { checkInItem ->
+        itemList.forEachIndexed { index, checkInItem ->
             layoutInflater.inflate(
                 if (itemList.size > 1) {
                     R.layout.check_in_item_card_view_horizontal
@@ -206,9 +208,22 @@ class HomeFragment : Fragment() {
                         0,
                         1f
                     ).apply {
+
+                        val topMargin =
+                            if (index == 0)
+                                (resources.getDimension(R.dimen.zero) / resources.displayMetrics.density).toInt()
+                            else
+                                (resources.getDimension(R.dimen.screen_panel_margin) / resources.displayMetrics.density).toInt()
+
+                        val bottomMargin =
+                            if (index == (itemList.size -1))
+                                (resources.getDimension(R.dimen.zero) / resources.displayMetrics.density).toInt()
+                            else
+                                (resources.getDimension(R.dimen.screen_panel_margin) / resources.displayMetrics.density).toInt()
+
                         val margin =
-                            (resources.getDimension(R.dimen.card_view_half_spacing) / resources.displayMetrics.density).toInt()
-                        setMargins(margin, margin, margin, margin)
+                            (resources.getDimension(R.dimen.screen_panel_margin) / resources.displayMetrics.density).toInt()
+                        setMargins(margin, topMargin, margin, bottomMargin)
 
                     }
                 )
