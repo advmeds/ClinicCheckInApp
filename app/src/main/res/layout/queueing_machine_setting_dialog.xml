@@ -30,8 +30,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
                     android:layout_marginVertical="@dimen/space_normal"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
@@ -77,91 +77,113 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
-                            <com.google.android.material.checkbox.MaterialCheckBox
-                                android:id="@+id/qms_cb_organization"
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:scaleX="@dimen/check_box_scale"
-                                android:scaleY="@dimen/check_box_scale"
-                                android:layout_marginEnd="@dimen/setting_dialog_check_box_margin_end"
-                                android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
-                                android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
-                                android:layout_marginStart="@dimen/setting_dialog_check_box_margin_start"
-                                />
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
 
-                            <TextView
+                                <com.google.android.material.checkbox.MaterialCheckBox
+                                    android:id="@+id/qms_cb_organization"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/setting_dialog_check_box_margin_start"
+                                    android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
+                                    android:layout_marginEnd="@dimen/setting_dialog_check_box_margin_end"
+                                    android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
+                                    android:gravity="center"
+                                    android:scaleX="@dimen/check_box_scale"
+                                    android:scaleY="@dimen/check_box_scale" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/qms_organization_label"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/font_size_h4" />
+
+                            </androidx.appcompat.widget.LinearLayoutCompat>
+
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/font_size_h4"
-                                android:text="@string/qms_organization_label"
-                                />
-                            <com.google.android.material.checkbox.MaterialCheckBox
-                                android:id="@+id/qms_cb_doctor"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.checkbox.MaterialCheckBox
+                                    android:id="@+id/qms_cb_doctor"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/setting_dialog_check_box_margin_start"
+                                    android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
+                                    android:layout_marginEnd="@dimen/setting_dialog_check_box_margin_end"
+                                    android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
+                                    android:gravity="center"
+                                    android:scaleX="@dimen/check_box_scale"
+                                    android:scaleY="@dimen/check_box_scale" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/qms_doctor_label"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/font_size_h4" />
+                            </androidx.appcompat.widget.LinearLayoutCompat>
+
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:scaleX="@dimen/check_box_scale"
-                                android:scaleY="@dimen/check_box_scale"
-                                android:layout_marginEnd="@dimen/setting_dialog_check_box_margin_end"
-                                android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
-                                android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
-                                android:layout_marginStart="@dimen/setting_dialog_check_box_margin_start"
-                                />
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
 
-                            <TextView
+                                <com.google.android.material.checkbox.MaterialCheckBox
+                                    android:id="@+id/qms_cb_dept"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/setting_dialog_check_box_margin_start"
+                                    android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
+                                    android:layout_marginEnd="@dimen/setting_dialog_check_box_margin_end"
+                                    android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
+                                    android:gravity="center"
+                                    android:scaleX="@dimen/check_box_scale"
+                                    android:scaleY="@dimen/check_box_scale" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/qms_dept_label"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/font_size_h4" />
+                            </androidx.appcompat.widget.LinearLayoutCompat>
+
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/font_size_h4"
-                                android:text="@string/qms_doctor_label"
-                                />
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
 
-                            <com.google.android.material.checkbox.MaterialCheckBox
-                                android:id="@+id/qms_cb_dept"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:scaleX="@dimen/check_box_scale"
-                                android:scaleY="@dimen/check_box_scale"
-                                android:layout_marginEnd="@dimen/setting_dialog_check_box_margin_end"
-                                android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
-                                android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
-                                android:layout_marginStart="@dimen/setting_dialog_check_box_margin_start"
-                                />
+                                <com.google.android.material.checkbox.MaterialCheckBox
+                                    android:id="@+id/qms_cb_time"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/setting_dialog_check_box_margin_start"
+                                    android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
+                                    android:layout_marginEnd="@dimen/setting_dialog_check_box_margin_end"
+                                    android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
+                                    android:gravity="center"
+                                    android:scaleX="@dimen/check_box_scale"
+                                    android:scaleY="@dimen/check_box_scale" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/font_size_h4"
-                                android:text="@string/qms_dept_label"
-                                />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/qms_time_label"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/font_size_h4" />
 
-                            <com.google.android.material.checkbox.MaterialCheckBox
-                                android:id="@+id/qms_cb_time"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:scaleX="@dimen/check_box_scale"
-                                android:scaleY="@dimen/check_box_scale"
-                                android:layout_marginEnd="@dimen/setting_dialog_check_box_margin_end"
-                                android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
-                                android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
-                                android:layout_marginStart="@dimen/setting_dialog_check_box_margin_start"
-                                />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/font_size_h4"
-                                android:text="@string/qms_time_label"
-                                />
-
+                            </androidx.appcompat.widget.LinearLayoutCompat>
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -183,7 +205,7 @@
                         android:background="@android:color/transparent"
                         android:text="@string/dialog_cancel_button"
                         android:textColor="@color/red"
-                        android:textSize="@dimen/font_size_h3"/>
+                        android:textSize="@dimen/font_size_h3" />
 
                     <Button
                         android:id="@+id/btn_qms_dialog_save"

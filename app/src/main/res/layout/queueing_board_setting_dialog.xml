@@ -61,74 +61,89 @@
                     android:visibility="gone">
 
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+<!--                    <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:orientation="vertical">-->
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginVertical="@dimen/space_normal"
-                            android:text="@string/qbs_screen_rotation_label"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/font_size_h4" />
+<!--                        <TextView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginVertical="@dimen/space_normal"-->
+<!--                            android:text="@string/qbs_screen_rotation_label"-->
+<!--                            android:textColor="@color/black"-->
+<!--                            android:textSize="@dimen/font_size_h4" />-->
 
-                        <androidx.appcompat.widget.LinearLayoutCompat
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+<!--                        <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content">-->
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                style="@style/ExposedDropdownMenuGray"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                app:boxCornerRadiusBottomEnd="10dp"
-                                app:boxCornerRadiusBottomStart="10dp"
-                                app:boxCornerRadiusTopEnd="10dp"
-                                app:boxCornerRadiusTopStart="10dp"
-                                app:boxStrokeColor="#e0e0e0"
-                                app:boxStrokeWidth="4dp">
+<!--                            <com.google.android.material.textfield.TextInputLayout-->
+<!--                                style="@style/ExposedDropdownMenuGray"-->
+<!--                                android:layout_width="0dp"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_weight="1"-->
+<!--                                app:boxCornerRadiusBottomEnd="10dp"-->
+<!--                                app:boxCornerRadiusBottomStart="10dp"-->
+<!--                                app:boxCornerRadiusTopEnd="10dp"-->
+<!--                                app:boxCornerRadiusTopStart="10dp"-->
+<!--                                app:boxStrokeColor="#e0e0e0"-->
+<!--                                app:boxStrokeWidth="4dp">-->
 
-                                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                                    android:id="@+id/queueing_board_setting_auto_complete_tv"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="@dimen/font_size_h5"
-                                    android:clickable="false"
-                                    android:cursorVisible="false"
-                                    android:focusable="false"
-                                    android:inputType="none" />
+<!--                                <androidx.appcompat.widget.AppCompatAutoCompleteTextView-->
+<!--                                    android:id="@+id/queueing_board_setting_auto_complete_tv"-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:textSize="@dimen/font_size_h5"-->
+<!--                                    android:clickable="false"-->
+<!--                                    android:cursorVisible="false"-->
+<!--                                    android:focusable="false"-->
+<!--                                    android:inputType="none" />-->
 
-                            </com.google.android.material.textfield.TextInputLayout>
+<!--                            </com.google.android.material.textfield.TextInputLayout>-->
 
-                            <Space
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1" />
+<!--                            <Space-->
+<!--                                android:layout_width="0dp"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_weight="1" />-->
 
-                        </androidx.appcompat.widget.LinearLayoutCompat>
+<!--                        </androidx.appcompat.widget.LinearLayoutCompat>-->
 
 
-                    </androidx.appcompat.widget.LinearLayoutCompat>
+<!--                    </androidx.appcompat.widget.LinearLayoutCompat>-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="10dp"
-                        android:text="@string/dialog_url_label"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="@dimen/font_size_h4" />
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginVertical="10dp"-->
+<!--                        android:text="@string/dialog_url_label"-->
+<!--                        android:textColor="@color/colorPrimary"-->
+<!--                        android:textSize="@dimen/font_size_h4" />-->
 
-                    <androidx.appcompat.widget.AppCompatEditText
+<!--                    <androidx.appcompat.widget.AppCompatEditText-->
+<!--                        android:id="@+id/et_qbs_irl_input"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:background="@drawable/id_input_border"-->
+<!--                        android:padding="@dimen/space_normal"-->
+<!--                        android:singleLine="true"-->
+<!--                        android:textSize="@dimen/font_size_h4"-->
+<!--                        android:textColor="@color/black"/>-->
+
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/et_qbs_irl_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/id_input_border"
-                        android:padding="@dimen/space_normal"
                         android:singleLine="true"
+                        android:textColor="@color/black"
                         android:textSize="@dimen/font_size_h4"
-                        android:textColor="@color/black"/>
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
 
 

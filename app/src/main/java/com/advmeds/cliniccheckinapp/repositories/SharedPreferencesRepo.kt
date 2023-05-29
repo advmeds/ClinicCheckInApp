@@ -52,6 +52,9 @@ class SharedPreferencesRepo(
         /** 從SharedPreferences取得『Department ID』的KEY */
         const val DEPT_ID = "dept_id"
 
+        /** SharedPreferences [queue board setting param] KEY */
+        const val QUEUEING_BOARD_SETTING_URL = "queueing_board_url"
+
         /** SharedPreferences [queue machine setting params] KEY */
         const val QUEUEING_MACHINE_SETTING_ORGANIZATION = "queueing_machine_setting_organization"
         const val QUEUEING_MACHINE_SETTING_DOCTOR = "queueing_machine_setting_organization_doctor"
@@ -240,6 +243,22 @@ class SharedPreferencesRepo(
             localBroadcastManager.sendBroadcast(
                 Intent(DEPT_ID).apply {
                     putExtra(DEPT_ID, value.toTypedArray())
+                }
+            )
+        }
+
+    /** QUEUEING BOARD SETTING URL */
+    var queueingBoardURL: String
+        get() =
+            sharedPreferences.getString(QUEUEING_BOARD_SETTING_URL, null) ?: ""
+        set(value) {
+            sharedPreferences.edit()
+                .putString(QUEUEING_BOARD_SETTING_URL, value)
+                .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(QUEUEING_BOARD_SETTING_URL).apply {
+                    putExtra(QUEUEING_BOARD_SETTING_URL, value)
                 }
             )
         }

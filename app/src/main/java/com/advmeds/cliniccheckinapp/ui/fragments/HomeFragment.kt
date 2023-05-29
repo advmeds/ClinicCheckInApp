@@ -479,8 +479,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun onSetQueueingBoardSettingItemClicked() {
-        //TODO set correct data
-        val items = arrayListOf("Portrait", "Landscape")
+
+        val label = resources.getString(R.string.qbs_screen_edit_text_label)
+
+//        val items = arrayListOf("Portrait", "Landscape")
 
         dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.queueing_board_setting_dialog)
@@ -491,10 +493,12 @@ class HomeFragment : Fragment() {
         dialog.window!!.setGravity(Gravity.CENTER)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        val adapter =
-            ArrayAdapter(requireContext(), R.layout.support_simple_spinner_dropdown_item, items)
-        dialog.queueing_board_setting_auto_complete_tv.setAdapter(adapter)
+//        val adapter =
+//            ArrayAdapter(requireContext(), R.layout.support_simple_spinner_dropdown_item, items)
+//        dialog.queueing_board_setting_auto_complete_tv.setAdapter(adapter)
 
+        dialog.et_qbs_irl_input.hint = label
+        val qbsDomain = dialog.et_qbs_irl_input.editText?.setText(viewModel.queueingBoardSettings)
 
         dialog.queueing_board_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
@@ -507,28 +511,18 @@ class HomeFragment : Fragment() {
         val cancelButton = dialog.btn_qbs_dialog_cancel
 
         saveButton.setOnClickListener {
-            val domain = dialog.et_qbs_irl_input.text.toString().trim()
+            val qbsDomain = dialog.et_qbs_irl_input.editText?.text.toString().trim()
 
+            try {
+                HttpUrl.get(qbsDomain)
 
-//            TODO ask about that field
-//            try {
-//                dialog.dismiss()
-//                HttpUrl.get(domain)
-//
-//                viewModel.mSchedulerServerDomain = domain
-//
-//                val intent = Intent(MainActivity.RELOAD_CLINIC_DATA_ACTION)
-//
-//                LocalBroadcastManager.getInstance(requireContext())
-//                    .sendBroadcast(intent)
-//
-//            } catch (e: Exception) {
-//                dialog.dismiss()
-//                AlertDialog.Builder(requireContext())
-//                    .setMessage(e.message)
-//                    .setPositiveButton(R.string.confirm, null)
-//                    .showOnly()
-//            }
+                viewModel.queueingBoardSettings = qbsDomain
+            } catch (e: Exception) {
+                AlertDialog.Builder(requireContext())
+                    .setMessage(e.message)
+                    .setPositiveButton(R.string.confirm, null)
+                    .showOnly()
+            }
 
             dialog.dismiss()
 

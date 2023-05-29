@@ -99,6 +99,7 @@
     <!-- Queueing Board Setting -->
     <string name="queueing_board_setting">Queueing Board Setting</string>
     <string name="qbs_screen_rotation_label">Screen Rotation</string>
+    <string name="qbs_screen_edit_text_label">Queueing Board URL</string>
 
     <!-- Queueing Machine Setting -->
     <string name="queueing_machine_setting">Queueing Machine Setting</string>
