@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="@dimen/space_normal">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/present_title_text_view"

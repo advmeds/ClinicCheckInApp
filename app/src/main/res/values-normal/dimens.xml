@@ -36,6 +36,8 @@
 
     <item name="font_size_h4_float" format="float" type="dimen">15.0</item>
 
+    <!-- Home Page -->
+    <dimen name="check_in_item_vertical_icon_size">100dp</dimen>
 
     <!-- Input Page -->
     <dimen name="input_page_back_to_home_horizontal_padding">138dp</dimen>
