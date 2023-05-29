@@ -426,10 +426,10 @@ class HomeFragment : Fragment() {
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         dialog.dialog_title.setText(titleResId)
-        dialog.dialog_text_input_label.text = inputTextLabel
-        dialog.dialog_input_field.setText(inputText)
-        dialog.dialog_input_field.hint = hint
-        dialog.dialog_input_field.inputType = inputType
+        dialog.dialog_input_field.editText?.setText(inputText)
+        dialog.dialog_input_field.placeholderText = hint
+        dialog.dialog_input_field.hint = inputTextLabel
+        dialog.dialog_input_field.editText?.inputType = inputType
 
         if (showDescription) {
             dialog.dialog_description.visibility = View.VISIBLE
@@ -458,13 +458,13 @@ class HomeFragment : Fragment() {
 
         dialog.dialog_save_btn.setOnClickListener {
 
-            var inputData = dialog.dialog_input_field.text.toString().trim()
+            var inputData = dialog.dialog_input_field.editText?.text.toString().trim()
 
             if (showRadioButton) {
                 inputData = when (dialog.dialog_radio_group.checkedRadioButtonId) {
                     R.id.domain_service_official_site -> "https://www.mscheduler.com"
                     R.id.domain_service_testing_site -> "https://test.mscheduler.com"
-                    R.id.domain_service_customize -> dialog.dialog_input_field.text.toString()
+                    R.id.domain_service_customize -> dialog.dialog_input_field.editText?.text.toString()
                         .trim()
                     else -> BuildConfig.MS_DOMAIN
                 }
