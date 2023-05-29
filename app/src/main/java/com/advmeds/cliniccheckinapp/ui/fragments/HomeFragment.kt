@@ -13,7 +13,6 @@ import android.text.InputType
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -23,7 +22,6 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginStart
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -89,6 +87,7 @@ class HomeFragment : Fragment() {
             IntentFilter(SharedPreferencesRepo.ROOMS).apply {
                 addAction(SharedPreferencesRepo.DOCTORS)
                 addAction(SharedPreferencesRepo.CHECK_IN_ITEM_LIST)
+                addAction(SharedPreferencesRepo.DEPT_ID)
             }
         )
 
@@ -326,8 +325,8 @@ class HomeFragment : Fragment() {
             inputTextLabel = inputTextLabel,
             showDescription = true,
             inputText = viewModel.doctors.joinToString(","),
-            onConfirmClick = { rooms ->
-                viewModel.doctors = rooms.split(",").filter { it.isNotBlank() }.toSet()
+            onConfirmClick = { doctors ->
+                viewModel.doctors = doctors.split(",").filter { it.isNotBlank() }.toSet()
             }
         )
     }
@@ -730,6 +729,7 @@ class HomeFragment : Fragment() {
         val textSize = outValue.float
 
         val textView = TextView(requireContext())
+
         textView.layoutParams = layoutParameters
         textView.setTextColor(Color.BLACK)
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize)

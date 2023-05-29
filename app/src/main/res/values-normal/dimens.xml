@@ -27,7 +27,6 @@
 
 
     <!-- Space -->
-
     <dimen name="space_small">5dp</dimen>
     <dimen name="space_medium">8dp</dimen>
     <dimen name="space_normal">10dp</dimen>

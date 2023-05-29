@@ -288,6 +288,7 @@ class SharedPreferencesRepo(
             )
         }
 
+    /** LANGUAGE */
     var language: String
         get() = sharedPreferences.getString(LANGUAGE_KEY, null) ?: BuildConfig.DEFAULT_LANGUAGE
         set(value) {

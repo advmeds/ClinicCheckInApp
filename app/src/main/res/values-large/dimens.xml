@@ -2,47 +2,47 @@
 <resources>
 
     <!-- Screen -->
-
-
-    <dimen name="screen_padding">20dp</dimen>
-    <dimen name="screen_panel_margin">20dp</dimen>
+    <dimen name="screen_padding">10dp</dimen>
+    <dimen name="screen_panel_margin">10dp</dimen>
 
     <dimen name="distance_between_panel">10dp</dimen>
 
     <!-- Logo -->
-    <dimen name="logo_margin">20dp</dimen>
+    <dimen name="logo_margin">10dp</dimen>
+    <dimen name="logo_image_margin">15dp</dimen>
     <dimen name="logo_image_width">500dp</dimen>
-    <dimen name="logo_image_margin">20dp</dimen>
 
 
     <!-- Font -->
+    <dimen name="font_size_h1">50sp</dimen>
+    <dimen name="font_size_h2">30sp</dimen>
+    <dimen name="font_size_h3">25sp</dimen>
+    <dimen name="font_size_h4">18sp</dimen>
+    <dimen name="font_size_h5">16sp</dimen>
 
-    <dimen name="font_size_h1">60sp</dimen>
-    <dimen name="font_size_h2">48sp</dimen>
-    <dimen name="font_size_h3">34sp</dimen>
-    <dimen name="font_size_h4">24sp</dimen>
-    <dimen name="font_size_h5">20sp</dimen>
-
-    <item name="font_size_h4_float" format="float" type="dimen" >24.0</item>
+    <item name="font_size_h4_float" format="float" type="dimen" >18.0</item>
 
     <!-- Space -->
     <dimen name="space_small">10dp</dimen>
-    <dimen name="space_medium">15dp</dimen>
-    <dimen name="space_normal">20dp</dimen>
-    <dimen name="space_big">30dp</dimen>
-    <dimen name="space_huge">40dp</dimen>
+    <dimen name="space_medium">13dp</dimen>
+    <dimen name="space_normal">15dp</dimen>
+    <dimen name="space_big">20dp</dimen>
+    <dimen name="space_huge">25dp</dimen>
 
+
+    <!-- Home Page -->
+    <dimen name="check_in_item_vertical_icon_size">150dp</dimen>
 
     <!-- Input Page -->
     <dimen name="input_page_back_to_home_horizontal_padding">138dp</dimen>
-    <dimen name="input_page_button_icon_size">50dp</dimen>
+    <dimen name="input_page_button_icon_size">30dp</dimen>
 
     <!-- Dialog -->
     <dimen name="setting_dialog_width">780dp</dimen>
 
-    <item name="switcher_scale" format="float" type="dimen">2.0</item>
+    <item name="switcher_scale" format="float" type="dimen">1.5</item>
 
-    <item name="check_box_scale" format="float" type="dimen">2.0</item>
+    <item name="check_box_scale" format="float" type="dimen">1.3</item>
 
     <dimen name="setting_dialog_bottom_margin">0dp</dimen>
 
