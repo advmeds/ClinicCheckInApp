@@ -37,6 +37,11 @@
     <item name="font_size_h4_float" format="float" type="dimen">15.0</item>
 
 
+    <!-- Input Page -->
+    <dimen name="input_page_back_to_home_horizontal_padding">138dp</dimen>
+    <dimen name="input_page_button_icon_size">15dp</dimen>
+
+
     <!-- Dialog -->
 
     <dimen name="setting_dialog_width">500dp</dimen>

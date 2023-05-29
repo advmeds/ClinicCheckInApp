@@ -33,6 +33,9 @@
     <dimen name="space_huge">40dp</dimen>
 
 
+    <!-- Input Page -->
+    <dimen name="input_page_back_to_home_horizontal_padding">138dp</dimen>
+    <dimen name="input_page_button_icon_size">50dp</dimen>
 
     <!-- Dialog -->
     <dimen name="setting_dialog_width">780dp</dimen>
