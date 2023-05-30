@@ -1,4 +1,4 @@
-package com.advmeds.cliniccheckinapp.ui.fragments
+package com.advmeds.cliniccheckinapp.ui.fragments.home.view
 
 import android.app.ActionBar.LayoutParams
 import android.app.Dialog
@@ -18,7 +18,10 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
@@ -26,6 +29,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
@@ -36,14 +40,18 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetSchedul
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
+import com.advmeds.cliniccheckinapp.ui.fragments.home.adapter.LanguageAdapter
+import com.advmeds.cliniccheckinapp.ui.fragments.home.model.LanguageModel
+import com.advmeds.cliniccheckinapp.ui.fragments.home.model.combineArrays
+import com.advmeds.cliniccheckinapp.ui.fragments.home.viewmodel.HomeViewModel
 import com.advmeds.cliniccheckinapp.utils.Converter
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.android.synthetic.main.format_checked_list.*
+import kotlinx.android.synthetic.main.language_setting_dialog.*
 import kotlinx.android.synthetic.main.queueing_board_setting_dialog.*
 import kotlinx.android.synthetic.main.queueing_machine_setting_dialog.*
 import kotlinx.android.synthetic.main.text_input_dialog.*
-import kotlinx.android.synthetic.main.version_setting_dialog.*
 import okhttp3.HttpUrl
 
 
@@ -595,12 +603,15 @@ class HomeFragment : Fragment() {
 
     private fun onSetVersionSettingItemClicked() {
 
-        val items = arrayOf("1.0", "2.0", "3.0")
+//        val items = arrayOf("1.0", "2.0", "3.0")
+//        var currentVersion = items[0]
+
         var currentLanguage = viewModel.language
-        var currentVersion = items[0]
+        var languageArrayWithIsSelected = getLanguageArray(currentLanguage)
+
 
         dialog = Dialog(requireContext())
-        dialog.setContentView(R.layout.version_setting_dialog)
+        dialog.setContentView(R.layout.language_setting_dialog)
 
         if (dialog.window == null)
             return
@@ -608,47 +619,59 @@ class HomeFragment : Fragment() {
         dialog.window!!.setGravity(Gravity.CENTER)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        // language setting
-        val languageDropDownAdapter =
-            ArrayAdapter(
-                requireContext(),
-                R.layout.support_simple_spinner_dropdown_item,
-                resources.getStringArray(R.array.language_items)
-            )
 
-        dialog.version_setting_select_language_tv.setAdapter(languageDropDownAdapter)
+        val adapter = LanguageAdapter(
+            itemList = languageArrayWithIsSelected,
+            LanguageAdapter.OnClickListener { language ->
+                currentLanguage = Converter.language_name_to_lang_code(requireContext(), language)
+                languageArrayWithIsSelected = getLanguageArray(currentLanguage)
+            })
 
-        dialog.version_setting_select_language_tv.setText(
-            Converter.language_lang_code_to_name(
-                requireContext(),
-                viewModel.language
-            ), false
-        )
+        dialog.language_recycler_view.layoutManager = LinearLayoutManager(requireContext())
+        dialog.language_recycler_view.adapter = adapter
 
-        dialog.version_setting_select_language_tv.onItemClickListener =
-            AdapterView.OnItemClickListener { parent, _, position, _ ->
-                val item = parent.getItemAtPosition(position).toString()
-                currentLanguage = Converter.language_name_to_lang_code(requireContext(), item)
-            }
+//        // language setting
+//        val languageDropDownAdapter =
+//            ArrayAdapter(
+//                requireContext(),
+//                R.layout.support_simple_spinner_dropdown_item,
+//                resources.getStringArray(R.array.language_items)
+//            )
+//
+//        dialog.version_setting_select_language_tv.setAdapter(languageDropDownAdapter)
+//
+//        dialog.version_setting_select_language_tv.setText(
+//            Converter.language_lang_code_to_name(
+//                requireContext(),
+//                viewModel.language
+//            ), false
+//        )
+//
+//        dialog.version_setting_select_language_tv.onItemClickListener =
+//            AdapterView.OnItemClickListener { parent, _, position, _ ->
+//                val item = parent.getItemAtPosition(position).toString()
+//                currentLanguage = Converter.language_name_to_lang_code(requireContext(), item)
+//            }
+//
+//
+//         version
+//
+//        val versionDropDownAdapter =
+//            ArrayAdapter(
+//                requireContext(),
+//                R.layout.support_simple_spinner_dropdown_item,
+//                items
+//            )
+//
+//        dialog.version_setting_select_version_tv.setAdapter(versionDropDownAdapter)
+//        dialog.version_setting_select_version_tv.setText(currentVersion, false)
+//
+//        dialog.version_setting_select_version_tv.onItemClickListener =
+//            AdapterView.OnItemClickListener { parent, _, position, _ ->
+//                val item = parent.getItemAtPosition(position).toString()
+//                currentVersion = item
+//            }
 
-
-        // version
-
-        val versionDropDownAdapter =
-            ArrayAdapter(
-                requireContext(),
-                R.layout.support_simple_spinner_dropdown_item,
-                items
-            )
-
-        dialog.version_setting_select_version_tv.setAdapter(versionDropDownAdapter)
-        dialog.version_setting_select_version_tv.setText(currentVersion, false)
-
-        dialog.version_setting_select_version_tv.onItemClickListener =
-            AdapterView.OnItemClickListener { parent, _, position, _ ->
-                val item = parent.getItemAtPosition(position).toString()
-                currentVersion = item
-            }
 
         val saveButton = dialog.btn_version_setting_dialog_save
         val cancelButton = dialog.btn_version_setting_dialog_cancel
@@ -667,6 +690,15 @@ class HomeFragment : Fragment() {
         }
 
         dialog.show()
+    }
+
+    private fun getLanguageArray(currentLanguage: String): Array<LanguageModel> {
+        val longLanguage = Converter.language_lang_code_to_name(requireContext(), currentLanguage)
+
+        val languageArray = resources.getStringArray(R.array.language_items)
+        val isSelectedArray = languageArray.map { it.contains(longLanguage) }
+
+        return combineArrays(languageArray, isSelectedArray)
     }
 
     private fun Context.getDimensionFrom(attr: Int): Int {

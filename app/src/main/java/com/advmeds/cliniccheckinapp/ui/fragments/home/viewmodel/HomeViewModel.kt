@@ -1,4 +1,4 @@
-package com.advmeds.cliniccheckinapp.ui.fragments
+package com.advmeds.cliniccheckinapp.ui.fragments.home.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

@@ -9,7 +9,7 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:padding="@dimen/screen_padding"
-    tools:context=".ui.fragments.ManualInputFragment">
+    tools:context=".ui.fragments.manualInput.view.ManualInputFragment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

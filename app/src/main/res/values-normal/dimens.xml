@@ -53,6 +53,8 @@
 
     <dimen name="setting_dialog_bottom_margin">0dp</dimen>
 
+    <dimen name="language_list_item_icon_size">40dp</dimen>
+
     <dimen name="setting_dialog_check_box_margin_top">@dimen/space_small</dimen>
     <dimen name="setting_dialog_check_box_margin_bottom">@dimen/space_small</dimen>
     <dimen name="setting_dialog_check_box_margin_start">@dimen/space_big</dimen>

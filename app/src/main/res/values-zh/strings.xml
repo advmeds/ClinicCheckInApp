@@ -76,7 +76,7 @@
         <item>@string/dept_id</item>
         <item>@string/queueing_board_setting</item>
         <item>@string/queueing_machine_setting</item>
-        <item>@string/version_setting</item>
+        <item>@string/language_setting</item>
     </string-array>
 
     <!-- Setting Dialog -->
@@ -109,8 +109,9 @@
     <string name="qms_doctor_label">Doctor</string>
     <string name="qms_organization_label">Organization</string>
 
-    <!-- Version Setting -->
+    <!-- Language Setting -->
     <string name="version_setting">Version Setting</string>
+    <string name="language_setting">Language</string>
     <string name="version_setting_dialog_select_version_label">Select Version</string>
     <string name="version_setting_dialog_select_language_label">Select Language</string>
 
@@ -146,4 +147,5 @@
     <string name="coming_soon">功能尚未開放</string>
 
     <string name="reconnecting">網路連線偵測中，請稍後</string>
+    <string name="is_selected_language_checker_image_description">is selected language checker</string>
 </resources>

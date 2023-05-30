@@ -1,4 +1,4 @@
-package com.advmeds.cliniccheckinapp.ui.fragments
+package com.advmeds.cliniccheckinapp.ui.fragments.manualInput.view
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -24,6 +24,7 @@ import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.ManualInputFragmentBinding
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
+import com.advmeds.cliniccheckinapp.ui.fragments.manualInput.viewModel.ManualInputViewModel
 import com.advmeds.cliniccheckinapp.utils.NationIdTransformationMethod
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
