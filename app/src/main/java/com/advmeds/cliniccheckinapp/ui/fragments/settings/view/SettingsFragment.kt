@@ -10,11 +10,15 @@ import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.ListFragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.SettingsFragmentBinding
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.SettingsViewModel
 
 class SettingsFragment : ListFragment() {
+
+    private val viewModel: SettingsViewModel by viewModels()
 
     private var _binding: SettingsFragmentBinding? = null
 
