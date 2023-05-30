@@ -13,7 +13,7 @@ object Converter {
         return when(langCode) {
             "en" -> context.getString(R.string.en_language)
             "zh" -> context.getString(R.string.zh_tw_language)
-            else -> ""
+            else -> throw IllegalArgumentException("The language code has no similar languages")
         }
     }
 
@@ -21,7 +21,7 @@ object Converter {
         return when(name) {
             context.getString(R.string.en_language) -> "en"
             context.getString(R.string.zh_tw_language) -> "zh"
-            else -> ""
+            else -> throw IllegalArgumentException("The language has no similar language codes")
         }
     }
 }

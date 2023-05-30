@@ -59,6 +59,7 @@ class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels()
 
     private var _binding: HomeFragmentBinding? = null
+
     private lateinit var dialog: Dialog
 
     // This property is only valid between onCreateView and
@@ -124,23 +125,25 @@ class HomeFragment : Fragment() {
 
         binding.logoImageView.load(viewModel.logoUrl)
         binding.logoImageView.setOnLongClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle(R.string.setting)
-                .setItems(R.array.setting_items) { _, index ->
-                    when (index) {
-                        0 -> onSetServerDomainItemClicked()
-                        1 -> onSetOrgIDItemClicked()
-                        2 -> onSetDoctorsItemClicked()
-                        3 -> onSetRoomsItemClicked()
-                        4 -> onSetPanelModeItemClicked()
-                        5 -> onSetFormatCheckedListItemClicked()
-                        6 -> onSetDeptIDItemClicked()
-                        7 -> onSetQueueingBoardSettingItemClicked()
-                        8 -> onSetQueueingMachineSettingItemClicked()
-                        9 -> onSetVersionSettingItemClicked()
-                    }
-                }
-                .showOnly()
+//            AlertDialog.Builder(requireContext())
+//                .setTitle(R.string.setting)
+//                .setItems(R.array.setting_items) { _, index ->
+//                    when (index) {
+//                        0 -> onSetServerDomainItemClicked()
+//                        1 -> onSetOrgIDItemClicked()
+//                        2 -> onSetDoctorsItemClicked()
+//                        3 -> onSetRoomsItemClicked()
+//                        4 -> onSetPanelModeItemClicked()
+//                        5 -> onSetFormatCheckedListItemClicked()
+//                        6 -> onSetDeptIDItemClicked()
+//                        7 -> onSetQueueingBoardSettingItemClicked()
+//                        8 -> onSetQueueingMachineSettingItemClicked()
+//                        9 -> onSetVersionSettingItemClicked()
+//                    }
+//                }
+//                .showOnly()
+
+            findNavController().navigate(R.id.settingsFragment)
 
             return@setOnLongClickListener true
         }

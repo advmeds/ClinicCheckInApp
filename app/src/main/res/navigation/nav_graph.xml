@@ -14,4 +14,10 @@
         android:name="com.advmeds.cliniccheckinapp.ui.fragments.manualInput.view.ManualInputFragment"
         android:label="manual_input_fragment"
         tools:layout="@layout/manual_input_fragment" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.advmeds.cliniccheckinapp.ui.fragments.settings.view.SettingsFragment"
+        android:label="setting_menu"
+        tools:layout="@layout/settings_fragment"/>
 </navigation>
