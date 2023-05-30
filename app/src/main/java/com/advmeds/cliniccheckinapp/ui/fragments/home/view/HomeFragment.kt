@@ -1,19 +1,25 @@
 package com.advmeds.cliniccheckinapp.ui.fragments.home.view
 
+import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.InputType
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
@@ -30,9 +36,13 @@ import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.fragments.home.viewmodel.HomeViewModel
 import com.advmeds.cliniccheckinapp.utils.showOnly
+import kotlinx.android.synthetic.main.text_input_dialog.*
 
 
 class HomeFragment : Fragment() {
+
+    private lateinit var dialog: Dialog
+
     private val viewModel: HomeViewModel by viewModels()
 
     private var _binding: HomeFragmentBinding? = null
@@ -100,25 +110,25 @@ class HomeFragment : Fragment() {
 
         binding.logoImageView.load(viewModel.logoUrl)
         binding.logoImageView.setOnLongClickListener {
-//            AlertDialog.Builder(requireContext())
-//                .setTitle(R.string.setting)
-//                .setItems(R.array.setting_items) { _, index ->
-//                    when (index) {
-//                        0 -> onSetServerDomainItemClicked()
-//                        1 -> onSetOrgIDItemClicked()
-//                        2 -> onSetDoctorsItemClicked()
-//                        3 -> onSetRoomsItemClicked()
-//                        4 -> onSetPanelModeItemClicked()
-//                        5 -> onSetFormatCheckedListItemClicked()
-//                        6 -> onSetDeptIDItemClicked()
-//                        7 -> onSetQueueingBoardSettingItemClicked()
-//                        8 -> onSetQueueingMachineSettingItemClicked()
-//                        9 -> onSetVersionSettingItemClicked()
-//                    }
-//                }
-//                .showOnly()
 
-            findNavController().navigate(R.id.settingsFragment)
+            val inputTextLabel = requireContext().getString(R.string.password)
+
+            showTextInputDialog(
+                titleResId = R.string.advanced_settings,
+                inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD,
+                inputTextLabel = inputTextLabel,
+                positiveButtonTextResId = R.string.dialog_ok_button,
+                onConfirmClick = {
+                    if (it == viewModel.password)
+                        findNavController().navigate(R.id.settingsFragment)
+                    else
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.password_is_incorrect),
+                            Toast.LENGTH_LONG
+                        ).show()
+                }
+            )
 
             return@setOnLongClickListener true
         }
@@ -260,6 +270,52 @@ class HomeFragment : Fragment() {
         binding.checkInLayout.layoutParams = params
     }
 
+    private fun showTextInputDialog(
+        titleResId: Int,
+        inputTextLabel: String,
+        inputText: String = "",
+        hint: String = "",
+        inputType: Int = InputType.TYPE_CLASS_TEXT,
+        showDescription: Boolean = false,
+        positiveButtonTextResId: Int = R.string.dialog_save_button,
+        onConfirmClick: (String) -> Unit
+    ) {
+
+        dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.text_input_dialog)
+
+        if (dialog.window == null)
+            return
+
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        dialog.dialog_title.setText(titleResId)
+        dialog.dialog_input_field.editText?.setText(inputText)
+        dialog.dialog_input_field.placeholderText = hint
+        dialog.dialog_input_field.hint = inputTextLabel
+        dialog.dialog_input_field.editText?.inputType = inputType
+        dialog.dialog_save_btn.setText(positiveButtonTextResId)
+
+        if (showDescription) {
+            dialog.dialog_description.visibility = View.VISIBLE
+        }
+
+        dialog.dialog_cancel_btn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.dialog_save_btn.setOnClickListener {
+
+            val inputData = dialog.dialog_input_field.editText?.text.toString().trim()
+
+            onConfirmClick(inputData)
+
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
 
     private fun Context.getDimensionFrom(attr: Int): Int {
         val typedValue = TypedValue()

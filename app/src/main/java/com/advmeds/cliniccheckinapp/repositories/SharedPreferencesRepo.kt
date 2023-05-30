@@ -64,6 +64,9 @@ class SharedPreferencesRepo(
         /** SharedPreferences『Language』KEY */
         const val LANGUAGE_KEY = "language"
 
+        /** SharedPreferences『PASSWORD』KEY */
+        const val PASSWORD = "password"
+
         /** 以Volatile註解表示此INSTANCE變數僅會在主記憶體中讀寫，可避免進入cache被不同執行緒讀寫而造成問題 */
         @Volatile
         private var INSTANCE: SharedPreferencesRepo? = null
@@ -318,6 +321,22 @@ class SharedPreferencesRepo(
             localBroadcastManager.sendBroadcast(
                 Intent(LANGUAGE_KEY).apply {
                     putExtra(LANGUAGE_KEY, value)
+                }
+            )
+        }
+
+
+    /** PASSWORD */
+    var password: String
+        get() = sharedPreferences.getString(PASSWORD, null) ?: BuildConfig.DEFAULT_PASSWORD
+        set(value) {
+            sharedPreferences.edit()
+                .putString(PASSWORD, value)
+                .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(PASSWORD).apply {
+                    putExtra(PASSWORD, value)
                 }
             )
         }

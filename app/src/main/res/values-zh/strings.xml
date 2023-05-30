@@ -58,6 +58,11 @@
     <string name="fail_to_make_appointment">掛號失敗</string>
     <string name="fail_to_make_appointment_10014">非取號時段</string>
 
+
+
+    <string name="advanced_settings">進階設定</string>
+    <string name="password">密碼</string>
+
     <string name="ui_settings">UI Setting</string> <!-- TODO translate it -->
     <string name="server_domain">伺服器網域</string>
     <string name="org_id">機構代碼</string>
@@ -93,6 +98,7 @@
 
     <string name="dialog_cancel_button">Cancel</string>
     <string name="dialog_save_button">Save</string>
+    <string name="dialog_ok_button">確認</string>
 
     <!-- Service Domain Dialog -->
     <string name="customize_url_hint">http://example.com</string> <!-- TODO translate it -->
@@ -152,4 +158,5 @@
 
     <string name="reconnecting">網路連線偵測中，請稍後</string>
     <string name="is_selected_language_checker_image_description">is selected language checker</string>
+    <string name="password_is_incorrect">password is incorrect</string>
 </resources>

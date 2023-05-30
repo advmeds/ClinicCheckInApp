@@ -10,20 +10,6 @@ import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
 
-    /** @see SharedPreferencesRepo.mSchedulerServerDomain */
-    var mSchedulerServerDomain: String
-        get() = sharedPreferencesRepo.mSchedulerServerDomain
-        set(value) {
-            sharedPreferencesRepo.mSchedulerServerDomain = value
-        }
-
-    /** @see SharedPreferencesRepo.orgId */
-    var orgId: String
-        get() = sharedPreferencesRepo.orgId
-        set(value) {
-            sharedPreferencesRepo.orgId = value
-        }
-
     /** @see SharedPreferencesRepo.doctors */
     var doctors: Set<String>
         get() = sharedPreferencesRepo.doctors
@@ -38,12 +24,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             sharedPreferencesRepo.rooms = value
         }
 
-    /** @see SharedPreferencesRepo.clinicPanelUrl */
-    var clinicPanelUrl: String?
-        get() = sharedPreferencesRepo.clinicPanelUrl
-        set(value) {
-            sharedPreferencesRepo.clinicPanelUrl = value
-        }
 
     /** @see SharedPreferencesRepo.logoUrl */
     var logoUrl: String?
@@ -53,43 +33,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
 
     /** @see SharedPreferencesRepo.formatCheckedList */
-    var formatCheckedList: List<CreateAppointmentRequest.NationalIdFormat>
-        get() = sharedPreferencesRepo.formatCheckedList
-        set(value) {
-            sharedPreferencesRepo.formatCheckedList = value
-        }
-
-    /** @see SharedPreferencesRepo.formatCheckedList */
     var checkInItemList: List<EditCheckInItemDialog.EditCheckInItem>
         get() = sharedPreferencesRepo.checkInItemList
         set(value) {
             sharedPreferencesRepo.checkInItemList = value
         }
 
-    /** @see SharedPreferencesRepo.deptId */
-    var deptId: Set<String>
-        get() = sharedPreferencesRepo.deptId
+    var password: String
+        get() = sharedPreferencesRepo.password
         set(value) {
-            sharedPreferencesRepo.deptId = value
-        }
-    /** @see SharedPreferencesRepo.queueingMachineSetting */
-    var queueingBoardSettings: String
-        get() = sharedPreferencesRepo.queueingBoardURL
-        set(value) {
-            sharedPreferencesRepo.queueingBoardURL = value
+            sharedPreferencesRepo.password = value
         }
 
-    /** @see SharedPreferencesRepo.queueingMachineSetting */
-    var queueingMachineSettings: QueueingMachineSettingModel
-        get() = sharedPreferencesRepo.queueingMachineSetting
-        set(value) {
-            sharedPreferencesRepo.queueingMachineSetting = value
-        }
-
-    /** @see SharedPreferencesRepo.queueingMachineSetting */
-    var language: String
-        get() = sharedPreferencesRepo.language
-        set(value) {
-            sharedPreferencesRepo.language = value
-        }
 }
