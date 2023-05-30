@@ -58,6 +58,7 @@
     <string name="fail_to_make_appointment">Failed to checked in</string>
     <string name="fail_to_make_appointment_10014">非取號時段</string>
 
+    <string name="ui_settings">UI Setting</string>
     <string name="server_domain">Service domain</string>
     <string name="org_id">Clinic ID</string>
     <string name="doctors">Doctor ID</string>
@@ -65,8 +66,10 @@
     <string name="clinic_panel_url">Clinic Panel Url</string>
     <string name="format_checked">報到格式檢查</string>
     <string name="dept_id">Dept ID</string>
+    <string name="exit_app">Exit App</string>
 
     <string-array name="setting_items">
+        <item>@string/ui_settings</item>
         <item>@string/server_domain</item>
         <item>@string/org_id</item>
         <item>Doctor ID(To enter multiple ID, use commas to separate each ID.)</item>
@@ -77,6 +80,7 @@
         <item>@string/queueing_board_setting</item>
         <item>@string/queueing_machine_setting</item>
         <item>@string/language_setting</item>
+        <item>@string/exit_app</item>
     </string-array>
 
     

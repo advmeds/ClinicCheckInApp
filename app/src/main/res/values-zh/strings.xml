@@ -58,6 +58,7 @@
     <string name="fail_to_make_appointment">掛號失敗</string>
     <string name="fail_to_make_appointment_10014">非取號時段</string>
 
+    <string name="ui_settings">UI Setting</string> <!-- TODO translate it -->
     <string name="server_domain">伺服器網域</string>
     <string name="org_id">機構代碼</string>
     <string name="doctors">醫師代碼</string>
@@ -65,8 +66,10 @@
     <string name="clinic_panel_url">叫號面板網址</string>
     <string name="format_checked">報到格式檢查</string>
     <string name="dept_id">Dept ID</string> <!-- TODO translate it -->
+    <string name="exit_app">Exit App</string>
 
     <string-array name="setting_items">
+        <item>@string/ui_settings</item>
         <item>@string/server_domain</item>
         <item>@string/org_id</item>
         <item>醫師代碼(可複數，用逗號區隔)</item>
@@ -77,6 +80,7 @@
         <item>@string/queueing_board_setting</item>
         <item>@string/queueing_machine_setting</item>
         <item>@string/language_setting</item>
+        <item>@string/exit_app</item>
     </string-array>
 
     <!-- Setting Dialog -->

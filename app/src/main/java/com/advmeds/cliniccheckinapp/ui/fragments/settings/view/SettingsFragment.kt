@@ -11,7 +11,10 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.ListView
+import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -28,6 +31,7 @@ import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.fragments.home.adapter.LanguageAdapter
 import com.advmeds.cliniccheckinapp.ui.fragments.home.model.LanguageModel
 import com.advmeds.cliniccheckinapp.ui.fragments.home.model.combineArrays
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter.SettingsAdapter
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.SettingsViewModel
 import com.advmeds.cliniccheckinapp.utils.Converter
 import com.advmeds.cliniccheckinapp.utils.showOnly
@@ -79,10 +83,9 @@ class SettingsFragment : ListFragment() {
             findNavController().navigate(R.id.homeFragment)
         }
 
-        val adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_list_item_1,
-            resources.getStringArray(R.array.setting_items)
+        val adapter = SettingsAdapter(
+            mContext = requireContext(),
+            settingItems = resources.getStringArray(R.array.setting_items)
         )
 
         listAdapter = adapter
@@ -92,16 +95,17 @@ class SettingsFragment : ListFragment() {
         super.onListItemClick(l, v, position, id)
 
         when (position) {
-            0 -> onSetServerDomainItemClicked()
-            1 -> onSetOrgIDItemClicked()
-            2 -> onSetDoctorsItemClicked()
-            3 -> onSetRoomsItemClicked()
-            4 -> onSetPanelModeItemClicked()
-            5 -> onSetFormatCheckedListItemClicked()
-            6 -> onSetDeptIDItemClicked()
-            7 -> onSetQueueingBoardSettingItemClicked()
-            8 -> onSetQueueingMachineSettingItemClicked()
-            9 -> onSetVersionSettingItemClicked()
+            0 -> {}
+            1 -> onSetServerDomainItemClicked()
+            2 -> onSetOrgIDItemClicked()
+            3 -> onSetDoctorsItemClicked()
+            4 -> onSetRoomsItemClicked()
+            5 -> onSetPanelModeItemClicked()
+            6 -> onSetFormatCheckedListItemClicked()
+            7 -> onSetDeptIDItemClicked()
+            8 -> onSetQueueingBoardSettingItemClicked()
+            9 -> onSetQueueingMachineSettingItemClicked()
+            10 -> onSetLanguageSettingItemClicked()
         }
     }
 
@@ -330,7 +334,6 @@ class SettingsFragment : ListFragment() {
 //        dialog.queueing_board_setting_auto_complete_tv.setAdapter(adapter)
 
         dialog.et_qbs_irl_input.hint = label
-        val qbsDomain = dialog.et_qbs_irl_input.editText?.setText(viewModel.queueingBoardSettings)
 
         dialog.queueing_board_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
@@ -425,7 +428,7 @@ class SettingsFragment : ListFragment() {
 
     }
 
-    private fun onSetVersionSettingItemClicked() {
+    private fun onSetLanguageSettingItemClicked() {
 
 //        val items = arrayOf("1.0", "2.0", "3.0")
 //        var currentVersion = items[0]
@@ -504,6 +507,7 @@ class SettingsFragment : ListFragment() {
             if (currentLanguage != viewModel.language) {
                 (requireActivity() as MainActivity).setLanguage(language = currentLanguage)
                 viewModel.language = currentLanguage
+                setupUI()
             }
 
             dialog.dismiss()
@@ -586,7 +590,6 @@ class SettingsFragment : ListFragment() {
 
         return linearLayout
     }
-
 
 
     override fun onDestroyView() {
