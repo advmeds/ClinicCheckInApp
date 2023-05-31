@@ -17,7 +17,7 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_big"
+                android:padding="@dimen/space_normal"
                 android:orientation="vertical">
 
                 <TextView
@@ -297,9 +297,7 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
                     android:gravity="end"
-                    android:layout_marginBottom="@dimen/space_medium"
                     android:orientation="horizontal">
 
                     <Button
