@@ -86,7 +86,19 @@
         <item>@string/exit_app</item>
     </string-array>
 
-    
+
+    <!-- UI settings -->
+    <string name="ui_settings_machine_title">Machine Title</string>
+
+    <string name="ui_settings_manual_input">Manual Input</string>
+    <string name="ui_settings_virtual_nhi_card">Virtual NHI Card</string>
+    <string name="ui_settings_customized_one">Customized 1</string>
+    <string name="ui_settings_customized_two">Customized 2</string>
+    <string name="ui_settings_customized_block_name">Block Name</string>
+    <string name="ui_settings_customized_doctor_id">Doctor ID</string>
+    <string name="ui_settings_customized_room_id">Room ID</string>
+
+
     <!-- Setting Dialog -->
     <string name="dialog_id_label">ID</string>
     <string name="dialog_url_label">URL</string>
