@@ -49,6 +49,14 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private val reloadTitle = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val title = intent?.getStringExtra(SharedPreferencesRepo.MACHINE_TITLE)
+            binding.appCompatTextView.text =
+                if (title.isNullOrEmpty()) getString(R.string.app_name) else title
+        }
+    }
+
     private val reloadClinicLogoReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val clinicLogoUrl = intent?.getStringExtra(SharedPreferencesRepo.LOGO_URL)
@@ -75,6 +83,11 @@ class HomeFragment : Fragment() {
         )
 
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+            reloadTitle,
+            IntentFilter(SharedPreferencesRepo.MACHINE_TITLE)
+        )
+
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
             reloadRightCardViewReceiver,
             IntentFilter(SharedPreferencesRepo.ROOMS).apply {
                 addAction(SharedPreferencesRepo.DOCTORS)
@@ -95,6 +108,9 @@ class HomeFragment : Fragment() {
     private fun setupUI() {
 
         binding.logoImageView.load(viewModel.logoUrl)
+        binding.appCompatTextView.text =
+            viewModel.machineTitle.ifEmpty { getString(R.string.app_name) }
+
         binding.logoImageView.setOnLongClickListener {
 
             val inputTextLabel = requireContext().getString(R.string.password)
@@ -214,7 +230,7 @@ class HomeFragment : Fragment() {
                     ).apply {
 
                         val margin =
-                            (resources.getDimension(R.dimen.screen_panel_margin) / resources.displayMetrics.density).toInt()
+                            (resources.getDimension(R.dimen.distance_between_panel) / resources.displayMetrics.density).toInt()
 
                         val topMargin = if (index == 0) 0 else margin
 
@@ -338,6 +354,8 @@ class HomeFragment : Fragment() {
             .unregisterReceiver(reloadClinicLogoReceiver)
         LocalBroadcastManager.getInstance(requireContext())
             .unregisterReceiver(reloadRightCardViewReceiver)
+        LocalBroadcastManager.getInstance(requireContext())
+            .unregisterReceiver(reloadTitle)
 
         _binding = null
     }

@@ -21,4 +21,12 @@ class ManualInputViewModel(application: Application) : AndroidViewModel(applicat
         set(value) {
             sharedPreferencesRepo.formatCheckedList = value
         }
+
+
+    /** @see SharedPreferencesRepo.machineTitle */
+    var machineTitle: String
+        get() = sharedPreferencesRepo.machineTitle
+        set(value) {
+            sharedPreferencesRepo.machineTitle = value
+        }
 }

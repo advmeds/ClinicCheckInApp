@@ -3,8 +3,6 @@ package com.advmeds.cliniccheckinapp.ui.fragments.home.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
-import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
-import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
@@ -39,10 +37,18 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             sharedPreferencesRepo.checkInItemList = value
         }
 
+    /** @see SharedPreferencesRepo.password */
     var password: String
         get() = sharedPreferencesRepo.password
         set(value) {
             sharedPreferencesRepo.password = value
+        }
+
+    /** @see SharedPreferencesRepo.machineTitle */
+    var machineTitle: String
+        get() = sharedPreferencesRepo.machineTitle
+        set(value) {
+            sharedPreferencesRepo.machineTitle = value
         }
 
 }

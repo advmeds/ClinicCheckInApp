@@ -67,6 +67,9 @@ class SharedPreferencesRepo(
         /** SharedPreferences『PASSWORD』KEY */
         const val PASSWORD = "password"
 
+        /** SharedPreferences『MACHINE TITLE』KEY */
+        const val MACHINE_TITLE = "machine_title"
+
         /** 以Volatile註解表示此INSTANCE變數僅會在主記憶體中讀寫，可避免進入cache被不同執行緒讀寫而造成問題 */
         @Volatile
         private var INSTANCE: SharedPreferencesRepo? = null
@@ -342,4 +345,18 @@ class SharedPreferencesRepo(
             )
         }
 
+    /** MACHINE TITLE */
+    var machineTitle: String
+        get() = sharedPreferences.getString(MACHINE_TITLE, null) ?: ""
+        set(value) {
+            sharedPreferences.edit()
+                .putString(MACHINE_TITLE, value)
+                .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(MACHINE_TITLE).apply {
+                    putExtra(MACHINE_TITLE, value)
+                }
+            )
+        }
 }

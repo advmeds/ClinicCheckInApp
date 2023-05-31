@@ -65,7 +65,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         set(value) {
             sharedPreferencesRepo.deptId = value
         }
-    /** @see SharedPreferencesRepo.queueingMachineSetting */
+    /** @see SharedPreferencesRepo.queueingBoardURL */
     var queueingBoardSettings: String
         get() = sharedPreferencesRepo.queueingBoardURL
         set(value) {
@@ -79,10 +79,17 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             sharedPreferencesRepo.queueingMachineSetting = value
         }
 
-    /** @see SharedPreferencesRepo.queueingMachineSetting */
+    /** @see SharedPreferencesRepo.language */
     var language: String
         get() = sharedPreferencesRepo.language
         set(value) {
             sharedPreferencesRepo.language = value
+        }
+
+    /** @see SharedPreferencesRepo.machineTitle */
+    var machineTitle: String
+        get() = sharedPreferencesRepo.machineTitle
+        set(value) {
+            sharedPreferencesRepo.machineTitle = value
         }
 }

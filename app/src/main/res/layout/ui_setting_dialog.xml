@@ -12,12 +12,11 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="@dimen/space_normal">
+            android:layout_height="match_parent">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_big"
                 android:orientation="vertical">
 
@@ -36,12 +35,12 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/ui_settings_machine_title"
                     android:singleLine="true"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_size_h4">
+                    android:textColor="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_size_h4" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

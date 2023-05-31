@@ -46,6 +46,14 @@ class ManualInputFragment : Fragment() {
         }
     }
 
+    private val reloadTitle = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val title = intent?.getStringExtra(SharedPreferencesRepo.MACHINE_TITLE)
+            binding.appCompatTextView.text =
+                if (title.isNullOrEmpty()) getString(R.string.app_name) else title
+        }
+    }
+
     private var idleFireJob: Job? = null
 
     override fun onCreateView(
@@ -53,6 +61,11 @@ class ManualInputFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = ManualInputFragmentBinding.inflate(inflater, container, false)
+
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+            reloadClinicLogoReceiver,
+            IntentFilter(SharedPreferencesRepo.LOGO_URL)
+        )
 
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
             reloadClinicLogoReceiver,
@@ -72,6 +85,8 @@ class ManualInputFragment : Fragment() {
 
     private fun setupUI() {
         binding.logoImageView.load(viewModel.logoUrl)
+        binding.appCompatTextView.text =
+            viewModel.machineTitle.ifEmpty { getString(R.string.app_name) }
 
         binding.dismissButton.setOnClickListener {
             findNavController().navigateUp()
@@ -177,6 +192,8 @@ class ManualInputFragment : Fragment() {
 
         LocalBroadcastManager.getInstance(requireContext())
             .unregisterReceiver(reloadClinicLogoReceiver)
+        LocalBroadcastManager.getInstance(requireContext())
+            .unregisterReceiver(reloadTitle)
 
         _binding = null
     }

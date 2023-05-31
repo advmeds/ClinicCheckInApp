@@ -125,9 +125,14 @@ class SettingsFragment : ListFragment() {
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
 
+        // set values
+
+        dialog.ui_settings_dialog_input_field.editText?.setText(viewModel.machineTitle.ifBlank { getString(R.string.app_name) })
+
         val checkInItems = EditCheckInItemDialog.toObject(viewModel.checkInItemList)
 
         dialog.ui_settings_manual_input.isChecked = checkInItems.manualInput.isShow
+
         dialog.ui_settings_virtual_nhi_card.isChecked = checkInItems.virtualCard.isShow
 
         dialog.ui_settings_customized_one.isChecked = checkInItems.customOne.isShow
@@ -136,6 +141,7 @@ class SettingsFragment : ListFragment() {
         dialog.ui_settings_customized_two.isChecked = checkInItems.customTwo.isShow
         dialog.ui_settings_customized_two_container.isGone = !checkInItems.customTwo.isShow
 
+        // set check listeners
 
         dialog.ui_settings_manual_input.setOnCheckedChangeListener { _, isChecked ->
             checkInItems.manualInput.isShow = isChecked
@@ -151,12 +157,14 @@ class SettingsFragment : ListFragment() {
         }
 
         dialog.ui_settings_customized_two.setOnCheckedChangeListener { _, isChecked ->
-
             checkInItems.customTwo.isShow = isChecked
             dialog.ui_settings_customized_two_container.isGone = !isChecked
         }
 
+        // buttons click listeners
+
         dialog.ui_settings_save_btn.setOnClickListener {
+            viewModel.machineTitle = dialog.ui_settings_dialog_input_field.editText?.text.toString().trim()
             viewModel.checkInItemList = EditCheckInItemDialog.toList(checkInItems)
 
             dialog.dismiss()
