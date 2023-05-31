@@ -20,7 +20,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -35,7 +34,6 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetSchedul
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.fragments.home.viewmodel.HomeViewModel
-import com.advmeds.cliniccheckinapp.utils.showOnly
 import kotlinx.android.synthetic.main.text_input_dialog.*
 
 
@@ -95,18 +93,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupUI() {
-        binding.root.setOnLongClickListener {
-            EditCheckInItemDialog(
-                onConfirmClick = {
-                    viewModel.checkInItemList = viewModel.checkInItemList.plus(it)
-
-                    changeIsCheckInLayoutWeightIfItEmpty(viewModel.checkInItemList.size)
-                }
-            ).showNow(childFragmentManager, null)
-            return@setOnLongClickListener true
-        }
-
-        changeIsCheckInLayoutWeightIfItEmpty(viewModel.checkInItemList.size)
 
         binding.logoImageView.load(viewModel.logoUrl)
         binding.logoImageView.setOnLongClickListener {
@@ -152,20 +138,37 @@ class HomeFragment : Fragment() {
         binding.presentTitleTextView.text = spannable
 
         binding.checkInLayout.removeAllViews()
+
         val itemList = viewModel.checkInItemList.filter {
             when (it.type) {
                 EditCheckInItemDialog.CheckInItemType.MANUAL_INPUT -> {
-                    true
+                    it.isShow
                 }
-                EditCheckInItemDialog.CheckInItemType.CUSTOM -> {
+                EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE -> {
+
+                    if (!it.isShow)
+                        return@filter false
+
+                    (viewModel.rooms.isEmpty() || viewModel.rooms.contains(it.divisionId)) &&
+                            (viewModel.doctors.isEmpty() || viewModel.doctors.contains(it.doctorId))
+                }
+                EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO -> {
+
+                    if (!it.isShow)
+                        return@filter false
+
                     (viewModel.rooms.isEmpty() || viewModel.rooms.contains(it.divisionId)) &&
                             (viewModel.doctors.isEmpty() || viewModel.doctors.contains(it.doctorId))
                 }
                 EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
-                    true
+                    it.isShow
+                }
+                else -> {
+                    false
                 }
             }
         }
+
         itemList.forEachIndexed { index, checkInItem ->
             layoutInflater.inflate(
                 if (itemList.size > 1) {
@@ -184,7 +187,12 @@ class HomeFragment : Fragment() {
                         itemTitle.setText(R.string.check_in_item_manual_title)
                         itemBody.setText(R.string.check_in_item_manual_body)
                     }
-                    EditCheckInItemDialog.CheckInItemType.CUSTOM -> {
+                    EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE -> {
+                        itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
+                        itemTitle.text = checkInItem.title
+                        itemBody.setText(R.string.check_in_item_manual_body)
+                    }
+                    EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO -> {
                         itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
                         itemTitle.text = checkInItem.title
                         itemBody.setText(R.string.check_in_item_manual_body)
@@ -194,6 +202,7 @@ class HomeFragment : Fragment() {
                         itemTitle.setText(R.string.check_in_item_virtual_title)
                         itemBody.setText(R.string.check_in_item_virtual_body)
                     }
+                    else -> {}
                 }
 
                 binding.checkInLayout.addView(
@@ -221,7 +230,15 @@ class HomeFragment : Fragment() {
                         EditCheckInItemDialog.CheckInItemType.MANUAL_INPUT -> {
                             findNavController().navigate(R.id.manualInputFragment)
                         }
-                        EditCheckInItemDialog.CheckInItemType.CUSTOM -> {
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE -> {
+                            (requireActivity() as MainActivity).createFakeAppointment(
+                                schedule = GetScheduleResponse.ScheduleBean(
+                                    doctor = checkInItem.doctorId,
+                                    division = checkInItem.divisionId
+                                )
+                            )
+                        }
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO -> {
                             (requireActivity() as MainActivity).createFakeAppointment(
                                 schedule = GetScheduleResponse.ScheduleBean(
                                     doctor = checkInItem.doctorId,
@@ -232,24 +249,13 @@ class HomeFragment : Fragment() {
                         EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
                             (requireActivity() as MainActivity).checkInWithVirtualCard()
                         }
+                        else -> {}
                     }
-                }
-
-                setOnLongClickListener {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle(R.string.delete_item_title)
-                        .setPositiveButton(R.string.confirm) { _, _ ->
-                            viewModel.checkInItemList = viewModel.checkInItemList.minus(checkInItem)
-
-                            changeIsCheckInLayoutWeightIfItEmpty(viewModel.checkInItemList.size)
-                        }
-                        .setNegativeButton(R.string.cancel, null)
-                        .showOnly()
-
-                    true
                 }
             }
         }
+
+        changeIsCheckInLayoutWeightIfItEmpty(itemList.size)
     }
 
     private fun changeIsCheckInLayoutWeightIfItEmpty(size: Int) {

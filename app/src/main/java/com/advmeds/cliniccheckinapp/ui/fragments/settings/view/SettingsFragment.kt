@@ -18,6 +18,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isGone
 import androidx.fragment.app.ListFragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.SettingsFragmentBinding
+import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.ui.MainActivity
@@ -123,24 +125,40 @@ class SettingsFragment : ListFragment() {
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
 
+        val checkInItems = EditCheckInItemDialog.toObject(viewModel.checkInItemList)
+
+        dialog.ui_settings_manual_input.isChecked = checkInItems.manualInput.isShow
+        dialog.ui_settings_virtual_nhi_card.isChecked = checkInItems.virtualCard.isShow
+
+        dialog.ui_settings_customized_one.isChecked = checkInItems.customOne.isShow
+        dialog.ui_settings_customized_one_container.isGone = !checkInItems.customOne.isShow
+
+        dialog.ui_settings_customized_two.isChecked = checkInItems.customTwo.isShow
+        dialog.ui_settings_customized_two_container.isGone = !checkInItems.customTwo.isShow
 
 
+        dialog.ui_settings_manual_input.setOnCheckedChangeListener { _, isChecked ->
+            checkInItems.manualInput.isShow = isChecked
+        }
+
+        dialog.ui_settings_virtual_nhi_card.setOnCheckedChangeListener { _, isChecked ->
+            checkInItems.virtualCard.isShow = isChecked
+        }
 
         dialog.ui_settings_customized_one.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked)
-                dialog.ui_settings_customized_one_container.visibility = View.VISIBLE
-            else
-                dialog.ui_settings_customized_one_container.visibility = View.GONE
+            checkInItems.customOne.isShow = isChecked
+            dialog.ui_settings_customized_one_container.isGone = !isChecked
         }
 
         dialog.ui_settings_customized_two.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked)
-                dialog.ui_settings_customized_two_container.visibility = View.VISIBLE
-            else
-                dialog.ui_settings_customized_two_container.visibility = View.GONE
+
+            checkInItems.customTwo.isShow = isChecked
+            dialog.ui_settings_customized_two_container.isGone = !isChecked
         }
 
         dialog.ui_settings_save_btn.setOnClickListener {
+            viewModel.checkInItemList = EditCheckInItemDialog.toList(checkInItems)
+
             dialog.dismiss()
         }
 

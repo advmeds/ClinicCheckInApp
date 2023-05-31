@@ -32,7 +32,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             sharedPreferencesRepo.logoUrl = value
         }
 
-    /** @see SharedPreferencesRepo.formatCheckedList */
+    /** @see SharedPreferencesRepo.checkInItemList */
     var checkInItemList: List<EditCheckInItemDialog.EditCheckInItem>
         get() = sharedPreferencesRepo.checkInItemList
         set(value) {

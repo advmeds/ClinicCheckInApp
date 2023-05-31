@@ -221,7 +221,7 @@ class SharedPreferencesRepo(
                     ListSerializer(EditCheckInItemDialog.EditCheckInItem.serializer()),
                     it
                 )
-            }.orEmpty()
+            } ?: EditCheckInItemDialog.getEmptyCheckInItem
         set(value) {
             val json = Json.encodeToString(value)
             sharedPreferences.edit()

@@ -42,7 +42,7 @@
 
     <item name="switcher_scale" format="float" type="dimen">2.0</item>
 
-    <item name="check_box_scale" format="float" type="dimen">1.7</item>
+    <item name="check_box_scale" format="float" type="dimen">1.5</item>
 
     <dimen name="setting_dialog_bottom_margin">0dp</dimen>
 

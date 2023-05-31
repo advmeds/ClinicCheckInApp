@@ -52,7 +52,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             sharedPreferencesRepo.formatCheckedList = value
         }
 
-    /** @see SharedPreferencesRepo.formatCheckedList */
+    /** @see SharedPreferencesRepo.checkInItemList */
     var checkInItemList: List<EditCheckInItemDialog.EditCheckInItem>
         get() = sharedPreferencesRepo.checkInItemList
         set(value) {

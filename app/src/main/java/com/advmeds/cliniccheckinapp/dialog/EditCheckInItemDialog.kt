@@ -95,6 +95,12 @@ class EditCheckInItemDialog(
         MANUAL_INPUT,
         /** 客製化 */
         CUSTOM,
+
+        /** Custom one */
+        CUSTOM_ONE,
+
+        /** Custom two */
+        CUSTOM_TWO,
         /** 虛擬健保卡 */
         VIRTUAL_CARD;
     }
@@ -108,6 +114,42 @@ class EditCheckInItemDialog(
         /** 診別ID */
         val divisionId: String = "",
         /** 醫生ID */
-        val doctorId: String = ""
+        val doctorId: String = "",
+        /** this field is responsible for showing the panel on the screen or not*/
+        var isShow: Boolean = false
+    )
+
+    companion object {
+        val getEmptyCheckInItem = listOf(
+            EditCheckInItem(type = CheckInItemType.MANUAL_INPUT),
+            EditCheckInItem(type = CheckInItemType.VIRTUAL_CARD),
+            EditCheckInItem(type = CheckInItemType.CUSTOM_ONE),
+            EditCheckInItem(type = CheckInItemType.CUSTOM_TWO),
+        )
+
+        fun toObject(list: List<EditCheckInItem>) : EditCheckInItems {
+            return EditCheckInItems(
+                manualInput = list.find { it.type == CheckInItemType.MANUAL_INPUT }?: EditCheckInItem(type = CheckInItemType.MANUAL_INPUT),
+                virtualCard = list.find { it.type == CheckInItemType.VIRTUAL_CARD }?: EditCheckInItem(type = CheckInItemType.VIRTUAL_CARD),
+                customOne = list.find { it.type == CheckInItemType.CUSTOM_ONE }?: EditCheckInItem(type = CheckInItemType.CUSTOM_ONE),
+                customTwo = list.find { it.type == CheckInItemType.CUSTOM_TWO }?: EditCheckInItem(type = CheckInItemType.CUSTOM_TWO)
+            )
+        }
+
+        fun toList(checkIn: EditCheckInItems): List<EditCheckInItem> {
+            return listOf(
+                checkIn.manualInput,
+                checkIn.virtualCard,
+                checkIn.customOne,
+                checkIn.customTwo,
+            )
+        }
+    }
+
+    data class EditCheckInItems(
+        val manualInput: EditCheckInItem =  EditCheckInItem(type = CheckInItemType.MANUAL_INPUT),
+        val virtualCard: EditCheckInItem =  EditCheckInItem(type = CheckInItemType.VIRTUAL_CARD),
+        val customOne: EditCheckInItem =  EditCheckInItem(type = CheckInItemType.CUSTOM_ONE),
+        val customTwo: EditCheckInItem =  EditCheckInItem(type = CheckInItemType.CUSTOM_TWO),
     )
 }
