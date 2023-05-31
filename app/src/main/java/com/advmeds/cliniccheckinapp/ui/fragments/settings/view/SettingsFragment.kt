@@ -127,7 +127,11 @@ class SettingsFragment : ListFragment() {
 
         // set values
 
-        dialog.ui_settings_dialog_input_field.editText?.setText(viewModel.machineTitle.ifBlank { getString(R.string.app_name) })
+        dialog.ui_settings_dialog_input_field.editText?.setText(viewModel.machineTitle.ifBlank {
+            getString(
+                R.string.app_name
+            )
+        })
 
         val checkInItems = EditCheckInItemDialog.toObject(viewModel.checkInItemList)
 
@@ -137,9 +141,15 @@ class SettingsFragment : ListFragment() {
 
         dialog.ui_settings_customized_one.isChecked = checkInItems.customOne.isShow
         dialog.ui_settings_customized_one_container.isGone = !checkInItems.customOne.isShow
+        dialog.ui_settings_customized_one_block_name.editText?.setText(checkInItems.customOne.title)
+        dialog.ui_settings_customized_one_doctor_id.editText?.setText(checkInItems.customOne.doctorId)
+        dialog.ui_settings_customized_one_room_id.editText?.setText(checkInItems.customOne.divisionId)
 
         dialog.ui_settings_customized_two.isChecked = checkInItems.customTwo.isShow
         dialog.ui_settings_customized_two_container.isGone = !checkInItems.customTwo.isShow
+        dialog.ui_settings_customized_two_block_name.editText?.setText(checkInItems.customTwo.title)
+        dialog.ui_settings_customized_two_doctor_id.editText?.setText(checkInItems.customTwo.doctorId)
+        dialog.ui_settings_customized_two_room_id.editText?.setText(checkInItems.customTwo.divisionId)
 
         // set check listeners
 
@@ -164,8 +174,13 @@ class SettingsFragment : ListFragment() {
         // buttons click listeners
 
         dialog.ui_settings_save_btn.setOnClickListener {
-            viewModel.machineTitle = dialog.ui_settings_dialog_input_field.editText?.text.toString().trim()
-            viewModel.checkInItemList = EditCheckInItemDialog.toList(checkInItems)
+
+
+           val checkInItemsForSave = prepareCustomCheckInItemsForSaving(checkInItems)
+
+            viewModel.machineTitle =
+                dialog.ui_settings_dialog_input_field.editText?.text.toString().trim()
+            viewModel.checkInItemList = EditCheckInItemDialog.toList(checkInItemsForSave)
 
             dialog.dismiss()
         }
@@ -175,6 +190,43 @@ class SettingsFragment : ListFragment() {
         }
 
         dialog.show()
+    }
+
+    private fun prepareCustomCheckInItemsForSaving(checkInItems: EditCheckInItemDialog.EditCheckInItems) : EditCheckInItemDialog.EditCheckInItems {
+        if (dialog.ui_settings_customized_one.isChecked)
+            with(checkInItems.customOne) {
+                title = dialog.ui_settings_customized_one_block_name.editText?.text.toString()
+                    .trim()
+                doctorId =
+                    dialog.ui_settings_customized_one_doctor_id.editText?.text.toString().trim()
+                divisionId =
+                    dialog.ui_settings_customized_one_block_name.editText?.text.toString()
+                        .trim()
+            }
+        else
+            with(checkInItems.customOne) {
+                title = ""
+                doctorId = ""
+                divisionId = ""
+            }
+
+        if (dialog.ui_settings_customized_two.isChecked)
+            with(checkInItems.customTwo) {
+                title =
+                    dialog.ui_settings_customized_two_block_name.editText?.text.toString().trim()
+                doctorId =
+                    dialog.ui_settings_customized_two_doctor_id.editText?.text.toString().trim()
+                divisionId =
+                    dialog.ui_settings_customized_two_block_name.editText?.text.toString().trim()
+            }
+        else
+            with(checkInItems.customTwo) {
+                title = ""
+                doctorId = ""
+                divisionId = ""
+            }
+
+        return checkInItems
     }
 
     private fun onSetServerDomainItemClicked() {

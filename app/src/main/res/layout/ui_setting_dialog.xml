@@ -183,7 +183,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="@dimen/space_small"
                             android:layout_marginStart="@dimen/space_big"
-                            android:hint="@string/ui_settings_machine_title"
+                            android:hint="@string/ui_settings_customized_room_id"
                             android:singleLine="true"
                             android:textColor="@color/black"
                             android:textSize="@dimen/font_size_h4">
@@ -276,7 +276,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="@dimen/space_small"
                             android:layout_marginStart="@dimen/space_big"
-                            android:hint="@string/ui_settings_machine_title"
+                            android:hint="@string/ui_settings_customized_room_id"
                             android:singleLine="true"
                             android:textColor="@color/black"
                             android:textSize="@dimen/font_size_h4">

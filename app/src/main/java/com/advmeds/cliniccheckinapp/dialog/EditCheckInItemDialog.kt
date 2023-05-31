@@ -110,11 +110,11 @@ class EditCheckInItemDialog(
         /** 直接取號類別 */
         val type: CheckInItemType,
         /** 門診名稱 */
-        val title: String = "",
+        var title: String = "",
         /** 診別ID */
-        val divisionId: String = "",
+        var divisionId: String = "",
         /** 醫生ID */
-        val doctorId: String = "",
+        var doctorId: String = "",
         /** this field is responsible for showing the panel on the screen or not*/
         var isShow: Boolean = false
     )
