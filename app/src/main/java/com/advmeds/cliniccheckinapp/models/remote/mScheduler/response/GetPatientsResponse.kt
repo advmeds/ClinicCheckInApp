@@ -5,44 +5,44 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GetPatientsResponse(
-    /** API 執行是否成功 */
+    /** is successful */
     val success: Boolean = false,
 
-    /** 錯誤代碼 */
+    /** error code */
     val code: Int = 0,
 
-    /** 錯誤訊息 */
+    /** error message */
     val message: String = "",
 
-    /** 病患資料 */
+    /** patient's appointment */
     val patients: List<PatientBean> = emptyList()
 ) {
     @Serializable
     data class PatientBean(
-        /** 醫師 */
+        /** doctor name */
         val doctor: String = "",
 
-        /** 科別 */
+        /** division name */
         val division: String = "",
 
-        /** 身分證 */
+        /** national id */
         @SerialName("national_id")
         val nationalId: String = "",
 
-        /** 病歷號 */
+        /** chart no */
         @SerialName("patient_id")
         val patientId: String = "",
 
-        /** 姓名 */
+        /** patient name */
         val name: String = "",
 
-        /** 生日 */
+        /** patient date of birth */
         val birthday: String = "",
 
-        /** 備註 */
+        /** note */
         val note: String = "",
 
-        /** 看診號碼 */
+        /** queue number */
         @SerialName("serial_num")
         val serialNo: Int = 0
     )

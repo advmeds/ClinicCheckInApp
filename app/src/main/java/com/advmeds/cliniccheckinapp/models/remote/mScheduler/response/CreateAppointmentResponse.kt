@@ -6,30 +6,30 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CreateAppointmentResponse(
-    /** API 執行是否成功 */
+    /** is successful */
     val success: Boolean = false,
 
-    /** 錯誤代碼 */
+    /** error code */
     val code: Int = 0,
 
-    /** 錯誤訊息 */
+    /** error message */
     val message: String = "",
 
-    /** 醫師 */
+    /** doctor name */
     val doctor: String = "",
 
-    /** 科別 */
+    /** division name */
     val division: String = "",
 
-    /** 門診起始時間 */
+    /** division start time */
     @SerialName("starts_at")
     val startsAt: String = "",
 
-    /** 門診結束時間 */
+    /** division end time */
     @SerialName("ends_at")
     val endsAt: String = "",
 
-    /** 病患資訊 */
+    /** patient information */
     val patient: CreateAppointmentRequest.Patient = CreateAppointmentRequest.Patient(),
 
     @SerialName("remote_link")
@@ -38,7 +38,7 @@ data class CreateAppointmentResponse(
     @SerialName("patient_remote_link")
     val patientRemoteLink: String = "",
 
-    /** 看診號碼 */
+    /** queue number */
     @SerialName("serial_num")
     val serialNo: Int = 0
 )

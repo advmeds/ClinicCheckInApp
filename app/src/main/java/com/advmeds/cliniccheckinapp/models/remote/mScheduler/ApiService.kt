@@ -11,8 +11,9 @@ import retrofit2.http.*
 interface ApiService {
 
     /**
-     * 取得該診間的相關設定，例如LOGO、語系
-     * @param clinicId 診所代碼
+     * Get the clinic setting，such as logo, language
+     * @param clinicId clinic identity id
+     * @return clinic setting
      */
     @GET("api/v1/clinics/{id}/guardians")
     suspend fun getClinicGuardian(
@@ -21,12 +22,13 @@ interface ApiService {
     ): Response<GetClinicGuardianResponse>
 
     /**
-     * 帶入身分證或病歷號查詢病患今天預約掛號資訊。
+     * find the patient's appointment according to the national id or chart no.
      *
-     * @param clinicId 診所代碼
-     * @param nationalId 身分證或病歷號
-     * @param rooms 診間陣列
-     * @return 病患今天預約掛號資訊
+     * @param clinicId clinic identity id
+     * @param nationalId national id or chart no
+     * @param doctors specific doctor id, only find appointment for specific doctor
+     * @param rooms specific room id, only find appointment for specific room
+     * @return patient's appointment
      */
     @GET("api/v1/clinics/get_patients")
     suspend fun getPatients(
@@ -44,10 +46,10 @@ interface ApiService {
     ): Response<GetPatientsResponse>
 
     /**
-     * 取得現在可以掛號的門診。
+     * get division that can be registered now.
      *
-     * @param clinicId 診所代碼
-     * @return 現在可以掛號的門診資訊
+     * @param clinicId clinic identity id
+     * @return division
      */
     @GET("api/v1/clinics/get_schedule")
     suspend fun getSchedules(
@@ -56,10 +58,10 @@ interface ApiService {
     ): Response<GetScheduleResponse>
 
     /**
-     * 建立預約
+     * make an appointment
      *
-     * @param request 建立預約需要的請求
-     * @return 成功與否
+     * @param request
+     * @return success or failure
      */
     @POST("api/v1/clinics/creates_appointment")
     suspend fun createAppointment(

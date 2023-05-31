@@ -4,24 +4,24 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GetClinicGuardianResponse(
-    /** API 執行是否成功 */
+    /** is successful */
     val success: Boolean = false,
 
-    /** 錯誤代碼 */
+    /** error code */
     val code: Int = 0,
 
-    /** 錯誤訊息 */
+    /** error message */
     val message: String = "",
 
-    /** 診所名稱 */
+    /** clinic name */
     val name: String = "",
 
-    /** 整所LOGO連結 */
+    /** clinic LOGO */
     val logo: String = "",
 
-    /** 跑馬燈訊息 */
+    /** marquee */
     val marquee: String = "",
 
-    /** 語系 */
+    /** language */
     val language: String = ""
 )

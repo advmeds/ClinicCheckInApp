@@ -6,41 +6,41 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CreateAppointmentRequest(
-    /** 診所代碼 */
+    /** clinic identity id */
     @SerialName("clinic_id")
     val clinicId: String = "",
 
-    /** 檢查室代號 */
+    /** doctor id */
     val doctor: String = "",
 
-    /** 醫生代號 */
+    /** division id */
     val division: String = "",
 
-    /** 病患資訊 */
+    /** patient information */
     val patient: Patient = Patient()
 ) {
     @Serializable
     data class Patient(
-        /** 姓名 */
+        /** patient name */
         val name: String = "",
 
-        /** 生日 */
+        /** patient date of birth */
         val birthday: String = "",
 
-        /** 手機號碼 */
+        /** patient mobile */
         val mobile: String = "",
 
-        /** 身分證字號 */
+        /** patient national id */
         @SerialName("national_id")
         val nationalId: String = "",
     )
 
-    /** 病患資訊的national_id可輸入什麼格式的資料 */
+    /** patient national id pattern */
     enum class NationalIdFormat(private val pattern: String) {
-        /** 身分證字號(預設) */
+        /** national id (default) */
         DEFAULT("^[A-Z][A-Z\\d]\\d{8}\$"),
 
-        /** 病歷號 */
+        /** chart no */
         CASE_ID("");
 
         val description: Int
