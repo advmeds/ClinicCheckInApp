@@ -41,6 +41,7 @@ import kotlinx.android.synthetic.main.language_setting_dialog.*
 import kotlinx.android.synthetic.main.queueing_board_setting_dialog.*
 import kotlinx.android.synthetic.main.queueing_machine_setting_dialog.*
 import kotlinx.android.synthetic.main.text_input_dialog.*
+import kotlinx.android.synthetic.main.ui_setting_dialog.*
 import okhttp3.HttpUrl
 
 class SettingsFragment : ListFragment() {
@@ -95,7 +96,7 @@ class SettingsFragment : ListFragment() {
         super.onListItemClick(l, v, position, id)
 
         when (position) {
-            0 -> {}
+            0 -> onSetUiSettingsItemClicked()
             1 -> onSetServerDomainItemClicked()
             2 -> onSetOrgIDItemClicked()
             3 -> onSetDoctorsItemClicked()
@@ -109,6 +110,46 @@ class SettingsFragment : ListFragment() {
         }
     }
 
+
+    private fun onSetUiSettingsItemClicked() {
+
+        dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.ui_setting_dialog)
+
+        if (dialog.window == null)
+            return
+
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+
+
+
+        dialog.ui_settings_customized_one.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked)
+                dialog.ui_settings_customized_one_container.visibility = View.VISIBLE
+            else
+                dialog.ui_settings_customized_one_container.visibility = View.GONE
+        }
+
+        dialog.ui_settings_customized_two.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked)
+                dialog.ui_settings_customized_two_container.visibility = View.VISIBLE
+            else
+                dialog.ui_settings_customized_two_container.visibility = View.GONE
+        }
+
+        dialog.ui_settings_save_btn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.ui_settings_cancel_btn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
 
     private fun onSetServerDomainItemClicked() {
 
@@ -318,8 +359,6 @@ class SettingsFragment : ListFragment() {
 
         val label = resources.getString(R.string.qbs_screen_edit_text_label)
 
-//        val items = arrayListOf("Portrait", "Landscape")
-
         dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.queueing_board_setting_dialog)
 
@@ -328,11 +367,6 @@ class SettingsFragment : ListFragment() {
 
         dialog.window!!.setGravity(Gravity.CENTER)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-//        val adapter =
-//            ArrayAdapter(requireContext(), R.layout.support_simple_spinner_dropdown_item, items)
-//        dialog.queueing_board_setting_auto_complete_tv.setAdapter(adapter)
-
         dialog.et_qbs_irl_input.hint = label
 
         dialog.queueing_board_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
@@ -430,9 +464,6 @@ class SettingsFragment : ListFragment() {
 
     private fun onSetLanguageSettingItemClicked() {
 
-//        val items = arrayOf("1.0", "2.0", "3.0")
-//        var currentVersion = items[0]
-
         var currentLanguage = viewModel.language
         var languageArrayWithIsSelected = getLanguageArray(currentLanguage)
 
@@ -456,49 +487,6 @@ class SettingsFragment : ListFragment() {
 
         dialog.language_recycler_view.layoutManager = LinearLayoutManager(requireContext())
         dialog.language_recycler_view.adapter = adapter
-
-//        // language setting
-//        val languageDropDownAdapter =
-//            ArrayAdapter(
-//                requireContext(),
-//                R.layout.support_simple_spinner_dropdown_item,
-//                resources.getStringArray(R.array.language_items)
-//            )
-//
-//        dialog.version_setting_select_language_tv.setAdapter(languageDropDownAdapter)
-//
-//        dialog.version_setting_select_language_tv.setText(
-//            Converter.language_lang_code_to_name(
-//                requireContext(),
-//                viewModel.language
-//            ), false
-//        )
-//
-//        dialog.version_setting_select_language_tv.onItemClickListener =
-//            AdapterView.OnItemClickListener { parent, _, position, _ ->
-//                val item = parent.getItemAtPosition(position).toString()
-//                currentLanguage = Converter.language_name_to_lang_code(requireContext(), item)
-//            }
-//
-//
-//         version
-//
-//        val versionDropDownAdapter =
-//            ArrayAdapter(
-//                requireContext(),
-//                R.layout.support_simple_spinner_dropdown_item,
-//                items
-//            )
-//
-//        dialog.version_setting_select_version_tv.setAdapter(versionDropDownAdapter)
-//        dialog.version_setting_select_version_tv.setText(currentVersion, false)
-//
-//        dialog.version_setting_select_version_tv.onItemClickListener =
-//            AdapterView.OnItemClickListener { parent, _, position, _ ->
-//                val item = parent.getItemAtPosition(position).toString()
-//                currentVersion = item
-//            }
-
 
         val saveButton = dialog.btn_version_setting_dialog_save
         val cancelButton = dialog.btn_version_setting_dialog_cancel

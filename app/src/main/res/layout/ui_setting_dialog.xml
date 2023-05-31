@@ -10,40 +10,41 @@
         android:layout_height="match_parent"
         app:cardCornerRadius="4dp">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/space_big"
-            android:orientation="vertical">
+            android:layout_marginVertical="@dimen/space_normal">
 
-            <TextView
-                android:id="@+id/ui_settings_dialog_title"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/ui_settings"
-                android:textColor="@color/black"
-                android:textSize="@dimen/font_size_h2" />
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/space_big"
+                android:orientation="vertical">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/ui_settings_dialog_input_field"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/ui_settings_machine_title"
-                android:singleLine="true"
-                android:textColor="@color/black"
-                android:textSize="@dimen/font_size_h4">
-
-                <com.google.android.material.textfield.TextInputEditText
+                <TextView
+                    android:id="@+id/ui_settings_dialog_title"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="@string/ui_settings"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/font_size_h2" />
 
-            </com.google.android.material.textfield.TextInputLayout>
-
-                <ScrollView
-                    android:layout_marginVertical="@dimen/space_normal"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ui_settings_dialog_input_field"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:hint="@string/ui_settings_machine_title"
+                    android:singleLine="true"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/font_size_h4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
@@ -145,16 +146,16 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/space_small"
+                            android:layout_marginStart="@dimen/space_big"
                             android:hint="@string/ui_settings_customized_block_name"
                             android:singleLine="true"
                             android:textColor="@color/black"
-                            android:layout_marginStart="@dimen/space_big"
-                            android:layout_marginVertical="@dimen/space_small"
                             android:textSize="@dimen/font_size_h4">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -163,11 +164,11 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/space_small"
+                            android:layout_marginStart="@dimen/space_big"
                             android:hint="@string/ui_settings_customized_doctor_id"
                             android:singleLine="true"
                             android:textColor="@color/black"
-                            android:layout_marginStart="@dimen/space_big"
-                            android:layout_marginVertical="@dimen/space_small"
                             android:textSize="@dimen/font_size_h4">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -181,19 +182,18 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/space_small"
+                            android:layout_marginStart="@dimen/space_big"
                             android:hint="@string/ui_settings_machine_title"
                             android:singleLine="true"
                             android:textColor="@color/black"
-                            android:layout_marginStart="@dimen/space_big"
-                            android:layout_marginVertical="@dimen/space_small"
                             android:textSize="@dimen/font_size_h4">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content" />
 
                         </com.google.android.material.textfield.TextInputLayout>
-
 
 
                     </LinearLayout>
@@ -239,16 +239,16 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/space_small"
+                            android:layout_marginStart="@dimen/space_big"
                             android:hint="@string/ui_settings_customized_block_name"
                             android:singleLine="true"
                             android:textColor="@color/black"
-                            android:layout_marginStart="@dimen/space_big"
-                            android:layout_marginVertical="@dimen/space_small"
                             android:textSize="@dimen/font_size_h4">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -257,11 +257,11 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/space_small"
+                            android:layout_marginStart="@dimen/space_big"
                             android:hint="@string/ui_settings_customized_doctor_id"
                             android:singleLine="true"
                             android:textColor="@color/black"
-                            android:layout_marginStart="@dimen/space_big"
-                            android:layout_marginVertical="@dimen/space_small"
                             android:textSize="@dimen/font_size_h4">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -275,29 +275,56 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/space_small"
+                            android:layout_marginStart="@dimen/space_big"
                             android:hint="@string/ui_settings_machine_title"
                             android:singleLine="true"
                             android:textColor="@color/black"
-                            android:layout_marginStart="@dimen/space_big"
-                            android:layout_marginVertical="@dimen/space_small"
                             android:textSize="@dimen/font_size_h4">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content" />
 
                         </com.google.android.material.textfield.TextInputLayout>
-
 
 
                     </LinearLayout>
 
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
-            </ScrollView>
 
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="end"
+                    android:layout_marginBottom="@dimen/space_medium"
+                    android:orientation="horizontal">
 
+                    <Button
+                        android:id="@+id/ui_settings_cancel_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:text="@string/dialog_cancel_button"
+                        android:textColor="@color/red"
+                        android:textSize="@dimen/font_size_h3" />
+
+                    <Button
+                        android:id="@+id/ui_settings_save_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:text="@string/dialog_save_button"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/font_size_h3" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </ScrollView>
     </androidx.cardview.widget.CardView>
 </LinearLayout>
