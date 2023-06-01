@@ -163,10 +163,9 @@ class MainActivity : AppCompatActivity() {
                 if (isCardInProgress) {
                     Snackbar.make(
                         binding.root,
-                        "The previous map is in processing now, please wait a while and try again",
+                        "The previous card is in processing now, please wait a while and try again",
                         Snackbar.LENGTH_LONG
-                    )
-                        .show()
+                    ).show()
 
                     return@onSuccess
                 }
@@ -191,7 +190,8 @@ class MainActivity : AppCompatActivity() {
                             nationalId = it.icId,
                             birth = it.birthday?.let { dateBean -> "${dateBean.year}-${dateBean.month}-${dateBean.day}" }
                                 ?: "",
-                            name = it.name
+                            name = it.name,
+                            completion = { isCardInProgress = false}
                         )
                     }
                 }
