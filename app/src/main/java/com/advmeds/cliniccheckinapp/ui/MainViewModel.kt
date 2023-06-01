@@ -464,6 +464,23 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         getSchedulesJob?.cancel()
         checkJob?.cancel()
     }
+    fun completeAllJobOnCardAbsentAfterAllProcessIsOver(completion: () -> Unit) {
+        if (createAppointmentJob?.isActive == true) {
+            createAppointmentJob?.invokeOnCompletion {
+                completion()
+            }
+        }
+        if (getSchedulesJob?.isActive == true) {
+            getSchedulesJob?.invokeOnCompletion {
+                completion()
+            }
+        }
+        if (checkJob?.isActive == true) {
+            checkJob?.invokeOnCompletion {
+                completion()
+            }
+        }
+    }
 
     fun getLanguage(): String {
         return sharedPreferencesRepo.language

@@ -62,6 +62,8 @@ class MainActivity : AppCompatActivity() {
 //        private const val SCAN_TIME_OUT: Long = 15
     }
 
+    private var isCardInProgress = false
+
     private val viewModel: MainViewModel by viewModels()
 
     private lateinit var binding: ActivityMainBinding
@@ -132,9 +134,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onCardAbsent() {
-            viewModel.cancelJobOnCardAbsent()
-            dialog?.dismiss()
-            dialog = null
+//            viewModel.cancelJobOnCardAbsent()
+//            dialog?.dismiss()
+//            dialog = null
+
+            viewModel.completeAllJobOnCardAbsentAfterAllProcessIsOver() {
+                isCardInProgress = false
+                dialog?.dismiss()
+                dialog = null
+            }
+
         }
 
         override fun onConnectDevice() {
@@ -148,7 +157,21 @@ class MainActivity : AppCompatActivity() {
 
         override fun onReceiveResult(result: Result<AcsResponseModel>) {
             result.onSuccess {
-                when(BuildConfig.BUILD_TYPE) {
+
+                if (isCardInProgress) {
+                    Snackbar.make(
+                        binding.root,
+                        "The previous map is in processing now, please wait a while and try again",
+                        Snackbar.LENGTH_LONG
+                    )
+                        .show()
+
+                    return@onSuccess
+                }
+
+                isCardInProgress = true
+
+                when (BuildConfig.BUILD_TYPE) {
                     "rende" -> {
                         createAppointment(
                             schedule = GetScheduleResponse.ScheduleBean.RENDE_DIVISION_ONLY,
@@ -157,7 +180,8 @@ class MainActivity : AppCompatActivity() {
                                 birthday = it.birthday?.let { dateBean -> "${dateBean.year}-${dateBean.month}-${dateBean.day}" }
                                     ?: "",
                                 name = it.name
-                            )
+                            ),
+                            completion = { isCardInProgress = false }
                         )
                     }
                     else -> {
@@ -310,11 +334,15 @@ class MainActivity : AppCompatActivity() {
 
                             ErrorDialogFragment(
                                 title = "",
-                                message = apiError?.resStringID?.let { it1 -> getString(it1) } ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                    Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
-                                } else {
-                                    Html.fromHtml(it.response.message)
-                                }
+                                message = apiError?.resStringID?.let { it1 -> getString(it1) }
+                                    ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                        Html.fromHtml(
+                                            it.response.message,
+                                            Html.FROM_HTML_MODE_COMPACT
+                                        )
+                                    } else {
+                                        Html.fromHtml(it.response.message)
+                                    }
                             )
                         }
                     }
@@ -447,11 +475,15 @@ class MainActivity : AppCompatActivity() {
 
                             ErrorDialogFragment(
                                 title = "",
-                                message = apiError?.resStringID?.let { it1 -> getString(it1) } ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                    Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
-                                } else {
-                                    Html.fromHtml(it.response.message)
-                                }
+                                message = apiError?.resStringID?.let { it1 -> getString(it1) }
+                                    ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                        Html.fromHtml(
+                                            it.response.message,
+                                            Html.FROM_HTML_MODE_COMPACT
+                                        )
+                                    } else {
+                                        Html.fromHtml(it.response.message)
+                                    }
                             )
                         }
                     }
@@ -492,11 +524,15 @@ class MainActivity : AppCompatActivity() {
                                 } else {
                                     getString(R.string.fail_to_make_appointment)
                                 },
-                                message = apiError?.resStringID?.let { it1 -> getString(it1) } ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                    Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
-                                } else {
-                                    Html.fromHtml(it.response.message)
-                                }
+                                message = apiError?.resStringID?.let { it1 -> getString(it1) }
+                                    ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                        Html.fromHtml(
+                                            it.response.message,
+                                            Html.FROM_HTML_MODE_COMPACT
+                                        )
+                                    } else {
+                                        Html.fromHtml(it.response.message)
+                                    }
                             )
                         }
                     }
@@ -739,7 +775,12 @@ class MainActivity : AppCompatActivity() {
 //    }
 
     /** get patient appointment */
-    fun getPatients(nationalId: String, name: String = "", birth: String = "", completion: (() -> Unit)? = null) {
+    fun getPatients(
+        nationalId: String,
+        name: String = "",
+        birth: String = "",
+        completion: (() -> Unit)? = null
+    ) {
         if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
             // 若有開啟取號功能，則必須要有連線取票機才會去報到
             Snackbar.make(
@@ -844,11 +885,14 @@ class MainActivity : AppCompatActivity() {
     private fun showPresentation() {
         val mediaRouter = getSystemService(ComponentActivity.MEDIA_ROUTER_SERVICE) as MediaRouter
         val presentationDisplay =
-            mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO).presentationDisplay ?: return
+            mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO).presentationDisplay
+                ?: return
 
         try {
-            val cls = Class.forName("com.advmeds.cliniccheckinapp.ui.presentations.WebPresentation").kotlin
-            val presentation = cls.primaryConstructor?.call(this, presentationDisplay) as? Presentation
+            val cls =
+                Class.forName("com.advmeds.cliniccheckinapp.ui.presentations.WebPresentation").kotlin
+            val presentation =
+                cls.primaryConstructor?.call(this, presentationDisplay) as? Presentation
             presentation?.show()
         } catch (ignored: ClassNotFoundException) {
 
