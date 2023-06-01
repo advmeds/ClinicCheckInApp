@@ -1,4 +1,4 @@
-package com.advmeds.cliniccheckinapp.ui.fragments.home.adapter
+package com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.advmeds.cliniccheckinapp.R
-import com.advmeds.cliniccheckinapp.ui.fragments.home.model.LanguageModel
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.model.LanguageModel
 
 class LanguageAdapter(
     val itemList: Array<LanguageModel>,
@@ -30,14 +30,14 @@ class LanguageAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): LanguageAdapter.LanguageViewHolder {
+    ): LanguageViewHolder {
 
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.language_setting_item, parent, false)
         return LanguageViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: LanguageAdapter.LanguageViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: LanguageViewHolder, position: Int) {
         holder.languageTextView.text = itemList[position].name
         holder.isCheckedImageView.visibility =
             if (itemList[position].isSelected) View.VISIBLE else View.INVISIBLE

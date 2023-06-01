@@ -30,10 +30,10 @@ import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.ui.MainActivity
-import com.advmeds.cliniccheckinapp.ui.fragments.home.adapter.LanguageAdapter
-import com.advmeds.cliniccheckinapp.ui.fragments.home.model.LanguageModel
-import com.advmeds.cliniccheckinapp.ui.fragments.home.model.combineArrays
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter.LanguageAdapter
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter.SettingsAdapter
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.model.LanguageModel
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.model.combineArrays
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.SettingsViewModel
 import com.advmeds.cliniccheckinapp.utils.Converter
 import com.advmeds.cliniccheckinapp.utils.showOnly
@@ -45,6 +45,7 @@ import kotlinx.android.synthetic.main.queueing_machine_setting_dialog.*
 import kotlinx.android.synthetic.main.text_input_dialog.*
 import kotlinx.android.synthetic.main.ui_setting_dialog.*
 import okhttp3.HttpUrl
+
 
 class SettingsFragment : ListFragment() {
 
@@ -109,8 +110,10 @@ class SettingsFragment : ListFragment() {
             8 -> onSetQueueingBoardSettingItemClicked()
             9 -> onSetQueueingMachineSettingItemClicked()
             10 -> onSetLanguageSettingItemClicked()
+            11 -> onSetExitItemClicked()
         }
     }
+
 
 
     private fun onSetUiSettingsItemClicked() {
@@ -180,7 +183,9 @@ class SettingsFragment : ListFragment() {
 
             viewModel.machineTitle =
                 dialog.ui_settings_dialog_input_field.editText?.text.toString().trim()
-            viewModel.checkInItemList = EditCheckInItemDialog.toList(checkInItemsForSave)
+
+            viewModel.checkInItemList =
+                EditCheckInItemDialog.toList(checkInItemsForSave)
 
             dialog.dismiss()
         }
@@ -200,7 +205,7 @@ class SettingsFragment : ListFragment() {
                 doctorId =
                     dialog.ui_settings_customized_one_doctor_id.editText?.text.toString().trim()
                 divisionId =
-                    dialog.ui_settings_customized_one_block_name.editText?.text.toString()
+                    dialog.ui_settings_customized_one_room_id.editText?.text.toString()
                         .trim()
             }
         else
@@ -217,7 +222,7 @@ class SettingsFragment : ListFragment() {
                 doctorId =
                     dialog.ui_settings_customized_two_doctor_id.editText?.text.toString().trim()
                 divisionId =
-                    dialog.ui_settings_customized_two_block_name.editText?.text.toString().trim()
+                    dialog.ui_settings_customized_two_room_id.editText?.text.toString().trim()
             }
         else
             with(checkInItems.customTwo) {
@@ -584,6 +589,15 @@ class SettingsFragment : ListFragment() {
         }
 
         dialog.show()
+    }
+    private fun onSetExitItemClicked() {
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.exit_app)
+            .setPositiveButton(R.string.dialog_ok_button) { _, _ ->
+                requireActivity().finishAndRemoveTask();
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .showOnly()
     }
 
     private fun getLanguageArray(currentLanguage: String): Array<LanguageModel> {

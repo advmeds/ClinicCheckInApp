@@ -1,4 +1,4 @@
-package com.advmeds.cliniccheckinapp.ui.fragments.home.model
+package com.advmeds.cliniccheckinapp.ui.fragments.settings.model
 
 class LanguageModel(val name: String, var isSelected: Boolean)
 

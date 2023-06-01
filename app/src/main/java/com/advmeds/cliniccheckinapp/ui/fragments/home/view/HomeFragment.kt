@@ -156,33 +156,7 @@ class HomeFragment : Fragment() {
         binding.checkInLayout.removeAllViews()
 
         val itemList = viewModel.checkInItemList.filter {
-            when (it.type) {
-                EditCheckInItemDialog.CheckInItemType.MANUAL_INPUT -> {
-                    it.isShow
-                }
-                EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE -> {
-
-                    if (!it.isShow)
-                        return@filter false
-
-                    (viewModel.rooms.isEmpty() || viewModel.rooms.contains(it.divisionId)) &&
-                            (viewModel.doctors.isEmpty() || viewModel.doctors.contains(it.doctorId))
-                }
-                EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO -> {
-
-                    if (!it.isShow)
-                        return@filter false
-
-                    (viewModel.rooms.isEmpty() || viewModel.rooms.contains(it.divisionId)) &&
-                            (viewModel.doctors.isEmpty() || viewModel.doctors.contains(it.doctorId))
-                }
-                EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
-                    it.isShow
-                }
-                else -> {
-                    false
-                }
-            }
+            it.isShow
         }
 
         itemList.forEachIndexed { index, checkInItem ->
