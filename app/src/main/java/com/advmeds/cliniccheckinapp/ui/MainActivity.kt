@@ -48,12 +48,14 @@ import com.advmeds.printerlib.usb.BPT3XPrinterService
 import com.advmeds.printerlib.usb.UsbPrinterService
 import com.advmeds.printerlib.utils.PrinterBuffer
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.settings_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.reflect.full.primaryConstructor
 
 class MainActivity : AppCompatActivity() {
@@ -679,6 +681,77 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /** print ticket */
+    private fun printPatient(divisions: Array<String>, serialNumbers: Array<Int>) {
+
+        require(divisions.size == serialNumbers.size) {
+            "Arrays must have the same size"
+        }
+
+        val now = Date()
+        val formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+
+        val headerCommand = arrayListOf(
+            PrinterBuffer.initializePrinter(),
+            PrinterBuffer.selectAlignment(PrinterBuffer.Alignment.CENTER),
+
+            PrinterBuffer.setLineSpacing(120),
+            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+            strToBytes(viewModel.clinicGuardian.value!!.name),
+            PrinterBuffer.printAndFeedLine(),
+        )
+
+
+        val middleCommand: ArrayList<ByteArray> = ArrayList()
+
+        divisions.zip(serialNumbers) { division, serialNo ->
+
+            val innerList = arrayListOf(
+                PrinterBuffer.setLineSpacing(160),
+                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
+                strToBytes(division),
+                PrinterBuffer.printAndFeedLine(),
+
+                PrinterBuffer.setLineSpacing(120),
+                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+                strToBytes(getString(R.string.print_serial_no)),
+                PrinterBuffer.printAndFeedLine(),
+
+                PrinterBuffer.setLineSpacing(160),
+                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
+                strToBytes(String.format("%04d", serialNo)),
+                PrinterBuffer.printAndFeedLine(),
+            )
+
+            middleCommand.addAll(innerList)
+
+        }
+
+        val footerCommand = arrayListOf(
+            PrinterBuffer.setLineSpacing(120),
+            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+            strToBytes(formatter.format(now)),
+            PrinterBuffer.printAndFeedLine(),
+
+            PrinterBuffer.setLineSpacing(120),
+            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+            strToBytes(getString(R.string.print_footer)),
+            PrinterBuffer.printAndFeedLine(),
+
+            PrinterBuffer.selectCutPagerModerAndCutPager(66, 1)
+        )
+
+        val commandList: ArrayList<ByteArray> = ArrayList()
+
+        commandList.addAll(headerCommand)
+        commandList.addAll(middleCommand)
+        commandList.addAll(footerCommand)
+
+        commandList.forEach { command ->
+            usbPrinterService.write(command)
+        }
+    }
+
     /** 將字串用萬國編碼轉成ByteArray防止中文亂碼 */
     private fun strToBytes(str: String): ByteArray = str.toByteArray(charset("big5"))
 
@@ -801,15 +874,22 @@ class MainActivity : AppCompatActivity() {
             completion?.let { it1 -> it1() }
 
             if (it.success && BuildConfig.PRINT_ENABLED) {
-                it.patients.forEach { patient ->
-                    printPatient(
-                        division = when (BuildConfig.BUILD_TYPE) {
+
+                val arrayDivision =
+                    it.patients.map { patient ->
+                        when (BuildConfig.BUILD_TYPE) {
                             "ptch" -> patient.doctor
                             else -> patient.division
-                        },
-                        serialNo = patient.serialNo
-                    )
-                }
+                        }
+                    }.toTypedArray()
+
+                val arraySerialNumber =
+                    it.patients.map { patient -> patient.serialNo }.toTypedArray()
+
+                printPatient(
+                    divisions = arrayDivision,
+                    serialNumbers = arraySerialNumber
+                )
             }
         }
     }
