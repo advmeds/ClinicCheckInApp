@@ -104,13 +104,12 @@ class SettingsFragment : ListFragment() {
             2 -> onSetOrgIDItemClicked()
             3 -> onSetDoctorsItemClicked()
             4 -> onSetRoomsItemClicked()
-            5 -> onSetPanelModeItemClicked()
-            6 -> onSetFormatCheckedListItemClicked()
-            7 -> onSetDeptIDItemClicked()
-            8 -> onSetQueueingBoardSettingItemClicked()
-            9 -> onSetQueueingMachineSettingItemClicked()
-            10 -> onSetLanguageSettingItemClicked()
-            11 -> onSetExitItemClicked()
+            5 -> onSetDeptIDItemClicked()
+            6 -> onSetQueueingBoardSettingItemClicked()
+            7 -> onSetQueueingMachineSettingItemClicked()
+            8 -> onSetFormatCheckedListItemClicked()
+            9 -> onSetLanguageSettingItemClicked()
+            10 -> onSetExitItemClicked()
         }
     }
 

@@ -79,16 +79,16 @@
         <item>@string/ui_settings</item>
         <item>@string/server_domain</item>
         <item>@string/org_id</item>
-        <item>醫師代碼(可複數，用逗號區隔)</item>
-        <item>診間代碼(可複數，用逗號區隔)</item>
-        <item>@string/clinic_panel_url</item>
-        <item>@string/format_checked</item>
+        <item>@string/doctors</item>
+        <item>@string/rooms</item>
         <item>@string/dept_id</item>
         <item>@string/queueing_board_setting</item>
         <item>@string/queueing_machine_setting</item>
+        <item>@string/format_checked</item>
         <item>@string/language_setting</item>
         <item>@string/exit_app</item>
     </string-array>
+
 
     <!-- UI settings -->
     <string name="ui_settings_machine_title">Machine Title</string> <!-- TODO translate it -->
