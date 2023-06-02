@@ -48,14 +48,12 @@ import com.advmeds.printerlib.usb.BPT3XPrinterService
 import com.advmeds.printerlib.usb.UsbPrinterService
 import com.advmeds.printerlib.utils.PrinterBuffer
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.settings_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.reflect.full.primaryConstructor
 
 class MainActivity : AppCompatActivity() {
@@ -63,8 +61,6 @@ class MainActivity : AppCompatActivity() {
         private const val USB_PERMISSION = "${BuildConfig.APPLICATION_ID}.USB_PERMISSION"
 //        private const val SCAN_TIME_OUT: Long = 15
     }
-
-    private var isCardInProgress = false
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -141,7 +137,6 @@ class MainActivity : AppCompatActivity() {
 //            dialog = null
 
             viewModel.completeAllJobOnCardAbsentAfterAllProcessIsOver() {
-                isCardInProgress = false
                 dialog?.dismiss()
                 dialog = null
             }
@@ -160,18 +155,6 @@ class MainActivity : AppCompatActivity() {
         override fun onReceiveResult(result: Result<AcsResponseModel>) {
             result.onSuccess {
 
-                if (isCardInProgress) {
-                    Snackbar.make(
-                        binding.root,
-                        "The previous card is in processing now, please wait a while and try again",
-                        Snackbar.LENGTH_LONG
-                    ).show()
-
-                    return@onSuccess
-                }
-
-                isCardInProgress = true
-
                 when (BuildConfig.BUILD_TYPE) {
                     "rende" -> {
                         createAppointment(
@@ -181,8 +164,7 @@ class MainActivity : AppCompatActivity() {
                                 birthday = it.birthday?.let { dateBean -> "${dateBean.year}-${dateBean.month}-${dateBean.day}" }
                                     ?: "",
                                 name = it.name
-                            ),
-                            completion = { isCardInProgress = false }
+                            )
                         )
                     }
                     else -> {
@@ -190,8 +172,7 @@ class MainActivity : AppCompatActivity() {
                             nationalId = it.icId,
                             birth = it.birthday?.let { dateBean -> "${dateBean.year}-${dateBean.month}-${dateBean.day}" }
                                 ?: "",
-                            name = it.name,
-                            completion = { isCardInProgress = false}
+                            name = it.name
                         )
                     }
                 }
@@ -854,6 +835,9 @@ class MainActivity : AppCompatActivity() {
         birth: String = "",
         completion: (() -> Unit)? = null
     ) {
+
+        if (viewModel.isCheckInEventProcessing()) return
+
         if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
             // 若有開啟取號功能，則必須要有連線取票機才會去報到
             Snackbar.make(
@@ -900,6 +884,9 @@ class MainActivity : AppCompatActivity() {
         patient: CreateAppointmentRequest.Patient? = null,
         completion: ((CreateAppointmentResponse) -> Unit)? = null
     ) {
+
+        if (viewModel.isCheckInEventProcessing()) return
+
         // if app support print ticket, check ticket machine connection
         if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
             Snackbar.make(

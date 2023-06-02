@@ -482,6 +482,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun isCheckInEventProcessing() : Boolean {
+
+        if (getSchedulesJob?.isActive == true) return true
+
+        if (checkJob?.isActive == true || createAppointmentJob?.isActive == true) return true
+
+        return false
+    }
     fun getLanguage(): String {
         return sharedPreferencesRepo.language
     }
