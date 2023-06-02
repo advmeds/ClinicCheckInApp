@@ -836,8 +836,6 @@ class MainActivity : AppCompatActivity() {
         completion: (() -> Unit)? = null
     ) {
 
-        if (viewModel.isCheckInEventProcessing()) return
-
         if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
             // 若有開啟取號功能，則必須要有連線取票機才會去報到
             Snackbar.make(
@@ -884,9 +882,6 @@ class MainActivity : AppCompatActivity() {
         patient: CreateAppointmentRequest.Patient? = null,
         completion: ((CreateAppointmentResponse) -> Unit)? = null
     ) {
-
-        if (viewModel.isCheckInEventProcessing()) return
-
         // if app support print ticket, check ticket machine connection
         if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
             Snackbar.make(

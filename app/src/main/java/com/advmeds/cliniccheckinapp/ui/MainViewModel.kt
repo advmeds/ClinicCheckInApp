@@ -174,6 +174,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         completion: ((GetPatientsResponse) -> Unit)? = null
     ) {
         if (getGuardianJob?.isActive == true) return
+        if (isCheckInEventProcessing()) return
 
         createAppointmentJob?.cancel()
         getSchedulesJob?.cancel()
@@ -245,7 +246,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     clinicId = sharedPreferencesRepo.orgId,
                     nationalId = patient.nationalId,
                     doctors = sharedPreferencesRepo.doctors.toTypedArray(),
-                    rooms = sharedPreferencesRepo.rooms.mapNotNull { it.toIntOrNull() }.toTypedArray()
+                    rooms = sharedPreferencesRepo.rooms.mapNotNull { it.toIntOrNull() }
+                        .toTypedArray()
                 )
 
                 Timber.d("Status code: ${result.code()}")
@@ -375,6 +377,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         completion: ((CreateAppointmentResponse) -> Unit)? = null
     ) {
         if (getSchedulesJob?.isActive == true) return
+        if (isCheckInEventProcessing()) return
 
         createAppointmentJob?.cancel()
 
@@ -464,6 +467,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         getSchedulesJob?.cancel()
         checkJob?.cancel()
     }
+
     fun completeAllJobOnCardAbsentAfterAllProcessIsOver(completion: () -> Unit) {
         if (createAppointmentJob?.isActive == true) {
             createAppointmentJob?.invokeOnCompletion {
@@ -482,14 +486,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun isCheckInEventProcessing() : Boolean {
+    private fun isCheckInEventProcessing() =
+        checkJob?.isActive == true || createAppointmentJob?.isActive == true
 
-        if (getSchedulesJob?.isActive == true) return true
-
-        if (checkJob?.isActive == true || createAppointmentJob?.isActive == true) return true
-
-        return false
-    }
     fun getLanguage(): String {
         return sharedPreferencesRepo.language
     }
