@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="@color/white">
 
@@ -16,9 +17,13 @@
         app:navigationIcon="@drawable/ic_baseline_arrow_backward"/>
 
     <ListView
+        android:layout_marginHorizontal="@dimen/space_normal"
+        android:layout_marginTop="@dimen/space_normal"
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:divider="@null"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:dividerHeight="@dimen/space_normal"
+        tools:listitem="@layout/settings_fragment_list_item"/>
 
 </LinearLayout>
