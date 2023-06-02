@@ -29,7 +29,7 @@
     <string name="national_id_input_title">If you don\'t have NHI Card, you can enter %s</string>
     <string name="national_id_input_hint">Please enter %s</string>
     <string name="national_id_format_invalid">%s format invalid</string>
-    <string name="national_id_input_cancel">Cancel manual enter</string>
+    <string name="national_id_input_cancel">Cancel</string>
     <string name="submit">Submit</string>
     <string name="printer_not_connect">Please connect ticket machine</string>
     <string name="get_patient_not_found">Can not find appointment information for this National ID</string>

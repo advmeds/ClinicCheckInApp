@@ -326,45 +326,6 @@ class SharedPreferencesRepo(
     val queueingMachineSettingIsEnable: Boolean
         get() = sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_IS_ENABLE, false)
 
-    /*
-     * val queueingMachineSettingIsEnable: Boolean
-    //    get() {
-    //        val queueingMachineSettingModel = sharedPreferences.getString(QUEUEING_MACHINE_SETTING, null)
-    //            ?.takeIf { it.isNotBlank() }
-    //            ?.let {
-    //                Json.decodeFromString<QueueingMachineSettingModel>(it)
-    //            } ?: QueueingMachineSettingModel.getEmpty()
-    //
-    //        return queueingMachineSettingModel.isEnabled
-    //    }
-    //
-    //
-    //    /** QUEUEING MACHINE SETTING */
-    //    var queueingMachineSetting: QueueingMachineSettingModel
-    //
-    //        get() =
-    //            sharedPreferences.getString(QUEUEING_MACHINE_SETTING, null)
-    //                ?.takeIf { it.isNotBlank() }
-    //                ?.let {
-    //                    Json.decodeFromString<QueueingMachineSettingModel>(it)
-    //                } ?: QueueingMachineSettingModel.getEmpty()
-    //
-    //        set(value) {
-    //
-    //            val json = Json.encodeToString(value)
-    //            sharedPreferences.edit()
-    //                .putString(QUEUEING_MACHINE_SETTING, json)
-    //                .apply()
-    //
-    //            localBroadcastManager.sendBroadcast(
-    //                Intent(QUEUEING_MACHINE_SETTING).apply {
-    //                    putExtra(QUEUEING_MACHINE_SETTING, json)
-    //                    putExtra(QUEUEING_MACHINE_SETTING_IS_ENABLE, value.isEnabled)
-    //                }
-    //            )
-    //        }
-     *
-     */
 
     /** LANGUAGE */
     var language: String
