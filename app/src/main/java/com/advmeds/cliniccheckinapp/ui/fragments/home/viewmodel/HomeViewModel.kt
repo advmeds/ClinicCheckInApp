@@ -51,4 +51,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             sharedPreferencesRepo.machineTitle = value
         }
 
+    /** @see SharedPreferencesRepo.queueingMachineSettingIsEnable */
+    val queueingMachineSettingIsEnable: Boolean
+        get() = sharedPreferencesRepo.queueingMachineSettingIsEnable
+
 }

@@ -135,14 +135,20 @@ class HomeFragment : Fragment() {
             return@setOnLongClickListener true
         }
 
-        val arg = getString(R.string.health_card)
-        val text = String.format(getString(R.string.present_health_card), arg)
+        val firstArg = getString(R.string.health_card)
+        val secondArg =
+            if (viewModel.queueingMachineSettingIsEnable)
+                getString(R.string.present_health_card_arg_take_no)
+            else
+                getString(R.string.present_health_card_arg_check_in)
+
+        val text = String.format(getString(R.string.present_health_card), firstArg, secondArg)
         val textColor = ContextCompat.getColor(
             requireContext(),
             R.color.error
         )
-        val textStart = text.indexOf(arg)
-        val textEnd = textStart + arg.length
+        val textStart = text.indexOf(firstArg)
+        val textEnd = textStart + firstArg.length
         val spannable = SpannableString(text)
         spannable.setSpan(
             ForegroundColorSpan(textColor),
@@ -175,22 +181,22 @@ class HomeFragment : Fragment() {
                     EditCheckInItemDialog.CheckInItemType.MANUAL_INPUT -> {
                         itemImg.setImageResource(R.drawable.ic_baseline_keyboard)
                         itemTitle.setText(R.string.check_in_item_manual_title)
-                        itemBody.setText(R.string.check_in_item_manual_body)
+                        itemBody.text = (secondArg)
                     }
                     EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE -> {
                         itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
                         itemTitle.text = checkInItem.title
-                        itemBody.setText(R.string.check_in_item_manual_body)
+                        itemBody.text = (secondArg)
                     }
                     EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO -> {
                         itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
                         itemTitle.text = checkInItem.title
-                        itemBody.setText(R.string.check_in_item_manual_body)
+                        itemBody.text = (secondArg)
                     }
                     EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
                         itemImg.setImageResource(R.drawable.ic_baseline_qr_code)
                         itemTitle.setText(R.string.check_in_item_virtual_title)
-                        itemBody.setText(R.string.check_in_item_virtual_body)
+                        itemBody.text = (secondArg)
                     }
                     else -> {}
                 }
@@ -268,10 +274,10 @@ class HomeFragment : Fragment() {
 
         binding.checkInLayout.layoutParams = rightPartParams
 
-        val leftPartParams  = LinearLayoutCompat.LayoutParams(
-                0,
-                LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                3f
+        val leftPartParams = LinearLayoutCompat.LayoutParams(
+            0,
+            LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+            3f
         )
 
         leftPartParams.setMargins(0, 0, endMarginForLeftBlock, 0)

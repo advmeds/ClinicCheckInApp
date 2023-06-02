@@ -56,6 +56,7 @@ class SharedPreferencesRepo(
         const val QUEUEING_BOARD_SETTING_URL = "queueing_board_url"
 
         /** SharedPreferences [queue machine setting params] KEY */
+        const val QUEUEING_MACHINE_SETTING_IS_ENABLE = "queueing_machine_setting_is_enable"
         const val QUEUEING_MACHINE_SETTING_ORGANIZATION = "queueing_machine_setting_organization"
         const val QUEUEING_MACHINE_SETTING_DOCTOR = "queueing_machine_setting_organization_doctor"
         const val QUEUEING_MACHINE_SETTING_DEPT = "queueing_machine_setting_organization_dept"
@@ -273,6 +274,8 @@ class SharedPreferencesRepo(
     /** QUEUEING MACHINE SETTING */
     var queueingMachineSetting: QueueingMachineSettingModel
         get() {
+            val isEnable: Boolean =
+                sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_IS_ENABLE, false)
             val organization: Boolean =
                 sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_ORGANIZATION, false)
             val doctor: Boolean =
@@ -281,6 +284,7 @@ class SharedPreferencesRepo(
             val time: Boolean = sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_TIME, false)
 
             return QueueingMachineSettingModel(
+                isEnabled = isEnable,
                 organization = organization,
                 doctor = doctor,
                 dept = dept,
@@ -288,6 +292,10 @@ class SharedPreferencesRepo(
             )
         }
         set(value) {
+            sharedPreferences.edit()
+                .putBoolean(QUEUEING_MACHINE_SETTING_IS_ENABLE, value.isEnabled)
+                .apply()
+
             sharedPreferences.edit()
                 .putBoolean(QUEUEING_MACHINE_SETTING_ORGANIZATION, value.organization)
                 .apply()
@@ -305,7 +313,8 @@ class SharedPreferencesRepo(
                 .apply()
 
             localBroadcastManager.sendBroadcast(
-                Intent(DEPT_ID).apply {
+                Intent(QUEUEING_MACHINE_SETTING_ORGANIZATION).apply {
+                    putExtra(QUEUEING_MACHINE_SETTING_IS_ENABLE, value.isEnabled)
                     putExtra(QUEUEING_MACHINE_SETTING_ORGANIZATION, value.organization)
                     putExtra(QUEUEING_MACHINE_SETTING_DOCTOR, value.doctor)
                     putExtra(QUEUEING_MACHINE_SETTING_DEPT, value.dept)
@@ -313,6 +322,49 @@ class SharedPreferencesRepo(
                 }
             )
         }
+
+    val queueingMachineSettingIsEnable: Boolean
+        get() = sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_IS_ENABLE, false)
+
+    /*
+     * val queueingMachineSettingIsEnable: Boolean
+    //    get() {
+    //        val queueingMachineSettingModel = sharedPreferences.getString(QUEUEING_MACHINE_SETTING, null)
+    //            ?.takeIf { it.isNotBlank() }
+    //            ?.let {
+    //                Json.decodeFromString<QueueingMachineSettingModel>(it)
+    //            } ?: QueueingMachineSettingModel.getEmpty()
+    //
+    //        return queueingMachineSettingModel.isEnabled
+    //    }
+    //
+    //
+    //    /** QUEUEING MACHINE SETTING */
+    //    var queueingMachineSetting: QueueingMachineSettingModel
+    //
+    //        get() =
+    //            sharedPreferences.getString(QUEUEING_MACHINE_SETTING, null)
+    //                ?.takeIf { it.isNotBlank() }
+    //                ?.let {
+    //                    Json.decodeFromString<QueueingMachineSettingModel>(it)
+    //                } ?: QueueingMachineSettingModel.getEmpty()
+    //
+    //        set(value) {
+    //
+    //            val json = Json.encodeToString(value)
+    //            sharedPreferences.edit()
+    //                .putString(QUEUEING_MACHINE_SETTING, json)
+    //                .apply()
+    //
+    //            localBroadcastManager.sendBroadcast(
+    //                Intent(QUEUEING_MACHINE_SETTING).apply {
+    //                    putExtra(QUEUEING_MACHINE_SETTING, json)
+    //                    putExtra(QUEUEING_MACHINE_SETTING_IS_ENABLE, value.isEnabled)
+    //                }
+    //            )
+    //        }
+     *
+     */
 
     /** LANGUAGE */
     var language: String

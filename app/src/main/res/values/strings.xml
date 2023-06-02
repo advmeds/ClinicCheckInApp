@@ -15,7 +15,9 @@
     <string name="health_card">NHI Card</string>
     <string name="national_id">National ID</string>
     <string name="chart_no">Chart No</string>
-    <string name="present_health_card">Please insert %s to take No.</string>
+    <string name="present_health_card">Please insert %1$s to %2$s</string>
+    <string name="present_health_card_arg_check_in">Check In</string>
+    <string name="present_health_card_arg_take_no">take No.</string>
     <string name="check_in_item_display_name">Division name</string>
     <string name="check_in_item_manual_title">No NHI Card</string>
     <string name="check_in_item_manual_body">Manual Take No.</string>

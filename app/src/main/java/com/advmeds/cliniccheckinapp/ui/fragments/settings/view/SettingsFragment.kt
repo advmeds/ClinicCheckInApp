@@ -115,7 +115,6 @@ class SettingsFragment : ListFragment() {
     }
 
 
-
     private fun onSetUiSettingsItemClicked() {
 
         dialog = Dialog(requireContext())
@@ -179,7 +178,7 @@ class SettingsFragment : ListFragment() {
         dialog.ui_settings_save_btn.setOnClickListener {
 
 
-           val checkInItemsForSave = prepareCustomCheckInItemsForSaving(checkInItems)
+            val checkInItemsForSave = prepareCustomCheckInItemsForSaving(checkInItems)
 
             viewModel.machineTitle =
                 dialog.ui_settings_dialog_input_field.editText?.text.toString().trim()
@@ -197,7 +196,7 @@ class SettingsFragment : ListFragment() {
         dialog.show()
     }
 
-    private fun prepareCustomCheckInItemsForSaving(checkInItems: EditCheckInItemDialog.EditCheckInItems) : EditCheckInItemDialog.EditCheckInItems {
+    private fun prepareCustomCheckInItemsForSaving(checkInItems: EditCheckInItemDialog.EditCheckInItems): EditCheckInItemDialog.EditCheckInItems {
         if (dialog.ui_settings_customized_one.isChecked)
             with(checkInItems.customOne) {
                 title = dialog.ui_settings_customized_one_block_name.editText?.text.toString()
@@ -500,16 +499,16 @@ class SettingsFragment : ListFragment() {
 
         val queueingMachineSettingModel = viewModel.queueingMachineSettings
 
+        dialog.queueing_machine_setting_switcher.isChecked = queueingMachineSettingModel.isEnabled
+        dialog.queueing_machine_setting_container.isGone = !queueingMachineSettingModel.isEnabled
+
         dialog.qms_cb_organization.isChecked = queueingMachineSettingModel.organization
         dialog.qms_cb_doctor.isChecked = queueingMachineSettingModel.doctor
         dialog.qms_cb_dept.isChecked = queueingMachineSettingModel.dept
         dialog.qms_cb_time.isChecked = queueingMachineSettingModel.time
 
         dialog.queueing_machine_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked)
-                dialog.queueing_machine_setting_container.visibility = View.VISIBLE
-            else
-                dialog.queueing_machine_setting_container.visibility = View.GONE
+            dialog.queueing_machine_setting_container.isGone = !isChecked
         }
 
         val saveButton = dialog.btn_qms_dialog_save
@@ -517,19 +516,7 @@ class SettingsFragment : ListFragment() {
 
         saveButton.setOnClickListener {
 
-            val organization: Boolean = dialog.qms_cb_organization.isChecked
-            val doctor: Boolean = dialog.qms_cb_doctor.isChecked
-            val dept: Boolean = dialog.qms_cb_dept.isChecked
-            val time: Boolean = dialog.qms_cb_time.isChecked
-
-            dialog.dismiss()
-
-            val queueingMachineSettingModelForSave = QueueingMachineSettingModel(
-                organization = organization,
-                doctor = doctor,
-                dept = dept,
-                time = time
-            )
+            val queueingMachineSettingModelForSave = prepareQueueingMachineSettingForSaving(dialog)
 
             if (queueingMachineSettingModelForSave.isSame(viewModel.queueingMachineSettings))
                 return@setOnClickListener
@@ -543,6 +530,31 @@ class SettingsFragment : ListFragment() {
 
         dialog.show()
 
+    }
+
+    private fun prepareQueueingMachineSettingForSaving(dialog: Dialog): QueueingMachineSettingModel {
+        val organization: Boolean = dialog.qms_cb_organization.isChecked
+        val doctor: Boolean = dialog.qms_cb_doctor.isChecked
+        val dept: Boolean = dialog.qms_cb_dept.isChecked
+        val time: Boolean = dialog.qms_cb_time.isChecked
+
+        val isEnable = if (QueueingMachineSettingModel.isAllParamAreFalse(
+                organization = organization, doctor = doctor, dept = dept, time = time
+            )
+        ) false
+        else
+            dialog.queueing_machine_setting_switcher.isChecked
+
+        dialog.dismiss()
+
+        // if isEnable false all other parameters also false
+        return QueueingMachineSettingModel(
+            isEnabled = isEnable,
+            organization = if (!isEnable) false else organization,
+            doctor = if (!isEnable) false else doctor,
+            dept = if (!isEnable) false else dept,
+            time = if (!isEnable) false else time
+        )
     }
 
     private fun onSetLanguageSettingItemClicked() {
@@ -590,6 +602,7 @@ class SettingsFragment : ListFragment() {
 
         dialog.show()
     }
+
     private fun onSetExitItemClicked() {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.exit_app)
