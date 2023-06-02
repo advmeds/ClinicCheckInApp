@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
-    android:paddingStart="146dp"
-    android:paddingEnd="146dp">
+    android:paddingStart="@dimen/dialog_screen_padding"
+    android:paddingEnd="@dimen/dialog_screen_padding">
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
@@ -22,17 +22,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingStart="40dp"
-            android:paddingTop="80dp"
-            android:paddingEnd="40dp"
-            android:paddingBottom="80dp">
+            android:paddingStart="@dimen/space_huge"
+            android:paddingTop="@dimen/space_very_huge"
+            android:paddingEnd="@dimen/space_huge"
+            android:paddingBottom="@dimen/space_very_huge">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dialog_image_size"
+                android:layout_height="@dimen/dialog_image_size"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="40dp"
+                android:layout_marginBottom="@dimen/space_huge"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/ic_baseline_how_to_reg" />
 
@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="40dp"
+                android:layout_marginBottom="@dimen/space_huge"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/make_appointment"
                 android:textColor="@color/colorPrimary"
@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="40dp"
+                android:layout_marginBottom="@dimen/space_huge"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/make_appointment_message"
                 android:textAlignment="center"
@@ -72,10 +72,10 @@
                     style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingStart="120dp"
-                    android:paddingTop="24dp"
-                    android:paddingEnd="120dp"
-                    android:paddingBottom="24dp"
+                    android:paddingStart="@dimen/space_grand"
+                    android:paddingTop="@dimen/space_normal"
+                    android:paddingEnd="@dimen/space_grand"
+                    android:paddingBottom="@dimen/space_normal"
                     android:text="@string/got_it"
                     android:textSize="@dimen/font_size_h3"
                     app:cornerRadius="8dp"

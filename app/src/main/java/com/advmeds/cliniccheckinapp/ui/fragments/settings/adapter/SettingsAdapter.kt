@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.advmeds.cliniccheckinapp.R
 
 class SettingsAdapter(val mContext: Context, val settingItems: Array<String>) :
-    ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, settingItems) {
+    ArrayAdapter<String>(mContext, R.layout.settings_fragment_list_item, settingItems) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
@@ -18,6 +18,8 @@ class SettingsAdapter(val mContext: Context, val settingItems: Array<String>) :
         if (view is TextView) {
             if (settingItems[position] == mContext.getString(R.string.exit_app)) {
                 view.setTextColor(Color.RED)
+            } else {
+                view.setTextColor(Color.BLACK)
             }
         }
 

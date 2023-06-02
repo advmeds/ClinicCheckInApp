@@ -28,6 +28,8 @@
     <dimen name="space_normal">15dp</dimen>
     <dimen name="space_big">20dp</dimen>
     <dimen name="space_huge">25dp</dimen>
+    <dimen name="space_very_huge">50dp</dimen>
+    <dimen name="space_grand">75dp</dimen>
 
 
     <!-- Home Page -->
@@ -52,5 +54,9 @@
     <dimen name="setting_dialog_check_box_margin_bottom">@dimen/space_small</dimen>
     <dimen name="setting_dialog_check_box_margin_start">@dimen/space_big</dimen>
     <dimen name="setting_dialog_check_box_margin_end">-10dp</dimen>
+
+    <!-- Fragment Dialog -->
+    <dimen name="dialog_image_size">100dp</dimen>
+    <dimen name="dialog_screen_padding">146dp</dimen>
 
 </resources>

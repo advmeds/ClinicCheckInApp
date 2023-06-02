@@ -62,16 +62,18 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="@dimen/screen_panel_margin"
+        android:layout_marginBottom="@dimen/screen_panel_margin"
+        android:layout_marginHorizontal="@dimen/screen_panel_margin"
         android:layout_weight="4"
         android:clipToPadding="false"
         android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/left_block"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/distance_between_panel"
             android:layout_weight="3"
+            android:layout_marginEnd="@dimen/distance_between_panel"
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">
 
@@ -114,17 +116,6 @@
             android:layout_weight="2"
             android:orientation="vertical">
 
-<!--            <androidx.cardview.widget.CardView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:background="@color/white"-->
-<!--                android:layout_weight="2" />-->
-
-<!--            <androidx.cardview.widget.CardView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:background="@color/white"-->
-<!--                android:layout_weight="2" />-->
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.appcompat.widget.LinearLayoutCompat>

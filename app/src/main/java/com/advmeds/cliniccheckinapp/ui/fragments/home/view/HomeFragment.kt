@@ -210,7 +210,7 @@ class HomeFragment : Fragment() {
 
                         val bottomMargin = if (index == (itemList.size - 1)) 0 else margin
 
-                        setMargins(margin, topMargin, margin, bottomMargin)
+                        setMargins(margin, topMargin, 0, bottomMargin)
 
                     }
                 )
@@ -250,6 +250,9 @@ class HomeFragment : Fragment() {
 
     private fun changeIsCheckInLayoutWeightIfItEmpty(size: Int) {
 
+        val endMarginForLeftBlock =
+            if (size == 0) 0 else (resources.getDimension(R.dimen.distance_between_panel) / resources.displayMetrics.density).toInt()
+
         val weight = if (size == 0) 0f else 2f
 
         val oldSize = binding.checkInLayout.childCount
@@ -257,13 +260,23 @@ class HomeFragment : Fragment() {
         if (oldSize > 0 && size > 0)
             return
 
-        val params = LinearLayoutCompat.LayoutParams(
+        val rightPartParams = LinearLayoutCompat.LayoutParams(
             0,
             LinearLayoutCompat.LayoutParams.MATCH_PARENT,
             weight
         )
 
-        binding.checkInLayout.layoutParams = params
+        binding.checkInLayout.layoutParams = rightPartParams
+
+        val leftPartParams  = LinearLayoutCompat.LayoutParams(
+                0,
+                LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                3f
+        )
+
+        leftPartParams.setMargins(0, 0, endMarginForLeftBlock, 0)
+
+        binding.leftBlock.layoutParams = leftPartParams
     }
 
     private fun showTextInputDialog(

@@ -32,6 +32,8 @@
     <dimen name="space_normal">10dp</dimen>
     <dimen name="space_big">15dp</dimen>
     <dimen name="space_huge">20dp</dimen>
+    <dimen name="space_very_huge">30dp</dimen>
+    <dimen name="space_grand">45dp</dimen>
 
     <item name="font_size_h4_float" format="float" type="dimen">15.0</item>
 
@@ -59,6 +61,10 @@
     <dimen name="setting_dialog_check_box_margin_bottom">@dimen/space_small</dimen>
     <dimen name="setting_dialog_check_box_margin_start">@dimen/space_big</dimen>
     <dimen name="setting_dialog_check_box_margin_end">-10dp</dimen>
+
+    <!-- Fragment Dialog -->
+    <dimen name="dialog_image_size">60dp</dimen>
+    <dimen name="dialog_screen_padding">100dp</dimen>
 
 </resources>
 
