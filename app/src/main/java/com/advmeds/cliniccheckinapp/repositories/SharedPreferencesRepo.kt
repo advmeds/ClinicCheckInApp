@@ -258,15 +258,15 @@ class SharedPreferencesRepo(
     /** QUEUEING BOARD SETTING URL */
     var queueingBoardURL: String
         get() =
-            sharedPreferences.getString(QUEUEING_BOARD_SETTING_URL, null) ?: ""
+            sharedPreferences.getString(CLINIC_PANEL_MODE, null) ?: ""
         set(value) {
             sharedPreferences.edit()
-                .putString(QUEUEING_BOARD_SETTING_URL, value)
+                .putString(CLINIC_PANEL_MODE, value)
                 .apply()
 
             localBroadcastManager.sendBroadcast(
-                Intent(QUEUEING_BOARD_SETTING_URL).apply {
-                    putExtra(QUEUEING_BOARD_SETTING_URL, value)
+                Intent(CLINIC_PANEL_MODE).apply {
+                    putExtra(CLINIC_PANEL_MODE, value)
                 }
             )
         }

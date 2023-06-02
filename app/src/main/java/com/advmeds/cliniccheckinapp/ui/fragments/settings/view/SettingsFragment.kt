@@ -344,6 +344,10 @@ class SettingsFragment : ListFragment() {
             dialog.dismiss()
         }
 
+        dialog.fcl_cancel_btn.setOnClickListener {
+            dialog.dismiss()
+        }
+
         dialog.show()
     }
 
