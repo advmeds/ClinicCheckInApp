@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 import android.media.AudioManager
@@ -131,9 +132,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onCardAbsent() {
-            viewModel.cancelJobOnCardAbsent()
-            dialog?.dismiss()
-            dialog = null
+//            viewModel.cancelJobOnCardAbsent()
+//            dialog?.dismiss()
+//            dialog = null
+
+            viewModel.completeAllJobOnCardAbsentAfterAllProcessIsOver() {
+                dialog?.dismiss()
+                dialog = null
+            }
+
         }
 
         override fun onConnectDevice() {
@@ -147,7 +154,8 @@ class MainActivity : AppCompatActivity() {
 
         override fun onReceiveResult(result: Result<AcsResponseModel>) {
             result.onSuccess {
-                when(BuildConfig.BUILD_TYPE) {
+
+                when (BuildConfig.BUILD_TYPE) {
                     "rende" -> {
                         createAppointment(
                             schedule = GetScheduleResponse.ScheduleBean.RENDE_DIVISION_ONLY,
@@ -247,6 +255,9 @@ class MainActivity : AppCompatActivity() {
     private var failSoundId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        setSavedLanguage()
+
         super.onCreate(savedInstanceState)
 
         soundPool = SoundPool(
@@ -306,11 +317,15 @@ class MainActivity : AppCompatActivity() {
 
                             ErrorDialogFragment(
                                 title = "",
-                                message = apiError?.resStringID?.let { it1 -> getString(it1) } ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                    Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
-                                } else {
-                                    Html.fromHtml(it.response.message)
-                                }
+                                message = apiError?.resStringID?.let { it1 -> getString(it1) }
+                                    ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                        Html.fromHtml(
+                                            it.response.message,
+                                            Html.FROM_HTML_MODE_COMPACT
+                                        )
+                                    } else {
+                                        Html.fromHtml(it.response.message)
+                                    }
                             )
                         }
                     }
@@ -443,11 +458,15 @@ class MainActivity : AppCompatActivity() {
 
                             ErrorDialogFragment(
                                 title = "",
-                                message = apiError?.resStringID?.let { it1 -> getString(it1) } ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                    Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
-                                } else {
-                                    Html.fromHtml(it.response.message)
-                                }
+                                message = apiError?.resStringID?.let { it1 -> getString(it1) }
+                                    ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                        Html.fromHtml(
+                                            it.response.message,
+                                            Html.FROM_HTML_MODE_COMPACT
+                                        )
+                                    } else {
+                                        Html.fromHtml(it.response.message)
+                                    }
                             )
                         }
                     }
@@ -488,11 +507,15 @@ class MainActivity : AppCompatActivity() {
                                 } else {
                                     getString(R.string.fail_to_make_appointment)
                                 },
-                                message = apiError?.resStringID?.let { it1 -> getString(it1) } ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                    Html.fromHtml(it.response.message, Html.FROM_HTML_MODE_COMPACT)
-                                } else {
-                                    Html.fromHtml(it.response.message)
-                                }
+                                message = apiError?.resStringID?.let { it1 -> getString(it1) }
+                                    ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                        Html.fromHtml(
+                                            it.response.message,
+                                            Html.FROM_HTML_MODE_COMPACT
+                                        )
+                                    } else {
+                                        Html.fromHtml(it.response.message)
+                                    }
                             )
                         }
                     }
@@ -513,6 +536,42 @@ class MainActivity : AppCompatActivity() {
 
         showPresentation()
     }
+
+
+    fun setLanguage(language: String) {
+        val locale = checkForCountryInLanguageCode(language)
+
+        val resources = resources
+        val configuration = Configuration(resources.configuration)
+        configuration.setLocale(locale)
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+    }
+
+    private fun checkForCountryInLanguageCode(
+        languageCode: String,
+    ): Locale {
+
+        val langList = languageCode.split("-")
+
+        val locale = if (langList.size > 1) {
+            val countryPart = langList[1]
+            val countryCode = if (countryPart[0] == 'r') countryPart.drop(1) else countryPart
+            Locale(langList[0], countryCode)
+        } else {
+            Locale(langList[0])
+        }
+        return locale
+    }
+
+    private fun setSavedLanguage() {
+        val language = viewModel.getLanguage()
+        if (language.isBlank())
+            setLanguage(language = BuildConfig.DEFAULT_LANGUAGE)
+        else
+            setLanguage(language = language)
+
+    }
+
 
     private fun setupUSB() {
         val usbFilter = IntentFilter(USB_PERMISSION)
@@ -597,6 +656,77 @@ class MainActivity : AppCompatActivity() {
 
             PrinterBuffer.selectCutPagerModerAndCutPager(66, 1)
         )
+
+        commandList.forEach { command ->
+            usbPrinterService.write(command)
+        }
+    }
+
+    /** print ticket */
+    private fun printPatient(divisions: Array<String>, serialNumbers: Array<Int>) {
+
+        require(divisions.size == serialNumbers.size) {
+            "Arrays must have the same size"
+        }
+
+        val now = Date()
+        val formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+
+        val headerCommand = arrayListOf(
+            PrinterBuffer.initializePrinter(),
+            PrinterBuffer.selectAlignment(PrinterBuffer.Alignment.CENTER),
+
+            PrinterBuffer.setLineSpacing(120),
+            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+            strToBytes(viewModel.clinicGuardian.value!!.name),
+            PrinterBuffer.printAndFeedLine(),
+        )
+
+
+        val middleCommand: ArrayList<ByteArray> = ArrayList()
+
+        divisions.zip(serialNumbers) { division, serialNo ->
+
+            val innerList = arrayListOf(
+                PrinterBuffer.setLineSpacing(160),
+                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
+                strToBytes(division),
+                PrinterBuffer.printAndFeedLine(),
+
+                PrinterBuffer.setLineSpacing(120),
+                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+                strToBytes(getString(R.string.print_serial_no)),
+                PrinterBuffer.printAndFeedLine(),
+
+                PrinterBuffer.setLineSpacing(160),
+                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
+                strToBytes(String.format("%04d", serialNo)),
+                PrinterBuffer.printAndFeedLine(),
+            )
+
+            middleCommand.addAll(innerList)
+
+        }
+
+        val footerCommand = arrayListOf(
+            PrinterBuffer.setLineSpacing(120),
+            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+            strToBytes(formatter.format(now)),
+            PrinterBuffer.printAndFeedLine(),
+
+            PrinterBuffer.setLineSpacing(120),
+            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+            strToBytes(getString(R.string.print_footer)),
+            PrinterBuffer.printAndFeedLine(),
+
+            PrinterBuffer.selectCutPagerModerAndCutPager(66, 1)
+        )
+
+        val commandList: ArrayList<ByteArray> = ArrayList()
+
+        commandList.addAll(headerCommand)
+        commandList.addAll(middleCommand)
+        commandList.addAll(footerCommand)
 
         commandList.forEach { command ->
             usbPrinterService.write(command)
@@ -699,7 +829,13 @@ class MainActivity : AppCompatActivity() {
 //    }
 
     /** get patient appointment */
-    fun getPatients(nationalId: String, name: String = "", birth: String = "", completion: (() -> Unit)? = null) {
+    fun getPatients(
+        nationalId: String,
+        name: String = "",
+        birth: String = "",
+        completion: (() -> Unit)? = null
+    ) {
+
         if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
             // 若有開啟取號功能，則必須要有連線取票機才會去報到
             Snackbar.make(
@@ -720,15 +856,22 @@ class MainActivity : AppCompatActivity() {
             completion?.let { it1 -> it1() }
 
             if (it.success && BuildConfig.PRINT_ENABLED) {
-                it.patients.forEach { patient ->
-                    printPatient(
-                        division = when (BuildConfig.BUILD_TYPE) {
+
+                val arrayDivision =
+                    it.patients.map { patient ->
+                        when (BuildConfig.BUILD_TYPE) {
                             "ptch" -> patient.doctor
                             else -> patient.division
-                        },
-                        serialNo = patient.serialNo
-                    )
-                }
+                        }
+                    }.toTypedArray()
+
+                val arraySerialNumber =
+                    it.patients.map { patient -> patient.serialNo }.toTypedArray()
+
+                printPatient(
+                    divisions = arrayDivision,
+                    serialNumbers = arraySerialNumber
+                )
             }
         }
     }
@@ -804,11 +947,14 @@ class MainActivity : AppCompatActivity() {
     private fun showPresentation() {
         val mediaRouter = getSystemService(ComponentActivity.MEDIA_ROUTER_SERVICE) as MediaRouter
         val presentationDisplay =
-            mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO).presentationDisplay ?: return
+            mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_VIDEO).presentationDisplay
+                ?: return
 
         try {
-            val cls = Class.forName("com.advmeds.cliniccheckinapp.ui.presentations.WebPresentation").kotlin
-            val presentation = cls.primaryConstructor?.call(this, presentationDisplay) as? Presentation
+            val cls =
+                Class.forName("com.advmeds.cliniccheckinapp.ui.presentations.WebPresentation").kotlin
+            val presentation =
+                cls.primaryConstructor?.call(this, presentationDisplay) as? Presentation
             presentation?.show()
         } catch (ignored: ClassNotFoundException) {
 

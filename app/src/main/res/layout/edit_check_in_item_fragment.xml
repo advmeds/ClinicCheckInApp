@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
-    android:paddingStart="146dp"
-    android:paddingEnd="146dp">
+    android:paddingStart="@dimen/dialog_screen_padding"
+    android:paddingEnd="@dimen/dialog_screen_padding">
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
@@ -23,10 +23,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingStart="40dp"
-            android:paddingTop="80dp"
-            android:paddingEnd="40dp"
-            android:paddingBottom="80dp">
+            android:paddingStart="@dimen/space_huge"
+            android:paddingTop="@dimen/space_very_huge"
+            android:paddingEnd="@dimen/space_huge"
+            android:paddingBottom="@dimen/space_very_huge">
 
             <RadioGroup
                 android:id="@+id/type_radio_group"
@@ -46,7 +46,7 @@
                     android:id="@+id/custom_radio_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
+                    android:layout_marginStart="@dimen/space_huge"
                     android:layout_marginEnd="0dp"
                     android:layout_weight="1"
                     android:text="@string/check_in_type_custom"
@@ -56,7 +56,7 @@
                     android:id="@+id/virtual_radio_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
+                    android:layout_marginStart="@dimen/space_huge"
                     android:layout_marginEnd="0dp"
                     android:layout_weight="1"
                     android:text="@string/check_in_type_virtual_card"
@@ -68,7 +68,7 @@
                 android:id="@+id/edit_title_tl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="@dimen/space_huge"
                 app:boxCollapsedPaddingTop="0dp"
                 app:hintTextAppearance="@style/TextInputLayoutHintTextAppearance">
 
@@ -91,7 +91,7 @@
                 android:id="@+id/edit_doctor_tl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="@dimen/space_huge"
                 app:boxCollapsedPaddingTop="0dp"
                 app:hintTextAppearance="@style/TextInputLayoutHintTextAppearance">
 
@@ -114,7 +114,7 @@
                 android:id="@+id/edit_room_tl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="@dimen/space_huge"
                 app:boxCollapsedPaddingTop="0dp"
                 app:hintTextAppearance="@style/TextInputLayoutHintTextAppearance">
 
@@ -133,12 +133,13 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+
             <LinearLayout
                 android:id="@+id/action_buttons_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="@dimen/space_huge"
                 android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
@@ -147,10 +148,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:paddingStart="120dp"
-                    android:paddingTop="24dp"
-                    android:paddingEnd="120dp"
-                    android:paddingBottom="24dp"
+                    android:paddingStart="@dimen/space_grand"
+                    android:paddingTop="@dimen/space_normal"
+                    android:paddingEnd="@dimen/space_grand"
+                    android:paddingBottom="@dimen/space_normal"
                     android:text="@string/cancel"
                     android:textSize="@dimen/font_size_h3"
                     app:cornerRadius="8dp"
@@ -162,12 +163,12 @@
                     style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
+                    android:layout_marginStart="@dimen/space_huge"
                     android:layout_weight="1"
-                    android:paddingStart="120dp"
-                    android:paddingTop="24dp"
-                    android:paddingEnd="120dp"
-                    android:paddingBottom="24dp"
+                    android:paddingStart="@dimen/space_grand"
+                    android:paddingTop="@dimen/space_normal"
+                    android:paddingEnd="@dimen/space_grand"
+                    android:paddingBottom="@dimen/space_normal"
                     android:text="@string/save"
                     android:textSize="@dimen/font_size_h3"
                     app:cornerRadius="8dp"

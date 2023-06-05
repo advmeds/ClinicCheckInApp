@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id "kotlinx-serialization"
+    id "kotlin-android-extensions"
 }
 
 android {
@@ -37,6 +38,8 @@ android {
             buildConfigField "boolean", "PRINT_ENABLED", "true"
             buildConfigField "String", "MS_DOMAIN", "\"https://test.mscheduler.com/\""
             buildConfigField "String", "ORG_ID", "\"1\""
+            buildConfigField "String", "DEFAULT_LANGUAGE", "\"en\""
+            buildConfigField "String", "DEFAULT_PASSWORD", "\"qwerty\""
         }
 
         // 門診取號機
@@ -49,6 +52,8 @@ android {
             buildConfigField "boolean", "PRINT_ENABLED", "true"
             buildConfigField "String", "MS_DOMAIN", "\"https://www.mscheduler.com/\""
             buildConfigField "String", "ORG_ID", "\"1\""
+            buildConfigField "String", "DEFAULT_LANGUAGE", "\"en\""
+            buildConfigField "String", "DEFAULT_PASSWORD", "\"qwerty\""
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Screen -->
+    <dimen name="screen_padding">20dp</dimen>
+    <dimen name="screen_panel_margin">20dp</dimen>
+
+    <dimen name="distance_between_panel">10dp</dimen>
+
+    <!-- Logo -->
+    <dimen name="logo_margin">20dp</dimen>
+    <dimen name="logo_image_width">500dp</dimen>
+    <dimen name="logo_image_margin">20dp</dimen>
+
+
+    <!-- Font -->
+    <dimen name="font_size_h1">60sp</dimen>
+    <dimen name="font_size_h2">48sp</dimen>
+    <dimen name="font_size_h3">34sp</dimen>
+    <dimen name="font_size_h4">24sp</dimen>
+    <dimen name="font_size_h5">20sp</dimen>
+
+    <item name="font_size_h4_float" format="float" type="dimen" >24.0</item>
+
+    <!-- Space -->
+    <dimen name="space_small">10dp</dimen>
+    <dimen name="space_medium">15dp</dimen>
+    <dimen name="space_normal">20dp</dimen>
+    <dimen name="space_big">30dp</dimen>
+    <dimen name="space_huge">40dp</dimen>
+    <dimen name="space_very_huge">80dp</dimen>
+    <dimen name="space_grand">120dp</dimen>
+
+
+    <!-- Home Page -->
+    <dimen name="check_in_item_vertical_icon_size">200dp</dimen>
+
+    <!-- Input Page -->
+    <dimen name="input_page_back_to_home_horizontal_padding">138dp</dimen>
+    <dimen name="input_page_button_icon_size">50dp</dimen>
+
+    <!-- Dialog -->
+    <dimen name="setting_dialog_width">780dp</dimen>
+
+    <item name="switcher_scale" format="float" type="dimen">2.0</item>
+
+    <item name="check_box_scale" format="float" type="dimen">1.5</item>
+
+    <dimen name="setting_dialog_bottom_margin">0dp</dimen>
+
+    <dimen name="language_list_item_icon_size">80dp</dimen>
+
+    <dimen name="setting_dialog_check_box_margin_top">@dimen/space_small</dimen>
+    <dimen name="setting_dialog_check_box_margin_bottom">@dimen/space_small</dimen>
+    <dimen name="setting_dialog_check_box_margin_start">@dimen/space_big</dimen>
+    <dimen name="setting_dialog_check_box_margin_end">-10dp</dimen>
+
+    <!-- Fragment Dialog -->
+    <dimen name="dialog_image_size">150dp</dimen>
+    <dimen name="dialog_screen_padding">146dp</dimen>
+
+</resources>

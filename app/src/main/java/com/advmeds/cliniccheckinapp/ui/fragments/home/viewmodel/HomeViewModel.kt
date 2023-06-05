@@ -1,27 +1,12 @@
-package com.advmeds.cliniccheckinapp.ui.fragments
+package com.advmeds.cliniccheckinapp.ui.fragments.home.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
-import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
-
-    /** @see SharedPreferencesRepo.mSchedulerServerDomain */
-    var mSchedulerServerDomain: String
-        get() = sharedPreferencesRepo.mSchedulerServerDomain
-        set(value) {
-            sharedPreferencesRepo.mSchedulerServerDomain = value
-        }
-
-    /** @see SharedPreferencesRepo.orgId */
-    var orgId: String
-        get() = sharedPreferencesRepo.orgId
-        set(value) {
-            sharedPreferencesRepo.orgId = value
-        }
 
     /** @see SharedPreferencesRepo.doctors */
     var doctors: Set<String>
@@ -37,12 +22,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             sharedPreferencesRepo.rooms = value
         }
 
-    /** @see SharedPreferencesRepo.clinicPanelUrl */
-    var clinicPanelUrl: String?
-        get() = sharedPreferencesRepo.clinicPanelUrl
-        set(value) {
-            sharedPreferencesRepo.clinicPanelUrl = value
-        }
 
     /** @see SharedPreferencesRepo.logoUrl */
     var logoUrl: String?
@@ -51,17 +30,29 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             sharedPreferencesRepo.logoUrl = value
         }
 
-    /** @see SharedPreferencesRepo.formatCheckedList */
-    var formatCheckedList: List<CreateAppointmentRequest.NationalIdFormat>
-        get() = sharedPreferencesRepo.formatCheckedList
-        set(value) {
-            sharedPreferencesRepo.formatCheckedList = value
-        }
-
-    /** @see SharedPreferencesRepo.formatCheckedList */
+    /** @see SharedPreferencesRepo.checkInItemList */
     var checkInItemList: List<EditCheckInItemDialog.EditCheckInItem>
         get() = sharedPreferencesRepo.checkInItemList
         set(value) {
             sharedPreferencesRepo.checkInItemList = value
         }
+
+    /** @see SharedPreferencesRepo.password */
+    var password: String
+        get() = sharedPreferencesRepo.password
+        set(value) {
+            sharedPreferencesRepo.password = value
+        }
+
+    /** @see SharedPreferencesRepo.machineTitle */
+    var machineTitle: String
+        get() = sharedPreferencesRepo.machineTitle
+        set(value) {
+            sharedPreferencesRepo.machineTitle = value
+        }
+
+    /** @see SharedPreferencesRepo.queueingMachineSettingIsEnable */
+    val queueingMachineSettingIsEnable: Boolean
+        get() = sharedPreferencesRepo.queueingMachineSettingIsEnable
+
 }

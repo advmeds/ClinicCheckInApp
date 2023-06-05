@@ -13,9 +13,11 @@
     <string name="present_card_remind">Please insert NHI Card to take a number before seeing a doctor</string>
 
     <string name="health_card">NHI Card</string>
-    <string name="national_id">National ID</string>
-    <string name="chart_no">Chart No</string>
-    <string name="present_health_card">Please insert %s to take No.</string>
+    <string name="national_id">CID No.</string>
+    <string name="chart_no">MR No</string>
+    <string name="present_health_card">Please insert %1$s to %2$s</string>
+    <string name="present_health_card_arg_check_in">Check In</string>
+    <string name="present_health_card_arg_take_no">take No.</string>
     <string name="check_in_item_display_name">Division name</string>
     <string name="check_in_item_manual_title">No NHI Card</string>
     <string name="check_in_item_manual_body">Manual Take No.</string>
@@ -27,7 +29,7 @@
     <string name="national_id_input_title">If you don\'t have NHI Card, you can enter %s</string>
     <string name="national_id_input_hint">Please enter %s</string>
     <string name="national_id_format_invalid">%s format invalid</string>
-    <string name="national_id_input_cancel">Cancel manual enter</string>
+    <string name="national_id_input_cancel">Cancel</string>
     <string name="submit">Submit</string>
     <string name="printer_not_connect">Please connect ticket machine</string>
     <string name="get_patient_not_found">Can not find appointment information for this National ID</string>
@@ -58,23 +60,97 @@
     <string name="fail_to_make_appointment">Failed to checked in</string>
     <string name="fail_to_make_appointment_10014">非取號時段</string>
 
+    <string name="advanced_settings">Advanced Settings</string>
+    <string name="password">Password</string>
+
+    <string name="ui_settings">UI Setting</string>
     <string name="server_domain">Service domain</string>
     <string name="org_id">Clinic ID</string>
     <string name="doctors">Doctor ID</string>
     <string name="rooms">Room ID</string>
     <string name="clinic_panel_url">Clinic Panel Url</string>
-    <string name="format_checked">報到格式檢查</string>
+    <string name="format_checked">Check In Setting</string>
+    <string name="dept_id">Dept ID</string>
+    <string name="exit_app">Exit App</string>
+
     <string-array name="setting_items">
+        <item>@string/ui_settings</item>
         <item>@string/server_domain</item>
         <item>@string/org_id</item>
-        <item>Doctor ID(To enter multiple ID, use commas to separate each ID.)</item>
-        <item>Room ID(To enter multiple ID, use commas to separate each ID.)</item>
-        <item>@string/clinic_panel_url</item>
+        <item>@string/doctors</item>
+        <item>@string/rooms</item>
+        <item>@string/dept_id</item>
+        <item>@string/queueing_board_setting</item>
+        <item>@string/queueing_machine_setting</item>
         <item>@string/format_checked</item>
+        <item>@string/language_setting</item>
+        <item>@string/exit_app</item>
     </string-array>
 
+
+    <!-- UI settings -->
+    <string name="ui_settings_machine_title">Machine Title</string>
+
+    <string name="ui_settings_manual_input">Manual Input</string>
+    <string name="ui_settings_virtual_nhi_card">Virtual NHI Card</string>
+    <string name="ui_settings_customized_one">Customized 1</string>
+    <string name="ui_settings_customized_two">Customized 2</string>
+    <string name="ui_settings_customized_block_name">Block Name</string>
+    <string name="ui_settings_customized_doctor_id">Doctor ID</string>
+    <string name="ui_settings_customized_room_id">Room ID</string>
+
+
+    <!-- Setting Dialog -->
+    <string name="dialog_id_label">ID</string>
+    <string name="dialog_url_label">URL</string>
+
+    <string name="dialog_description">To enter multiple ID, use commas to separate eahc ID. </string>
+
+    <string name="dialog_enable_label">Enable</string>
+
+    <string name="dialog_cancel_button">Cancel</string>
+    <string name="dialog_save_button">Save</string>
+    <string name="dialog_ok_button">OK</string>
+
+    <!-- Service Domain Dialog -->
+    <string name="customize_url_hint">http://example.com</string>
+    <string name="domain_service_official_site">Official Site</string>
+    <string name="domain_service_testing_site">Testing Site</string>
+    <string name="domain_service_customize">Customize</string>
+
+    <!-- Queueing Board Setting -->
+    <string name="queueing_board_setting">Queuing Board Setting</string>
+    <string name="qbs_screen_rotation_label">Screen Rotation</string>
+    <string name="qbs_screen_edit_text_label">Queueing Board URL</string>
+
+
+    <!-- Queueing Machine Setting -->
+    <string name="queueing_machine_setting">Queuing Machine Setting</string>
+    <string name="qms_ticket_information">Ticket Information</string>
+    <string name="qms_time_label">Time</string>
+    <string name="qms_dept_label">Dept.</string>
+    <string name="qms_doctor_label">Doctor</string>
+    <string name="qms_organization_label">Organization</string>
+
+    <!-- Language Setting -->
+    <string name="version_setting">Version Setting</string>
+    <string name="language_setting">Language</string>
+    <string name="version_setting_dialog_select_version_label">Select Version</string>
+    <string name="version_setting_dialog_select_language_label">Select Language</string>
+
+    <string name="zh_tw_language">繁體中文</string>
+    <string name="en_language">English</string>
+
+    <string-array name="language_items">
+        <item>@string/zh_tw_language</item>
+        <item>@string/en_language</item>
+    </string-array>
+    
     <string name="no_internet">No Internet</string>
     <string name="service_timeout">Connect Timeout</string>
+
+
+    <string name="is_selected_language_checker_image_description">is selected language checker</string>
     
     <string name="mScheduler_api_error_10001">The key field can not be blank</string>
     <string name="mScheduler_api_error_10002">Organization Not Found</string>
@@ -97,4 +173,5 @@
     <string name="coming_soon">功能尚未開放</string>
 
     <string name="reconnecting">網路連線偵測中，請稍後</string>
+    <string name="password_is_incorrect">password is incorrect</string>
 </resources>

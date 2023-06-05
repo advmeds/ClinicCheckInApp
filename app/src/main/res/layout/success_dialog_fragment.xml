@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
-    android:paddingStart="146dp"
-    android:paddingEnd="146dp">
+    android:paddingStart="@dimen/dialog_screen_padding"
+    android:paddingEnd="@dimen/dialog_screen_padding">
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
@@ -23,12 +23,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="80dp">
+            android:padding="@dimen/space_very_huge">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dialog_image_size"
+                android:layout_height="@dimen/dialog_image_size"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="40dp"
                 android:scaleType="centerInside"
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="40dp"
+                android:layout_marginBottom="@dimen/space_huge"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/font_size_h2"

@@ -1,4 +1,4 @@
-package com.advmeds.cliniccheckinapp.ui.fragments
+package com.advmeds.cliniccheckinapp.ui.fragments.manualInput.viewModel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -20,5 +20,13 @@ class ManualInputViewModel(application: Application) : AndroidViewModel(applicat
         get() = sharedPreferencesRepo.formatCheckedList
         set(value) {
             sharedPreferencesRepo.formatCheckedList = value
+        }
+
+
+    /** @see SharedPreferencesRepo.machineTitle */
+    var machineTitle: String
+        get() = sharedPreferencesRepo.machineTitle
+        set(value) {
+            sharedPreferencesRepo.machineTitle = value
         }
 }

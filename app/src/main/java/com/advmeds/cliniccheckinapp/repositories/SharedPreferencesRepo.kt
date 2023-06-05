@@ -6,6 +6,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -47,6 +48,28 @@ class SharedPreferencesRepo(
 
         /** manual check-in item key of SharedPreferences */
         const val CHECK_IN_ITEM_LIST = "check_in_item_list"
+
+        /** 從SharedPreferences取得『Department ID』的KEY */
+        const val DEPT_ID = "dept_id"
+
+        /** SharedPreferences [queue board setting param] KEY */
+        const val QUEUEING_BOARD_SETTING_URL = "queueing_board_url"
+
+        /** SharedPreferences [queue machine setting params] KEY */
+        const val QUEUEING_MACHINE_SETTING_IS_ENABLE = "queueing_machine_setting_is_enable"
+        const val QUEUEING_MACHINE_SETTING_ORGANIZATION = "queueing_machine_setting_organization"
+        const val QUEUEING_MACHINE_SETTING_DOCTOR = "queueing_machine_setting_organization_doctor"
+        const val QUEUEING_MACHINE_SETTING_DEPT = "queueing_machine_setting_organization_dept"
+        const val QUEUEING_MACHINE_SETTING_TIME = "queueing_machine_setting_organization_time"
+
+        /** SharedPreferences『Language』KEY */
+        const val LANGUAGE_KEY = "language"
+
+        /** SharedPreferences『PASSWORD』KEY */
+        const val PASSWORD = "password"
+
+        /** SharedPreferences『MACHINE TITLE』KEY */
+        const val MACHINE_TITLE = "machine_title"
 
         /** 以Volatile註解表示此INSTANCE變數僅會在主記憶體中讀寫，可避免進入cache被不同執行緒讀寫而造成問題 */
         @Volatile
@@ -198,8 +221,11 @@ class SharedPreferencesRepo(
         get() = sharedPreferences.getString(CHECK_IN_ITEM_LIST, null)
             ?.takeIf { it.isNotBlank() }
             ?.let {
-                Json.decodeFromString(ListSerializer(EditCheckInItemDialog.EditCheckInItem.serializer()), it)
-            }.orEmpty()
+                Json.decodeFromString(
+                    ListSerializer(EditCheckInItemDialog.EditCheckInItem.serializer()),
+                    it
+                )
+            } ?: EditCheckInItemDialog.getEmptyCheckInItem
         set(value) {
             val json = Json.encodeToString(value)
             sharedPreferences.edit()
@@ -209,6 +235,140 @@ class SharedPreferencesRepo(
             localBroadcastManager.sendBroadcast(
                 Intent(CHECK_IN_ITEM_LIST).apply {
                     putExtra(CHECK_IN_ITEM_LIST, json)
+                }
+            )
+        }
+
+    /** DEPARTMENT ID*/
+    var deptId: Set<String>
+        get() =
+            sharedPreferences.getStringSet(DEPT_ID, emptySet()) ?: emptySet()
+        set(value) {
+            sharedPreferences.edit()
+                .putStringSet(DEPT_ID, value)
+                .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(DEPT_ID).apply {
+                    putExtra(DEPT_ID, value.toTypedArray())
+                }
+            )
+        }
+
+    /** QUEUEING BOARD SETTING URL */
+    var queueingBoardURL: String
+        get() =
+            sharedPreferences.getString(CLINIC_PANEL_MODE, null) ?: ""
+        set(value) {
+            sharedPreferences.edit()
+                .putString(CLINIC_PANEL_MODE, value)
+                .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(CLINIC_PANEL_MODE).apply {
+                    putExtra(CLINIC_PANEL_MODE, value)
+                }
+            )
+        }
+
+    /** QUEUEING MACHINE SETTING */
+    var queueingMachineSetting: QueueingMachineSettingModel
+        get() {
+            val isEnable: Boolean =
+                sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_IS_ENABLE, false)
+            val organization: Boolean =
+                sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_ORGANIZATION, false)
+            val doctor: Boolean =
+                sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_DOCTOR, false)
+            val dept: Boolean = sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_DEPT, false)
+            val time: Boolean = sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_TIME, false)
+
+            return QueueingMachineSettingModel(
+                isEnabled = isEnable,
+                organization = organization,
+                doctor = doctor,
+                dept = dept,
+                time = time
+            )
+        }
+        set(value) {
+            sharedPreferences.edit()
+                .putBoolean(QUEUEING_MACHINE_SETTING_IS_ENABLE, value.isEnabled)
+                .apply()
+
+            sharedPreferences.edit()
+                .putBoolean(QUEUEING_MACHINE_SETTING_ORGANIZATION, value.organization)
+                .apply()
+
+            sharedPreferences.edit()
+                .putBoolean(QUEUEING_MACHINE_SETTING_DOCTOR, value.doctor)
+                .apply()
+
+            sharedPreferences.edit()
+                .putBoolean(QUEUEING_MACHINE_SETTING_DEPT, value.dept)
+                .apply()
+
+            sharedPreferences.edit()
+                .putBoolean(QUEUEING_MACHINE_SETTING_TIME, value.time)
+                .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(QUEUEING_MACHINE_SETTING_ORGANIZATION).apply {
+                    putExtra(QUEUEING_MACHINE_SETTING_IS_ENABLE, value.isEnabled)
+                    putExtra(QUEUEING_MACHINE_SETTING_ORGANIZATION, value.organization)
+                    putExtra(QUEUEING_MACHINE_SETTING_DOCTOR, value.doctor)
+                    putExtra(QUEUEING_MACHINE_SETTING_DEPT, value.dept)
+                    putExtra(QUEUEING_MACHINE_SETTING_TIME, value.time)
+                }
+            )
+        }
+
+    val queueingMachineSettingIsEnable: Boolean
+        get() = sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_IS_ENABLE, false)
+
+
+    /** LANGUAGE */
+    var language: String
+        get() = sharedPreferences.getString(LANGUAGE_KEY, null) ?: BuildConfig.DEFAULT_LANGUAGE
+        set(value) {
+            sharedPreferences.edit()
+                .putString(LANGUAGE_KEY, value)
+                .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(LANGUAGE_KEY).apply {
+                    putExtra(LANGUAGE_KEY, value)
+                }
+            )
+        }
+
+
+    /** PASSWORD */
+    var password: String
+        get() = sharedPreferences.getString(PASSWORD, null) ?: BuildConfig.DEFAULT_PASSWORD
+        set(value) {
+            sharedPreferences.edit()
+                .putString(PASSWORD, value)
+                .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(PASSWORD).apply {
+                    putExtra(PASSWORD, value)
+                }
+            )
+        }
+
+    /** MACHINE TITLE */
+    var machineTitle: String
+        get() = sharedPreferences.getString(MACHINE_TITLE, null) ?: ""
+        set(value) {
+            sharedPreferences.edit()
+                .putString(MACHINE_TITLE, value)
+                .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(MACHINE_TITLE).apply {
+                    putExtra(MACHINE_TITLE, value)
                 }
             )
         }

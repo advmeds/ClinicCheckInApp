@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_margin="@dimen/card_view_half_spacing"
+    android:layout_height="700dp"
+    android:layout_margin="@dimen/screen_panel_margin"
     android:layout_weight="1"
     app:cardCornerRadius="10dp"
     app:cardElevation="4dp">
@@ -14,14 +14,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="@dimen/space_small">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_image_view"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="@dimen/check_in_item_vertical_icon_size"
+            android:layout_height="@dimen/check_in_item_vertical_icon_size"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="20dp"
+            android:layout_margin="@dimen/space_small"
             tools:srcCompat="@drawable/ic_baseline_keyboard" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
