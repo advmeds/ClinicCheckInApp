@@ -113,7 +113,7 @@
     <string name="dialog_ok_button">OK</string>
 
     <!-- Service Domain Dialog -->
-    <string name="customize_url_hint">http://example.com</string>
+    <string name="customize_url_hint" translatable="false">http://example.com</string>
     <string name="domain_service_official_site">Official Site</string>
     <string name="domain_service_testing_site">Testing Site</string>
     <string name="domain_service_customize">Customize</string>

@@ -16,7 +16,7 @@
     <string name="national_id">身份證字號</string>
     <string name="chart_no">病歷號</string>
     <string name="present_health_card">請直接插入%1$s%2$s</string>
-    <string name="present_health_card_arg_check_in">Check In</string> <!-- TODO translate it -->
+    <string name="present_health_card_arg_check_in">報到</string>
     <string name="present_health_card_arg_take_no">取號</string>
     <string name="check_in_item_display_name">科別名稱</string>
     <string name="check_in_item_manual_title">無健保卡</string>
@@ -65,15 +65,15 @@
     <string name="advanced_settings">進階設定</string>
     <string name="password">密碼</string>
 
-    <string name="ui_settings">UI Setting</string> <!-- TODO translate it -->
+    <string name="ui_settings">主畫面設定</string>
     <string name="server_domain">伺服器網域</string>
     <string name="org_id">機構代碼</string>
     <string name="doctors">醫師代碼</string>
     <string name="rooms">診間代碼</string>
     <string name="clinic_panel_url">叫號面板網址</string>
     <string name="format_checked">報到格式檢查</string>
-    <string name="dept_id">Dept ID</string> <!-- TODO translate it -->
-    <string name="exit_app">Exit App</string>
+    <string name="dept_id">科別代碼</string>
+    <string name="exit_app">離開應用程式</string>
 
     <string-array name="setting_items">
         <item>@string/ui_settings</item>
@@ -93,50 +93,49 @@
     <!-- UI settings -->
     <string name="ui_settings_machine_title">Machine Title</string> <!-- TODO translate it -->
 
-    <string name="ui_settings_manual_input">Manual Input</string>
-    <string name="ui_settings_virtual_nhi_card">Virtual NHI Card</string>
-    <string name="ui_settings_customized_one">Customized 1</string>
-    <string name="ui_settings_customized_two">Customized 2</string>
-    <string name="ui_settings_customized_block_name">Block Name</string>
-    <string name="ui_settings_customized_doctor_id">Doctor ID</string>
-    <string name="ui_settings_customized_room_id">Room ID</string>
+    <string name="ui_settings_manual_input">手動輸入</string>
+    <string name="ui_settings_virtual_nhi_card">虛擬健保卡</string>
+    <string name="ui_settings_customized_one">自定義 1</string>
+    <string name="ui_settings_customized_two">自定義 2</string>
+    <string name="ui_settings_customized_block_name">區塊名稱</string>
+    <string name="ui_settings_customized_doctor_id">醫生代碼</string>
+    <string name="ui_settings_customized_room_id">診間代碼</string>
 
     <!-- Setting Dialog -->
-    <string name="dialog_id_label">ID</string> <!-- TODO translate it -->
-    <string name="dialog_url_label">URL</string>
+    <string name="dialog_id_label">代碼</string> <!-- TODO translate it -->
+    <string name="dialog_url_label">網址</string>
 
-    <string name="dialog_description">To enter multiple ID, use commas to separate eahc ID. </string>
+    <string name="dialog_description">若要輸入多個代碼，請以逗號區隔</string>
 
-    <string name="dialog_enable_label">Enable</string>
+    <string name="dialog_enable_label">啟用</string>
 
-    <string name="dialog_cancel_button">Cancel</string>
-    <string name="dialog_save_button">Save</string>
+    <string name="dialog_cancel_button">取消</string>
+    <string name="dialog_save_button">儲存</string>
     <string name="dialog_ok_button">確認</string>
 
     <!-- Service Domain Dialog -->
-    <string name="customize_url_hint">http://example.com</string> <!-- TODO translate it -->
-    <string name="domain_service_official_site">Official Site</string>
-    <string name="domain_service_testing_site">Testing Site</string>
-    <string name="domain_service_customize">Customize</string>
+    <string name="domain_service_official_site">正式機</string>
+    <string name="domain_service_testing_site">測試機</string>
+    <string name="domain_service_customize">自定義</string>
 
     <!-- Queueing Board Setting -->
-    <string name="queueing_board_setting">Queueing Board Setting</string>
-    <string name="qbs_screen_rotation_label">Screen Rotation</string>
-    <string name="qbs_screen_edit_text_label">Queueing Board URL</string>
+    <string name="queueing_board_setting">叫號面板設定</string>
+    <string name="qbs_screen_rotation_label">螢幕轉向</string>
+    <string name="qbs_screen_edit_text_label">叫號面板網址</string>
 
     <!-- Queueing Machine Setting -->
     <string name="queueing_machine_setting">Queueing Machine Setting</string>
-    <string name="qms_ticket_information">Ticket Information</string>
-    <string name="qms_time_label">Time</string>
-    <string name="qms_dept_label">Dept.</string>
-    <string name="qms_doctor_label">Doctor</string>
-    <string name="qms_organization_label">Organization</string>
+    <string name="qms_ticket_information">列印資訊</string>
+    <string name="qms_time_label">列印時間</string>
+    <string name="qms_dept_label">科別名稱</string>
+    <string name="qms_doctor_label">醫生名稱</string>
+    <string name="qms_organization_label">醫事機構</string>
 
     <!-- Language Setting -->
-    <string name="version_setting">Version Setting</string>
-    <string name="language_setting">Language</string>
-    <string name="version_setting_dialog_select_version_label">Select Version</string>
-    <string name="version_setting_dialog_select_language_label">Select Language</string>
+    <string name="version_setting">版本設定</string>
+    <string name="language_setting">語言</string>
+    <string name="version_setting_dialog_select_version_label">選擇版本</string>
+    <string name="version_setting_dialog_select_language_label">選擇語言</string>
 
     <string name="zh_tw_language">繁體中文</string>
     <string name="en_language">English</string>
@@ -171,5 +170,5 @@
 
     <string name="reconnecting">網路連線偵測中，請稍後</string>
     <string name="is_selected_language_checker_image_description">is selected language checker</string>
-    <string name="password_is_incorrect">password is incorrect</string>
+    <string name="password_is_incorrect">密碼錯誤</string>
 </resources>
