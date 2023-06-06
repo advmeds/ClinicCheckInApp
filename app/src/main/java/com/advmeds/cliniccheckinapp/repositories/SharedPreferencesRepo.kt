@@ -280,8 +280,10 @@ class SharedPreferencesRepo(
                 sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_ORGANIZATION, false)
             val doctor: Boolean =
                 sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_DOCTOR, false)
-            val dept: Boolean = sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_DEPT, false)
-            val time: Boolean = sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_TIME, false)
+            val dept: Boolean =
+                sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_DEPT, false)
+            val time: Boolean =
+                sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_TIME, false)
 
             return QueueingMachineSettingModel(
                 isEnabled = isEnable,
