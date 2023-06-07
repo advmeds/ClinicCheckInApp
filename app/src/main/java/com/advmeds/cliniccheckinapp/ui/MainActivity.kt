@@ -373,7 +373,7 @@ class MainActivity : AppCompatActivity() {
                         if (it.response.success) {
                             SuccessDialogFragment(
                                 title = getString(R.string.success_to_check),
-                                message = getString(R.string.success_to_check_message)
+                                message = if(viewModel.queueingMachineSettingIsEnable) getString(R.string.success_to_check_message) else ""
                             )
                         } else {
                             ErrorDialogFragment(
