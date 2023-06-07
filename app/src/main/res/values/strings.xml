@@ -14,7 +14,7 @@
 
     <string name="health_card">NHI Card</string>
     <string name="national_id">CID No.</string>
-    <string name="chart_no">MR No</string>
+    <string name="chart_no">MR No.</string>
     <string name="present_health_card">Please insert %1$s to %2$s</string>
     <string name="present_health_card_arg_check_in">Check In</string>
     <string name="present_health_card_arg_take_no">Take No.</string>
