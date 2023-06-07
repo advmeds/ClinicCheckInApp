@@ -92,7 +92,8 @@ class ManualInputFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        val arg = viewModel.formatCheckedList.joinToString("、") { getString(it.description) }
+        val separator = getString(R.string.national_id_input_separation)
+        val arg = viewModel.formatCheckedList.joinToString(separator) { getString(it.description) }
         val text = String.format(getString(R.string.national_id_input_title), arg)
         val textColor = ContextCompat.getColor(
             requireContext(),
