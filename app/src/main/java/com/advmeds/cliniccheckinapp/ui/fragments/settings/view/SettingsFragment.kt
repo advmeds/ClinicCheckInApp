@@ -536,21 +536,15 @@ class SettingsFragment : ListFragment() {
     }
 
     private fun prepareQueueingMachineSettingForSaving(dialog: Dialog): QueueingMachineSettingModel {
+
+        val isEnable: Boolean = dialog.queueing_machine_setting_switcher.isChecked
         val organization: Boolean = dialog.qms_cb_organization.isChecked
         val doctor: Boolean = dialog.qms_cb_doctor.isChecked
         val dept: Boolean = dialog.qms_cb_dept.isChecked
         val time: Boolean = dialog.qms_cb_time.isChecked
 
-        val isEnable = if (QueueingMachineSettingModel.isAllParamAreFalse(
-                organization = organization, doctor = doctor, dept = dept, time = time
-            )
-        ) false
-        else
-            dialog.queueing_machine_setting_switcher.isChecked
-
         dialog.dismiss()
 
-        // if isEnable false all other parameters also false
         return QueueingMachineSettingModel(
             isEnabled = isEnable,
             organization = if (!isEnable) false else organization,
