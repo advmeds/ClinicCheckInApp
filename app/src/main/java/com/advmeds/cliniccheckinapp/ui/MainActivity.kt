@@ -87,15 +87,17 @@ class MainActivity : AppCompatActivity() {
                                 ezUsbDevice.connectDevice(usbDevice)
                             }
                             usbPrinterService.supportedDevice?.productId -> {
-                                try {
-                                    usbPrinterService.connectDevice(usbDevice)
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                    Snackbar.make(
-                                        binding.root,
-                                        "Fail to connect the usb printer.",
-                                        Snackbar.LENGTH_LONG
-                                    ).show()
+                                if (viewModel.queueingMachineSettingIsEnable) {
+                                    try {
+                                        usbPrinterService.connectDevice(usbDevice)
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                        Snackbar.make(
+                                            binding.root,
+                                            "Fail to connect the usb printer.",
+                                            Snackbar.LENGTH_LONG
+                                        ).show()
+                                    }
                                 }
                             }
                         }
@@ -601,9 +603,12 @@ class MainActivity : AppCompatActivity() {
             connectUSBDevice(it)
         }
 
+
         usbPrinterService = BPT3XPrinterService(usbManager)
-        usbPrinterService.supportedDevice?.also {
-            connectUSBDevice(it)
+        if (viewModel.queueingMachineSettingIsEnable) {
+            usbPrinterService.supportedDevice?.also {
+                connectUSBDevice(it)
+            }
         }
     }
 
@@ -681,7 +686,8 @@ class MainActivity : AppCompatActivity() {
         val queueingMachineSettings = viewModel.queueingMachineSettings
 
         val headerCommand = getHeaderCommand(queueingMachineSettings.organization)
-        val middleCommand = getMiddleCommand(doctors, divisions, serialNumbers, queueingMachineSettings)
+        val middleCommand =
+            getMiddleCommand(doctors, divisions, serialNumbers, queueingMachineSettings)
         val footerCommand = getFooterCommand(queueingMachineSettings.time, formatter, now)
 
         val commandList: ArrayList<ByteArray> = ArrayList()
@@ -896,8 +902,7 @@ class MainActivity : AppCompatActivity() {
         birth: String = "",
         completion: (() -> Unit)? = null
     ) {
-
-        if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
+        if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected && viewModel.queueingMachineSettingIsEnable) {
             // 若有開啟取號功能，則必須要有連線取票機才會去報到
             Snackbar.make(
                 binding.root,
@@ -916,9 +921,8 @@ class MainActivity : AppCompatActivity() {
         ) {
             completion?.let { it1 -> it1() }
 
-            val isQueueingMachineSettingEnable = viewModel.queueingMachineSettingIsEnable
 
-            if (it.success && BuildConfig.PRINT_ENABLED && isQueueingMachineSettingEnable) {
+            if (it.success && BuildConfig.PRINT_ENABLED && viewModel.queueingMachineSettingIsEnable) {
 
                 val arrayDoctor = it.patients.map { patient -> patient.doctor }.toTypedArray()
                 val arraySerialNumber =
@@ -948,7 +952,7 @@ class MainActivity : AppCompatActivity() {
         completion: ((CreateAppointmentResponse) -> Unit)? = null
     ) {
         // if app support print ticket, check ticket machine connection
-        if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
+        if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected && viewModel.queueingMachineSettingIsEnable) {
             Snackbar.make(
                 binding.root,
                 getString(R.string.printer_not_connect),
