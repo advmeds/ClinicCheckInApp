@@ -39,7 +39,7 @@
     <string name="delete_item_title">Are you sure want to delete this item?</string>
 
     <string name="print_serial_no">No.</string>
-    <string name="print_footer">Please follow the number\nand wait for processingy</string>
+    <string name="print_footer">Please follow the number\nand wait for processing</string>
 
     <string name="checking">Checking…</string>
 
@@ -105,7 +105,7 @@
     <string name="dialog_id_label">ID</string>
     <string name="dialog_url_label">URL</string>
 
-    <string name="dialog_description">To enter multiple ID, use commas to separate eahc ID. </string>
+    <string name="dialog_description">To enter multiple ID, use commas to separate each ID. </string>
 
     <string name="dialog_enable_label">Enable</string>
 
