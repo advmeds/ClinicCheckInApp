@@ -56,7 +56,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.reflect.full.primaryConstructor
 
 class MainActivity : AppCompatActivity() {
@@ -142,10 +141,10 @@ class MainActivity : AppCompatActivity() {
 //            dialog?.dismiss()
 //            dialog = null
 
-            viewModel.completeAllJobOnCardAbsentAfterAllProcessIsOver() {
-                dialog?.dismiss()
-                dialog = null
-            }
+//            viewModel.completeAllJobOnCardAbsentAfterAllProcessIsOver() {
+//                dialog?.dismiss()
+//                dialog = null
+//            }
 
         }
 
