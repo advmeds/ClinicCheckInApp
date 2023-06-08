@@ -90,9 +90,8 @@
         <item>@string/exit_app</item>
     </string-array>
 
-
     <!-- UI settings -->
-    <string name="ui_settings_machine_title">Machine Title</string> <!-- TODO translate it -->
+    <string name="ui_settings_machine_title">應用程式名稱</string>
 
     <string name="ui_settings_manual_input">手動輸入</string>
     <string name="ui_settings_virtual_nhi_card">虛擬健保卡</string>
@@ -103,7 +102,7 @@
     <string name="ui_settings_customized_room_id">診間代碼</string>
 
     <!-- Setting Dialog -->
-    <string name="dialog_id_label">代碼</string> <!-- TODO translate it -->
+    <string name="dialog_id_label">代碼</string>
     <string name="dialog_url_label">網址</string>
 
     <string name="dialog_description">若要輸入多個代碼，請以逗號區隔</string>
@@ -125,7 +124,7 @@
     <string name="qbs_screen_edit_text_label">叫號面板網址</string>
 
     <!-- Queueing Machine Setting -->
-    <string name="queueing_machine_setting">Queueing Machine Setting</string>
+    <string name="queueing_machine_setting">取票機設定</string>
     <string name="qms_ticket_information">列印資訊</string>
     <string name="qms_time_label">列印時間</string>
     <string name="qms_dept_label">科別名稱</string>
