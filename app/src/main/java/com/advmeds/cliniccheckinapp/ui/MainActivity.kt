@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     var dialog: AppCompatDialogFragment? = null
+    private var presentation : Presentation? = null
 
     private val detectUsbDeviceReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -255,6 +256,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val presentationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val isEnable = intent?.getBooleanExtra(SharedPreferencesRepo.CLINIC_PANEL_MODE_IS_ENABLED, false)
+
+            if (isEnable == true)
+                presentation?.show()
+            else
+                presentation?.dismiss()
+        }
+    }
+
     private lateinit var soundPool: SoundPool
     private var successSoundId: Int = 0
     private var failSoundId: Int = 0
@@ -279,6 +291,11 @@ class MainActivity : AppCompatActivity() {
             IntentFilter(SharedPreferencesRepo.MS_SERVER_DOMAIN).apply {
                 addAction(SharedPreferencesRepo.ORG_ID)
             }
+        )
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            presentationReceiver,
+            IntentFilter(SharedPreferencesRepo.QUEUEING_BOARD_SETTING)
         )
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -1037,9 +1054,11 @@ class MainActivity : AppCompatActivity() {
         try {
             val cls =
                 Class.forName("com.advmeds.cliniccheckinapp.ui.presentations.WebPresentation").kotlin
-            val presentation =
+            presentation =
                 cls.primaryConstructor?.call(this, presentationDisplay) as? Presentation
-            presentation?.show()
+
+            if (viewModel.queueingBoardSettingIsEnable)
+                presentation?.show()
         } catch (ignored: ClassNotFoundException) {
 
         }
@@ -1109,6 +1128,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(reloadClinicDataReceiver)
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(presentationReceiver)
 
 //        try {
 //            unregisterReceiver(detectBluetoothStateReceiver)

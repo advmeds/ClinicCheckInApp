@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
@@ -38,13 +39,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             sharedPreferencesRepo.rooms = value
         }
 
-    /** @see SharedPreferencesRepo.clinicPanelUrl */
-    var clinicPanelUrl: String?
-        get() = sharedPreferencesRepo.clinicPanelUrl
-        set(value) {
-            sharedPreferencesRepo.clinicPanelUrl = value
-        }
-
     /** @see SharedPreferencesRepo.formatCheckedList */
     var formatCheckedList: List<CreateAppointmentRequest.NationalIdFormat>
         get() = sharedPreferencesRepo.formatCheckedList
@@ -65,11 +59,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         set(value) {
             sharedPreferencesRepo.deptId = value
         }
-    /** @see SharedPreferencesRepo.queueingBoardURL */
-    var queueingBoardSettings: String
-        get() = sharedPreferencesRepo.queueingBoardURL
+
+    /** @see SharedPreferencesRepo.queueingBoardSetting */
+    var queueingBoardSettings: QueuingBoardSettingModel
+        get() = sharedPreferencesRepo.queueingBoardSetting
         set(value) {
-            sharedPreferencesRepo.queueingBoardURL = value
+            sharedPreferencesRepo.queueingBoardSetting = value
         }
 
     /** @see SharedPreferencesRepo.queueingMachineSetting */

@@ -7,6 +7,7 @@ import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -35,6 +36,7 @@ class SharedPreferencesRepo(
         const val ROOMS = "rooms"
 
         /** queue board url key of SharedPreferences */
+        const val CLINIC_PANEL_MODE_IS_ENABLED = "clinic_panel_mode_is_enabled"
         const val CLINIC_PANEL_MODE = "clinic_panel_mode"
 
         /** clinic LOGO url key of SharedPreferences */
@@ -53,7 +55,7 @@ class SharedPreferencesRepo(
         const val DEPT_ID = "dept_id"
 
         /** SharedPreferences [queue board setting param] KEY */
-        const val QUEUEING_BOARD_SETTING_URL = "queueing_board_url"
+        const val QUEUEING_BOARD_SETTING = "queueing_board"
 
         /** SharedPreferences [queue machine setting params] KEY */
         const val QUEUEING_MACHINE_SETTING_IS_ENABLE = "queueing_machine_setting_is_enable"
@@ -148,21 +150,13 @@ class SharedPreferencesRepo(
             )
         }
 
-    /** queue board url */
-    var clinicPanelUrl: String?
-        get() =
-            sharedPreferences.getString(CLINIC_PANEL_MODE, null)
-        set(value) {
-            sharedPreferences.edit()
-                .putString(CLINIC_PANEL_MODE, value)
-                .apply()
 
-            localBroadcastManager.sendBroadcast(
-                Intent(CLINIC_PANEL_MODE).apply {
-                    putExtra(CLINIC_PANEL_MODE, value)
-                }
-            )
-        }
+
+
+    /** queue board url */
+    val clinicPanelUrl: String
+        get() =
+            sharedPreferences.getString(CLINIC_PANEL_MODE, null) ?: ""
 
     /** clinic LOGO */
     var logoUrl: String?
@@ -255,21 +249,40 @@ class SharedPreferencesRepo(
             )
         }
 
+
     /** QUEUEING BOARD SETTING URL */
-    var queueingBoardURL: String
-        get() =
-            sharedPreferences.getString(CLINIC_PANEL_MODE, null) ?: ""
+    var queueingBoardSetting: QueuingBoardSettingModel
+        get() {
+            val isEnabled = sharedPreferences.getBoolean(CLINIC_PANEL_MODE_IS_ENABLED, false)
+            val url = sharedPreferences.getString(CLINIC_PANEL_MODE, null) ?: ""
+            return QueuingBoardSettingModel(isEnabled = isEnabled, url = url)
+        }
         set(value) {
             sharedPreferences.edit()
-                .putString(CLINIC_PANEL_MODE, value)
+                .putBoolean(CLINIC_PANEL_MODE_IS_ENABLED, value.isEnabled)
+                .apply()
+
+            sharedPreferences.edit()
+                .putString(CLINIC_PANEL_MODE, value.url)
                 .apply()
 
             localBroadcastManager.sendBroadcast(
+                Intent(QUEUEING_BOARD_SETTING).apply {
+                    putExtra(CLINIC_PANEL_MODE, value.url)
+                    putExtra(CLINIC_PANEL_MODE_IS_ENABLED, value.isEnabled)
+                }
+            )
+
+            localBroadcastManager.sendBroadcast(
                 Intent(CLINIC_PANEL_MODE).apply {
-                    putExtra(CLINIC_PANEL_MODE, value)
+                    putExtra(CLINIC_PANEL_MODE, value.url)
                 }
             )
         }
+
+
+    val queueingBoardSettingIsEnable: Boolean
+        get() = sharedPreferences.getBoolean(CLINIC_PANEL_MODE_IS_ENABLED, false)
 
     /** QUEUEING MACHINE SETTING */
     var queueingMachineSetting: QueueingMachineSettingModel

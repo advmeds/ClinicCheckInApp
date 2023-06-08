@@ -51,6 +51,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val queueingMachineSettingIsEnable: Boolean
         get() = sharedPreferencesRepo.queueingMachineSettingIsEnable
 
+
+    /** @see SharedPreferencesRepo.queueingBoardSettingIsEnable */
+    val queueingBoardSettingIsEnable: Boolean
+        get() = sharedPreferencesRepo.queueingBoardSettingIsEnable
+
     private val format = Json {
         isLenient = true
         coerceInputValues = true

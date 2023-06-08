@@ -29,6 +29,7 @@ import com.advmeds.cliniccheckinapp.databinding.SettingsFragmentBinding
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter.LanguageAdapter
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter.SettingsAdapter
@@ -302,22 +303,22 @@ class SettingsFragment : ListFragment() {
             })
     }
 
-    private fun onSetPanelModeItemClicked() {
-
-        val hint = requireContext().getString(R.string.customize_url_hint)
-
-        showTextInputDialog(
-            titleResId = R.string.clinic_panel_url,
-            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI,
-            hint = hint,
-            inputTextLabel = "",
-            inputText = viewModel.clinicPanelUrl ?: ""
-        ) { clinicPanelUrl ->
-            if (clinicPanelUrl.isNotBlank()) {
-                viewModel.clinicPanelUrl = clinicPanelUrl
-            }
-        }
-    }
+//    private fun onSetPanelModeItemClicked() {
+//
+//        val hint = requireContext().getString(R.string.customize_url_hint)
+//
+//        showTextInputDialog(
+//            titleResId = R.string.clinic_panel_url,
+//            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI,
+//            hint = hint,
+//            inputTextLabel = "",
+//            inputText = viewModel.clinicPanelUrl
+//        ) { clinicPanelUrl ->
+//            if (clinicPanelUrl.isNotBlank()) {
+//                viewModel.clinicPanelUrl = clinicPanelUrl
+//            }
+//        }
+//    }
 
     private fun onSetFormatCheckedListItemClicked() {
         val choiceItems = CreateAppointmentRequest.NationalIdFormat.values()
@@ -452,7 +453,14 @@ class SettingsFragment : ListFragment() {
 
         dialog.window!!.setGravity(Gravity.CENTER)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val queuingBoardSettingModel = viewModel.queueingBoardSettings
+
+        dialog.queueing_board_setting_switcher.isChecked = queuingBoardSettingModel.isEnabled
+        dialog.queueing_board_setting_container.isGone = !queuingBoardSettingModel.isEnabled
+
         dialog.et_qbs_irl_input.hint = label
+        dialog.et_qbs_irl_input.editText?.setText(queuingBoardSettingModel.url)
 
         dialog.queueing_board_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
@@ -465,13 +473,24 @@ class SettingsFragment : ListFragment() {
         val cancelButton = dialog.btn_qbs_dialog_cancel
 
         saveButton.setOnClickListener {
+            val qbsIsEnable = dialog.queueing_board_setting_switcher.isChecked
             val qbsDomain = dialog.et_qbs_irl_input.editText?.text.toString().trim()
 
             try {
                 HttpUrl.get(qbsDomain)
 
-                viewModel.queueingBoardSettings = qbsDomain
+                val queueingMachineSettingModelForSave = QueuingBoardSettingModel(
+                    isEnabled = qbsIsEnable,
+                    url = qbsDomain
+                )
+
+                viewModel.queueingBoardSettings = queueingMachineSettingModelForSave
             } catch (e: Exception) {
+                viewModel.queueingBoardSettings = QueuingBoardSettingModel(
+                    isEnabled = qbsIsEnable,
+                    url = queuingBoardSettingModel.url
+                )
+
                 AlertDialog.Builder(requireContext())
                     .setMessage(e.message)
                     .setPositiveButton(R.string.confirm, null)
