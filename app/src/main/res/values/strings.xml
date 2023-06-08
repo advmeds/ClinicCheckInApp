@@ -14,10 +14,10 @@
 
     <string name="health_card">NHI Card</string>
     <string name="national_id">CID No.</string>
-    <string name="chart_no">MR No</string>
+    <string name="chart_no">MR No.</string>
     <string name="present_health_card">Please insert %1$s to %2$s</string>
     <string name="present_health_card_arg_check_in">Check In</string>
-    <string name="present_health_card_arg_take_no">take No.</string>
+    <string name="present_health_card_arg_take_no">Take No.</string>
     <string name="check_in_item_display_name">Division name</string>
     <string name="check_in_item_manual_title">No NHI Card</string>
     <string name="check_in_item_manual_body">Manual Take No.</string>
@@ -28,6 +28,7 @@
     <string name="check_in_type_virtual_card">Virtual NHI Card</string>
     <string name="national_id_input_title">If you don\'t have NHI Card, you can enter %s</string>
     <string name="national_id_input_hint">Please enter %s</string>
+    <string name="national_id_input_separation">, </string>
     <string name="national_id_format_invalid">%s format invalid</string>
     <string name="national_id_input_cancel">Cancel</string>
     <string name="submit">Submit</string>
@@ -37,8 +38,8 @@
 
     <string name="delete_item_title">Are you sure want to delete this item?</string>
 
-    <string name="print_serial_no">Queue Number</string>
-    <string name="print_footer">Please take a seat and we will attend to you shortly</string>
+    <string name="print_serial_no">No.</string>
+    <string name="print_footer">Please follow the number\nand wait for processingy</string>
 
     <string name="checking">Checking…</string>
 

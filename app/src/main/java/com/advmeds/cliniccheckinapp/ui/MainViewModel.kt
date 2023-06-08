@@ -13,6 +13,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppo
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetClinicGuardianResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.ServerRepository
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -38,6 +39,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         set(value) {
             sharedPreferencesRepo.checkInSerialNo = value
         }
+
+    /** @see SharedPreferencesRepo.queueingMachineSetting */
+    var queueingMachineSettings: QueueingMachineSettingModel
+        get() = sharedPreferencesRepo.queueingMachineSetting
+        set(value) {
+            sharedPreferencesRepo.queueingMachineSetting = value
+        }
+
+    /** @see SharedPreferencesRepo.queueingMachineSettingIsEnable */
+    val queueingMachineSettingIsEnable: Boolean
+        get() = sharedPreferencesRepo.queueingMachineSettingIsEnable
+
+
+    /** @see SharedPreferencesRepo.queueingBoardSettingIsEnable */
+    val queueingBoardSettingIsEnable: Boolean
+        get() = sharedPreferencesRepo.queueingBoardSettingIsEnable
 
     private val format = Json {
         isLenient = true

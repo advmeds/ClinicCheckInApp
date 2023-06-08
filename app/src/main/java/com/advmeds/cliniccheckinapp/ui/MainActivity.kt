@@ -43,7 +43,9 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiError
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
+import com.advmeds.cliniccheckinapp.utils.zipWith
 import com.advmeds.printerlib.usb.BPT3XPrinterService
 import com.advmeds.printerlib.usb.UsbPrinterService
 import com.advmeds.printerlib.utils.PrinterBuffer
@@ -54,6 +56,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.*
+
 import kotlin.reflect.full.primaryConstructor
 
 class MainActivity : AppCompatActivity() {
@@ -67,6 +70,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     var dialog: AppCompatDialogFragment? = null
+    private var presentation : Presentation? = null
 
     private val detectUsbDeviceReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -84,15 +88,17 @@ class MainActivity : AppCompatActivity() {
                                 ezUsbDevice.connectDevice(usbDevice)
                             }
                             usbPrinterService.supportedDevice?.productId -> {
-                                try {
-                                    usbPrinterService.connectDevice(usbDevice)
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                    Snackbar.make(
-                                        binding.root,
-                                        "Fail to connect the usb printer.",
-                                        Snackbar.LENGTH_LONG
-                                    ).show()
+                                if (viewModel.queueingMachineSettingIsEnable) {
+                                    try {
+                                        usbPrinterService.connectDevice(usbDevice)
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                        Snackbar.make(
+                                            binding.root,
+                                            "Fail to connect the usb printer.",
+                                            Snackbar.LENGTH_LONG
+                                        ).show()
+                                    }
                                 }
                             }
                         }
@@ -136,10 +142,10 @@ class MainActivity : AppCompatActivity() {
 //            dialog?.dismiss()
 //            dialog = null
 
-            viewModel.completeAllJobOnCardAbsentAfterAllProcessIsOver() {
-                dialog?.dismiss()
-                dialog = null
-            }
+//            viewModel.completeAllJobOnCardAbsentAfterAllProcessIsOver() {
+//                dialog?.dismiss()
+//                dialog = null
+//            }
 
         }
 
@@ -250,6 +256,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val presentationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val isEnable = intent?.getBooleanExtra(SharedPreferencesRepo.CLINIC_PANEL_MODE_IS_ENABLED, false)
+
+            if (isEnable == true)
+                presentation?.show()
+            else
+                presentation?.dismiss()
+        }
+    }
+
     private lateinit var soundPool: SoundPool
     private var successSoundId: Int = 0
     private var failSoundId: Int = 0
@@ -274,6 +291,11 @@ class MainActivity : AppCompatActivity() {
             IntentFilter(SharedPreferencesRepo.MS_SERVER_DOMAIN).apply {
                 addAction(SharedPreferencesRepo.ORG_ID)
             }
+        )
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            presentationReceiver,
+            IntentFilter(SharedPreferencesRepo.QUEUEING_BOARD_SETTING)
         )
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -368,7 +390,7 @@ class MainActivity : AppCompatActivity() {
                         if (it.response.success) {
                             SuccessDialogFragment(
                                 title = getString(R.string.success_to_check),
-                                message = getString(R.string.success_to_check_message)
+                                message = if(viewModel.queueingMachineSettingIsEnable) getString(R.string.success_to_check_message) else ""
                             )
                         } else {
                             ErrorDialogFragment(
@@ -598,9 +620,12 @@ class MainActivity : AppCompatActivity() {
             connectUSBDevice(it)
         }
 
+
         usbPrinterService = BPT3XPrinterService(usbManager)
-        usbPrinterService.supportedDevice?.also {
-            connectUSBDevice(it)
+        if (viewModel.queueingMachineSettingIsEnable) {
+            usbPrinterService.supportedDevice?.also {
+                connectUSBDevice(it)
+            }
         }
     }
 
@@ -615,83 +640,136 @@ class MainActivity : AppCompatActivity() {
         usbManager.requestPermission(device, mPermissionIntent)
     }
 
+//    /** print ticket */
+//    private fun printPatient(division: String, serialNo: Int) {
+//        val now = Date()
+//        val formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+//
+//        val commandList = arrayListOf(
+//            PrinterBuffer.initializePrinter(),
+//            PrinterBuffer.selectAlignment(PrinterBuffer.Alignment.CENTER),
+//
+//            PrinterBuffer.setLineSpacing(120),
+//            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+//            strToBytes(viewModel.clinicGuardian.value!!.name),
+//            PrinterBuffer.printAndFeedLine(),
+//
+//            PrinterBuffer.setLineSpacing(160),
+//            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
+//            strToBytes(division),
+//            PrinterBuffer.printAndFeedLine(),
+//
+//            PrinterBuffer.setLineSpacing(120),
+//            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+//            strToBytes(getString(R.string.print_serial_no)),
+//            PrinterBuffer.printAndFeedLine(),
+//
+//            PrinterBuffer.setLineSpacing(160),
+//            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
+//            strToBytes(String.format("%04d", serialNo)),
+//            PrinterBuffer.printAndFeedLine(),
+//
+//            PrinterBuffer.setLineSpacing(120),
+//            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+//            strToBytes(formatter.format(now)),
+//            PrinterBuffer.printAndFeedLine(),
+//
+//            PrinterBuffer.setLineSpacing(120),
+//            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+//            strToBytes(getString(R.string.print_footer)),
+//            PrinterBuffer.printAndFeedLine(),
+//
+//            PrinterBuffer.selectCutPagerModerAndCutPager(66, 1)
+//        )
+//
+//        commandList.forEach { command ->
+//            usbPrinterService.write(command)
+//        }
+//    }
+
     /** print ticket */
-    private fun printPatient(division: String, serialNo: Int) {
+    private fun printPatient(
+        divisions: Array<String>,
+        serialNumbers: Array<Int>,
+        doctors: Array<String>
+    ) {
+
+        require(divisions.size == serialNumbers.size && serialNumbers.size == doctors.size) {
+            "Arrays must have the same size"
+        }
+
         val now = Date()
         val formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+        val queueingMachineSettings = viewModel.queueingMachineSettings
 
-        val commandList = arrayListOf(
-            PrinterBuffer.initializePrinter(),
-            PrinterBuffer.selectAlignment(PrinterBuffer.Alignment.CENTER),
+        val headerCommand = getHeaderCommand(queueingMachineSettings.organization)
+        val middleCommand =
+            getMiddleCommand(doctors, divisions, serialNumbers, queueingMachineSettings)
+        val footerCommand = getFooterCommand(queueingMachineSettings.time, formatter, now)
 
-            PrinterBuffer.setLineSpacing(120),
-            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
-            strToBytes(viewModel.clinicGuardian.value!!.name),
-            PrinterBuffer.printAndFeedLine(),
+        val commandList: ArrayList<ByteArray> = ArrayList()
 
-            PrinterBuffer.setLineSpacing(160),
-            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
-            strToBytes(division),
-            PrinterBuffer.printAndFeedLine(),
-
-            PrinterBuffer.setLineSpacing(120),
-            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
-            strToBytes(getString(R.string.print_serial_no)),
-            PrinterBuffer.printAndFeedLine(),
-
-            PrinterBuffer.setLineSpacing(160),
-            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
-            strToBytes(String.format("%04d", serialNo)),
-            PrinterBuffer.printAndFeedLine(),
-
-            PrinterBuffer.setLineSpacing(120),
-            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
-            strToBytes(formatter.format(now)),
-            PrinterBuffer.printAndFeedLine(),
-
-            PrinterBuffer.setLineSpacing(120),
-            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
-            strToBytes(getString(R.string.print_footer)),
-            PrinterBuffer.printAndFeedLine(),
-
-            PrinterBuffer.selectCutPagerModerAndCutPager(66, 1)
-        )
+        commandList.addAll(headerCommand)
+        commandList.addAll(middleCommand)
+        commandList.addAll(footerCommand)
 
         commandList.forEach { command ->
             usbPrinterService.write(command)
         }
     }
 
-    /** print ticket */
-    private fun printPatient(divisions: Array<String>, serialNumbers: Array<Int>) {
-
-        require(divisions.size == serialNumbers.size) {
-            "Arrays must have the same size"
-        }
-
-        val now = Date()
-        val formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
-
+    private fun getHeaderCommand(isShowOrganization: Boolean): ArrayList<ByteArray> {
         val headerCommand = arrayListOf(
             PrinterBuffer.initializePrinter(),
             PrinterBuffer.selectAlignment(PrinterBuffer.Alignment.CENTER),
-
-            PrinterBuffer.setLineSpacing(120),
-            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
-            strToBytes(viewModel.clinicGuardian.value!!.name),
-            PrinterBuffer.printAndFeedLine(),
         )
 
+        if (isShowOrganization) {
+            headerCommand.addAll(
+                arrayListOf(
+                    PrinterBuffer.setLineSpacing(120),
+                    PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+                    strToBytes(viewModel.clinicGuardian.value!!.name),
+                    PrinterBuffer.printAndFeedLine(),
+                )
+            )
+        }
+        return headerCommand
+    }
 
+    private fun getMiddleCommand(
+        doctors: Array<String>,
+        divisions: Array<String>,
+        serialNumbers: Array<Int>,
+        queueingMachineSettingModel: QueueingMachineSettingModel
+    ): ArrayList<ByteArray> {
         val middleCommand: ArrayList<ByteArray> = ArrayList()
 
-        divisions.zip(serialNumbers) { division, serialNo ->
+        divisions.zipWith(serialNumbers, doctors).forEach { (division, serialNo, doctor) ->
+
+            if (queueingMachineSettingModel.doctor) {
+                middleCommand.addAll(
+                    arrayListOf(
+                        PrinterBuffer.setLineSpacing(160),
+                        PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
+                        strToBytes(doctor),
+                        PrinterBuffer.printAndFeedLine(),
+                    )
+                )
+            }
+
+            if (queueingMachineSettingModel.dept) {
+                middleCommand.addAll(
+                    arrayListOf(
+                        PrinterBuffer.setLineSpacing(160),
+                        PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
+                        strToBytes(division),
+                        PrinterBuffer.printAndFeedLine(),
+                    )
+                )
+            }
 
             val innerList = arrayListOf(
-                PrinterBuffer.setLineSpacing(160),
-                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
-                strToBytes(division),
-                PrinterBuffer.printAndFeedLine(),
 
                 PrinterBuffer.setLineSpacing(120),
                 PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
@@ -707,30 +785,36 @@ class MainActivity : AppCompatActivity() {
             middleCommand.addAll(innerList)
 
         }
+        return middleCommand
+    }
 
-        val footerCommand = arrayListOf(
-            PrinterBuffer.setLineSpacing(120),
-            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
-            strToBytes(formatter.format(now)),
-            PrinterBuffer.printAndFeedLine(),
-
-            PrinterBuffer.setLineSpacing(120),
-            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
-            strToBytes(getString(R.string.print_footer)),
-            PrinterBuffer.printAndFeedLine(),
-
-            PrinterBuffer.selectCutPagerModerAndCutPager(66, 1)
-        )
-
-        val commandList: ArrayList<ByteArray> = ArrayList()
-
-        commandList.addAll(headerCommand)
-        commandList.addAll(middleCommand)
-        commandList.addAll(footerCommand)
-
-        commandList.forEach { command ->
-            usbPrinterService.write(command)
+    private fun getFooterCommand(
+        isShowTime: Boolean,
+        formatter: DateFormat,
+        now: Date
+    ): java.util.ArrayList<ByteArray> {
+        val footerCommand = if (isShowTime) {
+            arrayListOf(
+                PrinterBuffer.setLineSpacing(120),
+                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+                strToBytes(formatter.format(now)),
+                PrinterBuffer.printAndFeedLine(),
+            )
+        } else {
+            ArrayList()
         }
+
+        footerCommand.addAll(
+            arrayListOf(
+                PrinterBuffer.setLineSpacing(120),
+                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+                strToBytes(getString(R.string.print_footer)),
+                PrinterBuffer.printAndFeedLine(),
+
+                PrinterBuffer.selectCutPagerModerAndCutPager(66, 1)
+            )
+        )
+        return footerCommand
     }
 
     /** 將字串用萬國編碼轉成ByteArray防止中文亂碼 */
@@ -835,8 +919,7 @@ class MainActivity : AppCompatActivity() {
         birth: String = "",
         completion: (() -> Unit)? = null
     ) {
-
-        if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
+        if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected && viewModel.queueingMachineSettingIsEnable) {
             // 若有開啟取號功能，則必須要有連線取票機才會去報到
             Snackbar.make(
                 binding.root,
@@ -855,7 +938,12 @@ class MainActivity : AppCompatActivity() {
         ) {
             completion?.let { it1 -> it1() }
 
-            if (it.success && BuildConfig.PRINT_ENABLED) {
+
+            if (it.success && BuildConfig.PRINT_ENABLED && viewModel.queueingMachineSettingIsEnable) {
+
+                val arrayDoctor = it.patients.map { patient -> patient.doctor }.toTypedArray()
+                val arraySerialNumber =
+                    it.patients.map { patient -> patient.serialNo }.toTypedArray()
 
                 val arrayDivision =
                     it.patients.map { patient ->
@@ -865,12 +953,10 @@ class MainActivity : AppCompatActivity() {
                         }
                     }.toTypedArray()
 
-                val arraySerialNumber =
-                    it.patients.map { patient -> patient.serialNo }.toTypedArray()
-
                 printPatient(
                     divisions = arrayDivision,
-                    serialNumbers = arraySerialNumber
+                    serialNumbers = arraySerialNumber,
+                    doctors = arrayDoctor
                 )
             }
         }
@@ -883,7 +969,7 @@ class MainActivity : AppCompatActivity() {
         completion: ((CreateAppointmentResponse) -> Unit)? = null
     ) {
         // if app support print ticket, check ticket machine connection
-        if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected) {
+        if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected && viewModel.queueingMachineSettingIsEnable) {
             Snackbar.make(
                 binding.root,
                 getString(R.string.printer_not_connect),
@@ -898,13 +984,28 @@ class MainActivity : AppCompatActivity() {
         ) { createAppointmentResponse ->
             completion?.invoke(createAppointmentResponse)
 
-            if (createAppointmentResponse.success) {
-                printPatient(
-                    division = when (BuildConfig.BUILD_TYPE) {
+            if (createAppointmentResponse.success && viewModel.queueingMachineSettingIsEnable) {
+
+                val arrayDoctor: Array<String> = arrayOf(
+                    createAppointmentResponse.doctor
+                )
+
+                val arraySerialNumber: Array<Int> = arrayOf(
+                    createAppointmentResponse.serialNo
+                )
+
+                val arrayDivision: Array<String> = arrayOf(
+                    when (BuildConfig.BUILD_TYPE) {
                         "ptch" -> createAppointmentResponse.doctor
                         else -> createAppointmentResponse.division
-                    },
-                    serialNo = createAppointmentResponse.serialNo
+                    }
+                )
+
+
+                printPatient(
+                    divisions = arrayDivision,
+                    serialNumbers = arraySerialNumber,
+                    doctors = arrayDoctor
                 )
             }
         }
@@ -953,9 +1054,11 @@ class MainActivity : AppCompatActivity() {
         try {
             val cls =
                 Class.forName("com.advmeds.cliniccheckinapp.ui.presentations.WebPresentation").kotlin
-            val presentation =
+            presentation =
                 cls.primaryConstructor?.call(this, presentationDisplay) as? Presentation
-            presentation?.show()
+
+            if (viewModel.queueingBoardSettingIsEnable)
+                presentation?.show()
         } catch (ignored: ClassNotFoundException) {
 
         }
@@ -1025,6 +1128,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(reloadClinicDataReceiver)
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(presentationReceiver)
 
 //        try {
 //            unregisterReceiver(detectBluetoothStateReceiver)
