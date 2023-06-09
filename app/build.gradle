@@ -35,7 +35,6 @@ android {
             minifyEnabled false
             debuggable = true
 
-            buildConfigField "boolean", "PRINT_ENABLED", "true"
             buildConfigField "String", "MS_DOMAIN", "\"https://test.mscheduler.com/\""
             buildConfigField "String", "ORG_ID", "\"1\""
             buildConfigField "String", "DEFAULT_LANGUAGE", "\"en\""
@@ -49,20 +48,12 @@ android {
 
             signingConfig signingConfigs.release
 
-            buildConfigField "boolean", "PRINT_ENABLED", "true"
             buildConfigField "String", "MS_DOMAIN", "\"https://www.mscheduler.com/\""
             buildConfigField "String", "ORG_ID", "\"1\""
             buildConfigField "String", "DEFAULT_LANGUAGE", "\"en\""
             buildConfigField "String", "DEFAULT_PASSWORD", "\"qwerty\""
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-
-        // 門診報到機，無取號功能
-        releaseWithoutPrinter {
-            initWith release
-
-            buildConfigField "boolean", "PRINT_ENABLED", "false"
         }
 
         // 屏基

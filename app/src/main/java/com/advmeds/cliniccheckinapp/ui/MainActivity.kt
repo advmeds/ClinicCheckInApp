@@ -919,7 +919,7 @@ class MainActivity : AppCompatActivity() {
         birth: String = "",
         completion: (() -> Unit)? = null
     ) {
-        if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected && viewModel.queueingMachineSettingIsEnable) {
+        if (viewModel.queueingMachineSettingIsEnable && !usbPrinterService.isConnected) {
             // 若有開啟取號功能，則必須要有連線取票機才會去報到
             Snackbar.make(
                 binding.root,
@@ -939,7 +939,7 @@ class MainActivity : AppCompatActivity() {
             completion?.let { it1 -> it1() }
 
 
-            if (it.success && BuildConfig.PRINT_ENABLED && viewModel.queueingMachineSettingIsEnable) {
+            if (it.success && viewModel.queueingMachineSettingIsEnable) {
 
                 val arrayDoctor = it.patients.map { patient -> patient.doctor }.toTypedArray()
                 val arraySerialNumber =
@@ -969,7 +969,7 @@ class MainActivity : AppCompatActivity() {
         completion: ((CreateAppointmentResponse) -> Unit)? = null
     ) {
         // if app support print ticket, check ticket machine connection
-        if (BuildConfig.PRINT_ENABLED && !usbPrinterService.isConnected && viewModel.queueingMachineSettingIsEnable) {
+        if (viewModel.queueingMachineSettingIsEnable && !usbPrinterService.isConnected) {
             Snackbar.make(
                 binding.root,
                 getString(R.string.printer_not_connect),
