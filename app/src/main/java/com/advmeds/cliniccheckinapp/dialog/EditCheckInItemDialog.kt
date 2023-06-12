@@ -93,16 +93,19 @@ class EditCheckInItemDialog(
     enum class CheckInItemType {
         /** 手動輸入身分證字號 */
         MANUAL_INPUT,
+        /** 虛擬健保卡 */
+        VIRTUAL_CARD,
+
         /** 客製化 */
         CUSTOM,
-
         /** Custom one */
         CUSTOM_ONE,
-
         /** Custom two */
         CUSTOM_TWO,
-        /** 虛擬健保卡 */
-        VIRTUAL_CARD;
+        /** Custom three */
+        CUSTOM_THREE,
+        /** Custom four */
+        CUSTOM_FOUR;
     }
 
     @Serializable
@@ -125,6 +128,8 @@ class EditCheckInItemDialog(
             EditCheckInItem(type = CheckInItemType.VIRTUAL_CARD),
             EditCheckInItem(type = CheckInItemType.CUSTOM_ONE),
             EditCheckInItem(type = CheckInItemType.CUSTOM_TWO),
+            EditCheckInItem(type = CheckInItemType.CUSTOM_THREE),
+            EditCheckInItem(type = CheckInItemType.CUSTOM_FOUR),
         )
 
         fun toObject(list: List<EditCheckInItem>) : EditCheckInItems {
@@ -132,7 +137,9 @@ class EditCheckInItemDialog(
                 manualInput = list.find { it.type == CheckInItemType.MANUAL_INPUT }?: EditCheckInItem(type = CheckInItemType.MANUAL_INPUT),
                 virtualCard = list.find { it.type == CheckInItemType.VIRTUAL_CARD }?: EditCheckInItem(type = CheckInItemType.VIRTUAL_CARD),
                 customOne = list.find { it.type == CheckInItemType.CUSTOM_ONE }?: EditCheckInItem(type = CheckInItemType.CUSTOM_ONE),
-                customTwo = list.find { it.type == CheckInItemType.CUSTOM_TWO }?: EditCheckInItem(type = CheckInItemType.CUSTOM_TWO)
+                customTwo = list.find { it.type == CheckInItemType.CUSTOM_TWO }?: EditCheckInItem(type = CheckInItemType.CUSTOM_TWO),
+                customThree = list.find { it.type == CheckInItemType.CUSTOM_THREE }?: EditCheckInItem(type = CheckInItemType.CUSTOM_THREE),
+                customFour = list.find { it.type == CheckInItemType.CUSTOM_FOUR }?: EditCheckInItem(type = CheckInItemType.CUSTOM_FOUR),
             )
         }
 
@@ -142,6 +149,8 @@ class EditCheckInItemDialog(
                 checkIn.virtualCard,
                 checkIn.customOne,
                 checkIn.customTwo,
+                checkIn.customThree,
+                checkIn.customFour,
             )
         }
     }
@@ -151,5 +160,7 @@ class EditCheckInItemDialog(
         val virtualCard: EditCheckInItem =  EditCheckInItem(type = CheckInItemType.VIRTUAL_CARD),
         val customOne: EditCheckInItem =  EditCheckInItem(type = CheckInItemType.CUSTOM_ONE),
         val customTwo: EditCheckInItem =  EditCheckInItem(type = CheckInItemType.CUSTOM_TWO),
+        val customThree: EditCheckInItem =  EditCheckInItem(type = CheckInItemType.CUSTOM_THREE),
+        val customFour: EditCheckInItem =  EditCheckInItem(type = CheckInItemType.CUSTOM_FOUR),
     )
 }

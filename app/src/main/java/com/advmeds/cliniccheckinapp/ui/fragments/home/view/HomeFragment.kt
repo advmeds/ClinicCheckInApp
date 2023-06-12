@@ -193,6 +193,16 @@ class HomeFragment : Fragment() {
                         itemTitle.text = checkInItem.title
                         itemBody.text = (secondArg)
                     }
+                    EditCheckInItemDialog.CheckInItemType.CUSTOM_THREE -> {
+                        itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
+                        itemTitle.text = checkInItem.title
+                        itemBody.text = (secondArg)
+                    }
+                    EditCheckInItemDialog.CheckInItemType.CUSTOM_FOUR -> {
+                        itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
+                        itemTitle.text = checkInItem.title
+                        itemBody.text = (secondArg)
+                    }
                     EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
                         itemImg.setImageResource(R.drawable.ic_baseline_qr_code)
                         itemTitle.setText(R.string.check_in_item_virtual_title)

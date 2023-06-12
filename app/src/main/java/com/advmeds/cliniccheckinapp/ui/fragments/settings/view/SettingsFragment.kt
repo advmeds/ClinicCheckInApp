@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -117,6 +118,7 @@ class SettingsFragment : ListFragment() {
 
     private fun onSetUiSettingsItemClicked() {
 
+        var slotsCount = 0
         dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.ui_setting_dialog)
 
@@ -134,51 +136,60 @@ class SettingsFragment : ListFragment() {
                 R.string.app_name
             )
         })
+        val checkInItemsList = viewModel.checkInItemList
+        slotsCount = checkInItemsList.count { it.isShow }
+        val checkInItems = EditCheckInItemDialog.toObject(checkInItemsList)
 
-        val checkInItems = EditCheckInItemDialog.toObject(viewModel.checkInItemList)
-
-        dialog.ui_settings_manual_input.isChecked = checkInItems.manualInput.isShow
-
-        dialog.ui_settings_virtual_nhi_card.isChecked = checkInItems.virtualCard.isShow
-
-        dialog.ui_settings_customized_one.isChecked = checkInItems.customOne.isShow
-        dialog.ui_settings_customized_one_container.isGone = !checkInItems.customOne.isShow
-        dialog.ui_settings_customized_one_block_name.editText?.setText(checkInItems.customOne.title)
-        dialog.ui_settings_customized_one_doctor_id.editText?.setText(checkInItems.customOne.doctorId)
-        dialog.ui_settings_customized_one_room_id.editText?.setText(checkInItems.customOne.divisionId)
-
-        dialog.ui_settings_customized_two.isChecked = checkInItems.customTwo.isShow
-        dialog.ui_settings_customized_two_container.isGone = !checkInItems.customTwo.isShow
-        dialog.ui_settings_customized_two_block_name.editText?.setText(checkInItems.customTwo.title)
-        dialog.ui_settings_customized_two_doctor_id.editText?.setText(checkInItems.customTwo.doctorId)
-        dialog.ui_settings_customized_two_room_id.editText?.setText(checkInItems.customTwo.divisionId)
+        setUpForUISettings(dialog = dialog, checkInItems = checkInItems)
 
         // set check listeners
 
         dialog.ui_settings_manual_input.setOnCheckedChangeListener { _, isChecked ->
             checkInItems.manualInput.isShow = isChecked
+            if (isChecked) slotsCount++ else slotsCount--
+            Log.d("check---", "onSetUiSettingsItemClicked: $slotsCount")
         }
 
         dialog.ui_settings_virtual_nhi_card.setOnCheckedChangeListener { _, isChecked ->
             checkInItems.virtualCard.isShow = isChecked
+            if (isChecked) slotsCount++ else slotsCount--
+            Log.d("check---", "onSetUiSettingsItemClicked: $slotsCount")
         }
 
         dialog.ui_settings_customized_one.setOnCheckedChangeListener { _, isChecked ->
             checkInItems.customOne.isShow = isChecked
             dialog.ui_settings_customized_one_container.isGone = !isChecked
+            if (isChecked) slotsCount++ else slotsCount--
+            Log.d("check---", "onSetUiSettingsItemClicked: $slotsCount")
         }
 
         dialog.ui_settings_customized_two.setOnCheckedChangeListener { _, isChecked ->
             checkInItems.customTwo.isShow = isChecked
             dialog.ui_settings_customized_two_container.isGone = !isChecked
+            if (isChecked) slotsCount++ else slotsCount--
+            Log.d("check---", "onSetUiSettingsItemClicked: $slotsCount")
+        }
+
+        dialog.ui_settings_customized_three.setOnCheckedChangeListener { _, isChecked ->
+            checkInItems.customThree.isShow = isChecked
+            dialog.ui_settings_customized_three_container.isGone = !isChecked
+            if (isChecked) slotsCount++ else slotsCount--
+            Log.d("check---", "onSetUiSettingsItemClicked: $slotsCount")
+        }
+
+        dialog.ui_settings_customized_four.setOnCheckedChangeListener { _, isChecked ->
+            checkInItems.customFour.isShow = isChecked
+            dialog.ui_settings_customized_four_container.isGone = !isChecked
+            if (isChecked) slotsCount++ else slotsCount--
+            Log.d("check---", "onSetUiSettingsItemClicked: $slotsCount")
         }
 
         // buttons click listeners
 
         dialog.ui_settings_save_btn.setOnClickListener {
 
-
-            val checkInItemsForSave = prepareCustomCheckInItemsForSaving(checkInItems)
+            val checkInItemsForSave =
+                prepareCustomCheckInItemsForSaving(dialog = dialog, checkInItems = checkInItems)
 
             viewModel.machineTitle =
                 dialog.ui_settings_dialog_input_field.editText?.text.toString().trim()
@@ -196,7 +207,44 @@ class SettingsFragment : ListFragment() {
         dialog.show()
     }
 
-    private fun prepareCustomCheckInItemsForSaving(checkInItems: EditCheckInItemDialog.EditCheckInItems): EditCheckInItemDialog.EditCheckInItems {
+
+    private fun setUpForUISettings(
+        dialog: Dialog,
+        checkInItems: EditCheckInItemDialog.EditCheckInItems
+    ) {
+        dialog.ui_settings_manual_input.isChecked = checkInItems.manualInput.isShow
+
+        dialog.ui_settings_virtual_nhi_card.isChecked = checkInItems.virtualCard.isShow
+
+        dialog.ui_settings_customized_one.isChecked = checkInItems.customOne.isShow
+        dialog.ui_settings_customized_one_container.isGone = !checkInItems.customOne.isShow
+        dialog.ui_settings_customized_one_block_name.editText?.setText(checkInItems.customOne.title)
+        dialog.ui_settings_customized_one_doctor_id.editText?.setText(checkInItems.customOne.doctorId)
+        dialog.ui_settings_customized_one_room_id.editText?.setText(checkInItems.customOne.divisionId)
+
+        dialog.ui_settings_customized_two.isChecked = checkInItems.customTwo.isShow
+        dialog.ui_settings_customized_two_container.isGone = !checkInItems.customTwo.isShow
+        dialog.ui_settings_customized_two_block_name.editText?.setText(checkInItems.customTwo.title)
+        dialog.ui_settings_customized_two_doctor_id.editText?.setText(checkInItems.customTwo.doctorId)
+        dialog.ui_settings_customized_two_room_id.editText?.setText(checkInItems.customTwo.divisionId)
+
+        dialog.ui_settings_customized_three.isChecked = checkInItems.customThree.isShow
+        dialog.ui_settings_customized_three_container.isGone = !checkInItems.customThree.isShow
+        dialog.ui_settings_customized_three_block_name.editText?.setText(checkInItems.customThree.title)
+        dialog.ui_settings_customized_three_doctor_id.editText?.setText(checkInItems.customThree.doctorId)
+        dialog.ui_settings_customized_three_room_id.editText?.setText(checkInItems.customThree.divisionId)
+
+        dialog.ui_settings_customized_four.isChecked = checkInItems.customFour.isShow
+        dialog.ui_settings_customized_four_container.isGone = !checkInItems.customFour.isShow
+        dialog.ui_settings_customized_four_block_name.editText?.setText(checkInItems.customFour.title)
+        dialog.ui_settings_customized_four_doctor_id.editText?.setText(checkInItems.customFour.doctorId)
+        dialog.ui_settings_customized_four_room_id.editText?.setText(checkInItems.customFour.divisionId)
+    }
+
+    private fun prepareCustomCheckInItemsForSaving(
+        dialog: Dialog,
+        checkInItems: EditCheckInItemDialog.EditCheckInItems
+    ): EditCheckInItemDialog.EditCheckInItems {
         if (dialog.ui_settings_customized_one.isChecked)
             with(checkInItems.customOne) {
                 title = dialog.ui_settings_customized_one_block_name.editText?.text.toString()
@@ -225,6 +273,39 @@ class SettingsFragment : ListFragment() {
             }
         else
             with(checkInItems.customTwo) {
+                title = ""
+                doctorId = ""
+                divisionId = ""
+            }
+
+        if (dialog.ui_settings_customized_three.isChecked)
+            with(checkInItems.customThree) {
+                title = dialog.ui_settings_customized_three_block_name.editText?.text.toString()
+                    .trim()
+                doctorId =
+                    dialog.ui_settings_customized_three_doctor_id.editText?.text.toString().trim()
+                divisionId =
+                    dialog.ui_settings_customized_three_room_id.editText?.text.toString()
+                        .trim()
+            }
+        else
+            with(checkInItems.customThree) {
+                title = ""
+                doctorId = ""
+                divisionId = ""
+            }
+
+        if (dialog.ui_settings_customized_four.isChecked)
+            with(checkInItems.customFour) {
+                title =
+                    dialog.ui_settings_customized_four_block_name.editText?.text.toString().trim()
+                doctorId =
+                    dialog.ui_settings_customized_four_doctor_id.editText?.text.toString().trim()
+                divisionId =
+                    dialog.ui_settings_customized_four_room_id.editText?.text.toString().trim()
+            }
+        else
+            with(checkInItems.customFour) {
                 title = ""
                 doctorId = ""
                 divisionId = ""

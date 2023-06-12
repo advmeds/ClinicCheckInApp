@@ -96,6 +96,8 @@
     <string name="ui_settings_virtual_nhi_card">Virtual NHI Card</string>
     <string name="ui_settings_customized_one">Customized 1</string>
     <string name="ui_settings_customized_two">Customized 2</string>
+    <string name="ui_settings_customized_three">Customized 3</string>
+    <string name="ui_settings_customized_four">Customized 4</string>
     <string name="ui_settings_customized_block_name">Block Name</string>
     <string name="ui_settings_customized_doctor_id">Doctor ID</string>
     <string name="ui_settings_customized_room_id">Room ID</string>

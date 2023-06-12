@@ -97,6 +97,8 @@
     <string name="ui_settings_virtual_nhi_card">虛擬健保卡</string>
     <string name="ui_settings_customized_one">自定義 1</string>
     <string name="ui_settings_customized_two">自定義 2</string>
+    <string name="ui_settings_customized_three">自定義 3</string>
+    <string name="ui_settings_customized_four">自定義 4</string>
     <string name="ui_settings_customized_block_name">區塊名稱</string>
     <string name="ui_settings_customized_doctor_id">醫生代碼</string>
     <string name="ui_settings_customized_room_id">診間代碼</string>
