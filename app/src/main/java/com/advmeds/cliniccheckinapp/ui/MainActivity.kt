@@ -56,7 +56,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.*
-
 import kotlin.reflect.full.primaryConstructor
 
 class MainActivity : AppCompatActivity() {
@@ -393,9 +392,12 @@ class MainActivity : AppCompatActivity() {
                                 message = if(viewModel.queueingMachineSettingIsEnable) getString(R.string.success_to_check_message) else ""
                             )
                         } else {
+                            val apiError = ApiError.initWith(it.response.code)
+
                             ErrorDialogFragment(
                                 title = getString(R.string.fail_to_check),
-                                message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                message = apiError?.resStringID?.let { it1 -> getString(it1) }
+                                    ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                     Html.fromHtml(
                                         it.response.message,
                                         Html.FROM_HTML_MODE_COMPACT
