@@ -70,6 +70,7 @@
                             android:scaleY="@dimen/check_box_scale" />
 
                         <TextView
+                            android:id="@+id/ui_settings_manual_input_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/ui_settings_manual_input"
@@ -97,6 +98,7 @@
                             android:scaleY="@dimen/check_box_scale" />
 
                         <TextView
+                            android:id="@+id/ui_settings_virtual_nhi_card_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/ui_settings_virtual_nhi_card"
@@ -106,7 +108,7 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
@@ -124,6 +126,7 @@
                             android:scaleY="@dimen/check_box_scale" />
 
                         <TextView
+                            android:id="@+id/ui_settings_customized_one_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/ui_settings_customized_one"
@@ -216,6 +219,7 @@
                             android:scaleY="@dimen/check_box_scale" />
 
                         <TextView
+                            android:id="@+id/ui_settings_customized_two_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/ui_settings_customized_two"
@@ -309,6 +313,7 @@
                             android:scaleY="@dimen/check_box_scale" />
 
                         <TextView
+                            android:id="@+id/ui_settings_customized_three_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/ui_settings_customized_three"
@@ -401,6 +406,7 @@
                             android:scaleY="@dimen/check_box_scale" />
 
                         <TextView
+                            android:id="@+id/ui_settings_customized_four_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/ui_settings_customized_four"

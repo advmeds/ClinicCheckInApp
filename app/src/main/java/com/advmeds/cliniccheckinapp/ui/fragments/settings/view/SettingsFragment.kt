@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -130,58 +129,96 @@ class SettingsFragment : ListFragment() {
 
 
         // set values
-
         dialog.ui_settings_dialog_input_field.editText?.setText(viewModel.machineTitle.ifBlank {
             getString(
                 R.string.app_name
             )
         })
+
         val checkInItemsList = viewModel.checkInItemList
         slotsCount = checkInItemsList.count { it.isShow }
         val checkInItems = EditCheckInItemDialog.toObject(checkInItemsList)
 
         setUpForUISettings(dialog = dialog, checkInItems = checkInItems)
 
-        // set check listeners
+        val turnOnOrOffCheckBox: () -> Unit = {
 
+            val listOfCheckBox = listOf(
+                dialog.ui_settings_manual_input,
+                dialog.ui_settings_virtual_nhi_card,
+                dialog.ui_settings_customized_one,
+                dialog.ui_settings_customized_two,
+                dialog.ui_settings_customized_three,
+                dialog.ui_settings_customized_four,
+            )
+
+            val listOfCheckBoxTextView = listOf(
+                dialog.ui_settings_manual_input_text_view,
+                dialog.ui_settings_virtual_nhi_card_text_view,
+                dialog.ui_settings_customized_one_text_view,
+                dialog.ui_settings_customized_two_text_view,
+                dialog.ui_settings_customized_three_text_view,
+                dialog.ui_settings_customized_four_text_view,
+            )
+
+            require(listOfCheckBox.size == listOfCheckBoxTextView.size) {
+                "List must have the same size"
+            }
+
+            if (slotsCount == 4) {
+                disableUnselectedCheckboxesUISettings(
+                    listOfCheckBox = listOfCheckBox,
+                    listOfCheckBoxTextView = listOfCheckBoxTextView
+                )
+            }
+            if (slotsCount == 3) {
+                enableAllCheckBoxesUISettings(
+                    listOfCheckBox = listOfCheckBox,
+                    listOfCheckBoxTextView = listOfCheckBoxTextView
+                )
+            }
+        }
+
+
+        // set check listeners
         dialog.ui_settings_manual_input.setOnCheckedChangeListener { _, isChecked ->
             checkInItems.manualInput.isShow = isChecked
             if (isChecked) slotsCount++ else slotsCount--
-            Log.d("check---", "onSetUiSettingsItemClicked: $slotsCount")
+            turnOnOrOffCheckBox()
         }
 
         dialog.ui_settings_virtual_nhi_card.setOnCheckedChangeListener { _, isChecked ->
             checkInItems.virtualCard.isShow = isChecked
             if (isChecked) slotsCount++ else slotsCount--
-            Log.d("check---", "onSetUiSettingsItemClicked: $slotsCount")
+            turnOnOrOffCheckBox()
         }
 
         dialog.ui_settings_customized_one.setOnCheckedChangeListener { _, isChecked ->
             checkInItems.customOne.isShow = isChecked
             dialog.ui_settings_customized_one_container.isGone = !isChecked
             if (isChecked) slotsCount++ else slotsCount--
-            Log.d("check---", "onSetUiSettingsItemClicked: $slotsCount")
+            turnOnOrOffCheckBox()
         }
 
         dialog.ui_settings_customized_two.setOnCheckedChangeListener { _, isChecked ->
             checkInItems.customTwo.isShow = isChecked
             dialog.ui_settings_customized_two_container.isGone = !isChecked
             if (isChecked) slotsCount++ else slotsCount--
-            Log.d("check---", "onSetUiSettingsItemClicked: $slotsCount")
+            turnOnOrOffCheckBox()
         }
 
         dialog.ui_settings_customized_three.setOnCheckedChangeListener { _, isChecked ->
             checkInItems.customThree.isShow = isChecked
             dialog.ui_settings_customized_three_container.isGone = !isChecked
             if (isChecked) slotsCount++ else slotsCount--
-            Log.d("check---", "onSetUiSettingsItemClicked: $slotsCount")
+            turnOnOrOffCheckBox()
         }
 
         dialog.ui_settings_customized_four.setOnCheckedChangeListener { _, isChecked ->
             checkInItems.customFour.isShow = isChecked
             dialog.ui_settings_customized_four_container.isGone = !isChecked
             if (isChecked) slotsCount++ else slotsCount--
-            Log.d("check---", "onSetUiSettingsItemClicked: $slotsCount")
+            turnOnOrOffCheckBox()
         }
 
         // buttons click listeners
@@ -204,7 +241,30 @@ class SettingsFragment : ListFragment() {
             dialog.dismiss()
         }
 
+        turnOnOrOffCheckBox()
         dialog.show()
+    }
+
+    private fun enableAllCheckBoxesUISettings(
+        listOfCheckBox: List<MaterialCheckBox>,
+        listOfCheckBoxTextView: List<TextView>
+    ) {
+        listOfCheckBox.zip(listOfCheckBoxTextView).forEach { (checkBox, textView) ->
+            checkBox.isEnabled = true
+            textView.setTextColor(Color.BLACK)
+        }
+    }
+
+    private fun disableUnselectedCheckboxesUISettings(
+        listOfCheckBox: List<MaterialCheckBox>,
+        listOfCheckBoxTextView: List<TextView>
+    ) {
+        listOfCheckBox.zip(listOfCheckBoxTextView).forEach { (checkBox, textView) ->
+            if (!checkBox.isChecked) {
+                checkBox.isEnabled = false
+                textView.setTextColor(Color.GRAY)
+            }
+        }
     }
 
 
