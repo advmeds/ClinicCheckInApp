@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -730,17 +729,21 @@ class SettingsFragment : ListFragment() {
         dialog.window!!.setGravity(Gravity.CENTER)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        val automaticAppointmentSettingModel = AutomaticAppointmentSettingModel(false, "", "")
+        val automaticAppointmentSettingModel = viewModel.automaticAppointmentSetting
 
         dialog.automatic_appointment_setting_switcher.isChecked =
             automaticAppointmentSettingModel.isEnabled
+
         dialog.automatic_appointment_doctor_input_field.editText?.setText(
             automaticAppointmentSettingModel.doctors
         )
+
         dialog.automatic_appointment_room_input_field.editText?.setText(
             automaticAppointmentSettingModel.rooms
         )
 
+        dialog.automatic_appointment_setting_container.isGone =
+            !automaticAppointmentSettingModel.isEnabled
 
         dialog.automatic_appointment_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
             dialog.automatic_appointment_setting_container.isGone = !isChecked
@@ -750,19 +753,22 @@ class SettingsFragment : ListFragment() {
         val cancelButton = dialog.automatic_appointment_dialog_cancel_btn
 
         saveButton.setOnClickListener {
-            val doctors = dialog.automatic_appointment_doctor_input_field.editText?.text.toString()
-            val rooms = dialog.automatic_appointment_room_input_field.editText?.text.toString()
+            val isEnable = dialog.automatic_appointment_setting_switcher.isChecked
+            val doctors =
+                if (isEnable) dialog.automatic_appointment_doctor_input_field.editText?.text.toString()
+                else ""
+
+            val rooms =
+                if (isEnable) dialog.automatic_appointment_room_input_field.editText?.text.toString()
+                else ""
 
             val automaticAppointmentSettingModelForSaving = AutomaticAppointmentSettingModel(
-                isEnabled = dialog.automatic_appointment_setting_switcher.isEnabled,
+                isEnabled = isEnable,
                 doctors = doctors,
                 rooms = rooms
             )
 
-            Log.d(
-                "check---",
-                "onSetAutomaticAppointmentSettingItemClicked: $automaticAppointmentSettingModelForSaving"
-            )
+            viewModel.automaticAppointmentSetting = automaticAppointmentSettingModelForSaving
 
             dialog.dismiss()
         }

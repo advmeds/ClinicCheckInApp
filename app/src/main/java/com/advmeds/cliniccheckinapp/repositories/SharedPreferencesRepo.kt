@@ -6,6 +6,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
 import kotlinx.serialization.builtins.ListSerializer
@@ -63,6 +64,13 @@ class SharedPreferencesRepo(
         const val QUEUEING_MACHINE_SETTING_DOCTOR = "queueing_machine_setting_organization_doctor"
         const val QUEUEING_MACHINE_SETTING_DEPT = "queueing_machine_setting_organization_dept"
         const val QUEUEING_MACHINE_SETTING_TIME = "queueing_machine_setting_organization_time"
+
+        /** SharedPreferences [automatic appointment setting params] KEY */
+        const val AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE =
+            "automatic_appointment_setting_is_enable"
+        const val AUTOMATIC_APPOINTMENT_SETTING_DOCTOR = "automatic_appointment_setting_doctor"
+        const val AUTOMATIC_APPOINTMENT_SETTING_ROOM =
+            "automatic_appointment_setting_organization_dept"
 
         /** SharedPreferences『Language』KEY */
         const val LANGUAGE_KEY = "language"
@@ -149,8 +157,6 @@ class SharedPreferencesRepo(
                 }
             )
         }
-
-
 
 
     /** queue board url */
@@ -341,6 +347,38 @@ class SharedPreferencesRepo(
     val queueingMachineSettingIsEnable: Boolean
         get() = sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_IS_ENABLE, false)
 
+
+    var automaticAppointmentSetting: AutomaticAppointmentSettingModel
+        get() {
+
+            val isEnable: Boolean =
+                sharedPreferences.getBoolean(AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE, false)
+            val doctor: String =
+                sharedPreferences.getString(AUTOMATIC_APPOINTMENT_SETTING_DOCTOR, "") ?: ""
+            val room: String =
+                sharedPreferences.getString(AUTOMATIC_APPOINTMENT_SETTING_ROOM, "") ?: ""
+
+            return AutomaticAppointmentSettingModel(
+                isEnabled = isEnable,
+                doctors = doctor,
+                rooms = room
+            )
+        }
+        set(value) {
+            sharedPreferences.edit()
+                .putBoolean(AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE, value.isEnabled)
+                .putString(AUTOMATIC_APPOINTMENT_SETTING_DOCTOR, value.doctors)
+                .putString(AUTOMATIC_APPOINTMENT_SETTING_ROOM, value.rooms)
+                .apply()
+
+            localBroadcastManager.sendBroadcast(
+                Intent(AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE).apply {
+                    putExtra(AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE, value.isEnabled)
+                    putExtra(AUTOMATIC_APPOINTMENT_SETTING_DOCTOR, value.doctors)
+                    putExtra(AUTOMATIC_APPOINTMENT_SETTING_ROOM, value.rooms)
+                }
+            )
+        }
 
     /** LANGUAGE */
     var language: String
