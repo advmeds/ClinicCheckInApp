@@ -17,75 +17,53 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/dialog_title"
+                android:id="@+id/automatic_appointment_dialog_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="title"
+                android:text="@string/automatic_appointment_setting"
                 android:textColor="@color/black"
                 android:textSize="@dimen/font_size_h2" />
 
-            <TextView
-                android:id="@+id/dialog_description"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/space_normal"
-                android:text="@string/dialog_description"
-                android:textColor="@color/black"
-                android:textSize="@dimen/font_size_h4"
-                android:visibility="gone" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <RadioGroup
-                android:id="@+id/dialog_radio_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:checkedButton="@id/domain_service_official_site"
-                android:orientation="horizontal"
-                android:padding="@dimen/space_medium"
-                android:visibility="gone">
-
-                <RadioButton
-                    android:id="@+id/domain_service_official_site"
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/domain_service_official_site"
+                    android:text="@string/dialog_enable_label"
                     android:textColor="@color/black"
                     android:textSize="@dimen/font_size_h4" />
 
-                <RadioButton
-                    android:id="@+id/domain_service_testing_site"
-                    android:layout_width="0dp"
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/automatic_appointment_setting_switcher"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/domain_service_testing_site"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_size_h4" />
+                    android:layout_marginHorizontal="20dp"
+                    android:saveEnabled="true"
+                    android:scaleX="@dimen/switcher_scale"
+                    android:scaleY="@dimen/switcher_scale" />
 
-                <RadioButton
-                    android:id="@+id/domain_service_customize"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/domain_service_customize"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_size_h4" />
+            </LinearLayout>
 
-            </RadioGroup>
-
-
-            <LinearLayout
-                android:id="@+id/dialog_input_container"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/automatic_appointment_setting_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/dialog_input_field"
+                    android:id="@+id/automatic_appointment_doctor_input_field"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
+                    android:layout_marginVertical="@dimen/space_normal"
                     android:layout_height="wrap_content"
+                    android:hint="@string/doctors"
                     android:singleLine="true"
                     android:textColor="@color/black">
 
@@ -97,7 +75,25 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-            </LinearLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/automatic_appointment_room_input_field"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:hint="@string/rooms"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:textColor="@color/black">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:singleLine="true"
+                        android:textSize="@dimen/font_size_h4"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
 
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -108,7 +104,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/dialog_cancel_btn"
+                    android:id="@+id/automatic_appointment_dialog_cancel_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -117,7 +113,7 @@
                     android:textSize="@dimen/font_size_h3" />
 
                 <Button
-                    android:id="@+id/dialog_save_btn"
+                    android:id="@+id/automatic_appointment_dialog_save_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -126,9 +122,6 @@
                     android:textSize="@dimen/font_size_h3" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
-
         </androidx.appcompat.widget.LinearLayoutCompat>
-
     </androidx.cardview.widget.CardView>
-
 </LinearLayout>

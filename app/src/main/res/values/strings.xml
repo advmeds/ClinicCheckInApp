@@ -86,6 +86,7 @@
         <item>@string/queueing_board_setting</item>
         <item>@string/queueing_machine_setting</item>
         <item>@string/format_checked</item>
+        <item>@string/automatic_appointment_setting</item>
         <item>@string/language_setting</item>
         <item>@string/exit_app</item>
     </string-array>
@@ -153,6 +154,9 @@
     
     <string name="no_internet">No Internet</string>
     <string name="service_timeout">Connect Timeout</string>
+
+    <!-- Automatic Appointment -->
+    <string name="automatic_appointment_setting">Automatic Appointment Setting </string>
 
 
     <string name="is_selected_language_checker_image_description">is selected language checker</string>

@@ -86,6 +86,7 @@
         <item>@string/queueing_board_setting</item>
         <item>@string/queueing_machine_setting</item>
         <item>@string/format_checked</item>
+        <item>@string/automatic_appointment_setting</item>
         <item>@string/language_setting</item>
         <item>@string/exit_app</item>
     </string-array>
@@ -141,6 +142,9 @@
 
     <string name="zh_tw_language">繁體中文</string>
     <string name="en_language">English</string>
+
+    <!-- Automatic Appointment -->
+    <string name="automatic_appointment_setting">Automatic Appointment Setting </string>
 
     <string-array name="language_items">
         <item>@string/zh_tw_language</item>

@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -28,6 +29,7 @@ import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.SettingsFragmentBinding
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
 import com.advmeds.cliniccheckinapp.ui.MainActivity
@@ -39,6 +41,7 @@ import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.SettingsView
 import com.advmeds.cliniccheckinapp.utils.Converter
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import com.google.android.material.checkbox.MaterialCheckBox
+import kotlinx.android.synthetic.main.automatic_appointment_setting_dialog.*
 import kotlinx.android.synthetic.main.format_checked_list.*
 import kotlinx.android.synthetic.main.language_setting_dialog.*
 import kotlinx.android.synthetic.main.queueing_board_setting_dialog.*
@@ -109,8 +112,9 @@ class SettingsFragment : ListFragment() {
             6 -> onSetQueueingBoardSettingItemClicked()
             7 -> onSetQueueingMachineSettingItemClicked()
             8 -> onSetFormatCheckedListItemClicked()
-            9 -> onSetLanguageSettingItemClicked()
-            10 -> onSetExitItemClicked()
+            9 -> onSetAutomaticAppointmentSettingItemClicked()
+            10 -> onSetLanguageSettingItemClicked()
+            11 -> onSetExitItemClicked()
         }
     }
 
@@ -712,6 +716,62 @@ class SettingsFragment : ListFragment() {
             dept = if (!isEnable) false else dept,
             time = if (!isEnable) false else time
         )
+    }
+
+
+    private fun onSetAutomaticAppointmentSettingItemClicked() {
+
+        dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.automatic_appointment_setting_dialog)
+
+        if (dialog.window == null)
+            return
+
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val automaticAppointmentSettingModel = AutomaticAppointmentSettingModel(false, "", "")
+
+        dialog.automatic_appointment_setting_switcher.isChecked =
+            automaticAppointmentSettingModel.isEnabled
+        dialog.automatic_appointment_doctor_input_field.editText?.setText(
+            automaticAppointmentSettingModel.doctors
+        )
+        dialog.automatic_appointment_room_input_field.editText?.setText(
+            automaticAppointmentSettingModel.rooms
+        )
+
+
+        dialog.automatic_appointment_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
+            dialog.automatic_appointment_setting_container.isGone = !isChecked
+        }
+
+        val saveButton = dialog.automatic_appointment_dialog_save_btn
+        val cancelButton = dialog.automatic_appointment_dialog_cancel_btn
+
+        saveButton.setOnClickListener {
+            val doctors = dialog.automatic_appointment_doctor_input_field.editText?.text.toString()
+            val rooms = dialog.automatic_appointment_room_input_field.editText?.text.toString()
+
+            val automaticAppointmentSettingModelForSaving = AutomaticAppointmentSettingModel(
+                isEnabled = dialog.automatic_appointment_setting_switcher.isEnabled,
+                doctors = doctors,
+                rooms = rooms
+            )
+
+            Log.d(
+                "check---",
+                "onSetAutomaticAppointmentSettingItemClicked: $automaticAppointmentSettingModelForSaving"
+            )
+
+            dialog.dismiss()
+        }
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun onSetLanguageSettingItemClicked() {
