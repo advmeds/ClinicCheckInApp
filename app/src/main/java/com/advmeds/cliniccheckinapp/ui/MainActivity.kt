@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     var dialog: AppCompatDialogFragment? = null
-    private var presentation : Presentation? = null
+    private var presentation: Presentation? = null
 
     private val detectUsbDeviceReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -257,7 +257,8 @@ class MainActivity : AppCompatActivity() {
 
     private val presentationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val isEnable = intent?.getBooleanExtra(SharedPreferencesRepo.CLINIC_PANEL_MODE_IS_ENABLED, false)
+            val isEnable =
+                intent?.getBooleanExtra(SharedPreferencesRepo.CLINIC_PANEL_MODE_IS_ENABLED, false)
 
             if (isEnable == true)
                 presentation?.show()
@@ -377,7 +378,11 @@ class MainActivity : AppCompatActivity() {
                             if (it.response.success) {
                                 successSoundId
                             } else {
-                                failSoundId
+                                if (it.response.code == 10013) {
+                                    successSoundId
+                                } else {
+                                    failSoundId
+                                }
                             },
                             1f,
                             1f,
@@ -389,7 +394,12 @@ class MainActivity : AppCompatActivity() {
                         if (it.response.success) {
                             SuccessDialogFragment(
                                 title = getString(R.string.success_to_check),
-                                message = if(viewModel.queueingMachineSettingIsEnable) getString(R.string.success_to_check_message) else ""
+                                message = if (viewModel.queueingMachineSettingIsEnable) getString(R.string.success_to_check_message) else ""
+                            )
+                        } else if (it.response.code == 10013) {
+                            SuccessDialogFragment(
+                                title = getString(R.string.success_to_check),
+                                message = ""
                             )
                         } else {
                             val apiError = ApiError.initWith(it.response.code)
@@ -398,13 +408,13 @@ class MainActivity : AppCompatActivity() {
                                 title = getString(R.string.fail_to_check),
                                 message = apiError?.resStringID?.let { it1 -> getString(it1) }
                                     ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                    Html.fromHtml(
-                                        it.response.message,
-                                        Html.FROM_HTML_MODE_COMPACT
-                                    )
-                                } else {
-                                    Html.fromHtml(it.response.message)
-                                },
+                                        Html.fromHtml(
+                                            it.response.message,
+                                            Html.FROM_HTML_MODE_COMPACT
+                                        )
+                                    } else {
+                                        Html.fromHtml(it.response.message)
+                                    },
                                 onActionButtonClicked = null
                             )
 
@@ -939,7 +949,6 @@ class MainActivity : AppCompatActivity() {
             )
         ) {
             completion?.let { it1 -> it1() }
-
 
             if (it.success && viewModel.queueingMachineSettingIsEnable) {
 
