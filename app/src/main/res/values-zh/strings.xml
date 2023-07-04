@@ -61,7 +61,7 @@
     <string name="fail_to_make_appointment">掛號失敗</string>
     <string name="fail_to_make_appointment_10014">非取號時段</string>
 
-
+    <string name="fail_to_card_reading">卡片資料讀取失敗，請擦拭晶片後重試</string>
 
     <string name="advanced_settings">進階設定</string>
     <string name="password">密碼</string>

@@ -182,9 +182,14 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }.onFailure {
-                it.message?.let { it1 ->
-                    Snackbar.make(binding.root, it1, Snackbar.LENGTH_LONG).show()
-                }
+//                it.message?.let { it1 ->
+//                    Snackbar.make(binding.root, it1, Snackbar.LENGTH_LONG).show()
+//                }
+                dialog = ErrorDialogFragment(
+                    title = getString(R.string.fail_to_check),
+                    message = getString(R.string.fail_to_card_reading)
+                )
+                dialog?.showNow(supportFragmentManager, null)
             }
         }
     }

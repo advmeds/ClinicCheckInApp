@@ -60,6 +60,8 @@
 
     <string name="fail_to_make_appointment">Failed to checked in</string>
     <string name="fail_to_make_appointment_10014">Now is not the time to take number</string>
+    
+    <string name="fail_to_card_reading">Card data reading failure,\nplease wipe the chip and try again</string>
 
     <string name="advanced_settings">Advanced Settings</string>
     <string name="password">Password</string>
