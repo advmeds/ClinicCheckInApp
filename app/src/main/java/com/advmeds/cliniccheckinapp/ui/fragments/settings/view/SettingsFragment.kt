@@ -785,12 +785,12 @@ class SettingsFragment : ListFragment() {
                 if (doctors.isBlank() || rooms.isBlank()) {
                     if (doctors.isBlank()) {
                         dialog.automatic_appointment_doctor_input_field.error =
-                            "that field shouldn't be empty"
+                            getString(R.string.automatic_appointment_setting_error_empty_field)
                     }
 
                     if (rooms.isBlank()) {
                         dialog.automatic_appointment_room_input_field.error =
-                            "that field shouldn't be empty"
+                            getString(R.string.automatic_appointment_setting_error_empty_field)
                     }
                 } else {
 

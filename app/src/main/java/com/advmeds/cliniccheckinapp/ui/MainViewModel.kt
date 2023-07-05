@@ -395,10 +395,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun createAppointment(
         schedule: GetScheduleResponse.ScheduleBean,
         patient: CreateAppointmentRequest.Patient? = null,
+        isAutomaticAppointment: Boolean = false,
         completion: ((CreateAppointmentResponse) -> Unit)? = null
     ) {
         if (getSchedulesJob?.isActive == true) return
-        if (isCheckInEventProcessing()) return
+
+        if (!isAutomaticAppointment) {
+            if (isCheckInEventProcessing())
+                return
+        }
 
         createAppointmentJob?.cancel()
 

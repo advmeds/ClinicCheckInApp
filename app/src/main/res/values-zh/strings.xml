@@ -145,6 +145,7 @@
 
     <!-- Automatic Appointment -->
     <string name="automatic_appointment_setting">Automatic Appointment Setting </string>
+    <string name="automatic_appointment_setting_error_empty_field">that field shouldn\'t be empty</string>
 
     <string-array name="language_items">
         <item>@string/zh_tw_language</item>

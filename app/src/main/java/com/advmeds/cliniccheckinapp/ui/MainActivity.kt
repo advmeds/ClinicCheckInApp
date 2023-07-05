@@ -376,6 +376,9 @@ class MainActivity : AppCompatActivity() {
 
             dialog = when (it) {
                 is MainViewModel.CheckInStatus.NotChecking -> {
+
+                    val automaticAppointmentData = viewModel.automaticAppointmentSetting
+
                     if (it.response == null) {
                         null
                     } else {
@@ -384,6 +387,8 @@ class MainActivity : AppCompatActivity() {
                                 successSoundId
                             } else {
                                 if (it.response.code == 10013) {
+                                    successSoundId
+                                } else if (it.response.code == 10013 && automaticAppointmentData.isEnabled) {
                                     successSoundId
                                 } else {
                                     failSoundId
@@ -412,15 +417,14 @@ class MainActivity : AppCompatActivity() {
                             when (apiError) {
                                 ApiError.APPOINTMENT_NOT_FOUND -> {
 
-                                    val automaticAppointmentData = viewModel.automaticAppointmentSetting
-
                                     if (automaticAppointmentData.isEnabled) {
                                         createAppointment(
                                             schedule = GetScheduleResponse.ScheduleBean(
                                                 doctor = automaticAppointmentData.doctorId,
                                                 division = automaticAppointmentData.roomId
                                             ),
-                                            patient = it.patient
+                                            patient = it.patient,
+                                            isAutomaticAppointment = true
                                         )
 
                                         return@observe
@@ -447,7 +451,6 @@ class MainActivity : AppCompatActivity() {
                                             },
                                         onActionButtonClicked = null
                                     )
-
 
 
 //                            val apiError = ApiError.initWith(it.response.code)
@@ -1011,6 +1014,7 @@ class MainActivity : AppCompatActivity() {
     private fun createAppointment(
         schedule: GetScheduleResponse.ScheduleBean,
         patient: CreateAppointmentRequest.Patient? = null,
+        isAutomaticAppointment: Boolean = false,
         completion: ((CreateAppointmentResponse) -> Unit)? = null
     ) {
         // if app support print ticket, check ticket machine connection
@@ -1025,7 +1029,8 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.createAppointment(
             schedule = schedule,
-            patient = patient
+            patient = patient,
+            isAutomaticAppointment = isAutomaticAppointment,
         ) { createAppointmentResponse ->
             completion?.invoke(createAppointmentResponse)
 
