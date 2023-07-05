@@ -67,6 +67,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:errorEnabled="true"
                         android:layout_marginVertical="@dimen/space_normal"
                         android:hint="@string/doctors"
                         android:singleLine="true"
@@ -85,6 +86,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:errorEnabled="true"
                         android:hint="@string/rooms"
                         android:singleLine="true"
                         android:textColor="@color/black">

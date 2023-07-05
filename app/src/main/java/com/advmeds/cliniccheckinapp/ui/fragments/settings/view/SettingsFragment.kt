@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isGone
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.ListFragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -733,44 +734,87 @@ class SettingsFragment : ListFragment() {
 
         dialog.automatic_appointment_setting_switcher.isChecked =
             automaticAppointmentSettingModel.isEnabled
-
         dialog.automatic_appointment_doctor_input_field.editText?.setText(
             automaticAppointmentSettingModel.doctorId
         )
-
         dialog.automatic_appointment_room_input_field.editText?.setText(
             automaticAppointmentSettingModel.roomId
         )
-
         dialog.automatic_appointment_setting_container.isGone =
             !automaticAppointmentSettingModel.isEnabled
+
 
         dialog.automatic_appointment_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
             dialog.automatic_appointment_setting_container.isGone = !isChecked
         }
+
+        dialog.automatic_appointment_doctor_input_field.editText?.doOnTextChanged { inputText, _, _, _ ->
+            if (inputText.toString().isNotEmpty())
+                dialog.automatic_appointment_doctor_input_field.error = null
+
+        }
+        dialog.automatic_appointment_doctor_input_field.editText?.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus)
+                dialog.automatic_appointment_doctor_input_field.error = null
+        }
+
+        dialog.automatic_appointment_room_input_field.editText?.doOnTextChanged { inputText, _, _, _ ->
+            if (inputText.toString().isNotEmpty())
+                dialog.automatic_appointment_room_input_field.error = null
+
+        }
+        dialog.automatic_appointment_room_input_field.editText?.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus)
+                dialog.automatic_appointment_room_input_field.error = null
+        }
+
 
         val saveButton = dialog.automatic_appointment_dialog_save_btn
         val cancelButton = dialog.automatic_appointment_dialog_cancel_btn
 
         saveButton.setOnClickListener {
             val isEnable = dialog.automatic_appointment_setting_switcher.isChecked
-            val doctors =
-                if (isEnable) dialog.automatic_appointment_doctor_input_field.editText?.text.toString()
-                else ""
 
-            val rooms =
-                if (isEnable) dialog.automatic_appointment_room_input_field.editText?.text.toString()
-                else ""
+            if (isEnable) {
 
-            val automaticAppointmentSettingModelForSaving = AutomaticAppointmentSettingModel(
-                isEnabled = isEnable,
-                doctorId = doctors,
-                roomId = rooms
-            )
+                val doctors =
+                    dialog.automatic_appointment_doctor_input_field.editText?.text.toString()
 
-            viewModel.automaticAppointmentSetting = automaticAppointmentSettingModelForSaving
+                val rooms = dialog.automatic_appointment_room_input_field.editText?.text.toString()
 
-            dialog.dismiss()
+                if (doctors.isBlank() || rooms.isBlank()) {
+                    if (doctors.isBlank()) {
+                        dialog.automatic_appointment_doctor_input_field.error =
+                            "that field shouldn't be empty"
+                    }
+
+                    if (rooms.isBlank()) {
+                        dialog.automatic_appointment_room_input_field.error =
+                            "that field shouldn't be empty"
+                    }
+                } else {
+
+                    viewModel.automaticAppointmentSetting = AutomaticAppointmentSettingModel(
+
+                        isEnabled = true,
+                        doctorId = doctors,
+                        roomId = rooms
+                    )
+
+                    dialog.dismiss()
+                }
+
+
+            } else {
+
+                viewModel.automaticAppointmentSetting = AutomaticAppointmentSettingModel(
+                    isEnabled = false,
+                    doctorId = "",
+                    roomId = ""
+                )
+
+                dialog.dismiss()
+            }
         }
 
         cancelButton.setOnClickListener {
