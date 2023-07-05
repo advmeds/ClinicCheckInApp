@@ -735,11 +735,11 @@ class SettingsFragment : ListFragment() {
             automaticAppointmentSettingModel.isEnabled
 
         dialog.automatic_appointment_doctor_input_field.editText?.setText(
-            automaticAppointmentSettingModel.doctors
+            automaticAppointmentSettingModel.doctorId
         )
 
         dialog.automatic_appointment_room_input_field.editText?.setText(
-            automaticAppointmentSettingModel.rooms
+            automaticAppointmentSettingModel.roomId
         )
 
         dialog.automatic_appointment_setting_container.isGone =
@@ -764,8 +764,8 @@ class SettingsFragment : ListFragment() {
 
             val automaticAppointmentSettingModelForSaving = AutomaticAppointmentSettingModel(
                 isEnabled = isEnable,
-                doctors = doctors,
-                rooms = rooms
+                doctorId = doctors,
+                roomId = rooms
             )
 
             viewModel.automaticAppointmentSetting = automaticAppointmentSettingModelForSaving

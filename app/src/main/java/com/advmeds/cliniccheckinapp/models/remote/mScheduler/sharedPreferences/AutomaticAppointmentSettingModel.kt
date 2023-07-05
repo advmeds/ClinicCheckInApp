@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AutomaticAppointmentSettingModel(
     val isEnabled: Boolean,
-    val doctors: String,
-    val rooms: String,
+    val doctorId: String,
+    val roomId: String,
 )

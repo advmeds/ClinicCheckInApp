@@ -409,19 +409,46 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             val apiError = ApiError.initWith(it.response.code)
 
-                            ErrorDialogFragment(
-                                title = getString(R.string.fail_to_check),
-                                message = apiError?.resStringID?.let { it1 -> getString(it1) }
-                                    ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                        Html.fromHtml(
-                                            it.response.message,
-                                            Html.FROM_HTML_MODE_COMPACT
+                            when (apiError) {
+                                ApiError.APPOINTMENT_NOT_FOUND -> {
+
+                                    val automaticAppointmentData = viewModel.automaticAppointmentSetting
+
+                                    if (automaticAppointmentData.isEnabled) {
+                                        createAppointment(
+                                            schedule = GetScheduleResponse.ScheduleBean(
+                                                doctor = automaticAppointmentData.doctorId,
+                                                division = automaticAppointmentData.roomId
+                                            ),
+                                            patient = it.patient
                                         )
+
+                                        return@observe
+
                                     } else {
-                                        Html.fromHtml(it.response.message)
-                                    },
-                                onActionButtonClicked = null
-                            )
+                                        ErrorDialogFragment(
+                                            title = getString(R.string.fail_to_check),
+                                            message = getString(apiError.resStringID),
+                                            onActionButtonClicked = null
+                                        )
+                                    }
+                                }
+                                else -> {
+                                    ErrorDialogFragment(
+                                        title = getString(R.string.fail_to_check),
+                                        message = apiError?.resStringID?.let { it1 -> getString(it1) }
+                                            ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                                Html.fromHtml(
+                                                    it.response.message,
+                                                    Html.FROM_HTML_MODE_COMPACT
+                                                )
+                                            } else {
+                                                Html.fromHtml(it.response.message)
+                                            },
+                                        onActionButtonClicked = null
+                                    )
+
+
 
 //                            val apiError = ApiError.initWith(it.response.code)
 //
@@ -456,6 +483,8 @@ class MainActivity : AppCompatActivity() {
 //                                    null
 //                                }
 //                            )
+                                }
+                            }
                         }
                     }
                 }

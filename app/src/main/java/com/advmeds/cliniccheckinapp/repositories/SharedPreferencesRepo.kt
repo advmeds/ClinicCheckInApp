@@ -360,22 +360,22 @@ class SharedPreferencesRepo(
 
             return AutomaticAppointmentSettingModel(
                 isEnabled = isEnable,
-                doctors = doctor,
-                rooms = room
+                doctorId = doctor,
+                roomId = room
             )
         }
         set(value) {
             sharedPreferences.edit()
                 .putBoolean(AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE, value.isEnabled)
-                .putString(AUTOMATIC_APPOINTMENT_SETTING_DOCTOR, value.doctors)
-                .putString(AUTOMATIC_APPOINTMENT_SETTING_ROOM, value.rooms)
+                .putString(AUTOMATIC_APPOINTMENT_SETTING_DOCTOR, value.doctorId)
+                .putString(AUTOMATIC_APPOINTMENT_SETTING_ROOM, value.roomId)
                 .apply()
 
             localBroadcastManager.sendBroadcast(
                 Intent(AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE).apply {
                     putExtra(AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE, value.isEnabled)
-                    putExtra(AUTOMATIC_APPOINTMENT_SETTING_DOCTOR, value.doctors)
-                    putExtra(AUTOMATIC_APPOINTMENT_SETTING_ROOM, value.rooms)
+                    putExtra(AUTOMATIC_APPOINTMENT_SETTING_DOCTOR, value.doctorId)
+                    putExtra(AUTOMATIC_APPOINTMENT_SETTING_ROOM, value.roomId)
                 }
             )
         }

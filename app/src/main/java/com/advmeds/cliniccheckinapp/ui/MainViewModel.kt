@@ -13,6 +13,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppo
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetClinicGuardianResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.ServerRepository
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
@@ -55,6 +56,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     /** @see SharedPreferencesRepo.queueingBoardSettingIsEnable */
     val queueingBoardSettingIsEnable: Boolean
         get() = sharedPreferencesRepo.queueingBoardSettingIsEnable
+
+    val automaticAppointmentSetting: AutomaticAppointmentSettingModel
+        get() = sharedPreferencesRepo.automaticAppointmentSetting
 
     private val format = Json {
         isLenient = true
@@ -305,7 +309,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
             completion?.let { it(response) }
 
-            checkInStatus.value = CheckInStatus.NotChecking(response)
+            checkInStatus.value = CheckInStatus.NotChecking(response = response, patient = patient)
         }
 
         checkJob?.invokeOnCompletion {
@@ -519,7 +523,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     sealed class CheckInStatus {
         object Checking : CheckInStatus()
-        data class NotChecking(val response: GetPatientsResponse?) : CheckInStatus()
+        data class NotChecking(
+            val response: GetPatientsResponse?,
+            val patient: CreateAppointmentRequest.Patient? = null
+        ) : CheckInStatus()
+
         data class Fail(val throwable: Throwable) : CheckInStatus()
     }
 
