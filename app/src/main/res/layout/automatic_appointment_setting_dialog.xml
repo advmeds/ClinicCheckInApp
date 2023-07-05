@@ -60,7 +60,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/automatic_appointment_doctor_input_field"
@@ -99,6 +99,31 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            android:id="@+id/automatic_appointment_automatic_check_in"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
+                            android:layout_marginEnd="@dimen/setting_dialog_check_box_margin_end"
+                            android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
+                            android:gravity="center"
+                            android:scaleX="@dimen/check_box_scale"
+                            android:scaleY="@dimen/check_box_scale" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/automatic_appointment_setting_automatic_check_in"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/font_size_h4" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
 
