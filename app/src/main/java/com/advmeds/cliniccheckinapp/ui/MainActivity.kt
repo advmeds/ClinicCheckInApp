@@ -185,6 +185,16 @@ class MainActivity : AppCompatActivity() {
 //                it.message?.let { it1 ->
 //                    Snackbar.make(binding.root, it1, Snackbar.LENGTH_LONG).show()
 //                }
+
+                soundPool.play(
+                    failSoundId,
+                    1f,
+                    1f,
+                    0,
+                    0,
+                    1f
+                )
+
                 dialog = ErrorDialogFragment(
                     title = getString(R.string.fail_to_check),
                     message = getString(R.string.fail_to_card_reading)
