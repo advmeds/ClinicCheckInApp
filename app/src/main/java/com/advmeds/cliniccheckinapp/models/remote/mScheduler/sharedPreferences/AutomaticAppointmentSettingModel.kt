@@ -7,4 +7,5 @@ data class AutomaticAppointmentSettingModel(
     val isEnabled: Boolean,
     val doctorId: String,
     val roomId: String,
+    val autoCheckIn: Boolean
 )

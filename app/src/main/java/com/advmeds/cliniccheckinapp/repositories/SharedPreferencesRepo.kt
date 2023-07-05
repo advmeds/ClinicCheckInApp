@@ -69,8 +69,8 @@ class SharedPreferencesRepo(
         const val AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE =
             "automatic_appointment_setting_is_enable"
         const val AUTOMATIC_APPOINTMENT_SETTING_DOCTOR = "automatic_appointment_setting_doctor"
-        const val AUTOMATIC_APPOINTMENT_SETTING_ROOM =
-            "automatic_appointment_setting_organization_dept"
+        const val AUTOMATIC_APPOINTMENT_SETTING_ROOM = "automatic_appointment_setting_room"
+        const val AUTOMATIC_APPOINTMENT_SETTING_AUTO_CHECK_IN = "automatic_appointment_setting_auto_check_in"
 
         /** SharedPreferences『Language』KEY */
         const val LANGUAGE_KEY = "language"
@@ -357,11 +357,14 @@ class SharedPreferencesRepo(
                 sharedPreferences.getString(AUTOMATIC_APPOINTMENT_SETTING_DOCTOR, "") ?: ""
             val room: String =
                 sharedPreferences.getString(AUTOMATIC_APPOINTMENT_SETTING_ROOM, "") ?: ""
+            val autoCheckIn: Boolean =
+                sharedPreferences.getBoolean(AUTOMATIC_APPOINTMENT_SETTING_AUTO_CHECK_IN, true)
 
             return AutomaticAppointmentSettingModel(
                 isEnabled = isEnable,
                 doctorId = doctor,
-                roomId = room
+                roomId = room,
+                autoCheckIn = autoCheckIn
             )
         }
         set(value) {
@@ -369,6 +372,7 @@ class SharedPreferencesRepo(
                 .putBoolean(AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE, value.isEnabled)
                 .putString(AUTOMATIC_APPOINTMENT_SETTING_DOCTOR, value.doctorId)
                 .putString(AUTOMATIC_APPOINTMENT_SETTING_ROOM, value.roomId)
+                .putBoolean(AUTOMATIC_APPOINTMENT_SETTING_AUTO_CHECK_IN, value.autoCheckIn)
                 .apply()
 
             localBroadcastManager.sendBroadcast(
@@ -376,6 +380,7 @@ class SharedPreferencesRepo(
                     putExtra(AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE, value.isEnabled)
                     putExtra(AUTOMATIC_APPOINTMENT_SETTING_DOCTOR, value.doctorId)
                     putExtra(AUTOMATIC_APPOINTMENT_SETTING_ROOM, value.roomId)
+                    putExtra(AUTOMATIC_APPOINTMENT_SETTING_AUTO_CHECK_IN, value.autoCheckIn)
                 }
             )
         }

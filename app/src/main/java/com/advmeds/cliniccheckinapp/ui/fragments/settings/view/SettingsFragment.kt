@@ -734,14 +734,17 @@ class SettingsFragment : ListFragment() {
 
         dialog.automatic_appointment_setting_switcher.isChecked =
             automaticAppointmentSettingModel.isEnabled
+        dialog.automatic_appointment_automatic_check_in.isChecked =
+            automaticAppointmentSettingModel.autoCheckIn
+        dialog.automatic_appointment_setting_container.isGone =
+            !automaticAppointmentSettingModel.isEnabled
+
         dialog.automatic_appointment_doctor_input_field.editText?.setText(
             automaticAppointmentSettingModel.doctorId
         )
         dialog.automatic_appointment_room_input_field.editText?.setText(
             automaticAppointmentSettingModel.roomId
         )
-        dialog.automatic_appointment_setting_container.isGone =
-            !automaticAppointmentSettingModel.isEnabled
 
 
         dialog.automatic_appointment_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
@@ -774,12 +777,11 @@ class SettingsFragment : ListFragment() {
 
         saveButton.setOnClickListener {
             val isEnable = dialog.automatic_appointment_setting_switcher.isChecked
+            val autoCheck = dialog.automatic_appointment_automatic_check_in.isChecked
 
             if (isEnable) {
 
-                val doctors =
-                    dialog.automatic_appointment_doctor_input_field.editText?.text.toString()
-
+                val doctors = dialog.automatic_appointment_doctor_input_field.editText?.text.toString()
                 val rooms = dialog.automatic_appointment_room_input_field.editText?.text.toString()
 
                 if (doctors.isBlank() || rooms.isBlank()) {
@@ -795,10 +797,10 @@ class SettingsFragment : ListFragment() {
                 } else {
 
                     viewModel.automaticAppointmentSetting = AutomaticAppointmentSettingModel(
-
                         isEnabled = true,
                         doctorId = doctors,
-                        roomId = rooms
+                        roomId = rooms,
+                        autoCheckIn = autoCheck
                     )
 
                     dialog.dismiss()
@@ -810,7 +812,8 @@ class SettingsFragment : ListFragment() {
                 viewModel.automaticAppointmentSetting = AutomaticAppointmentSettingModel(
                     isEnabled = false,
                     doctorId = "",
-                    roomId = ""
+                    roomId = "",
+                    autoCheckIn = autoCheck
                 )
 
                 dialog.dismiss()
