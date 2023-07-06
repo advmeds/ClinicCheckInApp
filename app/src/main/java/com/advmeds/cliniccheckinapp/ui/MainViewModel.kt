@@ -393,6 +393,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun createAppointment(
+        isCheckIn: Boolean,
         schedule: GetScheduleResponse.ScheduleBean,
         patient: CreateAppointmentRequest.Patient? = null,
         isAutomaticAppointment: Boolean = false,
@@ -412,6 +413,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
             val response = try {
                 val request = CreateAppointmentRequest(
+                    checkIn = isCheckIn,
                     clinicId = sharedPreferencesRepo.orgId,
                     doctor = schedule.doctor,
                     division = schedule.division,

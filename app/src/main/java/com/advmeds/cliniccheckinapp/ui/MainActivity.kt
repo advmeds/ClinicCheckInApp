@@ -163,6 +163,7 @@ class MainActivity : AppCompatActivity() {
                 when (BuildConfig.BUILD_TYPE) {
                     "rende" -> {
                         createAppointment(
+                            isCheckIn = false,
                             schedule = GetScheduleResponse.ScheduleBean.RENDE_DIVISION_ONLY,
                             patient = CreateAppointmentRequest.Patient(
                                 nationalId = it.icId,
@@ -429,6 +430,7 @@ class MainActivity : AppCompatActivity() {
 
                                     if (automaticAppointmentData.isEnabled) {
                                         createAppointment(
+                                            isCheckIn = automaticAppointmentData.autoCheckIn,
                                             schedule = GetScheduleResponse.ScheduleBean(
                                                 doctor = automaticAppointmentData.doctorId,
                                                 division = automaticAppointmentData.roomId
@@ -528,7 +530,7 @@ class MainActivity : AppCompatActivity() {
                                 schedules = it.response.schedules
                             ) { checkedSchedule ->
                                 if (checkedSchedule != null) {
-                                    createAppointment(checkedSchedule)
+                                    createAppointment(isCheckIn = false, checkedSchedule)
                                 } else {
                                     dialog?.dismiss()
                                     dialog = null
@@ -1022,6 +1024,7 @@ class MainActivity : AppCompatActivity() {
 
     /** Do not have NHI Card, manual check in */
     private fun createAppointment(
+        isCheckIn: Boolean,
         schedule: GetScheduleResponse.ScheduleBean,
         patient: CreateAppointmentRequest.Patient? = null,
         isAutomaticAppointment: Boolean = false,
@@ -1038,6 +1041,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.createAppointment(
+            isCheckIn = isCheckIn,
             schedule = schedule,
             patient = patient,
             isAutomaticAppointment = isAutomaticAppointment,
@@ -1076,6 +1080,7 @@ class MainActivity : AppCompatActivity() {
         val serialNo = viewModel.checkInSerialNo
 
         createAppointment(
+            isCheckIn = false,
             schedule = schedule,
             patient = CreateAppointmentRequest.Patient(
                 name = "手動取號",
