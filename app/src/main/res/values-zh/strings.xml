@@ -146,7 +146,7 @@
     <!-- Automatic Appointment -->
     <string name="automatic_appointment_setting">自動預約設定</string>
     <string name="automatic_appointment_setting_error_empty_field">字段不應為空</string>
-    <string name="automatic_appointment_setting_automatic_check_in">Automatic Check-In</string>
+    <string name="automatic_appointment_setting_automatic_check_in">自動報到</string>
 
     <string-array name="language_items">
         <item>@string/zh_tw_language</item>

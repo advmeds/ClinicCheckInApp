@@ -393,24 +393,27 @@ class MainActivity : AppCompatActivity() {
                     if (it.response == null) {
                         null
                     } else {
-                        soundPool.play(
-                            if (it.response.success) {
-                                successSoundId
-                            } else {
-                                if (it.response.code == 10013) {
-                                    successSoundId
-                                } else if (it.response.code == 10013 && automaticAppointmentData.isEnabled) {
+
+                        if (it.response.code != 10010 || !automaticAppointmentData.isEnabled) {
+
+                            soundPool.play(
+                                if (it.response.success) {
                                     successSoundId
                                 } else {
-                                    failSoundId
-                                }
-                            },
-                            1f,
-                            1f,
-                            0,
-                            0,
-                            1f
-                        )
+                                    if (it.response.code == 10013) {
+                                        successSoundId
+                                    } else {
+                                        failSoundId
+                                    }
+                                },
+                                1f,
+                                1f,
+                                0,
+                                0,
+                                1f
+                            )
+
+                        }
 
                         if (it.response.success) {
                             SuccessDialogFragment(
@@ -436,7 +439,21 @@ class MainActivity : AppCompatActivity() {
                                                 division = automaticAppointmentData.roomId
                                             ),
                                             patient = it.patient,
-                                            isAutomaticAppointment = true
+                                            isAutomaticAppointment = true,
+                                            completion = { createAppointmentResponse ->
+                                                soundPool.play(
+                                                    if (createAppointmentResponse.success) {
+                                                        successSoundId
+                                                    } else {
+                                                        failSoundId
+                                                    },
+                                                    1f,
+                                                    1f,
+                                                    0,
+                                                    0,
+                                                    1f
+                                                )
+                                            }
                                         )
 
                                         return@observe
