@@ -1,26 +1,35 @@
 package com.advmeds.cliniccheckinapp.ui
 
+import android.Manifest
+import android.app.Activity
 import android.app.PendingIntent
 import android.app.Presentation
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 import android.media.AudioManager
 import android.media.MediaRouter
 import android.media.SoundPool
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.Html
+import android.util.Log
 import android.view.MotionEvent
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -57,6 +66,8 @@ import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.*
 import kotlin.reflect.full.primaryConstructor
+
+private const val INSTALL_PERMISSION_REQUEST_CODE = 3440
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -637,6 +648,45 @@ class MainActivity : AppCompatActivity() {
         showPresentation()
     }
 
+    private fun checkInstallUnknownApkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!packageManager.canRequestPackageInstalls()) {
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                    Uri.parse("package:$packageName")
+                )
+
+                manageUnknownAppSourcesLauncher.launch(intent)
+            }
+        }
+    }
+
+    private val manageUnknownAppSourcesLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                Log.d("check---", "onRequestPermissionsResult: its work")
+            } else {
+                Log.d("check---", "onRequestPermissionsResult: its work but its not")
+            }
+        }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == INSTALL_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("check---", "onRequestPermissionsResult: its work")
+            } else {
+                // Permission denied, show a message or take appropriate action
+                // You can also redirect the user to the app settings to manually grant the permission
+                Log.d("check---", "onRequestPermissionsResult: its work but its not")
+            }
+        }
+    }
 
     fun setLanguage(language: String) {
         val locale = checkForCountryInLanguageCode(language)
