@@ -2,6 +2,7 @@ package com.advmeds.cliniccheckinapp.ui
 
 import android.Manifest
 import android.app.Activity
+import android.app.DownloadManager
 import android.app.PendingIntent
 import android.app.Presentation
 import android.content.BroadcastReceiver
@@ -30,6 +31,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.app.ActivityCompat
+import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -63,6 +65,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.text.DateFormat
 import java.util.*
 import kotlin.reflect.full.primaryConstructor
@@ -291,6 +294,36 @@ class MainActivity : AppCompatActivity() {
                 presentation?.show()
             else
                 presentation?.dismiss()
+        }
+    }
+
+
+    private val downloadReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val action = intent?.action
+            if (action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
+                val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+
+                val apkUri = getDownloadedFileUri(downloadId)
+
+                if (apkUri != null) {
+                    if (context != null) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            if (!packageManager.canRequestPackageInstalls()) {
+                                Toast.makeText(
+                                    context,
+                                    "Permission for installation unknown apk is denied",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return
+                            }
+                        }
+
+                        // Permission already granted, proceed with installation
+                        installAPK(Uri.parse(apkUri), context)
+                    }
+                }
+            }
         }
     }
 
@@ -669,6 +702,37 @@ class MainActivity : AppCompatActivity() {
                 Log.d("check---", "onRequestPermissionsResult: its work but its not")
             }
         }
+
+    private fun getDownloadedFileUri(downloadId: Long): String? {
+        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val query = DownloadManager.Query().setFilterById(downloadId)
+        val cursor = downloadManager.query(query)
+        if (cursor.moveToFirst()) {
+            val columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
+            val status = cursor.getInt(columnIndex)
+            if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                val uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)
+                val uriString = cursor.getString(uriIndex)
+                cursor.close()
+                return uriString
+            }
+        }
+        cursor.close()
+        return null
+    }
+
+    private fun installAPK(apkUri: Uri, context: Context) {
+
+        val file = File(apkUri.path)
+
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+
+        val installIntent = Intent(Intent.ACTION_INSTALL_PACKAGE).apply {
+            data = uri
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+        context.startActivity(installIntent)
+    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
