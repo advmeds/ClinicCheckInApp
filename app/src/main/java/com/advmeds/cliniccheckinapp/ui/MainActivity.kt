@@ -1,6 +1,5 @@
 package com.advmeds.cliniccheckinapp.ui
 
-import android.Manifest
 import android.app.Activity
 import android.app.DownloadManager
 import android.app.PendingIntent
@@ -9,7 +8,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
@@ -30,7 +28,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialogFragment
-import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -303,7 +300,6 @@ class MainActivity : AppCompatActivity() {
             val action = intent?.action
             if (action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
                 val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-
                 val apkUri = getDownloadedFileUri(downloadId)
 
                 if (apkUri != null) {
@@ -357,6 +353,9 @@ class MainActivity : AppCompatActivity() {
             presentationReceiver,
             IntentFilter(SharedPreferencesRepo.QUEUEING_BOARD_SETTING)
         )
+
+        val downloadFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        registerReceiver(downloadReceiver, downloadFilter)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -722,7 +721,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun installAPK(apkUri: Uri, context: Context) {
-
         val file = File(apkUri.path)
 
         val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
@@ -732,24 +730,6 @@ class MainActivity : AppCompatActivity() {
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         }
         context.startActivity(installIntent)
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == INSTALL_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d("check---", "onRequestPermissionsResult: its work")
-            } else {
-                // Permission denied, show a message or take appropriate action
-                // You can also redirect the user to the app settings to manually grant the permission
-                Log.d("check---", "onRequestPermissionsResult: its work but its not")
-            }
-        }
     }
 
     fun setLanguage(language: String) {
@@ -1325,6 +1305,7 @@ class MainActivity : AppCompatActivity() {
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(reloadClinicDataReceiver)
         LocalBroadcastManager.getInstance(this).unregisterReceiver(presentationReceiver)
+        unregisterReceiver(downloadReceiver)
 
 //        try {
 //            unregisterReceiver(detectBluetoothStateReceiver)
