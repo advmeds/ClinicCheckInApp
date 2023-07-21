@@ -874,19 +874,45 @@ class MainActivity : AppCompatActivity() {
         val formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
         val queueingMachineSettings = viewModel.queueingMachineSettings
 
-        val headerCommand = getHeaderCommand(queueingMachineSettings.organization)
-        val middleCommand =
-            getMiddleCommand(doctors, divisions, serialNumbers, queueingMachineSettings)
-        val footerCommand = getFooterCommand(queueingMachineSettings.time, formatter, now)
+        if (queueingMachineSettings.isOneTicket) {
 
-        val commandList: ArrayList<ByteArray> = ArrayList()
+            val headerCommand = getHeaderCommand(queueingMachineSettings.organization)
+            val middleCommand =
+                getMiddleCommand(doctors, divisions, serialNumbers, queueingMachineSettings)
+            val footerCommand = getFooterCommand(queueingMachineSettings.time, formatter, now)
 
-        commandList.addAll(headerCommand)
-        commandList.addAll(middleCommand)
-        commandList.addAll(footerCommand)
+            val commandList: ArrayList<ByteArray> = ArrayList()
 
-        commandList.forEach { command ->
-            usbPrinterService.write(command)
+            commandList.addAll(headerCommand)
+            commandList.addAll(middleCommand)
+            commandList.addAll(footerCommand)
+
+            commandList.forEach { command ->
+                usbPrinterService.write(command)
+            }
+        }
+        else {
+            divisions.zipWith(serialNumbers, doctors).forEach { (division, serialNo, doctor) ->
+
+                val doctorArray = arrayOf(doctor)
+                val divisionArray = arrayOf(division)
+                val serialNoArray = arrayOf(serialNo)
+
+                val headerCommand = getHeaderCommand(queueingMachineSettings.organization)
+                val middleCommand =
+                    getMiddleCommand(doctorArray, divisionArray, serialNoArray, queueingMachineSettings)
+                val footerCommand = getFooterCommand(queueingMachineSettings.time, formatter, now)
+
+                val commandList: ArrayList<ByteArray> = ArrayList()
+
+                commandList.addAll(headerCommand)
+                commandList.addAll(middleCommand)
+                commandList.addAll(footerCommand)
+
+                commandList.forEach { command ->
+                    usbPrinterService.write(command)
+                }
+            }
         }
     }
 
