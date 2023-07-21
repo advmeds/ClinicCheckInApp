@@ -64,6 +64,7 @@ class SharedPreferencesRepo(
         const val QUEUEING_MACHINE_SETTING_DOCTOR = "queueing_machine_setting_organization_doctor"
         const val QUEUEING_MACHINE_SETTING_DEPT = "queueing_machine_setting_organization_dept"
         const val QUEUEING_MACHINE_SETTING_TIME = "queueing_machine_setting_organization_time"
+        const val QUEUEING_MACHINE_SETTING_IS_ONE_TICKET = "queueing_machine_setting_organization_is_one_ticket"
 
         /** SharedPreferences [automatic appointment setting params] KEY */
         const val AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE =
@@ -303,34 +304,26 @@ class SharedPreferencesRepo(
                 sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_DEPT, false)
             val time: Boolean =
                 sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_TIME, false)
+            val isOneTicket: Boolean =
+                sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_IS_ONE_TICKET, false)
 
             return QueueingMachineSettingModel(
                 isEnabled = isEnable,
                 organization = organization,
                 doctor = doctor,
                 dept = dept,
-                time = time
+                time = time,
+                isOneTicket = isOneTicket
             )
         }
         set(value) {
             sharedPreferences.edit()
                 .putBoolean(QUEUEING_MACHINE_SETTING_IS_ENABLE, value.isEnabled)
-                .apply()
-
-            sharedPreferences.edit()
                 .putBoolean(QUEUEING_MACHINE_SETTING_ORGANIZATION, value.organization)
-                .apply()
-
-            sharedPreferences.edit()
                 .putBoolean(QUEUEING_MACHINE_SETTING_DOCTOR, value.doctor)
-                .apply()
-
-            sharedPreferences.edit()
                 .putBoolean(QUEUEING_MACHINE_SETTING_DEPT, value.dept)
-                .apply()
-
-            sharedPreferences.edit()
                 .putBoolean(QUEUEING_MACHINE_SETTING_TIME, value.time)
+                .putBoolean(QUEUEING_MACHINE_SETTING_IS_ONE_TICKET, value.isOneTicket)
                 .apply()
 
             localBroadcastManager.sendBroadcast(
@@ -340,6 +333,7 @@ class SharedPreferencesRepo(
                     putExtra(QUEUEING_MACHINE_SETTING_DOCTOR, value.doctor)
                     putExtra(QUEUEING_MACHINE_SETTING_DEPT, value.dept)
                     putExtra(QUEUEING_MACHINE_SETTING_TIME, value.time)
+                    putExtra(QUEUEING_MACHINE_SETTING_IS_ONE_TICKET, value.isOneTicket)
                 }
             )
         }

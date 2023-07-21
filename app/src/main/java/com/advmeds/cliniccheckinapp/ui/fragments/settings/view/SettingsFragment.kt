@@ -674,6 +674,9 @@ class SettingsFragment : ListFragment() {
         dialog.qms_cb_dept.isChecked = queueingMachineSettingModel.dept
         dialog.qms_cb_time.isChecked = queueingMachineSettingModel.time
 
+        dialog.queueing_machine_setting_one_ticket_switcher.isChecked =
+            queueingMachineSettingModel.isOneTicket
+
         dialog.queueing_machine_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
             dialog.queueing_machine_setting_container.isGone = !isChecked
         }
@@ -706,6 +709,7 @@ class SettingsFragment : ListFragment() {
         val doctor: Boolean = dialog.qms_cb_doctor.isChecked
         val dept: Boolean = dialog.qms_cb_dept.isChecked
         val time: Boolean = dialog.qms_cb_time.isChecked
+        val isOneTicket: Boolean = dialog.queueing_machine_setting_one_ticket_switcher.isChecked
 
         dialog.dismiss()
 
@@ -714,7 +718,8 @@ class SettingsFragment : ListFragment() {
             organization = if (!isEnable) false else organization,
             doctor = if (!isEnable) false else doctor,
             dept = if (!isEnable) false else dept,
-            time = if (!isEnable) false else time
+            time = if (!isEnable) false else time,
+            isOneTicket = if (!isEnable) false else isOneTicket
         )
     }
 
@@ -781,7 +786,8 @@ class SettingsFragment : ListFragment() {
 
             if (isEnable) {
 
-                val doctors = dialog.automatic_appointment_doctor_input_field.editText?.text.toString()
+                val doctors =
+                    dialog.automatic_appointment_doctor_input_field.editText?.text.toString()
                 val rooms = dialog.automatic_appointment_room_input_field.editText?.text.toString()
 
                 if (doctors.isBlank() || rooms.isBlank()) {
