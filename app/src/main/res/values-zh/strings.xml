@@ -133,6 +133,8 @@
     <string name="qms_dept_label">科別名稱</string>
     <string name="qms_doctor_label">醫生名稱</string>
     <string name="qms_organization_label">醫事機構</string>
+    <string name="qms_one_ticket_label">單票多號</string>
+
 
     <!-- Language Setting -->
     <string name="version_setting">版本設定</string>

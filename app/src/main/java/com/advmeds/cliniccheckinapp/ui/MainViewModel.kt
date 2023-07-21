@@ -421,7 +421,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
             val response = try {
                 val request = CreateAppointmentRequest(
-                    checkIn = isCheckIn,
+                    checkIn = true,
                     clinicId = sharedPreferencesRepo.orgId,
                     doctor = schedule.doctor,
                     division = schedule.division,

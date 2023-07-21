@@ -137,6 +137,8 @@
     <string name="qms_dept_label">Dept.</string>
     <string name="qms_doctor_label">Doctor</string>
     <string name="qms_organization_label">Organization</string>
+    <string name="qms_one_ticket_label">All information in one ticket</string>
+
 
     <!-- Language Setting -->
     <string name="version_setting">Version Setting</string>
