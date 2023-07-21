@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isGone
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.ListFragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -28,6 +29,7 @@ import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.SettingsFragmentBinding
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
 import com.advmeds.cliniccheckinapp.ui.MainActivity
@@ -39,6 +41,7 @@ import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.SettingsView
 import com.advmeds.cliniccheckinapp.utils.Converter
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import com.google.android.material.checkbox.MaterialCheckBox
+import kotlinx.android.synthetic.main.automatic_appointment_setting_dialog.*
 import kotlinx.android.synthetic.main.format_checked_list.*
 import kotlinx.android.synthetic.main.language_setting_dialog.*
 import kotlinx.android.synthetic.main.queueing_board_setting_dialog.*
@@ -109,14 +112,16 @@ class SettingsFragment : ListFragment() {
             6 -> onSetQueueingBoardSettingItemClicked()
             7 -> onSetQueueingMachineSettingItemClicked()
             8 -> onSetFormatCheckedListItemClicked()
-            9 -> onSetLanguageSettingItemClicked()
-            10 -> onSetExitItemClicked()
+            9 -> onSetAutomaticAppointmentSettingItemClicked()
+            10 -> onSetLanguageSettingItemClicked()
+            11 -> onSetExitItemClicked()
         }
     }
 
 
     private fun onSetUiSettingsItemClicked() {
 
+        var slotsCount = 0
         dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.ui_setting_dialog)
 
@@ -128,15 +133,149 @@ class SettingsFragment : ListFragment() {
 
 
         // set values
-
         dialog.ui_settings_dialog_input_field.editText?.setText(viewModel.machineTitle.ifBlank {
             getString(
                 R.string.app_name
             )
         })
 
-        val checkInItems = EditCheckInItemDialog.toObject(viewModel.checkInItemList)
+        val checkInItemsList = viewModel.checkInItemList
+        slotsCount = checkInItemsList.count { it.isShow }
+        val checkInItems = EditCheckInItemDialog.toObject(checkInItemsList)
 
+        setUpForUISettings(dialog = dialog, checkInItems = checkInItems)
+
+        val turnOnOrOffCheckBox: () -> Unit = {
+
+            val listOfCheckBox = listOf(
+                dialog.ui_settings_manual_input,
+                dialog.ui_settings_virtual_nhi_card,
+                dialog.ui_settings_customized_one,
+                dialog.ui_settings_customized_two,
+                dialog.ui_settings_customized_three,
+                dialog.ui_settings_customized_four,
+            )
+
+            val listOfCheckBoxTextView = listOf(
+                dialog.ui_settings_manual_input_text_view,
+                dialog.ui_settings_virtual_nhi_card_text_view,
+                dialog.ui_settings_customized_one_text_view,
+                dialog.ui_settings_customized_two_text_view,
+                dialog.ui_settings_customized_three_text_view,
+                dialog.ui_settings_customized_four_text_view,
+            )
+
+            require(listOfCheckBox.size == listOfCheckBoxTextView.size) {
+                "List must have the same size"
+            }
+
+            if (slotsCount == 4) {
+                disableUnselectedCheckboxesUISettings(
+                    listOfCheckBox = listOfCheckBox,
+                    listOfCheckBoxTextView = listOfCheckBoxTextView
+                )
+            }
+            if (slotsCount == 3) {
+                enableAllCheckBoxesUISettings(
+                    listOfCheckBox = listOfCheckBox,
+                    listOfCheckBoxTextView = listOfCheckBoxTextView
+                )
+            }
+        }
+
+
+        // set check listeners
+        dialog.ui_settings_manual_input.setOnCheckedChangeListener { _, isChecked ->
+            checkInItems.manualInput.isShow = isChecked
+            if (isChecked) slotsCount++ else slotsCount--
+            turnOnOrOffCheckBox()
+        }
+
+        dialog.ui_settings_virtual_nhi_card.setOnCheckedChangeListener { _, isChecked ->
+            checkInItems.virtualCard.isShow = isChecked
+            if (isChecked) slotsCount++ else slotsCount--
+            turnOnOrOffCheckBox()
+        }
+
+        dialog.ui_settings_customized_one.setOnCheckedChangeListener { _, isChecked ->
+            checkInItems.customOne.isShow = isChecked
+            dialog.ui_settings_customized_one_container.isGone = !isChecked
+            if (isChecked) slotsCount++ else slotsCount--
+            turnOnOrOffCheckBox()
+        }
+
+        dialog.ui_settings_customized_two.setOnCheckedChangeListener { _, isChecked ->
+            checkInItems.customTwo.isShow = isChecked
+            dialog.ui_settings_customized_two_container.isGone = !isChecked
+            if (isChecked) slotsCount++ else slotsCount--
+            turnOnOrOffCheckBox()
+        }
+
+        dialog.ui_settings_customized_three.setOnCheckedChangeListener { _, isChecked ->
+            checkInItems.customThree.isShow = isChecked
+            dialog.ui_settings_customized_three_container.isGone = !isChecked
+            if (isChecked) slotsCount++ else slotsCount--
+            turnOnOrOffCheckBox()
+        }
+
+        dialog.ui_settings_customized_four.setOnCheckedChangeListener { _, isChecked ->
+            checkInItems.customFour.isShow = isChecked
+            dialog.ui_settings_customized_four_container.isGone = !isChecked
+            if (isChecked) slotsCount++ else slotsCount--
+            turnOnOrOffCheckBox()
+        }
+
+        // buttons click listeners
+
+        dialog.ui_settings_save_btn.setOnClickListener {
+
+            val checkInItemsForSave =
+                prepareCustomCheckInItemsForSaving(dialog = dialog, checkInItems = checkInItems)
+
+            viewModel.machineTitle =
+                dialog.ui_settings_dialog_input_field.editText?.text.toString().trim()
+
+            viewModel.checkInItemList =
+                EditCheckInItemDialog.toList(checkInItemsForSave)
+
+            dialog.dismiss()
+        }
+
+        dialog.ui_settings_cancel_btn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        turnOnOrOffCheckBox()
+        dialog.show()
+    }
+
+    private fun enableAllCheckBoxesUISettings(
+        listOfCheckBox: List<MaterialCheckBox>,
+        listOfCheckBoxTextView: List<TextView>
+    ) {
+        listOfCheckBox.zip(listOfCheckBoxTextView).forEach { (checkBox, textView) ->
+            checkBox.isEnabled = true
+            textView.setTextColor(Color.BLACK)
+        }
+    }
+
+    private fun disableUnselectedCheckboxesUISettings(
+        listOfCheckBox: List<MaterialCheckBox>,
+        listOfCheckBoxTextView: List<TextView>
+    ) {
+        listOfCheckBox.zip(listOfCheckBoxTextView).forEach { (checkBox, textView) ->
+            if (!checkBox.isChecked) {
+                checkBox.isEnabled = false
+                textView.setTextColor(Color.GRAY)
+            }
+        }
+    }
+
+
+    private fun setUpForUISettings(
+        dialog: Dialog,
+        checkInItems: EditCheckInItemDialog.EditCheckInItems
+    ) {
         dialog.ui_settings_manual_input.isChecked = checkInItems.manualInput.isShow
 
         dialog.ui_settings_virtual_nhi_card.isChecked = checkInItems.virtualCard.isShow
@@ -153,50 +292,23 @@ class SettingsFragment : ListFragment() {
         dialog.ui_settings_customized_two_doctor_id.editText?.setText(checkInItems.customTwo.doctorId)
         dialog.ui_settings_customized_two_room_id.editText?.setText(checkInItems.customTwo.divisionId)
 
-        // set check listeners
+        dialog.ui_settings_customized_three.isChecked = checkInItems.customThree.isShow
+        dialog.ui_settings_customized_three_container.isGone = !checkInItems.customThree.isShow
+        dialog.ui_settings_customized_three_block_name.editText?.setText(checkInItems.customThree.title)
+        dialog.ui_settings_customized_three_doctor_id.editText?.setText(checkInItems.customThree.doctorId)
+        dialog.ui_settings_customized_three_room_id.editText?.setText(checkInItems.customThree.divisionId)
 
-        dialog.ui_settings_manual_input.setOnCheckedChangeListener { _, isChecked ->
-            checkInItems.manualInput.isShow = isChecked
-        }
-
-        dialog.ui_settings_virtual_nhi_card.setOnCheckedChangeListener { _, isChecked ->
-            checkInItems.virtualCard.isShow = isChecked
-        }
-
-        dialog.ui_settings_customized_one.setOnCheckedChangeListener { _, isChecked ->
-            checkInItems.customOne.isShow = isChecked
-            dialog.ui_settings_customized_one_container.isGone = !isChecked
-        }
-
-        dialog.ui_settings_customized_two.setOnCheckedChangeListener { _, isChecked ->
-            checkInItems.customTwo.isShow = isChecked
-            dialog.ui_settings_customized_two_container.isGone = !isChecked
-        }
-
-        // buttons click listeners
-
-        dialog.ui_settings_save_btn.setOnClickListener {
-
-
-            val checkInItemsForSave = prepareCustomCheckInItemsForSaving(checkInItems)
-
-            viewModel.machineTitle =
-                dialog.ui_settings_dialog_input_field.editText?.text.toString().trim()
-
-            viewModel.checkInItemList =
-                EditCheckInItemDialog.toList(checkInItemsForSave)
-
-            dialog.dismiss()
-        }
-
-        dialog.ui_settings_cancel_btn.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
+        dialog.ui_settings_customized_four.isChecked = checkInItems.customFour.isShow
+        dialog.ui_settings_customized_four_container.isGone = !checkInItems.customFour.isShow
+        dialog.ui_settings_customized_four_block_name.editText?.setText(checkInItems.customFour.title)
+        dialog.ui_settings_customized_four_doctor_id.editText?.setText(checkInItems.customFour.doctorId)
+        dialog.ui_settings_customized_four_room_id.editText?.setText(checkInItems.customFour.divisionId)
     }
 
-    private fun prepareCustomCheckInItemsForSaving(checkInItems: EditCheckInItemDialog.EditCheckInItems): EditCheckInItemDialog.EditCheckInItems {
+    private fun prepareCustomCheckInItemsForSaving(
+        dialog: Dialog,
+        checkInItems: EditCheckInItemDialog.EditCheckInItems
+    ): EditCheckInItemDialog.EditCheckInItems {
         if (dialog.ui_settings_customized_one.isChecked)
             with(checkInItems.customOne) {
                 title = dialog.ui_settings_customized_one_block_name.editText?.text.toString()
@@ -225,6 +337,39 @@ class SettingsFragment : ListFragment() {
             }
         else
             with(checkInItems.customTwo) {
+                title = ""
+                doctorId = ""
+                divisionId = ""
+            }
+
+        if (dialog.ui_settings_customized_three.isChecked)
+            with(checkInItems.customThree) {
+                title = dialog.ui_settings_customized_three_block_name.editText?.text.toString()
+                    .trim()
+                doctorId =
+                    dialog.ui_settings_customized_three_doctor_id.editText?.text.toString().trim()
+                divisionId =
+                    dialog.ui_settings_customized_three_room_id.editText?.text.toString()
+                        .trim()
+            }
+        else
+            with(checkInItems.customThree) {
+                title = ""
+                doctorId = ""
+                divisionId = ""
+            }
+
+        if (dialog.ui_settings_customized_four.isChecked)
+            with(checkInItems.customFour) {
+                title =
+                    dialog.ui_settings_customized_four_block_name.editText?.text.toString().trim()
+                doctorId =
+                    dialog.ui_settings_customized_four_doctor_id.editText?.text.toString().trim()
+                divisionId =
+                    dialog.ui_settings_customized_four_room_id.editText?.text.toString().trim()
+            }
+        else
+            with(checkInItems.customFour) {
                 title = ""
                 doctorId = ""
                 divisionId = ""
@@ -529,6 +674,9 @@ class SettingsFragment : ListFragment() {
         dialog.qms_cb_dept.isChecked = queueingMachineSettingModel.dept
         dialog.qms_cb_time.isChecked = queueingMachineSettingModel.time
 
+        dialog.queueing_machine_setting_one_ticket_switcher.isChecked =
+            queueingMachineSettingModel.isOneTicket
+
         dialog.queueing_machine_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
             dialog.queueing_machine_setting_container.isGone = !isChecked
         }
@@ -561,6 +709,7 @@ class SettingsFragment : ListFragment() {
         val doctor: Boolean = dialog.qms_cb_doctor.isChecked
         val dept: Boolean = dialog.qms_cb_dept.isChecked
         val time: Boolean = dialog.qms_cb_time.isChecked
+        val isOneTicket: Boolean = dialog.queueing_machine_setting_one_ticket_switcher.isChecked
 
         dialog.dismiss()
 
@@ -569,8 +718,119 @@ class SettingsFragment : ListFragment() {
             organization = if (!isEnable) false else organization,
             doctor = if (!isEnable) false else doctor,
             dept = if (!isEnable) false else dept,
-            time = if (!isEnable) false else time
+            time = if (!isEnable) false else time,
+            isOneTicket = if (!isEnable) false else isOneTicket
         )
+    }
+
+
+    private fun onSetAutomaticAppointmentSettingItemClicked() {
+
+        dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.automatic_appointment_setting_dialog)
+
+        if (dialog.window == null)
+            return
+
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val automaticAppointmentSettingModel = viewModel.automaticAppointmentSetting
+
+        dialog.automatic_appointment_setting_switcher.isChecked =
+            automaticAppointmentSettingModel.isEnabled
+        dialog.automatic_appointment_automatic_check_in.isChecked =
+            automaticAppointmentSettingModel.autoCheckIn
+        dialog.automatic_appointment_setting_container.isGone =
+            !automaticAppointmentSettingModel.isEnabled
+
+        dialog.automatic_appointment_doctor_input_field.editText?.setText(
+            automaticAppointmentSettingModel.doctorId
+        )
+        dialog.automatic_appointment_room_input_field.editText?.setText(
+            automaticAppointmentSettingModel.roomId
+        )
+
+
+        dialog.automatic_appointment_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
+            dialog.automatic_appointment_setting_container.isGone = !isChecked
+        }
+
+        dialog.automatic_appointment_doctor_input_field.editText?.doOnTextChanged { inputText, _, _, _ ->
+            if (inputText.toString().isNotEmpty())
+                dialog.automatic_appointment_doctor_input_field.error = null
+
+        }
+        dialog.automatic_appointment_doctor_input_field.editText?.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus)
+                dialog.automatic_appointment_doctor_input_field.error = null
+        }
+
+        dialog.automatic_appointment_room_input_field.editText?.doOnTextChanged { inputText, _, _, _ ->
+            if (inputText.toString().isNotEmpty())
+                dialog.automatic_appointment_room_input_field.error = null
+
+        }
+        dialog.automatic_appointment_room_input_field.editText?.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus)
+                dialog.automatic_appointment_room_input_field.error = null
+        }
+
+
+        val saveButton = dialog.automatic_appointment_dialog_save_btn
+        val cancelButton = dialog.automatic_appointment_dialog_cancel_btn
+
+        saveButton.setOnClickListener {
+            val isEnable = dialog.automatic_appointment_setting_switcher.isChecked
+            val autoCheck = dialog.automatic_appointment_automatic_check_in.isChecked
+
+            if (isEnable) {
+
+                val doctors =
+                    dialog.automatic_appointment_doctor_input_field.editText?.text.toString()
+                val rooms = dialog.automatic_appointment_room_input_field.editText?.text.toString()
+
+                if (doctors.isBlank() || rooms.isBlank()) {
+                    if (doctors.isBlank()) {
+                        dialog.automatic_appointment_doctor_input_field.error =
+                            getString(R.string.automatic_appointment_setting_error_empty_field)
+                    }
+
+                    if (rooms.isBlank()) {
+                        dialog.automatic_appointment_room_input_field.error =
+                            getString(R.string.automatic_appointment_setting_error_empty_field)
+                    }
+                } else {
+
+                    viewModel.automaticAppointmentSetting = AutomaticAppointmentSettingModel(
+                        isEnabled = true,
+                        doctorId = doctors,
+                        roomId = rooms,
+                        autoCheckIn = autoCheck
+                    )
+
+                    dialog.dismiss()
+                }
+
+
+            } else {
+
+                viewModel.automaticAppointmentSetting = AutomaticAppointmentSettingModel(
+                    isEnabled = false,
+                    doctorId = "",
+                    roomId = "",
+                    autoCheckIn = autoCheck
+                )
+
+                dialog.dismiss()
+            }
+        }
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun onSetLanguageSettingItemClicked() {

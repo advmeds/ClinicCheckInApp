@@ -6,6 +6,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CreateAppointmentRequest(
+    /** check in  */
+    @SerialName("checkin")
+    val checkIn: Boolean,
+
     /** clinic identity id */
     @SerialName("clinic_id")
     val clinicId: String = "",

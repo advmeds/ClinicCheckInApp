@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
@@ -72,6 +73,14 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         get() = sharedPreferencesRepo.queueingMachineSetting
         set(value) {
             sharedPreferencesRepo.queueingMachineSetting = value
+        }
+
+
+    /** @see SharedPreferencesRepo.queueingMachineSetting */
+    var automaticAppointmentSetting: AutomaticAppointmentSettingModel
+        get() = sharedPreferencesRepo.automaticAppointmentSetting
+        set(value) {
+            sharedPreferencesRepo.automaticAppointmentSetting = value
         }
 
     /** @see SharedPreferencesRepo.language */

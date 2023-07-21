@@ -1,5 +1,7 @@
 package com.advmeds.cliniccheckinapp.ui
 
+import android.app.Activity
+import android.app.DownloadManager
 import android.app.PendingIntent
 import android.app.Presentation
 import android.content.BroadcastReceiver
@@ -12,15 +14,21 @@ import android.hardware.usb.UsbManager
 import android.media.AudioManager
 import android.media.MediaRouter
 import android.media.SoundPool
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.Html
+import android.util.Log
 import android.view.MotionEvent
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -54,10 +62,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.text.DateFormat
 import java.util.*
-
 import kotlin.reflect.full.primaryConstructor
+
+private const val INSTALL_PERMISSION_REQUEST_CODE = 3440
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -70,7 +80,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     var dialog: AppCompatDialogFragment? = null
-    private var presentation : Presentation? = null
+    private var presentation: Presentation? = null
 
     private val detectUsbDeviceReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -164,6 +174,7 @@ class MainActivity : AppCompatActivity() {
                 when (BuildConfig.BUILD_TYPE) {
                     "rende" -> {
                         createAppointment(
+                            isCheckIn = false,
                             schedule = GetScheduleResponse.ScheduleBean.RENDE_DIVISION_ONLY,
                             patient = CreateAppointmentRequest.Patient(
                                 nationalId = it.icId,
@@ -183,9 +194,24 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }.onFailure {
-                it.message?.let { it1 ->
-                    Snackbar.make(binding.root, it1, Snackbar.LENGTH_LONG).show()
-                }
+//                it.message?.let { it1 ->
+//                    Snackbar.make(binding.root, it1, Snackbar.LENGTH_LONG).show()
+//                }
+
+                soundPool.play(
+                    failSoundId,
+                    1f,
+                    1f,
+                    0,
+                    0,
+                    1f
+                )
+
+                dialog = ErrorDialogFragment(
+                    title = getString(R.string.fail_to_check),
+                    message = getString(R.string.fail_to_card_reading)
+                )
+                dialog?.showNow(supportFragmentManager, null)
             }
         }
     }
@@ -258,12 +284,42 @@ class MainActivity : AppCompatActivity() {
 
     private val presentationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val isEnable = intent?.getBooleanExtra(SharedPreferencesRepo.CLINIC_PANEL_MODE_IS_ENABLED, false)
+            val isEnable =
+                intent?.getBooleanExtra(SharedPreferencesRepo.CLINIC_PANEL_MODE_IS_ENABLED, false)
 
             if (isEnable == true)
                 presentation?.show()
             else
                 presentation?.dismiss()
+        }
+    }
+
+
+    private val downloadReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val action = intent?.action
+            if (action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
+                val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                val apkUri = getDownloadedFileUri(downloadId)
+
+                if (apkUri != null) {
+                    if (context != null) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            if (!packageManager.canRequestPackageInstalls()) {
+                                Toast.makeText(
+                                    context,
+                                    "Permission for installation unknown apk is denied",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return
+                            }
+                        }
+
+                        // Permission already granted, proceed with installation
+                        installAPK(Uri.parse(apkUri), context)
+                    }
+                }
+            }
         }
     }
 
@@ -297,6 +353,9 @@ class MainActivity : AppCompatActivity() {
             presentationReceiver,
             IntentFilter(SharedPreferencesRepo.QUEUEING_BOARD_SETTING)
         )
+
+        val downloadFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        registerReceiver(downloadReceiver, downloadFilter)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -371,40 +430,100 @@ class MainActivity : AppCompatActivity() {
 
             dialog = when (it) {
                 is MainViewModel.CheckInStatus.NotChecking -> {
+
+                    val automaticAppointmentData = viewModel.automaticAppointmentSetting
+
                     if (it.response == null) {
                         null
                     } else {
-                        soundPool.play(
-                            if (it.response.success) {
-                                successSoundId
-                            } else {
-                                failSoundId
-                            },
-                            1f,
-                            1f,
-                            0,
-                            0,
-                            1f
-                        )
+
+                        if (it.response.code != 10010 || !automaticAppointmentData.isEnabled) {
+
+                            soundPool.play(
+                                if (it.response.success) {
+                                    successSoundId
+                                } else {
+                                    if (it.response.code == 10013) {
+                                        successSoundId
+                                    } else {
+                                        failSoundId
+                                    }
+                                },
+                                1f,
+                                1f,
+                                0,
+                                0,
+                                1f
+                            )
+
+                        }
 
                         if (it.response.success) {
                             SuccessDialogFragment(
                                 title = getString(R.string.success_to_check),
-                                message = if(viewModel.queueingMachineSettingIsEnable) getString(R.string.success_to_check_message) else ""
+                                message = if (viewModel.queueingMachineSettingIsEnable) getString(R.string.success_to_check_message) else ""
+                            )
+                        } else if (it.response.code == 10013) {
+                            SuccessDialogFragment(
+                                title = getString(R.string.success_to_check),
+                                message = ""
                             )
                         } else {
-                            ErrorDialogFragment(
-                                title = getString(R.string.fail_to_check),
-                                message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                    Html.fromHtml(
-                                        it.response.message,
-                                        Html.FROM_HTML_MODE_COMPACT
+                            val apiError = ApiError.initWith(it.response.code)
+
+                            when (apiError) {
+                                ApiError.APPOINTMENT_NOT_FOUND -> {
+
+                                    if (automaticAppointmentData.isEnabled) {
+                                        createAppointment(
+                                            isCheckIn = automaticAppointmentData.autoCheckIn,
+                                            schedule = GetScheduleResponse.ScheduleBean(
+                                                doctor = automaticAppointmentData.doctorId,
+                                                division = automaticAppointmentData.roomId
+                                            ),
+                                            patient = it.patient,
+                                            isAutomaticAppointment = true,
+                                            completion = { createAppointmentResponse ->
+                                                soundPool.play(
+                                                    if (createAppointmentResponse.success) {
+                                                        successSoundId
+                                                    } else {
+                                                        failSoundId
+                                                    },
+                                                    1f,
+                                                    1f,
+                                                    0,
+                                                    0,
+                                                    1f
+                                                )
+                                            }
+                                        )
+
+                                        return@observe
+
+                                    } else {
+                                        ErrorDialogFragment(
+                                            title = getString(R.string.fail_to_check),
+                                            message = getString(apiError.resStringID),
+                                            onActionButtonClicked = null
+                                        )
+                                    }
+                                }
+                                else -> {
+                                    ErrorDialogFragment(
+                                        title = getString(R.string.fail_to_check),
+                                        message = apiError?.resStringID?.let { it1 -> getString(it1) }
+                                            ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                                Html.fromHtml(
+                                                    it.response.message,
+                                                    Html.FROM_HTML_MODE_COMPACT
+                                                )
+                                            } else {
+                                                Html.fromHtml(it.response.message)
+                                            },
+                                        onActionButtonClicked = null
                                     )
-                                } else {
-                                    Html.fromHtml(it.response.message)
-                                },
-                                onActionButtonClicked = null
-                            )
+
 
 //                            val apiError = ApiError.initWith(it.response.code)
 //
@@ -439,6 +558,8 @@ class MainActivity : AppCompatActivity() {
 //                                    null
 //                                }
 //                            )
+                                }
+                            }
                         }
                     }
                 }
@@ -469,7 +590,7 @@ class MainActivity : AppCompatActivity() {
                                 schedules = it.response.schedules
                             ) { checkedSchedule ->
                                 if (checkedSchedule != null) {
-                                    createAppointment(checkedSchedule)
+                                    createAppointment(isCheckIn = false, checkedSchedule)
                                 } else {
                                     dialog?.dismiss()
                                     dialog = null
@@ -559,6 +680,57 @@ class MainActivity : AppCompatActivity() {
         showPresentation()
     }
 
+    private fun checkInstallUnknownApkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!packageManager.canRequestPackageInstalls()) {
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                    Uri.parse("package:$packageName")
+                )
+
+                manageUnknownAppSourcesLauncher.launch(intent)
+            }
+        }
+    }
+
+    private val manageUnknownAppSourcesLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                Log.d("check---", "onRequestPermissionsResult: its work")
+            } else {
+                Log.d("check---", "onRequestPermissionsResult: its work but its not")
+            }
+        }
+
+    private fun getDownloadedFileUri(downloadId: Long): String? {
+        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val query = DownloadManager.Query().setFilterById(downloadId)
+        val cursor = downloadManager.query(query)
+        if (cursor.moveToFirst()) {
+            val columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
+            val status = cursor.getInt(columnIndex)
+            if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                val uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)
+                val uriString = cursor.getString(uriIndex)
+                cursor.close()
+                return uriString
+            }
+        }
+        cursor.close()
+        return null
+    }
+
+    private fun installAPK(apkUri: Uri, context: Context) {
+        val file = File(apkUri.path)
+
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+
+        val installIntent = Intent(Intent.ACTION_INSTALL_PACKAGE).apply {
+            data = uri
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+        context.startActivity(installIntent)
+    }
 
     fun setLanguage(language: String) {
         val locale = checkForCountryInLanguageCode(language)
@@ -702,19 +874,45 @@ class MainActivity : AppCompatActivity() {
         val formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
         val queueingMachineSettings = viewModel.queueingMachineSettings
 
-        val headerCommand = getHeaderCommand(queueingMachineSettings.organization)
-        val middleCommand =
-            getMiddleCommand(doctors, divisions, serialNumbers, queueingMachineSettings)
-        val footerCommand = getFooterCommand(queueingMachineSettings.time, formatter, now)
+        if (queueingMachineSettings.isOneTicket) {
 
-        val commandList: ArrayList<ByteArray> = ArrayList()
+            val headerCommand = getHeaderCommand(queueingMachineSettings.organization)
+            val middleCommand =
+                getMiddleCommand(doctors, divisions, serialNumbers, queueingMachineSettings)
+            val footerCommand = getFooterCommand(queueingMachineSettings.time, formatter, now)
 
-        commandList.addAll(headerCommand)
-        commandList.addAll(middleCommand)
-        commandList.addAll(footerCommand)
+            val commandList: ArrayList<ByteArray> = ArrayList()
 
-        commandList.forEach { command ->
-            usbPrinterService.write(command)
+            commandList.addAll(headerCommand)
+            commandList.addAll(middleCommand)
+            commandList.addAll(footerCommand)
+
+            commandList.forEach { command ->
+                usbPrinterService.write(command)
+            }
+        }
+        else {
+            divisions.zipWith(serialNumbers, doctors).forEach { (division, serialNo, doctor) ->
+
+                val doctorArray = arrayOf(doctor)
+                val divisionArray = arrayOf(division)
+                val serialNoArray = arrayOf(serialNo)
+
+                val headerCommand = getHeaderCommand(queueingMachineSettings.organization)
+                val middleCommand =
+                    getMiddleCommand(doctorArray, divisionArray, serialNoArray, queueingMachineSettings)
+                val footerCommand = getFooterCommand(queueingMachineSettings.time, formatter, now)
+
+                val commandList: ArrayList<ByteArray> = ArrayList()
+
+                commandList.addAll(headerCommand)
+                commandList.addAll(middleCommand)
+                commandList.addAll(footerCommand)
+
+                commandList.forEach { command ->
+                    usbPrinterService.write(command)
+                }
+            }
         }
     }
 
@@ -938,7 +1136,6 @@ class MainActivity : AppCompatActivity() {
         ) {
             completion?.let { it1 -> it1() }
 
-
             if (it.success && viewModel.queueingMachineSettingIsEnable) {
 
                 val arrayDoctor = it.patients.map { patient -> patient.doctor }.toTypedArray()
@@ -964,8 +1161,10 @@ class MainActivity : AppCompatActivity() {
 
     /** Do not have NHI Card, manual check in */
     private fun createAppointment(
+        isCheckIn: Boolean,
         schedule: GetScheduleResponse.ScheduleBean,
         patient: CreateAppointmentRequest.Patient? = null,
+        isAutomaticAppointment: Boolean = false,
         completion: ((CreateAppointmentResponse) -> Unit)? = null
     ) {
         // if app support print ticket, check ticket machine connection
@@ -979,8 +1178,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.createAppointment(
+            isCheckIn = isCheckIn,
             schedule = schedule,
-            patient = patient
+            patient = patient,
+            isAutomaticAppointment = isAutomaticAppointment,
         ) { createAppointmentResponse ->
             completion?.invoke(createAppointmentResponse)
 
@@ -1016,6 +1217,7 @@ class MainActivity : AppCompatActivity() {
         val serialNo = viewModel.checkInSerialNo
 
         createAppointment(
+            isCheckIn = false,
             schedule = schedule,
             patient = CreateAppointmentRequest.Patient(
                 name = "手動取號",
@@ -1129,6 +1331,7 @@ class MainActivity : AppCompatActivity() {
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(reloadClinicDataReceiver)
         LocalBroadcastManager.getInstance(this).unregisterReceiver(presentationReceiver)
+        unregisterReceiver(downloadReceiver)
 
 //        try {
 //            unregisterReceiver(detectBluetoothStateReceiver)

@@ -48,18 +48,20 @@
 
     <string name="fail_to_check">Failed to checked in</string>
     <string name="schedule_not_found">Appointment not found</string>
-    <string name="make_appointment_now">是否現場取號？</string>
+    <string name="make_appointment_now">Do you want to take number?</string>
 
     <string name="select_schedules_title">Please select division to make an appointment</string>
 
-    <string name="make_appointment">現場取號方法</string>
-    <string name="make_appointment_right_now">點我現場取號</string>
+    <string name="make_appointment">The way to take number</string>
+    <string name="make_appointment_right_now">Click to taking number</string>
     <string name="make_appointment_message">Please insert %s, or manual enter %s</string>
-    <string name="success_to_make_appointment">已完成現場取號</string>
+    <string name="success_to_make_appointment">Taking number successfully</string>
     <string name="success_to_make_appointment_message">Please remember take number and wait for your number to be called.</string>
 
     <string name="fail_to_make_appointment">Failed to checked in</string>
-    <string name="fail_to_make_appointment_10014">非取號時段</string>
+    <string name="fail_to_make_appointment_10014">Now is not the time to take number</string>
+    
+    <string name="fail_to_card_reading">Card data reading failure,\nplease wipe the chip and try again</string>
 
     <string name="advanced_settings">Advanced Settings</string>
     <string name="password">Password</string>
@@ -84,6 +86,7 @@
         <item>@string/queueing_board_setting</item>
         <item>@string/queueing_machine_setting</item>
         <item>@string/format_checked</item>
+        <item>@string/automatic_appointment_setting</item>
         <item>@string/language_setting</item>
         <item>@string/exit_app</item>
     </string-array>
@@ -96,6 +99,8 @@
     <string name="ui_settings_virtual_nhi_card">Virtual NHI Card</string>
     <string name="ui_settings_customized_one">Customized 1</string>
     <string name="ui_settings_customized_two">Customized 2</string>
+    <string name="ui_settings_customized_three">Customized 3</string>
+    <string name="ui_settings_customized_four">Customized 4</string>
     <string name="ui_settings_customized_block_name">Block Name</string>
     <string name="ui_settings_customized_doctor_id">Doctor ID</string>
     <string name="ui_settings_customized_room_id">Room ID</string>
@@ -132,6 +137,8 @@
     <string name="qms_dept_label">Dept.</string>
     <string name="qms_doctor_label">Doctor</string>
     <string name="qms_organization_label">Organization</string>
+    <string name="qms_one_ticket_label">All information in one ticket</string>
+
 
     <!-- Language Setting -->
     <string name="version_setting">Version Setting</string>
@@ -150,29 +157,34 @@
     <string name="no_internet">No Internet</string>
     <string name="service_timeout">Connect Timeout</string>
 
+    <!-- Automatic Appointment -->
+    <string name="automatic_appointment_setting">Automatic Appointment Setting</string>
+    <string name="automatic_appointment_setting_error_empty_field">that field shouldn\'t be empty</string>
+    <string name="automatic_appointment_setting_automatic_check_in">Automatic Check-In</string>
+
 
     <string name="is_selected_language_checker_image_description">is selected language checker</string>
     
     <string name="mScheduler_api_error_10001">The key field can not be blank</string>
     <string name="mScheduler_api_error_10002">Organization Not Found</string>
-    <string name="mScheduler_api_error_10003">Doctor Not Found</string>
+    <string name="mScheduler_api_error_10003">The specified doctor cannot be found.</string>
     <string name="mScheduler_api_error_10004">Division Not Found</string>
     <string name="mScheduler_api_error_10005">Patient name can not be blank</string>
     <string name="mScheduler_api_error_10006">Patient mobile can not be blank</string>
     <string name="mScheduler_api_error_10007">Patient date of birth is invalid</string>
     <string name="mScheduler_api_error_10008">Patient national id can not be blank</string>
-    <string name="mScheduler_api_error_10009">指定時段格式錯誤</string>
+    <string name="mScheduler_api_error_10009">Time shift format is wrong</string>
     <string name="mScheduler_api_error_10010">Data not found，please re-enter number or contact service staff, thanks.</string>
-    <string name="mScheduler_api_error_10011">報到時間已過，請洽服務人員</string>
-    <string name="mScheduler_api_error_10012">尚未到 %s 報到時間，%s 前往報到或洽服務人員</string>
-    <string name="mScheduler_api_error_10013">重複報到，若有問題請洽服務人員</string>
-    <string name="mScheduler_api_error_10014">目前不提供本服務</string>
-    <string name="mScheduler_api_error_10014_ptch_ca"><![CDATA[請於<font color=\'#E54B4B\'>每星期三 13:00 ~ 17:00</font> 再進行取號]]></string>
-    <string name="mScheduler_api_error_10015">掛號人數已滿，或請洽服務人員</string>
-    <string name="mScheduler_api_error_10016">重複掛號，若有問題請洽服務人員</string>
+    <string name="mScheduler_api_error_10011">Check-in time has passed</string>
+    <string name="mScheduler_api_error_10012">It is not yet time for check-in at %s. Please proceed to the check-in area or contact the service personnel before %s.</string>
+    <string name="mScheduler_api_error_10013">Duplicate check-in. If you have any issues, please contact the service staff</string>
+    <string name="mScheduler_api_error_10014">Currently, this service is not available.</string>
+    <string name="mScheduler_api_error_10014_ptch_ca"><![CDATA[Please retrieve your number again during <font color=\'#E54B4B\'>every Wednesday from 13:00 to 17:00</font>.]]></string>
+    <string name="mScheduler_api_error_10015">The registration quota has been reached. Please contact the service staff for assistance.</string>
+    <string name="mScheduler_api_error_10016">Duplicate registration. If you have any issues, please contact the service staff.</string>
 
-    <string name="coming_soon">功能尚未開放</string>
+    <string name="coming_soon">The feature is not available yet.</string>
 
-    <string name="reconnecting">網路連線偵測中，請稍後</string>
+    <string name="reconnecting">Network connection detection in progress. Please wait a moment.</string>
     <string name="password_is_incorrect">password is incorrect</string>
 </resources>

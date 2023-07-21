@@ -61,7 +61,7 @@
     <string name="fail_to_make_appointment">掛號失敗</string>
     <string name="fail_to_make_appointment_10014">非取號時段</string>
 
-
+    <string name="fail_to_card_reading">卡片資料讀取失敗，請擦拭晶片後重試</string>
 
     <string name="advanced_settings">進階設定</string>
     <string name="password">密碼</string>
@@ -86,6 +86,7 @@
         <item>@string/queueing_board_setting</item>
         <item>@string/queueing_machine_setting</item>
         <item>@string/format_checked</item>
+        <item>@string/automatic_appointment_setting</item>
         <item>@string/language_setting</item>
         <item>@string/exit_app</item>
     </string-array>
@@ -97,6 +98,8 @@
     <string name="ui_settings_virtual_nhi_card">虛擬健保卡</string>
     <string name="ui_settings_customized_one">自定義 1</string>
     <string name="ui_settings_customized_two">自定義 2</string>
+    <string name="ui_settings_customized_three">自定義 3</string>
+    <string name="ui_settings_customized_four">自定義 4</string>
     <string name="ui_settings_customized_block_name">區塊名稱</string>
     <string name="ui_settings_customized_doctor_id">醫生代碼</string>
     <string name="ui_settings_customized_room_id">診間代碼</string>
@@ -130,6 +133,8 @@
     <string name="qms_dept_label">科別名稱</string>
     <string name="qms_doctor_label">醫生名稱</string>
     <string name="qms_organization_label">醫事機構</string>
+    <string name="qms_one_ticket_label">單票多號</string>
+
 
     <!-- Language Setting -->
     <string name="version_setting">版本設定</string>
@@ -139,6 +144,11 @@
 
     <string name="zh_tw_language">繁體中文</string>
     <string name="en_language">English</string>
+
+    <!-- Automatic Appointment -->
+    <string name="automatic_appointment_setting">自動預約設定</string>
+    <string name="automatic_appointment_setting_error_empty_field">字段不應為空</string>
+    <string name="automatic_appointment_setting_automatic_check_in">自動報到</string>
 
     <string-array name="language_items">
         <item>@string/zh_tw_language</item>

@@ -40,6 +40,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:singleLine="true"
                         android:textSize="@dimen/font_size_h4" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -70,6 +71,7 @@
                             android:scaleY="@dimen/check_box_scale" />
 
                         <TextView
+                            android:id="@+id/ui_settings_manual_input_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/ui_settings_manual_input"
@@ -97,6 +99,7 @@
                             android:scaleY="@dimen/check_box_scale" />
 
                         <TextView
+                            android:id="@+id/ui_settings_virtual_nhi_card_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/ui_settings_virtual_nhi_card"
@@ -106,7 +109,7 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
@@ -124,6 +127,7 @@
                             android:scaleY="@dimen/check_box_scale" />
 
                         <TextView
+                            android:id="@+id/ui_settings_customized_one_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/ui_settings_customized_one"
@@ -154,6 +158,7 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
+                                android:singleLine="true"
                                 android:layout_height="wrap_content" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -172,6 +177,7 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
+                                android:singleLine="true"
                                 android:layout_height="wrap_content" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -190,6 +196,7 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
+                                android:singleLine="true"
                                 android:layout_height="wrap_content" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -216,6 +223,7 @@
                             android:scaleY="@dimen/check_box_scale" />
 
                         <TextView
+                            android:id="@+id/ui_settings_customized_two_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/ui_settings_customized_two"
@@ -247,7 +255,8 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:singleLine="true" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -265,7 +274,8 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:singleLine="true" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -283,13 +293,206 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:singleLine="true" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
 
                     </LinearLayout>
 
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            android:id="@+id/ui_settings_customized_three"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/setting_dialog_check_box_margin_start"
+                            android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
+                            android:layout_marginEnd="@dimen/setting_dialog_check_box_margin_end"
+                            android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
+                            android:gravity="center"
+                            android:scaleX="@dimen/check_box_scale"
+                            android:scaleY="@dimen/check_box_scale" />
+
+                        <TextView
+                            android:id="@+id/ui_settings_customized_three_text_view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ui_settings_customized_three"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/font_size_h4" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <LinearLayout
+                        android:id="@+id/ui_settings_customized_three_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingStart="@dimen/space_big"
+                        android:visibility="gone">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/ui_settings_customized_three_block_name"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/space_small"
+                            android:layout_marginStart="@dimen/space_big"
+                            android:hint="@string/ui_settings_customized_block_name"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/font_size_h4">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/ui_settings_customized_three_doctor_id"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/space_small"
+                            android:layout_marginStart="@dimen/space_big"
+                            android:hint="@string/ui_settings_customized_doctor_id"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/font_size_h4">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/ui_settings_customized_three_room_id"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/space_small"
+                            android:layout_marginStart="@dimen/space_big"
+                            android:hint="@string/ui_settings_customized_room_id"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/font_size_h4">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            android:id="@+id/ui_settings_customized_four"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/setting_dialog_check_box_margin_start"
+                            android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
+                            android:layout_marginEnd="@dimen/setting_dialog_check_box_margin_end"
+                            android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
+                            android:gravity="center"
+                            android:scaleX="@dimen/check_box_scale"
+                            android:scaleY="@dimen/check_box_scale" />
+
+                        <TextView
+                            android:id="@+id/ui_settings_customized_four_text_view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ui_settings_customized_four"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/font_size_h4" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+                    <LinearLayout
+                        android:id="@+id/ui_settings_customized_four_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingStart="@dimen/space_big"
+                        android:visibility="gone">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/ui_settings_customized_four_block_name"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/space_small"
+                            android:layout_marginStart="@dimen/space_big"
+                            android:hint="@string/ui_settings_customized_block_name"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/font_size_h4">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/ui_settings_customized_four_doctor_id"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/space_small"
+                            android:layout_marginStart="@dimen/space_big"
+                            android:hint="@string/ui_settings_customized_doctor_id"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/font_size_h4">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/ui_settings_customized_four_room_id"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/space_small"
+                            android:layout_marginStart="@dimen/space_big"
+                            android:hint="@string/ui_settings_customized_room_id"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/font_size_h4">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                    </LinearLayout>
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 

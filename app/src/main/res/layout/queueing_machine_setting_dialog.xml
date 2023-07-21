@@ -184,6 +184,35 @@
                                     android:textSize="@dimen/font_size_h4" />
 
                             </androidx.appcompat.widget.LinearLayoutCompat>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="@dimen/space_normal"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/space_big"
+                                    android:layout_marginTop="@dimen/setting_dialog_check_box_margin_top"
+                                    android:layout_marginBottom="@dimen/setting_dialog_check_box_margin_bottom"
+                                    android:text="@string/qms_one_ticket_label"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/font_size_h4" />
+
+
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/queueing_machine_setting_one_ticket_switcher"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="20dp"
+                                    android:saveEnabled="true"
+                                    android:scaleX="@dimen/switcher_scale"
+                                    android:scaleY="@dimen/switcher_scale" />
+
+                            </LinearLayout>
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
