@@ -252,6 +252,22 @@ class HomeFragment : Fragment() {
                                 )
                             )
                         }
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM_THREE -> {
+                            (requireActivity() as MainActivity).createFakeAppointment(
+                                schedule = GetScheduleResponse.ScheduleBean(
+                                    doctor = checkInItem.doctorId,
+                                    division = checkInItem.divisionId
+                                )
+                            )
+                        }
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM_FOUR -> {
+                            (requireActivity() as MainActivity).createFakeAppointment(
+                                schedule = GetScheduleResponse.ScheduleBean(
+                                    doctor = checkInItem.doctorId,
+                                    division = checkInItem.divisionId
+                                )
+                            )
+                        }
                         EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
                             (requireActivity() as MainActivity).checkInWithVirtualCard()
                         }

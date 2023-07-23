@@ -890,8 +890,7 @@ class MainActivity : AppCompatActivity() {
             commandList.forEach { command ->
                 usbPrinterService.write(command)
             }
-        }
-        else {
+        } else {
             divisions.zipWith(serialNumbers, doctors).forEach { (division, serialNo, doctor) ->
 
                 val doctorArray = arrayOf(doctor)
@@ -900,7 +899,12 @@ class MainActivity : AppCompatActivity() {
 
                 val headerCommand = getHeaderCommand(queueingMachineSettings.organization)
                 val middleCommand =
-                    getMiddleCommand(doctorArray, divisionArray, serialNoArray, queueingMachineSettings)
+                    getMiddleCommand(
+                        doctorArray,
+                        divisionArray,
+                        serialNoArray,
+                        queueingMachineSettings
+                    )
                 val footerCommand = getFooterCommand(queueingMachineSettings.time, formatter, now)
 
                 val commandList: ArrayList<ByteArray> = ArrayList()
@@ -1224,12 +1228,11 @@ class MainActivity : AppCompatActivity() {
                 nationalId = "Fake${String.format("%06d", serialNo)}"
             )
         ) { createAppointmentResponse ->
-            if (createAppointmentResponse.success) {
-                viewModel.checkInSerialNo = if (serialNo >= 999999) {
-                    0
-                } else {
-                    serialNo + 1
-                }
+
+            viewModel.checkInSerialNo = if (serialNo >= 999999) {
+                0
+            } else {
+                serialNo + 1
             }
         }
     }
