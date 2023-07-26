@@ -24,7 +24,6 @@ import androidx.fragment.app.ListFragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.SettingsFragmentBinding
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
@@ -385,16 +384,17 @@ class SettingsFragment : ListFragment() {
 
         showTextInputDialog(
             titleResId = R.string.clinic_panel_url,
-            inputText = viewModel.mSchedulerServerDomain,
+            inputText = viewModel.mSchedulerServerDomain.first,
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI,
             inputTextLabel = inputTextLabel,
             hint = hint,
+            selectedRatio = viewModel.mSchedulerServerDomain.second,
             showRadioButton = true,
-            onConfirmClick = { domain ->
+            onDomainConfirmClick = { domain, selected ->
                 try {
                     HttpUrl.get(domain)
 
-                    viewModel.mSchedulerServerDomain = domain
+                    viewModel.mSchedulerServerDomain = Pair(domain, selected)
                 } catch (e: Exception) {
                     AlertDialog.Builder(requireContext())
                         .setMessage(e.message)
@@ -519,9 +519,11 @@ class SettingsFragment : ListFragment() {
         inputText: String = "",
         hint: String = "",
         inputType: Int = InputType.TYPE_CLASS_TEXT,
+        selectedRatio: Int = 0,
         showRadioButton: Boolean = false,
         showDescription: Boolean = false,
-        onConfirmClick: (String) -> Unit
+        onConfirmClick: (String) -> Unit = {},
+        onDomainConfirmClick: ((String, Int) -> Unit)? = null
     ) {
 
         dialog = Dialog(requireContext())
@@ -547,7 +549,13 @@ class SettingsFragment : ListFragment() {
             val urlContainer = dialog.dialog_input_container
 
             dialog.dialog_radio_group.visibility = View.VISIBLE
-            urlContainer.visibility = View.GONE
+            urlContainer.isGone = selectedRatio != 2
+
+            when(selectedRatio) {
+                0 -> dialog.dialog_radio_group.check(R.id.domain_service_official_site)
+                1 -> dialog.dialog_radio_group.check(R.id.domain_service_testing_site)
+                2 -> dialog.dialog_radio_group.check(R.id.domain_service_customize)
+            }
 
             dialog.dialog_radio_group.setOnCheckedChangeListener(
                 RadioGroup.OnCheckedChangeListener { _, checkedId ->
@@ -569,13 +577,25 @@ class SettingsFragment : ListFragment() {
             var inputData = dialog.dialog_input_field.editText?.text.toString().trim()
 
             if (showRadioButton) {
-                inputData = when (dialog.dialog_radio_group.checkedRadioButtonId) {
-                    R.id.domain_service_official_site -> "https://www.mscheduler.com"
-                    R.id.domain_service_testing_site -> "https://test.mscheduler.com"
-                    R.id.domain_service_customize -> dialog.dialog_input_field.editText?.text.toString()
-                        .trim()
-                    else -> BuildConfig.MS_DOMAIN
+
+                var selectedRadio = 0
+
+                when (dialog.dialog_radio_group.checkedRadioButtonId) {
+                    R.id.domain_service_official_site -> {
+                        inputData = "https://www.mscheduler.com"
+                        selectedRadio = 0
+                    }
+                    R.id.domain_service_testing_site -> {
+                        inputData = "https://test.mscheduler.com"
+                        selectedRadio = 1
+                    }
+                    R.id.domain_service_customize -> {
+                        inputData = dialog.dialog_input_field.editText?.text.toString().trim()
+                        selectedRadio = 2
+                    }
                 }
+
+                onDomainConfirmClick?.invoke(inputData, selectedRadio)
             }
 
             onConfirmClick(inputData)

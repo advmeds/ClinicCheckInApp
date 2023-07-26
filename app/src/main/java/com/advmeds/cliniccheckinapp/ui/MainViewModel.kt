@@ -97,7 +97,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         get() {
             val retrofit = Retrofit.Builder()
                 .client(client)
-                .baseUrl(sharedPreferencesRepo.mSchedulerServerDomain)
+                .baseUrl(sharedPreferencesRepo.mSchedulerServerDomain.first)
                 .addConverterFactory(format.asConverterFactory(MediaType.get("application/json")))
                 .build()
 

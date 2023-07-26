@@ -70,10 +70,10 @@
     <string name="server_domain">伺服器網域</string>
     <string name="org_id">機構代碼</string>
     <string name="doctors">醫師代碼</string>
-    <string name="rooms">診間代碼</string>
+    <string name="rooms">科別代碼</string>
     <string name="clinic_panel_url">叫號面板網址</string>
     <string name="format_checked">報到格式檢查</string>
-    <string name="dept_id">科別代碼</string>
+    <string name="dept_id">診間代碼</string>
     <string name="exit_app">離開應用程式</string>
 
     <string-array name="setting_items">

@@ -70,10 +70,10 @@
     <string name="server_domain">Service domain</string>
     <string name="org_id">Clinic ID</string>
     <string name="doctors">Doctor ID</string>
-    <string name="rooms">Room ID</string>
+    <string name="rooms">Division ID</string>
     <string name="clinic_panel_url">Clinic Panel Url</string>
     <string name="format_checked">Check In Setting</string>
-    <string name="dept_id">Dept ID</string>
+    <string name="dept_id">Room ID</string>
     <string name="exit_app">Exit App</string>
 
     <string-array name="setting_items">

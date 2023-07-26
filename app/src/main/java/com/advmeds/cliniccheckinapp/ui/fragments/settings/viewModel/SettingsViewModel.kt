@@ -13,7 +13,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
 
     /** @see SharedPreferencesRepo.mSchedulerServerDomain */
-    var mSchedulerServerDomain: String
+    var mSchedulerServerDomain: Pair<String, Int>
         get() = sharedPreferencesRepo.mSchedulerServerDomain
         set(value) {
             sharedPreferencesRepo.mSchedulerServerDomain = value
