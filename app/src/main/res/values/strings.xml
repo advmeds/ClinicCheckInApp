@@ -60,7 +60,7 @@
 
     <string name="fail_to_make_appointment">Failed to checked in</string>
     <string name="fail_to_make_appointment_10014">Now is not the time to take number</string>
-    
+
     <string name="fail_to_card_reading">Card data reading failure,\nplease wipe the chip and try again</string>
 
     <string name="advanced_settings">Advanced Settings</string>
@@ -153,7 +153,7 @@
         <item>@string/zh_tw_language</item>
         <item>@string/en_language</item>
     </string-array>
-    
+
     <string name="no_internet">No Internet</string>
     <string name="service_timeout">Connect Timeout</string>
 
@@ -162,9 +162,13 @@
     <string name="automatic_appointment_setting_error_empty_field">that field shouldn\'t be empty</string>
     <string name="automatic_appointment_setting_automatic_check_in">Automatic Check-In</string>
 
+    <!-- Software Update -->
+    <string name="update_software_dialog_title">Software Update</string>
+    <string name="update_software_dialog_text_checking_for_updates">Checking for updates…</string>
+    <string name="update_software_dialog_text_downloading">Downloading…</string>
 
     <string name="is_selected_language_checker_image_description">is selected language checker</string>
-    
+
     <string name="mScheduler_api_error_10001">The key field can not be blank</string>
     <string name="mScheduler_api_error_10002">Organization Not Found</string>
     <string name="mScheduler_api_error_10003">The specified doctor cannot be found.</string>

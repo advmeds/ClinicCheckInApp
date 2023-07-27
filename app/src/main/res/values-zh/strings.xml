@@ -150,6 +150,11 @@
     <string name="automatic_appointment_setting_error_empty_field">字段不應為空</string>
     <string name="automatic_appointment_setting_automatic_check_in">自動報到</string>
 
+    <!-- Software Update -->
+    <string name="update_software_dialog_title">軟體更新</string>
+    <string name="update_software_dialog_text_checking_for_updates">檢查更新中</string>
+    <string name="update_software_dialog_text_downloading">下載中</string>
+
     <string-array name="language_items">
         <item>@string/zh_tw_language</item>
         <item>@string/en_language</item>
