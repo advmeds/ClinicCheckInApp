@@ -680,17 +680,20 @@ class MainActivity : AppCompatActivity() {
         showPresentation()
     }
 
-    private fun checkInstallUnknownApkPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (!packageManager.canRequestPackageInstalls()) {
-                val intent = Intent(
-                    Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
-                    Uri.parse("package:$packageName")
-                )
+    fun checkInstallUnknownApkPermission() : Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            return packageManager.canRequestPackageInstalls()
 
-                manageUnknownAppSourcesLauncher.launch(intent)
-            }
-        }
+        return true
+    }
+
+    fun getInstallUnknownApkPermission() {
+        val intent = Intent(
+            Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+            Uri.parse("package:$packageName")
+        )
+
+        manageUnknownAppSourcesLauncher.launch(intent)
     }
 
     private val manageUnknownAppSourcesLauncher =

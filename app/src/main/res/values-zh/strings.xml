@@ -74,6 +74,7 @@
     <string name="clinic_panel_url">叫號面板網址</string>
     <string name="format_checked">報到格式檢查</string>
     <string name="dept_id">診間代碼</string>
+    <string name="check_update">檢查更新</string>
     <string name="exit_app">離開應用程式</string>
 
     <string-array name="setting_items">
@@ -88,6 +89,7 @@
         <item>@string/format_checked</item>
         <item>@string/automatic_appointment_setting</item>
         <item>@string/language_setting</item>
+        <item>@string/check_update</item>
         <item>@string/exit_app</item>
     </string-array>
 

@@ -74,6 +74,7 @@
     <string name="clinic_panel_url">Clinic Panel Url</string>
     <string name="format_checked">Check In Setting</string>
     <string name="dept_id">Room ID</string>
+    <string name="check_update">Check Update</string>
     <string name="exit_app">Exit App</string>
 
     <string-array name="setting_items">
@@ -88,6 +89,7 @@
         <item>@string/format_checked</item>
         <item>@string/automatic_appointment_setting</item>
         <item>@string/language_setting</item>
+        <item>@string/check_update</item>
         <item>@string/exit_app</item>
     </string-array>
 

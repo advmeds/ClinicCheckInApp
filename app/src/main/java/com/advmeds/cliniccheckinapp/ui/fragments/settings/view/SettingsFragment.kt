@@ -1,11 +1,18 @@
 package com.advmeds.cliniccheckinapp.ui.fragments.settings.view
 
 import android.app.ActionBar
+import android.app.Activity
+import android.app.Application
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.InputType
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -15,6 +22,7 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.RadioGroup
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -22,6 +30,7 @@ import androidx.core.view.isGone
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.ListFragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.advmeds.cliniccheckinapp.R
@@ -31,13 +40,16 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppoi
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
+import com.advmeds.cliniccheckinapp.repositories.DownloadControllerRepository
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter.LanguageAdapter
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter.SettingsAdapter
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.model.LanguageModel
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.model.combineArrays
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.SettingsViewModel
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.SettingsViewModelFactory
 import com.advmeds.cliniccheckinapp.utils.Converter
+import com.advmeds.cliniccheckinapp.utils.DownloadController
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.android.synthetic.main.automatic_appointment_setting_dialog.*
@@ -45,6 +57,7 @@ import kotlinx.android.synthetic.main.format_checked_list.*
 import kotlinx.android.synthetic.main.language_setting_dialog.*
 import kotlinx.android.synthetic.main.queueing_board_setting_dialog.*
 import kotlinx.android.synthetic.main.queueing_machine_setting_dialog.*
+import kotlinx.android.synthetic.main.software_update_dialog.*
 import kotlinx.android.synthetic.main.text_input_dialog.*
 import kotlinx.android.synthetic.main.ui_setting_dialog.*
 import okhttp3.HttpUrl
@@ -52,7 +65,7 @@ import okhttp3.HttpUrl
 
 class SettingsFragment : ListFragment() {
 
-    private val viewModel: SettingsViewModel by viewModels()
+    private lateinit var viewModel: SettingsViewModel
 
     private var _binding: SettingsFragmentBinding? = null
 
@@ -70,6 +83,16 @@ class SettingsFragment : ListFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val downloadController = DownloadController(requireContext().applicationContext)
+        val downloadControllerRepository = DownloadControllerRepository(downloadController)
+        val viewModelFactory = SettingsViewModelFactory(
+            requireContext().applicationContext as Application,
+            downloadControllerRepository
+        )
+
+        viewModel = ViewModelProvider(this, viewModelFactory)[SettingsViewModel::class.java]
+
         _binding = SettingsFragmentBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -113,7 +136,8 @@ class SettingsFragment : ListFragment() {
             8 -> onSetFormatCheckedListItemClicked()
             9 -> onSetAutomaticAppointmentSettingItemClicked()
             10 -> onSetLanguageSettingItemClicked()
-            11 -> onSetExitItemClicked()
+            11 -> onSetSoftwareSettingItemClicked()
+            12 -> onSetExitItemClicked()
         }
     }
 
@@ -551,7 +575,7 @@ class SettingsFragment : ListFragment() {
             dialog.dialog_radio_group.visibility = View.VISIBLE
             urlContainer.isGone = selectedRatio != 2
 
-            when(selectedRatio) {
+            when (selectedRatio) {
                 0 -> dialog.dialog_radio_group.check(R.id.domain_service_official_site)
                 1 -> dialog.dialog_radio_group.check(R.id.domain_service_testing_site)
                 2 -> dialog.dialog_radio_group.check(R.id.domain_service_customize)
@@ -899,6 +923,42 @@ class SettingsFragment : ListFragment() {
         dialog.show()
     }
 
+    private fun onSetSoftwareSettingItemClicked() {
+
+        dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.software_update_dialog)
+
+        if (dialog.window == null)
+            return
+
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val havePermissionForInstallUnknownApp = checkInstallUnknownApkPermission()
+
+        if (!havePermissionForInstallUnknownApp) {
+
+            dialog.update_software_dialog_ok_btn.isGone = false
+
+            dialog.update_software_progress_bar.isGone = true
+            dialog.update_software_text.text =
+                "This app don't have permission for installing app do you want to give permission for app?"
+
+            dialog.update_software_dialog_ok_btn.setOnClickListener {
+                dialog.dismiss()
+                (requireContext() as MainActivity).getInstallUnknownApkPermission()
+            }
+        } else {
+
+        }
+
+        dialog.update_software_dialog_cancel_btn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
     private fun onSetExitItemClicked() {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.exit_app)
@@ -980,6 +1040,17 @@ class SettingsFragment : ListFragment() {
         return linearLayout
     }
 
+    private fun checkInstallUnknownApkPermission() =
+        (requireContext() as MainActivity).checkInstallUnknownApkPermission()
+
+    private val manageUnknownAppSourcesLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                Log.d("check---", "onRequestPermissionsResult: its work")
+            } else {
+                Log.d("check---", "onRequestPermissionsResult: its work but its not")
+            }
+        }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -7,9 +7,14 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppoi
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
+import com.advmeds.cliniccheckinapp.repositories.DownloadControllerRepository
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
+import com.advmeds.cliniccheckinapp.utils.DownloadController
 
-class SettingsViewModel(application: Application) : AndroidViewModel(application) {
+class SettingsViewModel(
+    application: Application,
+    downloadControllerRepository: DownloadControllerRepository
+) : AndroidViewModel(application) {
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
 
     /** @see SharedPreferencesRepo.mSchedulerServerDomain */
