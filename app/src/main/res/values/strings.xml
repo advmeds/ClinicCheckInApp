@@ -168,6 +168,9 @@
     <string name="update_software_dialog_title">Software Update</string>
     <string name="update_software_dialog_text_checking_for_updates">Checking for updates…</string>
     <string name="update_software_dialog_text_downloading">Downloading…</string>
+    <string name="update_software_dialog_update_is_not_available">There no new version</string>
+    <string name="update_software_dialog_downloaded">Downloaded </string>
+    <string name="unexpected_error">Error</string>
 
     <string name="is_selected_language_checker_image_description">is selected language checker</string>
 

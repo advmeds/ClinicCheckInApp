@@ -4,13 +4,9 @@ import android.app.ActionBar
 import android.app.Activity
 import android.app.Application
 import android.app.Dialog
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.text.InputType
 import android.util.Log
 import android.util.TypedValue
@@ -29,8 +25,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isGone
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.ListFragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.advmeds.cliniccheckinapp.R
@@ -48,6 +44,8 @@ import com.advmeds.cliniccheckinapp.ui.fragments.settings.model.LanguageModel
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.model.combineArrays
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.SettingsViewModel
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.SettingsViewModelFactory
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.UpdateSoftwareDownloadingStatus
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.UpdateSoftwareRequestStatus
 import com.advmeds.cliniccheckinapp.utils.Converter
 import com.advmeds.cliniccheckinapp.utils.DownloadController
 import com.advmeds.cliniccheckinapp.utils.showOnly
@@ -60,6 +58,10 @@ import kotlinx.android.synthetic.main.queueing_machine_setting_dialog.*
 import kotlinx.android.synthetic.main.software_update_dialog.*
 import kotlinx.android.synthetic.main.text_input_dialog.*
 import kotlinx.android.synthetic.main.ui_setting_dialog.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import okhttp3.HttpUrl
 
 
@@ -925,6 +927,9 @@ class SettingsFragment : ListFragment() {
 
     private fun onSetSoftwareSettingItemClicked() {
 
+        var stateFlowJob: Job? = null
+
+
         dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.software_update_dialog)
 
@@ -942,6 +947,7 @@ class SettingsFragment : ListFragment() {
 
             dialog.update_software_progress_bar.isGone = true
             dialog.update_software_text.text =
+                    // Todo send it to resources
                 "This app don't have permission for installing app do you want to give permission for app?"
 
             dialog.update_software_dialog_ok_btn.setOnClickListener {
@@ -949,11 +955,32 @@ class SettingsFragment : ListFragment() {
                 (requireContext() as MainActivity).getInstallUnknownApkPermission()
             }
         } else {
+            viewModel.checkForUpdates()
 
+            stateFlowJob = lifecycleScope.launch(Dispatchers.Main) {
+                viewModel.uiState.collect { uiState ->
+
+                    val isShowLoadingComponent =
+                        uiState.updateSoftwareRequestStatus == UpdateSoftwareRequestStatus.LOADING ||
+                                uiState.updateSoftwareDownloadingStatus == UpdateSoftwareDownloadingStatus.LOADING
+
+                    val text = if (uiState.updateSoftwareDialogText != 0)
+                        "${getString(uiState.updateSoftwareDialogText)} ${uiState.updateSoftwarePercentageDownload}"
+                    else ""
+
+                    dialog.update_software_progress_bar.isGone = !isShowLoadingComponent
+                    dialog.update_software_text.text = text
+                }
+            }
         }
 
         dialog.update_software_dialog_cancel_btn.setOnClickListener {
             dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            viewModel.closeUpdateDialog()
+            stateFlowJob?.cancel()
         }
 
         dialog.show()

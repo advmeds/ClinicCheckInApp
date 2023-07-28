@@ -1,10 +1,7 @@
 package com.advmeds.cliniccheckinapp.models.remote.mScheduler
 
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
-import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
-import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetClinicGuardianResponse
-import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
-import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.*
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -68,4 +65,18 @@ interface ApiService {
         @Body
         request: CreateAppointmentRequest
     ): Response<CreateAppointmentResponse>
+
+    /**
+     * make an appointment
+     *
+     * @param version
+     * @param name - name of the app
+     * @return link to apk and number next version or message about no new version
+     */
+    @GET("api/v1/controller")
+    suspend fun checkControllerAppVersion(
+        @Query("version") version: String,
+        @Query("name") name: String
+    ): Response<ControllerAppVersionResponse>
+
 }

@@ -39,6 +39,7 @@ android {
             buildConfigField "String", "ORG_ID", "\"1\""
             buildConfigField "String", "DEFAULT_LANGUAGE", "\"en\""
             buildConfigField "String", "DEFAULT_PASSWORD", "\"qwerty\""
+            buildConfigField "String", "UPDATE_NAME", "\"CheckInApp\""
         }
 
         // 門診取號機
