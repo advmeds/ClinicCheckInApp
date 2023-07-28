@@ -114,6 +114,8 @@ class EditCheckInItemDialog(
         val type: CheckInItemType,
         /** 門診名稱 */
         var title: String = "",
+        /** action of the custom block*/
+        var action: String = "",
         /** 診別ID */
         var divisionId: String = "",
         /** 醫生ID */

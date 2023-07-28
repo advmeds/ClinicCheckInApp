@@ -308,24 +308,28 @@ class SettingsFragment : ListFragment() {
         dialog.ui_settings_customized_one.isChecked = checkInItems.customOne.isShow
         dialog.ui_settings_customized_one_container.isGone = !checkInItems.customOne.isShow
         dialog.ui_settings_customized_one_block_name.editText?.setText(checkInItems.customOne.title)
+        dialog.ui_settings_customized_one_action.editText?.setText(checkInItems.customOne.action)
         dialog.ui_settings_customized_one_doctor_id.editText?.setText(checkInItems.customOne.doctorId)
         dialog.ui_settings_customized_one_room_id.editText?.setText(checkInItems.customOne.divisionId)
 
         dialog.ui_settings_customized_two.isChecked = checkInItems.customTwo.isShow
         dialog.ui_settings_customized_two_container.isGone = !checkInItems.customTwo.isShow
         dialog.ui_settings_customized_two_block_name.editText?.setText(checkInItems.customTwo.title)
+        dialog.ui_settings_customized_two_action.editText?.setText(checkInItems.customTwo.action)
         dialog.ui_settings_customized_two_doctor_id.editText?.setText(checkInItems.customTwo.doctorId)
         dialog.ui_settings_customized_two_room_id.editText?.setText(checkInItems.customTwo.divisionId)
 
         dialog.ui_settings_customized_three.isChecked = checkInItems.customThree.isShow
         dialog.ui_settings_customized_three_container.isGone = !checkInItems.customThree.isShow
         dialog.ui_settings_customized_three_block_name.editText?.setText(checkInItems.customThree.title)
+        dialog.ui_settings_customized_three_action.editText?.setText(checkInItems.customThree.action)
         dialog.ui_settings_customized_three_doctor_id.editText?.setText(checkInItems.customThree.doctorId)
         dialog.ui_settings_customized_three_room_id.editText?.setText(checkInItems.customThree.divisionId)
 
         dialog.ui_settings_customized_four.isChecked = checkInItems.customFour.isShow
         dialog.ui_settings_customized_four_container.isGone = !checkInItems.customFour.isShow
         dialog.ui_settings_customized_four_block_name.editText?.setText(checkInItems.customFour.title)
+        dialog.ui_settings_customized_four_action.editText?.setText(checkInItems.customFour.action)
         dialog.ui_settings_customized_four_doctor_id.editText?.setText(checkInItems.customFour.doctorId)
         dialog.ui_settings_customized_four_room_id.editText?.setText(checkInItems.customFour.divisionId)
     }
@@ -336,17 +340,19 @@ class SettingsFragment : ListFragment() {
     ): EditCheckInItemDialog.EditCheckInItems {
         if (dialog.ui_settings_customized_one.isChecked)
             with(checkInItems.customOne) {
-                title = dialog.ui_settings_customized_one_block_name.editText?.text.toString()
-                    .trim()
+                title =
+                    dialog.ui_settings_customized_one_block_name.editText?.text.toString().trim()
+                action =
+                    dialog.ui_settings_customized_one_action.editText?.text.toString().trim()
                 doctorId =
                     dialog.ui_settings_customized_one_doctor_id.editText?.text.toString().trim()
                 divisionId =
-                    dialog.ui_settings_customized_one_room_id.editText?.text.toString()
-                        .trim()
+                    dialog.ui_settings_customized_one_room_id.editText?.text.toString().trim()
             }
         else
             with(checkInItems.customOne) {
                 title = ""
+                action = ""
                 doctorId = ""
                 divisionId = ""
             }
@@ -355,6 +361,8 @@ class SettingsFragment : ListFragment() {
             with(checkInItems.customTwo) {
                 title =
                     dialog.ui_settings_customized_two_block_name.editText?.text.toString().trim()
+                action =
+                    dialog.ui_settings_customized_two_action.editText?.text.toString().trim()
                 doctorId =
                     dialog.ui_settings_customized_two_doctor_id.editText?.text.toString().trim()
                 divisionId =
@@ -363,23 +371,26 @@ class SettingsFragment : ListFragment() {
         else
             with(checkInItems.customTwo) {
                 title = ""
+                action = ""
                 doctorId = ""
                 divisionId = ""
             }
 
         if (dialog.ui_settings_customized_three.isChecked)
             with(checkInItems.customThree) {
-                title = dialog.ui_settings_customized_three_block_name.editText?.text.toString()
-                    .trim()
+                title =
+                    dialog.ui_settings_customized_three_block_name.editText?.text.toString().trim()
+                action =
+                    dialog.ui_settings_customized_three_action.editText?.text.toString().trim()
                 doctorId =
                     dialog.ui_settings_customized_three_doctor_id.editText?.text.toString().trim()
                 divisionId =
-                    dialog.ui_settings_customized_three_room_id.editText?.text.toString()
-                        .trim()
+                    dialog.ui_settings_customized_three_room_id.editText?.text.toString().trim()
             }
         else
             with(checkInItems.customThree) {
                 title = ""
+                action = ""
                 doctorId = ""
                 divisionId = ""
             }
@@ -388,6 +399,8 @@ class SettingsFragment : ListFragment() {
             with(checkInItems.customFour) {
                 title =
                     dialog.ui_settings_customized_four_block_name.editText?.text.toString().trim()
+                action =
+                    dialog.ui_settings_customized_four_action.editText?.text.toString().trim()
                 doctorId =
                     dialog.ui_settings_customized_four_doctor_id.editText?.text.toString().trim()
                 divisionId =
@@ -396,6 +409,7 @@ class SettingsFragment : ListFragment() {
         else
             with(checkInItems.customFour) {
                 title = ""
+                action = ""
                 doctorId = ""
                 divisionId = ""
             }
