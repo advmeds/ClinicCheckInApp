@@ -106,7 +106,7 @@
     <string name="ui_settings_customized_block_name">Block Name</string>
     <string name="ui_settings_customized_action">Action</string>
     <string name="ui_settings_customized_doctor_id">Doctor ID</string>
-    <string name="ui_settings_customized_room_id">Room ID</string>
+    <string name="ui_settings_customized_room_id">Division ID</string>
 
 
     <!-- Setting Dialog -->
@@ -171,6 +171,7 @@
     <string name="update_software_dialog_text_downloading">Downloading…</string>
     <string name="update_software_dialog_update_is_not_available">There no new version</string>
     <string name="update_software_dialog_downloaded">Downloaded </string>
+    <string name="update_software_dialog_permission">This app don\'t have permission for installing app do you want to give permission for app?</string>
     <string name="unexpected_error">Error</string>
 
     <string name="is_selected_language_checker_image_description">is selected language checker</string>

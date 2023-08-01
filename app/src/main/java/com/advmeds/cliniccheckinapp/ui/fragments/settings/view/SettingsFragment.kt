@@ -138,7 +138,7 @@ class SettingsFragment : ListFragment() {
             8 -> onSetFormatCheckedListItemClicked()
             9 -> onSetAutomaticAppointmentSettingItemClicked()
             10 -> onSetLanguageSettingItemClicked()
-            11 -> onSetSoftwareSettingItemClicked()
+            11 -> onSetSoftwareUpdateSettingItemClicked()
             12 -> onSetExitItemClicked()
         }
     }
@@ -939,7 +939,7 @@ class SettingsFragment : ListFragment() {
         dialog.show()
     }
 
-    private fun onSetSoftwareSettingItemClicked() {
+    private fun onSetSoftwareUpdateSettingItemClicked() {
 
         var stateFlowJob: Job? = null
 
@@ -960,9 +960,7 @@ class SettingsFragment : ListFragment() {
             dialog.update_software_dialog_ok_btn.isGone = false
 
             dialog.update_software_progress_bar.isGone = true
-            dialog.update_software_text.text =
-                    // Todo send it to resources
-                "This app don't have permission for installing app do you want to give permission for app?"
+            dialog.update_software_text.text = getString(R.string.update_software_dialog_permission)
 
             dialog.update_software_dialog_ok_btn.setOnClickListener {
                 dialog.dismiss()
