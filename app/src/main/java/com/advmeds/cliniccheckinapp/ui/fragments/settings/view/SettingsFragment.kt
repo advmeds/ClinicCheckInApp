@@ -4,9 +4,11 @@ import android.app.ActionBar
 import android.app.Activity
 import android.app.Application
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.provider.Settings
 import android.text.InputType
 import android.util.Log
 import android.util.TypedValue
@@ -139,9 +141,12 @@ class SettingsFragment : ListFragment() {
             9 -> onSetAutomaticAppointmentSettingItemClicked()
             10 -> onSetLanguageSettingItemClicked()
             11 -> onSetSoftwareUpdateSettingItemClicked()
-            12 -> onSetExitItemClicked()
+            12 -> onSetOpenSystemSettingsItemClicked()
+            13 -> onSetExitItemClicked()
         }
     }
+
+
 
 
     private fun onSetUiSettingsItemClicked() {
@@ -996,6 +1001,10 @@ class SettingsFragment : ListFragment() {
         }
 
         dialog.show()
+    }
+
+    private fun onSetOpenSystemSettingsItemClicked() {
+        startActivity(Intent(Settings.ACTION_SETTINGS))
     }
 
     private fun onSetExitItemClicked() {

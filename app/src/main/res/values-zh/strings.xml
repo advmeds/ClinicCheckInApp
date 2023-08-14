@@ -15,6 +15,7 @@
     <string name="health_card">健保卡</string>
     <string name="national_id">身份證字號</string>
     <string name="chart_no">病歷號</string>
+    <string name="phone_no">手機號碼</string>
     <string name="present_health_card">請直接插入%1$s%2$s</string>
     <string name="present_health_card_arg_check_in">報到</string>
     <string name="present_health_card_arg_take_no">取號</string>
@@ -75,6 +76,7 @@
     <string name="format_checked">報到格式檢查</string>
     <string name="dept_id">診間代碼</string>
     <string name="check_update">檢查更新</string>
+    <string name="open_system_settings">開啟系統設定</string>
     <string name="exit_app">離開應用程式</string>
 
     <string-array name="setting_items">
@@ -90,6 +92,7 @@
         <item>@string/automatic_appointment_setting</item>
         <item>@string/language_setting</item>
         <item>@string/check_update</item>
+        <item>@string/open_system_settings</item>
         <item>@string/exit_app</item>
     </string-array>
 
