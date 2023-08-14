@@ -7,6 +7,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.InputType
@@ -82,6 +83,7 @@ class SettingsFragment : ListFragment() {
 
     private lateinit var dialog: Dialog
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -145,8 +147,6 @@ class SettingsFragment : ListFragment() {
             13 -> onSetExitItemClicked()
         }
     }
-
-
 
 
     private fun onSetUiSettingsItemClicked() {
@@ -948,7 +948,6 @@ class SettingsFragment : ListFragment() {
 
         var stateFlowJob: Job? = null
 
-
         dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.software_update_dialog)
 
@@ -959,17 +958,49 @@ class SettingsFragment : ListFragment() {
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val havePermissionForInstallUnknownApp = checkInstallUnknownApkPermission()
+        val haveWriteExternalStoragePermission = checkIsWriteExternalStoragePermission()
 
-        if (!havePermissionForInstallUnknownApp) {
+        if (!havePermissionForInstallUnknownApp || !haveWriteExternalStoragePermission) {
+
+            var totalPermissions = 0
+            var currentPermission = 0
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                totalPermissions++
+
+                if (haveWriteExternalStoragePermission)
+                    currentPermission++
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                totalPermissions++
+
+                if (havePermissionForInstallUnknownApp)
+                    currentPermission++
+            }
 
             dialog.update_software_dialog_ok_btn.isGone = false
-
             dialog.update_software_progress_bar.isGone = true
-            dialog.update_software_text.text = getString(R.string.update_software_dialog_permission)
+
+            val textForDialog =
+                "${getString(R.string.update_software_dialog_permission)} ($currentPermission/$totalPermissions)"
+
+            dialog.update_software_text.text = textForDialog
 
             dialog.update_software_dialog_ok_btn.setOnClickListener {
                 dialog.dismiss()
-                (requireContext() as MainActivity).getInstallUnknownApkPermission()
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    if (!havePermissionForInstallUnknownApp)
+                        (requireContext() as MainActivity).getInstallUnknownApkPermission()
+
+                if (!havePermissionForInstallUnknownApp)
+                    return@setOnClickListener
+
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+                    if (!haveWriteExternalStoragePermission)
+                        (requireContext() as MainActivity).getWriteExternalStoragePermission()
+
             }
         } else {
             viewModel.checkForUpdates()
@@ -1090,6 +1121,10 @@ class SettingsFragment : ListFragment() {
 
     private fun checkInstallUnknownApkPermission() =
         (requireContext() as MainActivity).checkInstallUnknownApkPermission()
+
+    private fun checkIsWriteExternalStoragePermission() =
+        (requireContext() as MainActivity).checkIsWriteExternalStoragePermission()
+
 
     private val manageUnknownAppSourcesLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

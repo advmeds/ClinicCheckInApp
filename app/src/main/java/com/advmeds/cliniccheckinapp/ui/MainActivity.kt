@@ -1,5 +1,6 @@
 package com.advmeds.cliniccheckinapp.ui
 
+import android.Manifest
 import android.app.Activity
 import android.app.DownloadManager
 import android.app.PendingIntent
@@ -8,6 +9,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
@@ -28,6 +30,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -687,6 +691,16 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    fun checkIsWriteExternalStoragePermission(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+            return ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+
+        return true
+    }
+
     fun getInstallUnknownApkPermission() {
         val intent = Intent(
             Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
@@ -694,6 +708,14 @@ class MainActivity : AppCompatActivity() {
         )
 
         manageUnknownAppSourcesLauncher.launch(intent)
+    }
+
+    fun getWriteExternalStoragePermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            1221
+        )
     }
 
     private val manageUnknownAppSourcesLauncher =
