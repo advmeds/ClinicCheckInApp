@@ -345,7 +345,8 @@ class MainActivity : AppCompatActivity() {
         )
 
         successSoundId = soundPool.load(assets.openFd("success.mp3"), 1)
-        failSoundId = soundPool.load(assets.openFd("fail.mp3"), 1)
+//        failSoundId = soundPool.load(assets.openFd("fail.mp3"), 1)
+        failSoundId = soundPool.load(assets.openFd("again.m4a"), 1)
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
             reloadClinicDataReceiver,
