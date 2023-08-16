@@ -3,6 +3,7 @@ package com.advmeds.cliniccheckinapp.ui
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -17,6 +18,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.A
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.ServerRepository
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
+import com.advmeds.cliniccheckinapp.utils.NativeText
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -211,7 +213,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     response = GetPatientsResponse(
                         success = false,
                         code = 0,
-                        message = application.getString(R.string.clinic_data_not_found)
+                        message = NativeText.Resource(R.string.clinic_data_not_found)
                     )
                 )
                 return@launch
@@ -224,13 +226,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     response = GetPatientsResponse(
                         success = false,
                         code = 0,
-                        message = String.format(
-                            application.getString(R.string.national_id_input_hint),
-                            formatCheckedList.joinToString("、") {
+                        message = NativeText.Arguments(
+                            R.string.national_id_input_hint,
+                            listOf(formatCheckedList.joinToString("、") {
                                 application.getString(
                                     it.description
                                 )
-                            }
+                            })
                         )
                     )
                 )
@@ -246,13 +248,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     response = GetPatientsResponse(
                         success = false,
                         code = 0,
-                        message = String.format(
-                            application.getString(R.string.national_id_format_invalid),
-                            formatCheckedList.joinToString("、") {
-                                application.getString(
-                                    it.description
-                                )
-                            }
+                        message = NativeText.ArgumentsMulti(
+                            R.string.national_id_format_invalid,
+                            formatCheckedList.map { NativeText.Resource(it.description) }
                         )
                     )
                 )
@@ -280,7 +278,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     GetPatientsResponse(
                         success = false,
                         code = result.code(),
-                        message = result.message()
+                        message = NativeText.Simple(result.message())
                     )
                 }
             } catch (e: Exception) {
@@ -291,17 +289,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     code = 0,
                     message = when (e) {
                         is UnknownHostException -> {
-                            getApplication<MainApplication>().getString(
+                            NativeText.Resource(
                                 R.string.no_internet
                             )
                         }
                         is SocketTimeoutException -> {
-                            getApplication<MainApplication>().getString(
+                            NativeText.Resource(
                                 R.string.service_timeout
                             )
                         }
                         else -> {
-                            e.localizedMessage
+                            e.localizedMessage?.let { NativeText.Simple(it) } ?: NativeText.Simple("")
                         }
                     }
                 )

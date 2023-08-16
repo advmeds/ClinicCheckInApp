@@ -98,8 +98,15 @@ class SharedPreferencesRepo(
     /** mScheduler Server domain */
     var mSchedulerServerDomain: Pair<String, Int>
         get() {
+
+            val defaultSelectedRadio = try {
+                BuildConfig.MS_DOMAIN_SETTINGS_RADIO.toInt()
+            } catch (e: NumberFormatException ) {
+                0
+            }
+
             val domain = sharedPreferences.getString(MS_SERVER_DOMAIN, null) ?: BuildConfig.MS_DOMAIN
-            val selectedRadio = sharedPreferences.getInt(MS_SERVER_DOMAIN_SELECTED_RADIO, 0) ?: 0
+            val selectedRadio = sharedPreferences.getInt(MS_SERVER_DOMAIN_SELECTED_RADIO, defaultSelectedRadio)
 
             return Pair(domain, selectedRadio)
         }

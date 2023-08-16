@@ -14,7 +14,7 @@
 
     <dimen name="logo_margin">7dp</dimen>
     <dimen name="logo_image_width">255dp</dimen>
-    <dimen name="logo_image_margin">10dp</dimen>
+    <dimen name="logo_image_margin">5dp</dimen>
 
 
     <!-- Font -->

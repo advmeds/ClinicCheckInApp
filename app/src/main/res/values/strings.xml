@@ -77,7 +77,9 @@
     <string name="dept_id">Room ID</string>
     <string name="check_update">Check Update</string>
     <string name="open_system_settings">Open System Setting</string>
+    <string name="version_of_the_app">Version %s</string>
     <string name="exit_app">Exit App</string>
+
 
     <string-array name="setting_items">
         <item>@string/ui_settings</item>
@@ -93,6 +95,7 @@
         <item>@string/language_setting</item>
         <item>@string/check_update</item>
         <item>@string/open_system_settings</item>
+        <item>@string/version_of_the_app</item>
         <item>@string/exit_app</item>
     </string-array>
 

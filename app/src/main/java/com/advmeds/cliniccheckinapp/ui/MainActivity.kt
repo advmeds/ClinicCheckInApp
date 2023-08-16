@@ -57,6 +57,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppo
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
+import com.advmeds.cliniccheckinapp.utils.toCharSequence
 import com.advmeds.cliniccheckinapp.utils.zipWith
 import com.advmeds.printerlib.usb.BPT3XPrinterService
 import com.advmeds.printerlib.usb.UsbPrinterService
@@ -519,11 +520,11 @@ class MainActivity : AppCompatActivity() {
                                         message = apiError?.resStringID?.let { it1 -> getString(it1) }
                                             ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                                 Html.fromHtml(
-                                                    it.response.message,
+                                                    it.response.message.toCharSequence(this).toString(),
                                                     Html.FROM_HTML_MODE_COMPACT
                                                 )
                                             } else {
-                                                Html.fromHtml(it.response.message)
+                                                Html.fromHtml(it.response.message.toCharSequence(this).toString())
                                             },
                                         onActionButtonClicked = null
                                     )

@@ -36,6 +36,8 @@ android {
             debuggable = true
 
             buildConfigField "String", "MS_DOMAIN", "\"https://test.mscheduler.com/\""
+            // depend on previous buildConfigField "MS_DOMAIN" is it www so it 0 if it test it 1
+            buildConfigField "String", "MS_DOMAIN_SETTINGS_RADIO", "\"1\""
             buildConfigField "String", "ORG_ID", "\"1\""
             buildConfigField "String", "DEFAULT_LANGUAGE", "\"en\""
             buildConfigField "String", "DEFAULT_PASSWORD", "\"qwerty\""
@@ -50,6 +52,8 @@ android {
             signingConfig signingConfigs.release
 
             buildConfigField "String", "MS_DOMAIN", "\"https://www.mscheduler.com/\""
+            // depend on previous buildConfigField "MS_DOMAIN" is it www so it 0 if it test it 1
+            buildConfigField "String", "MS_DOMAIN_SETTINGS_RADIO", "\"0\""
             buildConfigField "String", "ORG_ID", "\"1\""
             buildConfigField "String", "DEFAULT_LANGUAGE", "\"en\""
             buildConfigField "String", "DEFAULT_PASSWORD", "\"qwerty\""
@@ -106,7 +110,7 @@ android {
     }
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            def fileName = "ClinicCheckInApp_${defaultConfig.versionCode}_${defaultConfig.versionName}_${variant.buildType.name}.apk"
+            def fileName = "mSchedulerCheckIn_${defaultConfig.versionName}.apk"
             outputFileName = fileName
         }
     }

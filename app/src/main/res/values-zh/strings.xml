@@ -77,6 +77,7 @@
     <string name="dept_id">診間代碼</string>
     <string name="check_update">檢查更新</string>
     <string name="open_system_settings">開啟系統設定</string>
+    <string name="version_of_the_app">版本 %s</string>
     <string name="exit_app">離開應用程式</string>
 
     <string-array name="setting_items">
@@ -93,6 +94,7 @@
         <item>@string/language_setting</item>
         <item>@string/check_update</item>
         <item>@string/open_system_settings</item>
+        <item>@string/version_of_the_app</item>
         <item>@string/exit_app</item>
     </string-array>
 

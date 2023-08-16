@@ -144,7 +144,7 @@ class SettingsFragment : ListFragment() {
             10 -> onSetLanguageSettingItemClicked()
             11 -> onSetSoftwareUpdateSettingItemClicked()
             12 -> onSetOpenSystemSettingsItemClicked()
-            13 -> onSetExitItemClicked()
+            14 -> onSetExitItemClicked()
         }
     }
 
@@ -433,7 +433,7 @@ class SettingsFragment : ListFragment() {
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI,
             inputTextLabel = inputTextLabel,
             hint = hint,
-            selectedRatio = viewModel.mSchedulerServerDomain.second,
+            selectedRadio = viewModel.mSchedulerServerDomain.second,
             showRadioButton = true,
             onDomainConfirmClick = { domain, selected ->
                 try {
@@ -564,7 +564,7 @@ class SettingsFragment : ListFragment() {
         inputText: String = "",
         hint: String = "",
         inputType: Int = InputType.TYPE_CLASS_TEXT,
-        selectedRatio: Int = 0,
+        selectedRadio: Int = 0,
         showRadioButton: Boolean = false,
         showDescription: Boolean = false,
         onConfirmClick: (String) -> Unit = {},
@@ -594,9 +594,9 @@ class SettingsFragment : ListFragment() {
             val urlContainer = dialog.dialog_input_container
 
             dialog.dialog_radio_group.visibility = View.VISIBLE
-            urlContainer.isGone = selectedRatio != 2
+            urlContainer.isGone = selectedRadio != 2
 
-            when (selectedRatio) {
+            when (selectedRadio) {
                 0 -> dialog.dialog_radio_group.check(R.id.domain_service_official_site)
                 1 -> dialog.dialog_radio_group.check(R.id.domain_service_testing_site)
                 2 -> dialog.dialog_radio_group.check(R.id.domain_service_customize)

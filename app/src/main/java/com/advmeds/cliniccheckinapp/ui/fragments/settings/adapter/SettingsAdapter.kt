@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 
 class SettingsAdapter(val mContext: Context, val settingItems: Array<String>) :
@@ -18,6 +19,12 @@ class SettingsAdapter(val mContext: Context, val settingItems: Array<String>) :
         if (view is TextView) {
             if (settingItems[position] == mContext.getString(R.string.exit_app)) {
                 view.setTextColor(Color.RED)
+            } else if (settingItems[position] == mContext.getString(R.string.version_of_the_app)) {
+                val arg = BuildConfig.VERSION_NAME
+                val text = String.format(settingItems[position], arg)
+                view.text = text
+
+                view.setTextColor(Color.BLACK)
             } else {
                 view.setTextColor(Color.BLACK)
             }

@@ -36,8 +36,8 @@ class DownloadController(
 
         private const val TAG = "check---:DownloadC"
 
-        private const val FILE_NAME = "mSchedulerController_"
-        private const val FOLDER_NAME = "mSchedulerController"
+        private const val FILE_NAME = "mSchedulerCheckIn_"
+        private const val FOLDER_NAME = "mSchedulerCheckIn"
         private const val FILE_BASE_PATH = "file://"
         private const val APP_INSTALL_PATH = "application/vnd.android.package-archive"
 
@@ -48,15 +48,7 @@ class DownloadController(
 
         downloadStatus.emit(DownloadControllerDownloadStatus.DOWNLOADING)
 
-        val destinationDir =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-
-        val destinationPath = "${destinationDir.absolutePath}/$FOLDER_NAME/${getFileName(version)}"
-
-        createFolderIfItDoesNotExist(destinationDir)
-
-        val downloadManager =
-            contextApp.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val downloadManager = contextApp.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val downloadUri = Uri.parse(url)
 
         val request = DownloadManager.Request(downloadUri)
@@ -64,7 +56,33 @@ class DownloadController(
             .setDescription("Downloading update...")
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
             .setMimeType(APP_INSTALL_PATH)
-            .setDestinationUri(Uri.parse("$FILE_BASE_PATH$destinationPath"))
+
+        Log.d(TAG, "enqueueDownload: apk uri ${contextApp.cacheDir.deleteRecursively()}")
+        val privateDir: File? = contextApp.externalCacheDir
+
+        if (privateDir != null) {
+
+            val apkFile = File(privateDir, getFileName(version))
+            request.setDestinationUri(Uri.fromFile(apkFile))
+
+            Log.d(TAG, "enqueueDownload: apk uri ${Uri.fromFile(apkFile)}")
+            Log.d(TAG, "enqueueDownload: downloading in private folder}")
+        } else {
+
+            val destinationDir =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+
+            val destinationPath = "${destinationDir.absolutePath}/$FOLDER_NAME/${getFileName(version)}"
+
+            createFolderIfItDoesNotExist(destinationDir)
+
+            deletePreviousApkIfExist(destinationPath)
+
+            request.setDestinationUri(Uri.parse("$FILE_BASE_PATH$destinationPath"))
+
+            Log.d(TAG, "enqueueDownload: apk uri ${Uri.parse("$FILE_BASE_PATH$destinationPath")}")
+            Log.d(TAG, "enqueueDownload: downloading in public folder}")
+        }
 
         downloadId = downloadManager.enqueue(request)
 
@@ -138,6 +156,17 @@ class DownloadController(
             folder.mkdirs()
         }
     }
+
+
+
+
+    private fun deletePreviousApkIfExist(destinationPath: String) {
+        val file = File(destinationPath)
+        if (file.exists()) {
+            file.delete()
+        }
+    }
+
 
     private fun statusMessage(c: Cursor): String {
         var msg = "???"

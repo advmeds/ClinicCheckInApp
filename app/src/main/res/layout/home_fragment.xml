@@ -28,24 +28,48 @@
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">
 
+
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/logo_imageView"
-                    android:layout_width="@dimen/logo_image_width"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginVertical="@dimen/logo_image_margin"
+                    android:layout_margin="@dimen/logo_image_margin"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="w,850:200"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.54"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/clinic_logo_default" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center_horizontal">-->
+
+<!--                <androidx.appcompat.widget.AppCompatImageView-->
+<!--                    android:id="@+id/logo_imageView"-->
+<!--                    android:layout_width="@dimen/logo_image_width"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center_vertical"-->
+<!--                    android:layout_marginVertical="@dimen/logo_image_margin"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintDimensionRatio="w,850:200"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:srcCompat="@drawable/clinic_logo_default" />-->
+
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
         </androidx.cardview.widget.CardView>
 
