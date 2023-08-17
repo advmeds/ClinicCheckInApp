@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class NativeText {
+    @Serializable
     data class Simple(val text: String) : NativeText()
     data class Resource(@StringRes val id: Int) : NativeText()
     data class Plural(@PluralsRes val id: Int, val number: Int, val args: List<Any>) : NativeText()

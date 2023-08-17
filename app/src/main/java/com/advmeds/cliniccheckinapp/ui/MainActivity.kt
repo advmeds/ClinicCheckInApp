@@ -521,11 +521,11 @@ class MainActivity : AppCompatActivity() {
                                         message = apiError?.resStringID?.let { it1 -> getString(it1) }
                                             ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                                 Html.fromHtml(
-                                                    it.response.message.toCharSequence(this).toString(),
+                                                    it.response._message.toCharSequence(this).toString(),
                                                     Html.FROM_HTML_MODE_COMPACT
                                                 )
                                             } else {
-                                                Html.fromHtml(it.response.message.toCharSequence(this).toString())
+                                                Html.fromHtml(it.response._message.toCharSequence(this).toString())
                                             },
                                         onActionButtonClicked = null
                                     )

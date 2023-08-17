@@ -213,7 +213,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     response = GetPatientsResponse(
                         success = false,
                         code = 0,
-                        message = NativeText.Resource(R.string.clinic_data_not_found)
+                        _message = NativeText.Resource(R.string.clinic_data_not_found)
                     )
                 )
                 return@launch
@@ -226,7 +226,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     response = GetPatientsResponse(
                         success = false,
                         code = 0,
-                        message = NativeText.Arguments(
+                        _message = NativeText.Arguments(
                             R.string.national_id_input_hint,
                             listOf(formatCheckedList.joinToString("、") {
                                 application.getString(
@@ -248,7 +248,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     response = GetPatientsResponse(
                         success = false,
                         code = 0,
-                        message = NativeText.ArgumentsMulti(
+                        _message = NativeText.ArgumentsMulti(
                             R.string.national_id_format_invalid,
                             formatCheckedList.map { NativeText.Resource(it.description) }
                         )
@@ -278,7 +278,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     GetPatientsResponse(
                         success = false,
                         code = result.code(),
-                        message = NativeText.Simple(result.message())
+                        _message = NativeText.Simple(result.message())
                     )
                 }
             } catch (e: Exception) {
@@ -287,7 +287,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 GetPatientsResponse(
                     success = false,
                     code = 0,
-                    message = when (e) {
+                    _message = when (e) {
                         is UnknownHostException -> {
                             NativeText.Resource(
                                 R.string.no_internet

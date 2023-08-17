@@ -13,7 +13,8 @@ data class GetPatientsResponse(
     val code: Int = 0,
 
     /** error message */
-    val message: NativeText = NativeText.Simple(""),
+    val message: String = "",
+    val _message: NativeText = NativeText.Simple(""),
 
     /** patient's appointment */
     val patients: List<PatientBean> = emptyList()

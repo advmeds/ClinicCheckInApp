@@ -116,7 +116,7 @@ class SettingsFragment : ListFragment() {
 
         toolbar.title = resources.getString(R.string.setting)
         toolbar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.homeFragment)
+            findNavController().navigateUp()
         }
 
         val adapter = SettingsAdapter(
