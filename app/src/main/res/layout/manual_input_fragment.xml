@@ -66,6 +66,7 @@
         android:layout_height="0dp"
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/screen_panel_margin"
+        android:layout_marginBottom="@dimen/distance_between_panel"
         android:layout_marginHorizontal="@dimen/screen_panel_margin"
         android:layout_weight="1">
 
@@ -73,7 +74,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/distance_between_panel"
-            android:layout_marginBottom="@dimen/distance_between_panel"
             android:layout_weight="1"
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">
@@ -125,8 +125,6 @@
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/distance_between_panel"
-            android:layout_marginBottom="@dimen/distance_between_panel"
             android:layout_weight="1"
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">

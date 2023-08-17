@@ -204,13 +204,14 @@ class MainActivity : AppCompatActivity() {
 //                }
 
                 soundPool.play(
-                    failSoundId,
+                    failCardInsertSoundId,
                     1f,
                     1f,
                     0,
                     0,
                     1f
                 )
+
 
                 dialog = ErrorDialogFragment(
                     title = getString(R.string.fail_to_check),
@@ -331,6 +332,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var soundPool: SoundPool
     private var successSoundId: Int = 0
     private var failSoundId: Int = 0
+    private var failCardInsertSoundId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -345,8 +347,8 @@ class MainActivity : AppCompatActivity() {
         )
 
         successSoundId = soundPool.load(assets.openFd("success.mp3"), 1)
-//        failSoundId = soundPool.load(assets.openFd("fail.mp3"), 1)
-        failSoundId = soundPool.load(assets.openFd("again.m4a"), 1)
+        failSoundId = soundPool.load(assets.openFd("fail.mp3"), 1)
+        failCardInsertSoundId = soundPool.load(assets.openFd("again.m4a"), 1)
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
             reloadClinicDataReceiver,

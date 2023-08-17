@@ -219,14 +219,14 @@ class HomeFragment : Fragment() {
                         1f
                     ).apply {
 
-                        val margin =
-                            (resources.getDimension(R.dimen.distance_between_panel) / resources.displayMetrics.density).toInt()
+                        val margin = resources.getDimension(R.dimen.distance_between_panel).toInt()
+//                            (resources.getDimension(R.dimen.distance_between_panel) / resources.displayMetrics.density).toInt()
 
                         val topMargin = if (index == 0) 0 else margin
 
                         val bottomMargin = if (index == (itemList.size - 1)) 0 else margin
 
-                        setMargins(margin, topMargin, 0, bottomMargin)
+                        setMargins(0, 0, 0, bottomMargin)
 
                     }
                 )

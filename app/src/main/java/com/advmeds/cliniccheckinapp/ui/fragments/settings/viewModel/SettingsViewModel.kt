@@ -164,7 +164,7 @@ class SettingsViewModel(
                                 updateSoftwareRequestStatus = UpdateSoftwareRequestStatus.LOADING,
                                 updateSoftwareDownloadingStatus = UpdateSoftwareDownloadingStatus.LOADING,
                                 updateSoftwareDialogText = R.string.update_software_dialog_text_checking_for_updates,
-                                updateSoftwarePercentageDownload = "0"
+                                updateSoftwarePercentageDownload = ""
                             )
                         }
                     }
