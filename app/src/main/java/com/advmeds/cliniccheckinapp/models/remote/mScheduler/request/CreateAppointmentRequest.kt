@@ -45,12 +45,16 @@ data class CreateAppointmentRequest(
         DEFAULT("^[A-Z][A-Z\\d]\\d{8}\$"),
 
         /** chart no */
-        CASE_ID("");
+        CASE_ID(""),
+
+        /** phone number */
+        PHONE("^\\d{10}\$");
 
         val description: Int
             get() = when(this) {
                 DEFAULT -> R.string.national_id
                 CASE_ID -> R.string.chart_no
+                PHONE -> R.string.phone_no
             }
 
         fun inputFormatAvailable(input: String): Boolean {

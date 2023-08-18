@@ -12,7 +12,6 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.Q
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-
 class SharedPreferencesRepo(
     context: Context
 ) {
@@ -26,6 +25,7 @@ class SharedPreferencesRepo(
     companion object {
         /** mScheduler Server domain key of SharedPreferences */
         const val MS_SERVER_DOMAIN = "ms_server_domain"
+        const val MS_SERVER_DOMAIN_SELECTED_RADIO = "ms_server_domain_selected_radio"
 
         /** clinic id key of SharedPreferences */
         const val ORG_ID = "org_id"
@@ -96,12 +96,27 @@ class SharedPreferencesRepo(
     }
 
     /** mScheduler Server domain */
-    var mSchedulerServerDomain: String
-        get() =
-            sharedPreferences.getString(MS_SERVER_DOMAIN, null) ?: BuildConfig.MS_DOMAIN
+    var mSchedulerServerDomain: Pair<String, Int>
+        get() {
+
+            val defaultSelectedRadio = try {
+                BuildConfig.MS_DOMAIN_SETTINGS_RADIO.toInt()
+            } catch (e: NumberFormatException ) {
+                0
+            }
+
+            val domain = sharedPreferences.getString(MS_SERVER_DOMAIN, null) ?: BuildConfig.MS_DOMAIN
+            val selectedRadio = sharedPreferences.getInt(MS_SERVER_DOMAIN_SELECTED_RADIO, defaultSelectedRadio)
+
+            return Pair(domain, selectedRadio)
+        }
         set(value) {
+
+            val (domain, selectedRadio) = value
+
             sharedPreferences.edit()
-                .putString(MS_SERVER_DOMAIN, value)
+                .putString(MS_SERVER_DOMAIN, domain)
+                .putInt(MS_SERVER_DOMAIN_SELECTED_RADIO, selectedRadio)
                 .apply()
 
             localBroadcastManager.sendBroadcast(
@@ -425,3 +440,4 @@ class SharedPreferencesRepo(
             )
         }
 }
+

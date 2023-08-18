@@ -1,5 +1,6 @@
 package com.advmeds.cliniccheckinapp.models.remote.mScheduler.response
 
+import com.advmeds.cliniccheckinapp.utils.NativeText
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -13,6 +14,7 @@ data class GetPatientsResponse(
 
     /** error message */
     val message: String = "",
+    val _message: NativeText = NativeText.Simple(""),
 
     /** patient's appointment */
     val patients: List<PatientBean> = emptyList()

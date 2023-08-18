@@ -10,7 +10,7 @@
     <!-- Logo -->
     <dimen name="logo_margin">20dp</dimen>
     <dimen name="logo_image_width">500dp</dimen>
-    <dimen name="logo_image_margin">20dp</dimen>
+    <dimen name="logo_image_margin">10dp</dimen>
 
 
     <!-- Font -->

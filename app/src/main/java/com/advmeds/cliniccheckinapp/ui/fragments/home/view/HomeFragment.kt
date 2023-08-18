@@ -186,22 +186,22 @@ class HomeFragment : Fragment() {
                     EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE -> {
                         itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
                         itemTitle.text = checkInItem.title
-                        itemBody.text = (secondArg)
+                        itemBody.text = checkInItem.action
                     }
                     EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO -> {
                         itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
                         itemTitle.text = checkInItem.title
-                        itemBody.text = (secondArg)
+                        itemBody.text = checkInItem.action
                     }
                     EditCheckInItemDialog.CheckInItemType.CUSTOM_THREE -> {
                         itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
                         itemTitle.text = checkInItem.title
-                        itemBody.text = (secondArg)
+                        itemBody.text = checkInItem.action
                     }
                     EditCheckInItemDialog.CheckInItemType.CUSTOM_FOUR -> {
                         itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
                         itemTitle.text = checkInItem.title
-                        itemBody.text = (secondArg)
+                        itemBody.text = checkInItem.action
                     }
                     EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
                         itemImg.setImageResource(R.drawable.ic_baseline_qr_code)
@@ -219,14 +219,14 @@ class HomeFragment : Fragment() {
                         1f
                     ).apply {
 
-                        val margin =
-                            (resources.getDimension(R.dimen.distance_between_panel) / resources.displayMetrics.density).toInt()
+                        val margin = resources.getDimension(R.dimen.distance_between_panel).toInt()
+//                            (resources.getDimension(R.dimen.distance_between_panel) / resources.displayMetrics.density).toInt()
 
                         val topMargin = if (index == 0) 0 else margin
 
                         val bottomMargin = if (index == (itemList.size - 1)) 0 else margin
 
-                        setMargins(margin, topMargin, 0, bottomMargin)
+                        setMargins(0, 0, 0, bottomMargin)
 
                     }
                 )
@@ -245,6 +245,22 @@ class HomeFragment : Fragment() {
                             )
                         }
                         EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO -> {
+                            (requireActivity() as MainActivity).createFakeAppointment(
+                                schedule = GetScheduleResponse.ScheduleBean(
+                                    doctor = checkInItem.doctorId,
+                                    division = checkInItem.divisionId
+                                )
+                            )
+                        }
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM_THREE -> {
+                            (requireActivity() as MainActivity).createFakeAppointment(
+                                schedule = GetScheduleResponse.ScheduleBean(
+                                    doctor = checkInItem.doctorId,
+                                    division = checkInItem.divisionId
+                                )
+                            )
+                        }
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM_FOUR -> {
                             (requireActivity() as MainActivity).createFakeAppointment(
                                 schedule = GetScheduleResponse.ScheduleBean(
                                     doctor = checkInItem.doctorId,

@@ -1,5 +1,6 @@
 package com.advmeds.cliniccheckinapp.ui
 
+import android.Manifest
 import android.app.Activity
 import android.app.DownloadManager
 import android.app.PendingIntent
@@ -8,6 +9,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
@@ -28,6 +30,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -53,6 +57,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppo
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
+import com.advmeds.cliniccheckinapp.utils.toCharSequence
 import com.advmeds.cliniccheckinapp.utils.zipWith
 import com.advmeds.printerlib.usb.BPT3XPrinterService
 import com.advmeds.printerlib.usb.UsbPrinterService
@@ -199,13 +204,14 @@ class MainActivity : AppCompatActivity() {
 //                }
 
                 soundPool.play(
-                    failSoundId,
+                    failCardInsertSoundId,
                     1f,
                     1f,
                     0,
                     0,
                     1f
                 )
+
 
                 dialog = ErrorDialogFragment(
                     title = getString(R.string.fail_to_check),
@@ -326,6 +332,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var soundPool: SoundPool
     private var successSoundId: Int = 0
     private var failSoundId: Int = 0
+    private var failCardInsertSoundId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -341,6 +348,7 @@ class MainActivity : AppCompatActivity() {
 
         successSoundId = soundPool.load(assets.openFd("success.mp3"), 1)
         failSoundId = soundPool.load(assets.openFd("fail.mp3"), 1)
+        failCardInsertSoundId = soundPool.load(assets.openFd("again.m4a"), 1)
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
             reloadClinicDataReceiver,
@@ -515,11 +523,11 @@ class MainActivity : AppCompatActivity() {
                                         message = apiError?.resStringID?.let { it1 -> getString(it1) }
                                             ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                                 Html.fromHtml(
-                                                    it.response.message,
+                                                    it.response._message.toCharSequence(this).toString(),
                                                     Html.FROM_HTML_MODE_COMPACT
                                                 )
                                             } else {
-                                                Html.fromHtml(it.response.message)
+                                                Html.fromHtml(it.response._message.toCharSequence(this).toString())
                                             },
                                         onActionButtonClicked = null
                                     )
@@ -680,17 +688,38 @@ class MainActivity : AppCompatActivity() {
         showPresentation()
     }
 
-    private fun checkInstallUnknownApkPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (!packageManager.canRequestPackageInstalls()) {
-                val intent = Intent(
-                    Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
-                    Uri.parse("package:$packageName")
-                )
+    fun checkInstallUnknownApkPermission() : Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            return packageManager.canRequestPackageInstalls()
 
-                manageUnknownAppSourcesLauncher.launch(intent)
-            }
-        }
+        return true
+    }
+
+    fun checkIsWriteExternalStoragePermission(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+            return ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+
+        return true
+    }
+
+    fun getInstallUnknownApkPermission() {
+        val intent = Intent(
+            Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+            Uri.parse("package:$packageName")
+        )
+
+        manageUnknownAppSourcesLauncher.launch(intent)
+    }
+
+    fun getWriteExternalStoragePermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            1221
+        )
     }
 
     private val manageUnknownAppSourcesLauncher =
@@ -890,8 +919,7 @@ class MainActivity : AppCompatActivity() {
             commandList.forEach { command ->
                 usbPrinterService.write(command)
             }
-        }
-        else {
+        } else {
             divisions.zipWith(serialNumbers, doctors).forEach { (division, serialNo, doctor) ->
 
                 val doctorArray = arrayOf(doctor)
@@ -900,7 +928,12 @@ class MainActivity : AppCompatActivity() {
 
                 val headerCommand = getHeaderCommand(queueingMachineSettings.organization)
                 val middleCommand =
-                    getMiddleCommand(doctorArray, divisionArray, serialNoArray, queueingMachineSettings)
+                    getMiddleCommand(
+                        doctorArray,
+                        divisionArray,
+                        serialNoArray,
+                        queueingMachineSettings
+                    )
                 val footerCommand = getFooterCommand(queueingMachineSettings.time, formatter, now)
 
                 val commandList: ArrayList<ByteArray> = ArrayList()
@@ -1224,12 +1257,11 @@ class MainActivity : AppCompatActivity() {
                 nationalId = "Fake${String.format("%06d", serialNo)}"
             )
         ) { createAppointmentResponse ->
-            if (createAppointmentResponse.success) {
-                viewModel.checkInSerialNo = if (serialNo >= 999999) {
-                    0
-                } else {
-                    serialNo + 1
-                }
+
+            viewModel.checkInSerialNo = if (serialNo >= 999999) {
+                0
+            } else {
+                serialNo + 1
             }
         }
     }

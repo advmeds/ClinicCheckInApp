@@ -15,6 +15,7 @@
     <string name="health_card">健保卡</string>
     <string name="national_id">身份證字號</string>
     <string name="chart_no">病歷號</string>
+    <string name="phone_no">手機號碼</string>
     <string name="present_health_card">請直接插入%1$s%2$s</string>
     <string name="present_health_card_arg_check_in">報到</string>
     <string name="present_health_card_arg_take_no">取號</string>
@@ -70,10 +71,13 @@
     <string name="server_domain">伺服器網域</string>
     <string name="org_id">機構代碼</string>
     <string name="doctors">醫師代碼</string>
-    <string name="rooms">診間代碼</string>
+    <string name="rooms">科別代碼</string>
     <string name="clinic_panel_url">叫號面板網址</string>
     <string name="format_checked">報到格式檢查</string>
-    <string name="dept_id">科別代碼</string>
+    <string name="dept_id">診間代碼</string>
+    <string name="check_update">檢查更新</string>
+    <string name="open_system_settings">開啟系統設定</string>
+    <string name="version_of_the_app">版本 %s</string>
     <string name="exit_app">離開應用程式</string>
 
     <string-array name="setting_items">
@@ -88,6 +92,9 @@
         <item>@string/format_checked</item>
         <item>@string/automatic_appointment_setting</item>
         <item>@string/language_setting</item>
+        <item>@string/check_update</item>
+        <item>@string/open_system_settings</item>
+        <item>@string/version_of_the_app</item>
         <item>@string/exit_app</item>
     </string-array>
 
@@ -101,8 +108,9 @@
     <string name="ui_settings_customized_three">自定義 3</string>
     <string name="ui_settings_customized_four">自定義 4</string>
     <string name="ui_settings_customized_block_name">區塊名稱</string>
+    <string name="ui_settings_customized_action">動作名稱</string>
     <string name="ui_settings_customized_doctor_id">醫生代碼</string>
-    <string name="ui_settings_customized_room_id">診間代碼</string>
+    <string name="ui_settings_customized_room_id">科別代碼</string>
 
     <!-- Setting Dialog -->
     <string name="dialog_id_label">代碼</string>
@@ -149,6 +157,15 @@
     <string name="automatic_appointment_setting">自動預約設定</string>
     <string name="automatic_appointment_setting_error_empty_field">字段不應為空</string>
     <string name="automatic_appointment_setting_automatic_check_in">自動報到</string>
+
+    <!-- Software Update -->
+    <string name="update_software_dialog_title">軟體更新</string>
+    <string name="update_software_dialog_text_checking_for_updates">檢查更新中</string>
+    <string name="update_software_dialog_text_downloading">下載中</string>
+    <string name="update_software_dialog_update_is_not_available">目前已是最新版本</string>
+    <string name="update_software_dialog_downloaded">已下載</string>
+    <string name="update_software_dialog_permission">應用程式尚未獲取安裝應用程式權限，是否開啟安裝權限？</string>
+    <string name="unexpected_error">未知錯誤</string>
 
     <string-array name="language_items">
         <item>@string/zh_tw_language</item>

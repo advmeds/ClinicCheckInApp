@@ -1,11 +1,17 @@
 package com.advmeds.cliniccheckinapp.ui.fragments.settings.view
 
 import android.app.ActionBar
+import android.app.Activity
+import android.app.Application
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.InputType
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -15,16 +21,17 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.RadioGroup
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isGone
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.ListFragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.SettingsFragmentBinding
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
@@ -32,13 +39,18 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppoi
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
+import com.advmeds.cliniccheckinapp.repositories.DownloadControllerRepository
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter.LanguageAdapter
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter.SettingsAdapter
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.model.LanguageModel
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.model.combineArrays
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.SettingsViewModel
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.SettingsViewModelFactory
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.UpdateSoftwareDownloadingStatus
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.UpdateSoftwareRequestStatus
 import com.advmeds.cliniccheckinapp.utils.Converter
+import com.advmeds.cliniccheckinapp.utils.DownloadController
 import com.advmeds.cliniccheckinapp.utils.showOnly
 import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.android.synthetic.main.automatic_appointment_setting_dialog.*
@@ -46,14 +58,19 @@ import kotlinx.android.synthetic.main.format_checked_list.*
 import kotlinx.android.synthetic.main.language_setting_dialog.*
 import kotlinx.android.synthetic.main.queueing_board_setting_dialog.*
 import kotlinx.android.synthetic.main.queueing_machine_setting_dialog.*
+import kotlinx.android.synthetic.main.software_update_dialog.*
 import kotlinx.android.synthetic.main.text_input_dialog.*
 import kotlinx.android.synthetic.main.ui_setting_dialog.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import okhttp3.HttpUrl
 
 
 class SettingsFragment : ListFragment() {
 
-    private val viewModel: SettingsViewModel by viewModels()
+    private lateinit var viewModel: SettingsViewModel
 
     private var _binding: SettingsFragmentBinding? = null
 
@@ -66,11 +83,22 @@ class SettingsFragment : ListFragment() {
 
     private lateinit var dialog: Dialog
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val downloadController = DownloadController(requireContext().applicationContext)
+        val downloadControllerRepository = DownloadControllerRepository(downloadController)
+        val viewModelFactory = SettingsViewModelFactory(
+            requireContext().applicationContext as Application,
+            downloadControllerRepository
+        )
+
+        viewModel = ViewModelProvider(this, viewModelFactory)[SettingsViewModel::class.java]
+
         _binding = SettingsFragmentBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -88,7 +116,7 @@ class SettingsFragment : ListFragment() {
 
         toolbar.title = resources.getString(R.string.setting)
         toolbar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.homeFragment)
+            findNavController().navigateUp()
         }
 
         val adapter = SettingsAdapter(
@@ -114,7 +142,9 @@ class SettingsFragment : ListFragment() {
             8 -> onSetFormatCheckedListItemClicked()
             9 -> onSetAutomaticAppointmentSettingItemClicked()
             10 -> onSetLanguageSettingItemClicked()
-            11 -> onSetExitItemClicked()
+            11 -> onSetSoftwareUpdateSettingItemClicked()
+            12 -> onSetOpenSystemSettingsItemClicked()
+            14 -> onSetExitItemClicked()
         }
     }
 
@@ -283,24 +313,28 @@ class SettingsFragment : ListFragment() {
         dialog.ui_settings_customized_one.isChecked = checkInItems.customOne.isShow
         dialog.ui_settings_customized_one_container.isGone = !checkInItems.customOne.isShow
         dialog.ui_settings_customized_one_block_name.editText?.setText(checkInItems.customOne.title)
+        dialog.ui_settings_customized_one_action.editText?.setText(checkInItems.customOne.action)
         dialog.ui_settings_customized_one_doctor_id.editText?.setText(checkInItems.customOne.doctorId)
         dialog.ui_settings_customized_one_room_id.editText?.setText(checkInItems.customOne.divisionId)
 
         dialog.ui_settings_customized_two.isChecked = checkInItems.customTwo.isShow
         dialog.ui_settings_customized_two_container.isGone = !checkInItems.customTwo.isShow
         dialog.ui_settings_customized_two_block_name.editText?.setText(checkInItems.customTwo.title)
+        dialog.ui_settings_customized_two_action.editText?.setText(checkInItems.customTwo.action)
         dialog.ui_settings_customized_two_doctor_id.editText?.setText(checkInItems.customTwo.doctorId)
         dialog.ui_settings_customized_two_room_id.editText?.setText(checkInItems.customTwo.divisionId)
 
         dialog.ui_settings_customized_three.isChecked = checkInItems.customThree.isShow
         dialog.ui_settings_customized_three_container.isGone = !checkInItems.customThree.isShow
         dialog.ui_settings_customized_three_block_name.editText?.setText(checkInItems.customThree.title)
+        dialog.ui_settings_customized_three_action.editText?.setText(checkInItems.customThree.action)
         dialog.ui_settings_customized_three_doctor_id.editText?.setText(checkInItems.customThree.doctorId)
         dialog.ui_settings_customized_three_room_id.editText?.setText(checkInItems.customThree.divisionId)
 
         dialog.ui_settings_customized_four.isChecked = checkInItems.customFour.isShow
         dialog.ui_settings_customized_four_container.isGone = !checkInItems.customFour.isShow
         dialog.ui_settings_customized_four_block_name.editText?.setText(checkInItems.customFour.title)
+        dialog.ui_settings_customized_four_action.editText?.setText(checkInItems.customFour.action)
         dialog.ui_settings_customized_four_doctor_id.editText?.setText(checkInItems.customFour.doctorId)
         dialog.ui_settings_customized_four_room_id.editText?.setText(checkInItems.customFour.divisionId)
     }
@@ -311,17 +345,19 @@ class SettingsFragment : ListFragment() {
     ): EditCheckInItemDialog.EditCheckInItems {
         if (dialog.ui_settings_customized_one.isChecked)
             with(checkInItems.customOne) {
-                title = dialog.ui_settings_customized_one_block_name.editText?.text.toString()
-                    .trim()
+                title =
+                    dialog.ui_settings_customized_one_block_name.editText?.text.toString().trim()
+                action =
+                    dialog.ui_settings_customized_one_action.editText?.text.toString().trim()
                 doctorId =
                     dialog.ui_settings_customized_one_doctor_id.editText?.text.toString().trim()
                 divisionId =
-                    dialog.ui_settings_customized_one_room_id.editText?.text.toString()
-                        .trim()
+                    dialog.ui_settings_customized_one_room_id.editText?.text.toString().trim()
             }
         else
             with(checkInItems.customOne) {
                 title = ""
+                action = ""
                 doctorId = ""
                 divisionId = ""
             }
@@ -330,6 +366,8 @@ class SettingsFragment : ListFragment() {
             with(checkInItems.customTwo) {
                 title =
                     dialog.ui_settings_customized_two_block_name.editText?.text.toString().trim()
+                action =
+                    dialog.ui_settings_customized_two_action.editText?.text.toString().trim()
                 doctorId =
                     dialog.ui_settings_customized_two_doctor_id.editText?.text.toString().trim()
                 divisionId =
@@ -338,23 +376,26 @@ class SettingsFragment : ListFragment() {
         else
             with(checkInItems.customTwo) {
                 title = ""
+                action = ""
                 doctorId = ""
                 divisionId = ""
             }
 
         if (dialog.ui_settings_customized_three.isChecked)
             with(checkInItems.customThree) {
-                title = dialog.ui_settings_customized_three_block_name.editText?.text.toString()
-                    .trim()
+                title =
+                    dialog.ui_settings_customized_three_block_name.editText?.text.toString().trim()
+                action =
+                    dialog.ui_settings_customized_three_action.editText?.text.toString().trim()
                 doctorId =
                     dialog.ui_settings_customized_three_doctor_id.editText?.text.toString().trim()
                 divisionId =
-                    dialog.ui_settings_customized_three_room_id.editText?.text.toString()
-                        .trim()
+                    dialog.ui_settings_customized_three_room_id.editText?.text.toString().trim()
             }
         else
             with(checkInItems.customThree) {
                 title = ""
+                action = ""
                 doctorId = ""
                 divisionId = ""
             }
@@ -363,6 +404,8 @@ class SettingsFragment : ListFragment() {
             with(checkInItems.customFour) {
                 title =
                     dialog.ui_settings_customized_four_block_name.editText?.text.toString().trim()
+                action =
+                    dialog.ui_settings_customized_four_action.editText?.text.toString().trim()
                 doctorId =
                     dialog.ui_settings_customized_four_doctor_id.editText?.text.toString().trim()
                 divisionId =
@@ -371,6 +414,7 @@ class SettingsFragment : ListFragment() {
         else
             with(checkInItems.customFour) {
                 title = ""
+                action = ""
                 doctorId = ""
                 divisionId = ""
             }
@@ -385,16 +429,17 @@ class SettingsFragment : ListFragment() {
 
         showTextInputDialog(
             titleResId = R.string.clinic_panel_url,
-            inputText = viewModel.mSchedulerServerDomain,
+            inputText = viewModel.mSchedulerServerDomain.first,
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI,
             inputTextLabel = inputTextLabel,
             hint = hint,
+            selectedRadio = viewModel.mSchedulerServerDomain.second,
             showRadioButton = true,
-            onConfirmClick = { domain ->
+            onDomainConfirmClick = { domain, selected ->
                 try {
                     HttpUrl.get(domain)
 
-                    viewModel.mSchedulerServerDomain = domain
+                    viewModel.mSchedulerServerDomain = Pair(domain, selected)
                 } catch (e: Exception) {
                     AlertDialog.Builder(requireContext())
                         .setMessage(e.message)
@@ -519,9 +564,11 @@ class SettingsFragment : ListFragment() {
         inputText: String = "",
         hint: String = "",
         inputType: Int = InputType.TYPE_CLASS_TEXT,
+        selectedRadio: Int = 0,
         showRadioButton: Boolean = false,
         showDescription: Boolean = false,
-        onConfirmClick: (String) -> Unit
+        onConfirmClick: (String) -> Unit = {},
+        onDomainConfirmClick: ((String, Int) -> Unit)? = null
     ) {
 
         dialog = Dialog(requireContext())
@@ -547,7 +594,13 @@ class SettingsFragment : ListFragment() {
             val urlContainer = dialog.dialog_input_container
 
             dialog.dialog_radio_group.visibility = View.VISIBLE
-            urlContainer.visibility = View.GONE
+            urlContainer.isGone = selectedRadio != 2
+
+            when (selectedRadio) {
+                0 -> dialog.dialog_radio_group.check(R.id.domain_service_official_site)
+                1 -> dialog.dialog_radio_group.check(R.id.domain_service_testing_site)
+                2 -> dialog.dialog_radio_group.check(R.id.domain_service_customize)
+            }
 
             dialog.dialog_radio_group.setOnCheckedChangeListener(
                 RadioGroup.OnCheckedChangeListener { _, checkedId ->
@@ -569,13 +622,25 @@ class SettingsFragment : ListFragment() {
             var inputData = dialog.dialog_input_field.editText?.text.toString().trim()
 
             if (showRadioButton) {
-                inputData = when (dialog.dialog_radio_group.checkedRadioButtonId) {
-                    R.id.domain_service_official_site -> "https://www.mscheduler.com"
-                    R.id.domain_service_testing_site -> "https://test.mscheduler.com"
-                    R.id.domain_service_customize -> dialog.dialog_input_field.editText?.text.toString()
-                        .trim()
-                    else -> BuildConfig.MS_DOMAIN
+
+                var selectedRadio = 0
+
+                when (dialog.dialog_radio_group.checkedRadioButtonId) {
+                    R.id.domain_service_official_site -> {
+                        inputData = "https://www.mscheduler.com"
+                        selectedRadio = 0
+                    }
+                    R.id.domain_service_testing_site -> {
+                        inputData = "https://test.mscheduler.com"
+                        selectedRadio = 1
+                    }
+                    R.id.domain_service_customize -> {
+                        inputData = dialog.dialog_input_field.editText?.text.toString().trim()
+                        selectedRadio = 2
+                    }
                 }
+
+                onDomainConfirmClick?.invoke(inputData, selectedRadio)
             }
 
             onConfirmClick(inputData)
@@ -879,6 +944,100 @@ class SettingsFragment : ListFragment() {
         dialog.show()
     }
 
+    private fun onSetSoftwareUpdateSettingItemClicked() {
+
+        var stateFlowJob: Job? = null
+
+        dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.software_update_dialog)
+
+        if (dialog.window == null)
+            return
+
+        dialog.window!!.setGravity(Gravity.CENTER)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val havePermissionForInstallUnknownApp = checkInstallUnknownApkPermission()
+        val haveWriteExternalStoragePermission = checkIsWriteExternalStoragePermission()
+
+        if (!havePermissionForInstallUnknownApp || !haveWriteExternalStoragePermission) {
+
+            var totalPermissions = 0
+            var currentPermission = 0
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                totalPermissions++
+
+                if (haveWriteExternalStoragePermission)
+                    currentPermission++
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                totalPermissions++
+
+                if (havePermissionForInstallUnknownApp)
+                    currentPermission++
+            }
+
+            dialog.update_software_dialog_ok_btn.isGone = false
+            dialog.update_software_progress_bar.isGone = true
+
+            val textForDialog =
+                "${getString(R.string.update_software_dialog_permission)} ($currentPermission/$totalPermissions)"
+
+            dialog.update_software_text.text = textForDialog
+
+            dialog.update_software_dialog_ok_btn.setOnClickListener {
+                dialog.dismiss()
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    if (!havePermissionForInstallUnknownApp)
+                        (requireContext() as MainActivity).getInstallUnknownApkPermission()
+
+                if (!havePermissionForInstallUnknownApp)
+                    return@setOnClickListener
+
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+                    if (!haveWriteExternalStoragePermission)
+                        (requireContext() as MainActivity).getWriteExternalStoragePermission()
+
+            }
+        } else {
+            viewModel.checkForUpdates()
+
+            stateFlowJob = lifecycleScope.launch(Dispatchers.Main) {
+                viewModel.uiState.collect { uiState ->
+
+                    val isShowLoadingComponent =
+                        uiState.updateSoftwareRequestStatus == UpdateSoftwareRequestStatus.LOADING ||
+                                uiState.updateSoftwareDownloadingStatus == UpdateSoftwareDownloadingStatus.LOADING
+
+                    val text = if (uiState.updateSoftwareDialogText != 0)
+                        "${getString(uiState.updateSoftwareDialogText)} ${uiState.updateSoftwarePercentageDownload}"
+                    else ""
+
+                    dialog.update_software_progress_bar.isGone = !isShowLoadingComponent
+                    dialog.update_software_text.text = text
+                }
+            }
+        }
+
+        dialog.update_software_dialog_cancel_btn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            viewModel.closeUpdateDialog()
+            stateFlowJob?.cancel()
+        }
+
+        dialog.show()
+    }
+
+    private fun onSetOpenSystemSettingsItemClicked() {
+        startActivity(Intent(Settings.ACTION_SETTINGS))
+    }
+
     private fun onSetExitItemClicked() {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.exit_app)
@@ -960,6 +1119,21 @@ class SettingsFragment : ListFragment() {
         return linearLayout
     }
 
+    private fun checkInstallUnknownApkPermission() =
+        (requireContext() as MainActivity).checkInstallUnknownApkPermission()
+
+    private fun checkIsWriteExternalStoragePermission() =
+        (requireContext() as MainActivity).checkIsWriteExternalStoragePermission()
+
+
+    private val manageUnknownAppSourcesLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                Log.d("check---", "onRequestPermissionsResult: its work")
+            } else {
+                Log.d("check---", "onRequestPermissionsResult: its work but its not")
+            }
+        }
 
     override fun onDestroyView() {
         super.onDestroyView()

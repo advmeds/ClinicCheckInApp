@@ -1,14 +1,8 @@
 package com.advmeds.cliniccheckinapp.ui
 
 import android.app.Application
-import android.app.DownloadManager
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.net.ConnectivityManager
-import android.net.Uri
-import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -24,6 +18,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.A
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.ServerRepository
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
+import com.advmeds.cliniccheckinapp.utils.NativeText
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -34,7 +29,6 @@ import okhttp3.OkHttpClient
 import okio.Buffer
 import retrofit2.Retrofit
 import timber.log.Timber
-import java.io.File
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
@@ -97,7 +91,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         get() {
             val retrofit = Retrofit.Builder()
                 .client(client)
-                .baseUrl(sharedPreferencesRepo.mSchedulerServerDomain)
+                .baseUrl(sharedPreferencesRepo.mSchedulerServerDomain.first)
                 .addConverterFactory(format.asConverterFactory(MediaType.get("application/json")))
                 .build()
 
@@ -219,7 +213,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     response = GetPatientsResponse(
                         success = false,
                         code = 0,
-                        message = application.getString(R.string.clinic_data_not_found)
+                        _message = NativeText.Resource(R.string.clinic_data_not_found)
                     )
                 )
                 return@launch
@@ -232,13 +226,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     response = GetPatientsResponse(
                         success = false,
                         code = 0,
-                        message = String.format(
-                            application.getString(R.string.national_id_input_hint),
-                            formatCheckedList.joinToString("、") {
+                        _message = NativeText.Arguments(
+                            R.string.national_id_input_hint,
+                            listOf(formatCheckedList.joinToString("、") {
                                 application.getString(
                                     it.description
                                 )
-                            }
+                            })
                         )
                     )
                 )
@@ -254,13 +248,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     response = GetPatientsResponse(
                         success = false,
                         code = 0,
-                        message = String.format(
-                            application.getString(R.string.national_id_format_invalid),
-                            formatCheckedList.joinToString("、") {
-                                application.getString(
-                                    it.description
-                                )
-                            }
+                        _message = NativeText.ArgumentsMulti(
+                            R.string.national_id_format_invalid,
+                            formatCheckedList.map { NativeText.Resource(it.description) }
                         )
                     )
                 )
@@ -288,7 +278,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     GetPatientsResponse(
                         success = false,
                         code = result.code(),
-                        message = result.message()
+                        _message = NativeText.Simple(result.message())
                     )
                 }
             } catch (e: Exception) {
@@ -297,19 +287,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 GetPatientsResponse(
                     success = false,
                     code = 0,
-                    message = when (e) {
+                    _message = when (e) {
                         is UnknownHostException -> {
-                            getApplication<MainApplication>().getString(
+                            NativeText.Resource(
                                 R.string.no_internet
                             )
                         }
                         is SocketTimeoutException -> {
-                            getApplication<MainApplication>().getString(
+                            NativeText.Resource(
                                 R.string.service_timeout
                             )
                         }
                         else -> {
-                            e.localizedMessage
+                            e.localizedMessage?.let { NativeText.Simple(it) } ?: NativeText.Simple("")
                         }
                     }
                 )
@@ -522,114 +512,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private var downloadBroadcastReceiver: BroadcastReceiver? = null
-    private var downloadId = -1L
-    private var isDownloading = false
-
     override fun onCleared() {
         super.onCleared()
-        unregisterReceiver()
     }
 
-    private fun unregisterReceiver() {
-        if (downloadBroadcastReceiver != null) {
-            val applicationContext = getApplication<Application>().applicationContext
-            applicationContext.unregisterReceiver(downloadBroadcastReceiver)
-            downloadBroadcastReceiver = null
-        }
-    }
-
-    private fun downloadApk(url: String, version: String) {
-        viewModelScope.async {
-
-            val folderName = "ClinicCheckInApp"
-            val fileName = "ClinicCheckInApp_$version.apk"
-            val destinationDir =
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val destinationPath = "${destinationDir.absolutePath}/$folderName/$fileName"
-
-            // Create the destination folder if it doesn't exist
-            val folder = File(destinationDir, folderName)
-            if (!folder.exists()) {
-                folder.mkdirs()
-            }
-
-            val applicationContext = getApplication<Application>().applicationContext
-            val downloadManager =
-                applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-            val downloadUri = Uri.parse(url)
-
-            val request = DownloadManager.Request(downloadUri)
-                .setTitle("ClinicCheckInApp_$version.apk")
-                .setDescription("Downloading update...")
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                .setMimeType("application/vnd.android.package-archive")
-                .setDestinationUri(Uri.parse("file://$destinationPath"))
-
-            downloadId = downloadManager.enqueue(request)
-
-            downloadBroadcastReceiver = object : BroadcastReceiver() {
-                override fun onReceive(context: Context?, intent: Intent?) {
-                    val action = intent?.action
-                    if (action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
-                        val receiveDownLoadId =
-                            intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                        if (receiveDownLoadId != -1L) { //TODO check with downLoadId
-                            applicationContext.unregisterReceiver(this)
-                            downloadBroadcastReceiver = null
-                            downloadId = -1L
-                        }
-                    }
-                }
-            }
-
-            applicationContext.registerReceiver(
-                downloadBroadcastReceiver,
-                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-            )
-
-            downloadWithProgress(manager = downloadManager)
-        }
-    }
-
-    private suspend fun downloadWithProgress(manager: DownloadManager) {
-        isDownloading = true
-
-        while (isDownloading) {
-            val query = DownloadManager.Query().apply {
-                setFilterById(downloadId)
-            }
-
-            val cursor = manager.query(query)
-            cursor.moveToFirst()
-
-            val bytesDownloadedColumnIndex =
-                cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
-            val bytesTotalColumnIndex =
-                cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
-            val statusColumnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
-
-            val bytesDownloaded =
-                if (bytesDownloadedColumnIndex != -1) cursor.getInt(bytesDownloadedColumnIndex) else 0
-            val bytesTotal =
-                if (bytesTotalColumnIndex != -1) cursor.getInt(bytesTotalColumnIndex) else 0
-            val status = if (statusColumnIndex != -1) cursor.getInt(statusColumnIndex) else -1
-
-            if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                isDownloading = false
-            }
-
-            if (bytesTotal > 0) {
-                val dlProgress = ((bytesDownloaded.toDouble() / bytesTotal) * 100).toInt()
-
-                Log.d("check---", "downloadWithProgress: $dlProgress")
-            }
-
-            cursor.close()
-
-            delay(2000)
-        }
-    }
 
     private fun isCheckInEventProcessing() =
         checkJob?.isActive == true || createAppointmentJob?.isActive == true

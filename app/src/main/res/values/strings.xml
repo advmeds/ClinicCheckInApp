@@ -15,6 +15,7 @@
     <string name="health_card">NHI Card</string>
     <string name="national_id">CID No.</string>
     <string name="chart_no">MR No.</string>
+    <string name="phone_no">Phone No.</string>
     <string name="present_health_card">Please insert %1$s to %2$s</string>
     <string name="present_health_card_arg_check_in">Check In</string>
     <string name="present_health_card_arg_take_no">Take No.</string>
@@ -60,7 +61,7 @@
 
     <string name="fail_to_make_appointment">Failed to checked in</string>
     <string name="fail_to_make_appointment_10014">Now is not the time to take number</string>
-    
+
     <string name="fail_to_card_reading">Card data reading failure,\nplease wipe the chip and try again</string>
 
     <string name="advanced_settings">Advanced Settings</string>
@@ -70,11 +71,15 @@
     <string name="server_domain">Service domain</string>
     <string name="org_id">Clinic ID</string>
     <string name="doctors">Doctor ID</string>
-    <string name="rooms">Room ID</string>
+    <string name="rooms">Division ID</string>
     <string name="clinic_panel_url">Clinic Panel Url</string>
     <string name="format_checked">Check In Setting</string>
-    <string name="dept_id">Dept ID</string>
+    <string name="dept_id">Room ID</string>
+    <string name="check_update">Check Update</string>
+    <string name="open_system_settings">Open System Setting</string>
+    <string name="version_of_the_app">Version %s</string>
     <string name="exit_app">Exit App</string>
+
 
     <string-array name="setting_items">
         <item>@string/ui_settings</item>
@@ -88,6 +93,9 @@
         <item>@string/format_checked</item>
         <item>@string/automatic_appointment_setting</item>
         <item>@string/language_setting</item>
+        <item>@string/check_update</item>
+        <item>@string/open_system_settings</item>
+        <item>@string/version_of_the_app</item>
         <item>@string/exit_app</item>
     </string-array>
 
@@ -102,8 +110,9 @@
     <string name="ui_settings_customized_three">Customized 3</string>
     <string name="ui_settings_customized_four">Customized 4</string>
     <string name="ui_settings_customized_block_name">Block Name</string>
+    <string name="ui_settings_customized_action">Action</string>
     <string name="ui_settings_customized_doctor_id">Doctor ID</string>
-    <string name="ui_settings_customized_room_id">Room ID</string>
+    <string name="ui_settings_customized_room_id">Division ID</string>
 
 
     <!-- Setting Dialog -->
@@ -153,7 +162,7 @@
         <item>@string/zh_tw_language</item>
         <item>@string/en_language</item>
     </string-array>
-    
+
     <string name="no_internet">No Internet</string>
     <string name="service_timeout">Connect Timeout</string>
 
@@ -162,9 +171,17 @@
     <string name="automatic_appointment_setting_error_empty_field">that field shouldn\'t be empty</string>
     <string name="automatic_appointment_setting_automatic_check_in">Automatic Check-In</string>
 
+    <!-- Software Update -->
+    <string name="update_software_dialog_title">Software Update</string>
+    <string name="update_software_dialog_text_checking_for_updates">Checking for updates…</string>
+    <string name="update_software_dialog_text_downloading">Downloading…</string>
+    <string name="update_software_dialog_update_is_not_available">There no new version</string>
+    <string name="update_software_dialog_downloaded">Downloaded </string>
+    <string name="update_software_dialog_permission">This app doesn\'t have permission for installing apps do you want to give permission for app?</string>
+    <string name="unexpected_error">Error</string>
 
     <string name="is_selected_language_checker_image_description">is selected language checker</string>
-    
+
     <string name="mScheduler_api_error_10001">The key field can not be blank</string>
     <string name="mScheduler_api_error_10002">Organization Not Found</string>
     <string name="mScheduler_api_error_10003">The specified doctor cannot be found.</string>

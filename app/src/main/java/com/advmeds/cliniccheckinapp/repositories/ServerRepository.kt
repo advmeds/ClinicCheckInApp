@@ -27,4 +27,9 @@ class ServerRepository(private val service: ApiService) {
     suspend fun createsAppointment(
         request: CreateAppointmentRequest
     ) = service.createAppointment(request)
+
+    suspend fun checkControllerAppVersion(
+        version: String,
+        name: String
+    ) = service.checkControllerAppVersion(version, name)
 }
