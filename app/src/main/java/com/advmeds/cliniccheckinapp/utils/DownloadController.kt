@@ -48,7 +48,8 @@ class DownloadController(
 
         downloadStatus.emit(DownloadControllerDownloadStatus.DOWNLOADING)
 
-        val downloadManager = contextApp.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val downloadManager =
+            contextApp.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val downloadUri = Uri.parse(url)
 
         val request = DownloadManager.Request(downloadUri)
@@ -72,7 +73,8 @@ class DownloadController(
             val destinationDir =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 
-            val destinationPath = "${destinationDir.absolutePath}/$FOLDER_NAME/${getFileName(version)}"
+            val destinationPath =
+                "${destinationDir.absolutePath}/$FOLDER_NAME/${getFileName(version)}"
 
             createFolderIfItDoesNotExist(destinationDir)
 
@@ -139,14 +141,15 @@ class DownloadController(
     }
 
     suspend fun cancelDownload() {
+        if (downloadId != -1L) {
+            val downloadManager =
+                contextApp.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 
-        val downloadManager =
-            contextApp.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            downloadManager.remove(downloadId)
+            downloadId = -1
+        }
 
-        downloadManager.remove(downloadId)
-        downloadId = -1
         isDownloading = false
-
         downloadStatus.emit(DownloadControllerDownloadStatus.CANCEL)
     }
 
@@ -156,8 +159,6 @@ class DownloadController(
             folder.mkdirs()
         }
     }
-
-
 
 
     private fun deletePreviousApkIfExist(destinationPath: String) {
