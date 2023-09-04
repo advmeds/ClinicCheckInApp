@@ -176,6 +176,7 @@ class SettingsViewModel(
                                 updateSoftwarePercentageDownload = ""
                             )
                         }
+                        updateJob?.cancel()
                     }
                 }
             }

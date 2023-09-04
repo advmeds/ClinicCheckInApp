@@ -118,6 +118,7 @@ class DownloadController(
                     isDownloading = false
                     downloadStatus.emit(DownloadControllerDownloadStatus.COMPLETE)
                 } else if (status == DownloadManager.STATUS_FAILED) {
+                    isDownloading = false
                     downloadStatus.emit(DownloadControllerDownloadStatus.FAIL)
                 }
 

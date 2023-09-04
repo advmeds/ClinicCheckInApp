@@ -5,10 +5,7 @@ import android.app.Activity
 import android.app.DownloadManager
 import android.app.PendingIntent
 import android.app.Presentation
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.hardware.usb.UsbDevice
@@ -71,6 +68,7 @@ import java.io.File
 import java.text.DateFormat
 import java.util.*
 import kotlin.reflect.full.primaryConstructor
+
 
 private const val INSTALL_PERMISSION_REQUEST_CODE = 3440
 
@@ -523,11 +521,16 @@ class MainActivity : AppCompatActivity() {
                                         message = apiError?.resStringID?.let { it1 -> getString(it1) }
                                             ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                                 Html.fromHtml(
-                                                    it.response._message.toCharSequence(this).toString(),
+                                                    it.response._message.toCharSequence(this)
+                                                        .toString(),
                                                     Html.FROM_HTML_MODE_COMPACT
                                                 )
                                             } else {
-                                                Html.fromHtml(it.response._message.toCharSequence(this).toString())
+                                                Html.fromHtml(
+                                                    it.response._message.toCharSequence(
+                                                        this
+                                                    ).toString()
+                                                )
                                             },
                                         onActionButtonClicked = null
                                     )
@@ -688,7 +691,7 @@ class MainActivity : AppCompatActivity() {
         showPresentation()
     }
 
-    fun checkInstallUnknownApkPermission() : Boolean {
+    fun checkInstallUnknownApkPermission(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             return packageManager.canRequestPackageInstalls()
 
@@ -698,9 +701,9 @@ class MainActivity : AppCompatActivity() {
     fun checkIsWriteExternalStoragePermission(): Boolean {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
             return ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
 
         return true
     }
@@ -750,15 +753,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun installAPK(apkUri: Uri, context: Context) {
-        val file = File(apkUri.path)
 
-        val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val file = File(apkUri.path)
+            val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
 
-        val installIntent = Intent(Intent.ACTION_INSTALL_PACKAGE).apply {
-            data = uri
-            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            val installIntent = Intent(Intent.ACTION_INSTALL_PACKAGE).apply {
+                data = uri
+                flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            }
+
+            try {
+                context.startActivity(installIntent)
+            } catch (e: ActivityNotFoundException) {
+                Log.d("check---", e.message!!)
+            }
+        } else {
+            val installIntent = Intent(Intent.ACTION_INSTALL_PACKAGE)
+                .setDataAndType(
+                    apkUri,
+                    "application/vnd.android.package-archive"
+                )
+            startActivity(installIntent)
         }
-        context.startActivity(installIntent)
     }
 
     fun setLanguage(language: String) {
