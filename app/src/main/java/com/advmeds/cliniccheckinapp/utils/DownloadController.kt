@@ -120,6 +120,9 @@ class DownloadController(
                 } else if (status == DownloadManager.STATUS_FAILED) {
                     isDownloading = false
                     downloadStatus.emit(DownloadControllerDownloadStatus.FAIL)
+
+                    val reason = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON))
+                    Log.e(TAG, "Reason: $reason")
                 }
 
                 if (bytesTotal > 0) {

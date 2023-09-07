@@ -1042,7 +1042,7 @@ class SettingsFragment : ListFragment() {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.exit_app)
             .setPositiveButton(R.string.dialog_ok_button) { _, _ ->
-                requireActivity().finishAndRemoveTask();
+                requireActivity().finishAndRemoveTask()
             }
             .setNegativeButton(R.string.cancel, null)
             .showOnly()
@@ -1137,6 +1137,10 @@ class SettingsFragment : ListFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+
+        try {
+            dialog.dismiss()
+        } catch (_:Exception) {}
 
         _binding = null
     }

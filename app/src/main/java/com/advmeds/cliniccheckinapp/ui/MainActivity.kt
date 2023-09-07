@@ -754,7 +754,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun installAPK(apkUri: Uri, context: Context) {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val file = File(apkUri.path)
             val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
 
@@ -764,17 +764,20 @@ class MainActivity : AppCompatActivity() {
             }
 
             try {
+                finish()
                 context.startActivity(installIntent)
             } catch (e: ActivityNotFoundException) {
                 Log.d("check---", e.message!!)
             }
         } else {
-            val installIntent = Intent(Intent.ACTION_INSTALL_PACKAGE)
+            val installIntent = Intent(Intent.ACTION_VIEW)
                 .setDataAndType(
                     apkUri,
                     "application/vnd.android.package-archive"
                 )
+            finish()
             startActivity(installIntent)
+
         }
     }
 
