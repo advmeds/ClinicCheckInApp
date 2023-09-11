@@ -199,6 +199,7 @@
     <string name="mScheduler_api_error_10014_ptch_ca"><![CDATA[Please retrieve your number again during <font color=\'#E54B4B\'>every Wednesday from 13:00 to 17:00</font>.]]></string>
     <string name="mScheduler_api_error_10015">The registration quota has been reached. Please contact the service staff for assistance.</string>
     <string name="mScheduler_api_error_10016">Duplicate registration. If you have any issues, please contact the service staff.</string>
+    <string name="mScheduler_api_error_10017">This department is closed for check in</string>
 
     <string name="coming_soon">The feature is not available yet.</string>
 

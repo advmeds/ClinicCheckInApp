@@ -192,6 +192,8 @@
     <string name="mScheduler_api_error_10014_ptch_ca"><![CDATA[請於<font color=\'#E54B4B\'>每星期三 13:00 ~ 17:00</font> 再進行取號]]></string>
     <string name="mScheduler_api_error_10015">掛號人數已滿，或請洽服務人員</string>
     <string name="mScheduler_api_error_10016">重複掛號，若有問題請洽服務人員</string>
+    <string name="mScheduler_api_error_10017">本服務已停止取號</string>
+
 
     <string name="coming_soon">功能尚未開放</string>
 

@@ -18,7 +18,8 @@ enum class ApiError(val rawValue: Int) {
     CHECK_IN_AGAIN(10013),
     SCHEDULE_NOT_FOUND(10014),
     SCHEDULE_FULLY_BOOKED(10015),
-    APPOINTMENT_ALREADY_EXISTS(10016);
+    APPOINTMENT_ALREADY_EXISTS(10016),
+    DEPARTMENT_IS_CLOSED_FOR_CHECK_IN(10017);
 
     companion object {
         fun initWith(rawValue: Int) = values().find { it.rawValue == rawValue }
@@ -42,5 +43,6 @@ enum class ApiError(val rawValue: Int) {
             SCHEDULE_NOT_FOUND -> R.string.mScheduler_api_error_10014
             SCHEDULE_FULLY_BOOKED -> R.string.mScheduler_api_error_10015
             APPOINTMENT_ALREADY_EXISTS -> R.string.mScheduler_api_error_10016
+            DEPARTMENT_IS_CLOSED_FOR_CHECK_IN -> R.string.mScheduler_api_error_10017
         }
 }
