@@ -83,6 +83,8 @@ class SettingsFragment : ListFragment() {
 
     private lateinit var dialog: Dialog
 
+    var stateFlowJob: Job? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -946,8 +948,6 @@ class SettingsFragment : ListFragment() {
 
     private fun onSetSoftwareUpdateSettingItemClicked() {
 
-        var stateFlowJob: Job? = null
-
         dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.software_update_dialog)
 
@@ -1003,7 +1003,10 @@ class SettingsFragment : ListFragment() {
 
             }
         } else {
-            viewModel.checkForUpdates()
+
+            Log.d("check---", "onSetSoftwareUpdateSettingItemClicked: ${stateFlowJob?.isActive}")
+            if (stateFlowJob?.isActive != true)
+                viewModel.checkForUpdates()
 
             stateFlowJob = lifecycleScope.launch(Dispatchers.Main) {
                 viewModel.uiState.collect { uiState ->
@@ -1020,15 +1023,20 @@ class SettingsFragment : ListFragment() {
                     dialog.update_software_text.text = text
                 }
             }
+
+            stateFlowJob?.invokeOnCompletion {
+                viewModel.closeUpdateDialog()
+            }
         }
 
         dialog.update_software_dialog_cancel_btn.setOnClickListener {
+            stateFlowJob?.cancel()
             dialog.dismiss()
         }
 
         dialog.setOnDismissListener {
-            viewModel.closeUpdateDialog()
-            stateFlowJob?.cancel()
+//            viewModel.closeUpdateDialog()
+//            stateFlowJob?.cancel()
         }
 
         dialog.show()
@@ -1141,6 +1149,8 @@ class SettingsFragment : ListFragment() {
         try {
             dialog.dismiss()
         } catch (_:Exception) {}
+
+        stateFlowJob?.cancel()
 
         _binding = null
     }
