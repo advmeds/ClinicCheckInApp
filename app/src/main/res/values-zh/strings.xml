@@ -142,6 +142,9 @@
     <string name="qms_doctor_label">醫生名稱</string>
     <string name="qms_organization_label">醫事機構</string>
     <string name="qms_one_ticket_label">單票多號</string>
+    <string name="qms_ticket_print_size_label">Ticket Print Size</string>
+    <string name="qms_ticket_print_size_57">57 mm</string>
+    <string name="qms_ticket_print_size_76">76 mm</string>
 
 
     <!-- Language Setting -->

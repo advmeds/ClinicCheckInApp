@@ -20,7 +20,9 @@ import android.provider.Settings
 import android.text.Html
 import android.util.Log
 import android.view.MotionEvent
+import android.view.View
 import android.widget.EditText
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
@@ -34,6 +36,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.advmeds.cardreadermodule.AcsResponseModel
@@ -54,6 +57,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppo
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
+import com.advmeds.cliniccheckinapp.utils.CheckNetworkConnection
 import com.advmeds.cliniccheckinapp.utils.toCharSequence
 import com.advmeds.cliniccheckinapp.utils.zipWith
 import com.advmeds.printerlib.usb.BPT3XPrinterService
@@ -78,6 +82,19 @@ class MainActivity : AppCompatActivity() {
 //        private const val SCAN_TIME_OUT: Long = 15
     }
 
+    private val checkNetworkConnectivity: CheckNetworkConnection by lazy {
+        CheckNetworkConnection(application)
+    }
+
+    private val navHostFragment: FragmentContainerView by lazy {
+        findViewById(R.id.nav_host_fragment)
+    }
+
+    private val reconnectingLayout: RelativeLayout by lazy {
+        findViewById(R.id.layout_reconnecting)
+    }
+
+    private var isInternet = false
     private val viewModel: MainViewModel by viewModels()
 
     private lateinit var binding: ActivityMainBinding
@@ -338,57 +355,61 @@ class MainActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        soundPool = SoundPool(
-            6,
-            AudioManager.STREAM_MUSIC,
-            0
-        )
-
-        successSoundId = soundPool.load(assets.openFd("success.mp3"), 1)
-        failSoundId = soundPool.load(assets.openFd("fail.mp3"), 1)
-        failCardInsertSoundId = soundPool.load(assets.openFd("again.m4a"), 1)
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-            reloadClinicDataReceiver,
-            IntentFilter(SharedPreferencesRepo.MS_SERVER_DOMAIN).apply {
-                addAction(SharedPreferencesRepo.ORG_ID)
-            }
-        )
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-            presentationReceiver,
-            IntentFilter(SharedPreferencesRepo.QUEUEING_BOARD_SETTING)
-        )
-
-        val downloadFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-        registerReceiver(downloadReceiver, downloadFilter)
-
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets ->
-            val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
-            val statusBarVisible = insets.isVisible(WindowInsetsCompat.Type.statusBars())
-
-            if (!imeVisible && statusBarVisible) {
-                lifecycleScope.launch {
-                    withContext(Dispatchers.IO) {
-                        delay(100)
-                    }
-                    hideSystemUI()
-                }
-            }
-
-            insets
-        }
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setOnCreate()
+    }
+
+    private fun setOnCreate() {
+        setSound()
 
         setupUSB()
 //        setupBluetooth()
 
-        viewModel.getClinicGuardian()
+        registerBroadcastReciver()
 
+        setWindowSettings()
+
+        setObserver()
+
+        showPresentation()
+    }
+
+    private fun setObserver() {
+        observeNetworkConnectivity()
+
+        observeGetGuardian()
+
+        observeCheckIn()
+
+        observeGetSchedules()
+
+        observeCreateAppointment()
+    }
+
+    private fun observeNetworkConnectivity() {
+        checkNetworkConnectivity.observe(this) { isConnected ->
+            if (isConnected) {
+                if (!isInternet) {
+                    isInternet = true
+
+                    viewModel.getClinicGuardian()
+
+                    navHostFragment.visibility = View.VISIBLE
+                    reconnectingLayout.visibility = View.GONE
+
+                }
+            } else {
+                if (!isInternet) {
+                    navHostFragment.visibility = View.GONE
+                    reconnectingLayout.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    private fun observeGetGuardian() {
         viewModel.getGuardianStatus.observe(this) {
             dialog?.dismiss()
 
@@ -430,7 +451,9 @@ class MainActivity : AppCompatActivity() {
 
             dialog?.showNow(supportFragmentManager, null)
         }
+    }
 
+    private fun observeCheckIn() {
         viewModel.checkInStatus.observe(this) {
             dialog?.dismiss()
 
@@ -587,7 +610,9 @@ class MainActivity : AppCompatActivity() {
 
             dialog?.showNow(supportFragmentManager, null)
         }
+    }
 
+    private fun observeGetSchedules() {
         viewModel.getSchedulesStatus.observe(this) {
             dialog?.dismiss()
 
@@ -638,7 +663,9 @@ class MainActivity : AppCompatActivity() {
 
             dialog?.showNow(supportFragmentManager, null)
         }
+    }
 
+    private fun observeCreateAppointment() {
         viewModel.createAppointmentStatus.observe(this) {
             dialog?.dismiss()
 
@@ -687,8 +714,55 @@ class MainActivity : AppCompatActivity() {
 
             dialog?.showNow(supportFragmentManager, null)
         }
+    }
 
-        showPresentation()
+    private fun setWindowSettings() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets ->
+            val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+            val statusBarVisible = insets.isVisible(WindowInsetsCompat.Type.statusBars())
+
+            if (!imeVisible && statusBarVisible) {
+                lifecycleScope.launch {
+                    withContext(Dispatchers.IO) {
+                        delay(100)
+                    }
+                    hideSystemUI()
+                }
+            }
+
+            insets
+        }
+    }
+
+    private fun registerBroadcastReciver() {
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            reloadClinicDataReceiver,
+            IntentFilter(SharedPreferencesRepo.MS_SERVER_DOMAIN).apply {
+                addAction(SharedPreferencesRepo.ORG_ID)
+            }
+        )
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            presentationReceiver,
+            IntentFilter(SharedPreferencesRepo.QUEUEING_BOARD_SETTING)
+        )
+
+        val downloadFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        registerReceiver(downloadReceiver, downloadFilter)
+    }
+
+    private fun setSound() {
+        soundPool = SoundPool(
+            6,
+            AudioManager.STREAM_MUSIC,
+            0
+        )
+
+        successSoundId = soundPool.load(assets.openFd("success.mp3"), 1)
+        failSoundId = soundPool.load(assets.openFd("fail.mp3"), 1)
+        failCardInsertSoundId = soundPool.load(assets.openFd("again.m4a"), 1)
     }
 
     fun checkInstallUnknownApkPermission(): Boolean {
@@ -927,10 +1001,25 @@ class MainActivity : AppCompatActivity() {
 
         if (queueingMachineSettings.isOneTicket) {
 
-            val headerCommand = getHeaderCommand(queueingMachineSettings.organization)
+            val headerCommand = getHeaderCommand(
+                isShowOrganization = queueingMachineSettings.organization,
+                textSize = queueingMachineSettings.textSize
+            )
+
             val middleCommand =
-                getMiddleCommand(doctors, divisions, serialNumbers, queueingMachineSettings)
-            val footerCommand = getFooterCommand(queueingMachineSettings.time, formatter, now)
+                getMiddleCommand(
+                    doctors = doctors,
+                    divisions = divisions,
+                    serialNumbers = serialNumbers,
+                    queueingMachineSettingModel = queueingMachineSettings
+                )
+
+            val footerCommand = getFooterCommand(
+                isShowTime = queueingMachineSettings.time,
+                formatter = formatter,
+                now = now,
+                textSize = queueingMachineSettings.textSize
+            )
 
             val commandList: ArrayList<ByteArray> = ArrayList()
 
@@ -948,15 +1037,23 @@ class MainActivity : AppCompatActivity() {
                 val divisionArray = arrayOf(division)
                 val serialNoArray = arrayOf(serialNo)
 
-                val headerCommand = getHeaderCommand(queueingMachineSettings.organization)
+                val headerCommand = getHeaderCommand(
+                    isShowOrganization = queueingMachineSettings.organization,
+                    textSize = queueingMachineSettings.textSize
+                )
                 val middleCommand =
                     getMiddleCommand(
-                        doctorArray,
-                        divisionArray,
-                        serialNoArray,
-                        queueingMachineSettings
+                        doctors = doctorArray,
+                        divisions = divisionArray,
+                        serialNumbers = serialNoArray,
+                        queueingMachineSettingModel = queueingMachineSettings
                     )
-                val footerCommand = getFooterCommand(queueingMachineSettings.time, formatter, now)
+                val footerCommand = getFooterCommand(
+                    isShowTime = queueingMachineSettings.time,
+                    formatter = formatter,
+                    now = now,
+                    textSize = queueingMachineSettings.textSize
+                )
 
                 val commandList: ArrayList<ByteArray> = ArrayList()
 
@@ -971,7 +1068,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getHeaderCommand(isShowOrganization: Boolean): ArrayList<ByteArray> {
+    private fun getHeaderCommand(
+        isShowOrganization: Boolean,
+        textSize: QueueingMachineSettingModel.MillimeterSize
+    ): ArrayList<ByteArray> {
         val headerCommand = arrayListOf(
             PrinterBuffer.initializePrinter(),
             PrinterBuffer.selectAlignment(PrinterBuffer.Alignment.CENTER),
@@ -981,7 +1081,9 @@ class MainActivity : AppCompatActivity() {
             headerCommand.addAll(
                 arrayListOf(
                     PrinterBuffer.setLineSpacing(120),
-                    PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+                    PrinterBuffer.selectCharacterSize(
+                        setTextSizeForSmallText(textSize)
+                    ),
                     strToBytes(viewModel.clinicGuardian.value!!.name),
                     PrinterBuffer.printAndFeedLine(),
                 )
@@ -998,13 +1100,15 @@ class MainActivity : AppCompatActivity() {
     ): ArrayList<ByteArray> {
         val middleCommand: ArrayList<ByteArray> = ArrayList()
 
+        val textSize = queueingMachineSettingModel.textSize
+
         divisions.zipWith(serialNumbers, doctors).forEach { (division, serialNo, doctor) ->
 
             if (queueingMachineSettingModel.doctor) {
                 middleCommand.addAll(
                     arrayListOf(
                         PrinterBuffer.setLineSpacing(160),
-                        PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
+                        PrinterBuffer.selectCharacterSize(setTextSizeForBigText(textSize)),
                         strToBytes(doctor),
                         PrinterBuffer.printAndFeedLine(),
                     )
@@ -1015,7 +1119,7 @@ class MainActivity : AppCompatActivity() {
                 middleCommand.addAll(
                     arrayListOf(
                         PrinterBuffer.setLineSpacing(160),
-                        PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
+                        PrinterBuffer.selectCharacterSize(setTextSizeForBigText(textSize)),
                         strToBytes(division),
                         PrinterBuffer.printAndFeedLine(),
                     )
@@ -1025,12 +1129,12 @@ class MainActivity : AppCompatActivity() {
             val innerList = arrayListOf(
 
                 PrinterBuffer.setLineSpacing(120),
-                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+                PrinterBuffer.selectCharacterSize(setTextSizeForSmallText(textSize)),
                 strToBytes(getString(R.string.print_serial_no)),
                 PrinterBuffer.printAndFeedLine(),
 
                 PrinterBuffer.setLineSpacing(160),
-                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
+                PrinterBuffer.selectCharacterSize(setTextSizeForBigText(textSize)),
                 strToBytes(String.format("%04d", serialNo)),
                 PrinterBuffer.printAndFeedLine(),
             )
@@ -1044,12 +1148,13 @@ class MainActivity : AppCompatActivity() {
     private fun getFooterCommand(
         isShowTime: Boolean,
         formatter: DateFormat,
-        now: Date
-    ): java.util.ArrayList<ByteArray> {
+        now: Date,
+        textSize: QueueingMachineSettingModel.MillimeterSize
+    ): ArrayList<ByteArray> {
         val footerCommand = if (isShowTime) {
             arrayListOf(
                 PrinterBuffer.setLineSpacing(120),
-                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+                PrinterBuffer.selectCharacterSize(setTextSizeForSmallText(textSize)),
                 strToBytes(formatter.format(now)),
                 PrinterBuffer.printAndFeedLine(),
             )
@@ -1060,7 +1165,7 @@ class MainActivity : AppCompatActivity() {
         footerCommand.addAll(
             arrayListOf(
                 PrinterBuffer.setLineSpacing(120),
-                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+                PrinterBuffer.selectCharacterSize(setTextSizeForSmallText(textSize)),
                 strToBytes(getString(R.string.print_footer)),
                 PrinterBuffer.printAndFeedLine(),
 
@@ -1070,11 +1175,31 @@ class MainActivity : AppCompatActivity() {
         return footerCommand
     }
 
+
+    private fun setTextSizeForSmallText(textSize: QueueingMachineSettingModel.MillimeterSize) =
+        when (textSize) {
+            QueueingMachineSettingModel.MillimeterSize.FIFTY_SEVEN_MILLIMETERS ->
+                PrinterBuffer.CharacterSize.XXSMALL
+            QueueingMachineSettingModel.MillimeterSize.SEVENTY_SIX_MILLIMETERS ->
+                PrinterBuffer.CharacterSize.XSMALL
+        }
+
+    private fun setTextSizeForBigText(textSize: QueueingMachineSettingModel.MillimeterSize) =
+        when (textSize) {
+            QueueingMachineSettingModel.MillimeterSize.FIFTY_SEVEN_MILLIMETERS ->
+                PrinterBuffer.CharacterSize.XSMALL
+            QueueingMachineSettingModel.MillimeterSize.SEVENTY_SIX_MILLIMETERS ->
+                PrinterBuffer.CharacterSize.SMALL
+        }
+
+
+    //        val bluetoothStateFilter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+
+
     /** 將字串用萬國編碼轉成ByteArray防止中文亂碼 */
     private fun strToBytes(str: String): ByteArray = str.toByteArray(charset("big5"))
 
 //    private fun setupBluetooth() {
-//        val bluetoothStateFilter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
 //        registerReceiver(
 //            detectBluetoothStateReceiver,
 //            bluetoothStateFilter

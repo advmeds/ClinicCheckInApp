@@ -10,6 +10,7 @@ data class QueueingMachineSettingModel(
     val dept: Boolean,
     val time: Boolean,
     val isOneTicket: Boolean,
+    val textSize: MillimeterSize,
 ) {
     fun isSame(queueingMachineSettingModel: QueueingMachineSettingModel): Boolean {
         return queueingMachineSettingModel.isEnabled == isEnabled &&
@@ -17,7 +18,8 @@ data class QueueingMachineSettingModel(
                 queueingMachineSettingModel.doctor == doctor &&
                 queueingMachineSettingModel.dept == dept &&
                 queueingMachineSettingModel.time == time &&
-                queueingMachineSettingModel.isOneTicket == isOneTicket
+                queueingMachineSettingModel.isOneTicket == isOneTicket &&
+                queueingMachineSettingModel.textSize == textSize
     }
 
     companion object {
@@ -28,4 +30,10 @@ data class QueueingMachineSettingModel(
             time: Boolean,
         ) = !(organization || doctor || dept || time)
     }
+    @Serializable
+    enum class MillimeterSize {
+        FIFTY_SEVEN_MILLIMETERS,
+        SEVENTY_SIX_MILLIMETERS;
+    }
+
 }

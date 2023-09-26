@@ -13,6 +13,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_graph" />
+        app:navGraph="@navigation/nav_graph"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:visibility="gone"
+        android:id="@+id/layout_reconnecting"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/tv_reconnecting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="#FFFFFF"
+            android:text="@string/reconnecting"
+            android:textSize="60sp" />
+
+        <ProgressBar
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@+id/tv_reconnecting"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
 
 </LinearLayout>

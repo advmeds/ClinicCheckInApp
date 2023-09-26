@@ -147,6 +147,10 @@
     <string name="qms_doctor_label">Doctor</string>
     <string name="qms_organization_label">Organization</string>
     <string name="qms_one_ticket_label">All information in one ticket</string>
+    <string name="qms_ticket_print_size_label">Ticket Print Size</string>
+    <string name="qms_ticket_print_size_57">57 mm</string>
+    <string name="qms_ticket_print_size_76">76 mm</string>
+
 
 
     <!-- Language Setting -->
