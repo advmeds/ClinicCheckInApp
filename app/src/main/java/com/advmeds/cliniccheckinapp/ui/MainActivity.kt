@@ -927,10 +927,25 @@ class MainActivity : AppCompatActivity() {
 
         if (queueingMachineSettings.isOneTicket) {
 
-            val headerCommand = getHeaderCommand(queueingMachineSettings.organization)
+            val headerCommand = getHeaderCommand(
+                isShowOrganization = queueingMachineSettings.organization,
+                textSize = queueingMachineSettings.textSize
+            )
+
             val middleCommand =
-                getMiddleCommand(doctors, divisions, serialNumbers, queueingMachineSettings)
-            val footerCommand = getFooterCommand(queueingMachineSettings.time, formatter, now)
+                getMiddleCommand(
+                    doctors = doctors,
+                    divisions = divisions,
+                    serialNumbers = serialNumbers,
+                    queueingMachineSettingModel = queueingMachineSettings
+                )
+
+            val footerCommand = getFooterCommand(
+                isShowTime = queueingMachineSettings.time,
+                formatter = formatter,
+                now = now,
+                textSize = queueingMachineSettings.textSize
+            )
 
             val commandList: ArrayList<ByteArray> = ArrayList()
 
@@ -948,15 +963,23 @@ class MainActivity : AppCompatActivity() {
                 val divisionArray = arrayOf(division)
                 val serialNoArray = arrayOf(serialNo)
 
-                val headerCommand = getHeaderCommand(queueingMachineSettings.organization)
+                val headerCommand = getHeaderCommand(
+                    isShowOrganization = queueingMachineSettings.organization,
+                    textSize = queueingMachineSettings.textSize
+                )
                 val middleCommand =
                     getMiddleCommand(
-                        doctorArray,
-                        divisionArray,
-                        serialNoArray,
-                        queueingMachineSettings
+                        doctors = doctorArray,
+                        divisions = divisionArray,
+                        serialNumbers = serialNoArray,
+                        queueingMachineSettingModel = queueingMachineSettings
                     )
-                val footerCommand = getFooterCommand(queueingMachineSettings.time, formatter, now)
+                val footerCommand = getFooterCommand(
+                    isShowTime = queueingMachineSettings.time,
+                    formatter = formatter,
+                    now = now,
+                    textSize = queueingMachineSettings.textSize
+                )
 
                 val commandList: ArrayList<ByteArray> = ArrayList()
 
@@ -971,7 +994,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getHeaderCommand(isShowOrganization: Boolean): ArrayList<ByteArray> {
+    private fun getHeaderCommand(
+        isShowOrganization: Boolean,
+        textSize: QueueingMachineSettingModel.MillimeterSize
+    ): ArrayList<ByteArray> {
         val headerCommand = arrayListOf(
             PrinterBuffer.initializePrinter(),
             PrinterBuffer.selectAlignment(PrinterBuffer.Alignment.CENTER),
@@ -981,7 +1007,9 @@ class MainActivity : AppCompatActivity() {
             headerCommand.addAll(
                 arrayListOf(
                     PrinterBuffer.setLineSpacing(120),
-                    PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+                    PrinterBuffer.selectCharacterSize(
+                        setTextSizeForSmallText(textSize)
+                    ),
                     strToBytes(viewModel.clinicGuardian.value!!.name),
                     PrinterBuffer.printAndFeedLine(),
                 )
@@ -998,13 +1026,15 @@ class MainActivity : AppCompatActivity() {
     ): ArrayList<ByteArray> {
         val middleCommand: ArrayList<ByteArray> = ArrayList()
 
+        val textSize = queueingMachineSettingModel.textSize
+
         divisions.zipWith(serialNumbers, doctors).forEach { (division, serialNo, doctor) ->
 
             if (queueingMachineSettingModel.doctor) {
                 middleCommand.addAll(
                     arrayListOf(
                         PrinterBuffer.setLineSpacing(160),
-                        PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
+                        PrinterBuffer.selectCharacterSize(setTextSizeForBigText(textSize)),
                         strToBytes(doctor),
                         PrinterBuffer.printAndFeedLine(),
                     )
@@ -1015,7 +1045,7 @@ class MainActivity : AppCompatActivity() {
                 middleCommand.addAll(
                     arrayListOf(
                         PrinterBuffer.setLineSpacing(160),
-                        PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
+                        PrinterBuffer.selectCharacterSize(setTextSizeForBigText(textSize)),
                         strToBytes(division),
                         PrinterBuffer.printAndFeedLine(),
                     )
@@ -1025,12 +1055,12 @@ class MainActivity : AppCompatActivity() {
             val innerList = arrayListOf(
 
                 PrinterBuffer.setLineSpacing(120),
-                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+                PrinterBuffer.selectCharacterSize(setTextSizeForSmallText(textSize)),
                 strToBytes(getString(R.string.print_serial_no)),
                 PrinterBuffer.printAndFeedLine(),
 
                 PrinterBuffer.setLineSpacing(160),
-                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
+                PrinterBuffer.selectCharacterSize(setTextSizeForBigText(textSize)),
                 strToBytes(String.format("%04d", serialNo)),
                 PrinterBuffer.printAndFeedLine(),
             )
@@ -1044,12 +1074,13 @@ class MainActivity : AppCompatActivity() {
     private fun getFooterCommand(
         isShowTime: Boolean,
         formatter: DateFormat,
-        now: Date
-    ): java.util.ArrayList<ByteArray> {
+        now: Date,
+        textSize: QueueingMachineSettingModel.MillimeterSize
+    ): ArrayList<ByteArray> {
         val footerCommand = if (isShowTime) {
             arrayListOf(
                 PrinterBuffer.setLineSpacing(120),
-                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+                PrinterBuffer.selectCharacterSize(setTextSizeForSmallText(textSize)),
                 strToBytes(formatter.format(now)),
                 PrinterBuffer.printAndFeedLine(),
             )
@@ -1060,7 +1091,7 @@ class MainActivity : AppCompatActivity() {
         footerCommand.addAll(
             arrayListOf(
                 PrinterBuffer.setLineSpacing(120),
-                PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
+                PrinterBuffer.selectCharacterSize(setTextSizeForSmallText(textSize)),
                 strToBytes(getString(R.string.print_footer)),
                 PrinterBuffer.printAndFeedLine(),
 
@@ -1070,11 +1101,31 @@ class MainActivity : AppCompatActivity() {
         return footerCommand
     }
 
+
+    private fun setTextSizeForSmallText(textSize: QueueingMachineSettingModel.MillimeterSize) =
+        when (textSize) {
+            QueueingMachineSettingModel.MillimeterSize.FIFTY_SEVEN_MILLIMETERS ->
+                PrinterBuffer.CharacterSize.XXSMALL
+            QueueingMachineSettingModel.MillimeterSize.SEVENTY_SIX_MILLIMETERS ->
+                PrinterBuffer.CharacterSize.XSMALL
+        }
+
+    private fun setTextSizeForBigText(textSize: QueueingMachineSettingModel.MillimeterSize) =
+        when (textSize) {
+            QueueingMachineSettingModel.MillimeterSize.FIFTY_SEVEN_MILLIMETERS ->
+                PrinterBuffer.CharacterSize.XSMALL
+            QueueingMachineSettingModel.MillimeterSize.SEVENTY_SIX_MILLIMETERS ->
+                PrinterBuffer.CharacterSize.SMALL
+        }
+
+
+    //        val bluetoothStateFilter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+
+
     /** 將字串用萬國編碼轉成ByteArray防止中文亂碼 */
     private fun strToBytes(str: String): ByteArray = str.toByteArray(charset("big5"))
 
 //    private fun setupBluetooth() {
-//        val bluetoothStateFilter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
 //        registerReceiver(
 //            detectBluetoothStateReceiver,
 //            bluetoothStateFilter

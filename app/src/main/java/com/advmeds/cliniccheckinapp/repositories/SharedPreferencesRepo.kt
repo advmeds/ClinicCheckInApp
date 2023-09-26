@@ -10,8 +10,10 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.A
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+
 class SharedPreferencesRepo(
     context: Context
 ) {
@@ -64,14 +66,18 @@ class SharedPreferencesRepo(
         const val QUEUEING_MACHINE_SETTING_DOCTOR = "queueing_machine_setting_organization_doctor"
         const val QUEUEING_MACHINE_SETTING_DEPT = "queueing_machine_setting_organization_dept"
         const val QUEUEING_MACHINE_SETTING_TIME = "queueing_machine_setting_organization_time"
-        const val QUEUEING_MACHINE_SETTING_IS_ONE_TICKET = "queueing_machine_setting_organization_is_one_ticket"
+        const val QUEUEING_MACHINE_SETTING_IS_ONE_TICKET =
+            "queueing_machine_setting_organization_is_one_ticket"
+        const val QUEUEING_MACHINE_SETTING_TEXT_SIZE =
+            "queueing_machine_setting_organization_text_size"
 
         /** SharedPreferences [automatic appointment setting params] KEY */
         const val AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE =
             "automatic_appointment_setting_is_enable"
         const val AUTOMATIC_APPOINTMENT_SETTING_DOCTOR = "automatic_appointment_setting_doctor"
         const val AUTOMATIC_APPOINTMENT_SETTING_ROOM = "automatic_appointment_setting_room"
-        const val AUTOMATIC_APPOINTMENT_SETTING_AUTO_CHECK_IN = "automatic_appointment_setting_auto_check_in"
+        const val AUTOMATIC_APPOINTMENT_SETTING_AUTO_CHECK_IN =
+            "automatic_appointment_setting_auto_check_in"
 
         /** SharedPreferences『Language』KEY */
         const val LANGUAGE_KEY = "language"
@@ -101,12 +107,14 @@ class SharedPreferencesRepo(
 
             val defaultSelectedRadio = try {
                 BuildConfig.MS_DOMAIN_SETTINGS_RADIO.toInt()
-            } catch (e: NumberFormatException ) {
+            } catch (e: NumberFormatException) {
                 0
             }
 
-            val domain = sharedPreferences.getString(MS_SERVER_DOMAIN, null) ?: BuildConfig.MS_DOMAIN
-            val selectedRadio = sharedPreferences.getInt(MS_SERVER_DOMAIN_SELECTED_RADIO, defaultSelectedRadio)
+            val domain =
+                sharedPreferences.getString(MS_SERVER_DOMAIN, null) ?: BuildConfig.MS_DOMAIN
+            val selectedRadio =
+                sharedPreferences.getInt(MS_SERVER_DOMAIN_SELECTED_RADIO, defaultSelectedRadio)
 
             return Pair(domain, selectedRadio)
         }
@@ -322,16 +330,29 @@ class SharedPreferencesRepo(
             val isOneTicket: Boolean =
                 sharedPreferences.getBoolean(QUEUEING_MACHINE_SETTING_IS_ONE_TICKET, false)
 
+
+            val textSizeJson: String =
+                sharedPreferences.getString(QUEUEING_MACHINE_SETTING_TEXT_SIZE, "") ?: ""
+
+            val textSize =
+                if (textSizeJson.isBlank()) QueueingMachineSettingModel.MillimeterSize.FIFTY_SEVEN_MILLIMETERS
+                else Json.decodeFromString(textSizeJson)
+
+
             return QueueingMachineSettingModel(
                 isEnabled = isEnable,
                 organization = organization,
                 doctor = doctor,
                 dept = dept,
                 time = time,
-                isOneTicket = isOneTicket
+                isOneTicket = isOneTicket,
+                textSize = textSize
             )
         }
         set(value) {
+
+            val textSize = Json.encodeToString(value.textSize)
+
             sharedPreferences.edit()
                 .putBoolean(QUEUEING_MACHINE_SETTING_IS_ENABLE, value.isEnabled)
                 .putBoolean(QUEUEING_MACHINE_SETTING_ORGANIZATION, value.organization)
@@ -339,6 +360,7 @@ class SharedPreferencesRepo(
                 .putBoolean(QUEUEING_MACHINE_SETTING_DEPT, value.dept)
                 .putBoolean(QUEUEING_MACHINE_SETTING_TIME, value.time)
                 .putBoolean(QUEUEING_MACHINE_SETTING_IS_ONE_TICKET, value.isOneTicket)
+                .putString(QUEUEING_MACHINE_SETTING_TEXT_SIZE, textSize)
                 .apply()
 
             localBroadcastManager.sendBroadcast(

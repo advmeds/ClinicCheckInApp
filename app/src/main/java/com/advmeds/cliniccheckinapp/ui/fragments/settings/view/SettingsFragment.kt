@@ -748,6 +748,14 @@ class SettingsFragment : ListFragment() {
             dialog.queueing_machine_setting_container.isGone = !isChecked
         }
 
+        when (queueingMachineSettingModel.textSize) {
+            QueueingMachineSettingModel.MillimeterSize.FIFTY_SEVEN_MILLIMETERS ->
+                dialog.qms_dialog_radio_group.check(R.id.qms_print_size_57)
+            QueueingMachineSettingModel.MillimeterSize.SEVENTY_SIX_MILLIMETERS ->
+                dialog.qms_dialog_radio_group.check(R.id.qms_print_size_76)
+
+        }
+
         val saveButton = dialog.btn_qms_dialog_save
         val cancelButton = dialog.btn_qms_dialog_cancel
 
@@ -777,6 +785,12 @@ class SettingsFragment : ListFragment() {
         val dept: Boolean = dialog.qms_cb_dept.isChecked
         val time: Boolean = dialog.qms_cb_time.isChecked
         val isOneTicket: Boolean = dialog.queueing_machine_setting_one_ticket_switcher.isChecked
+        val textSize: QueueingMachineSettingModel.MillimeterSize =
+            when (dialog.qms_dialog_radio_group.checkedRadioButtonId) {
+                R.id.qms_print_size_57 -> QueueingMachineSettingModel.MillimeterSize.FIFTY_SEVEN_MILLIMETERS
+                R.id.qms_print_size_76 -> QueueingMachineSettingModel.MillimeterSize.SEVENTY_SIX_MILLIMETERS
+                else -> QueueingMachineSettingModel.MillimeterSize.FIFTY_SEVEN_MILLIMETERS
+            }
 
         dialog.dismiss()
 
@@ -786,7 +800,8 @@ class SettingsFragment : ListFragment() {
             doctor = if (!isEnable) false else doctor,
             dept = if (!isEnable) false else dept,
             time = if (!isEnable) false else time,
-            isOneTicket = if (!isEnable) false else isOneTicket
+            isOneTicket = if (!isEnable) false else isOneTicket,
+            textSize = if (!isEnable) QueueingMachineSettingModel.MillimeterSize.FIFTY_SEVEN_MILLIMETERS else textSize
         )
     }
 
@@ -954,6 +969,8 @@ class SettingsFragment : ListFragment() {
         if (dialog.window == null)
             return
 
+        var updateDialogOpen = true
+
         dialog.window!!.setGravity(Gravity.CENTER)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
@@ -1011,16 +1028,20 @@ class SettingsFragment : ListFragment() {
             stateFlowJob = lifecycleScope.launch(Dispatchers.Main) {
                 viewModel.uiState.collect { uiState ->
 
-                    val isShowLoadingComponent =
-                        uiState.updateSoftwareRequestStatus == UpdateSoftwareRequestStatus.LOADING ||
-                                uiState.updateSoftwareDownloadingStatus == UpdateSoftwareDownloadingStatus.LOADING
+                    if (updateDialogOpen) {
 
-                    val text = if (uiState.updateSoftwareDialogText != 0)
-                        "${getString(uiState.updateSoftwareDialogText)} ${uiState.updateSoftwarePercentageDownload}"
-                    else ""
+                        val isShowLoadingComponent =
+                            uiState.updateSoftwareRequestStatus == UpdateSoftwareRequestStatus.LOADING ||
+                                    uiState.updateSoftwareDownloadingStatus == UpdateSoftwareDownloadingStatus.LOADING
 
-                    dialog.update_software_progress_bar.isGone = !isShowLoadingComponent
-                    dialog.update_software_text.text = text
+                        val text = if (uiState.updateSoftwareDialogText != 0)
+                            "${getString(uiState.updateSoftwareDialogText)} ${uiState.updateSoftwarePercentageDownload}"
+                        else ""
+
+
+                        dialog.update_software_progress_bar.isGone = !isShowLoadingComponent
+                        dialog.update_software_text.text = text
+                    }
                 }
             }
 
@@ -1035,8 +1056,8 @@ class SettingsFragment : ListFragment() {
         }
 
         dialog.setOnDismissListener {
-//            viewModel.closeUpdateDialog()
-//            stateFlowJob?.cancel()
+            updateDialogOpen = false
+            Log.d("check---", "onSetSoftwareUpdateSettingItemClicked: $updateDialogOpen")
         }
 
         dialog.show()
@@ -1148,7 +1169,8 @@ class SettingsFragment : ListFragment() {
 
         try {
             dialog.dismiss()
-        } catch (_:Exception) {}
+        } catch (_: Exception) {
+        }
 
         stateFlowJob?.cancel()
 
