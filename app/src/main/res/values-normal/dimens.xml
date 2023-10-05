@@ -16,6 +16,10 @@
     <dimen name="logo_image_width">255dp</dimen>
     <dimen name="logo_image_margin">5dp</dimen>
 
+    <!-- Settings Icon -->
+    <dimen name="settings_icon_size">12dp</dimen>
+    <dimen name="settings_icon_margin">2dp</dimen>
+
 
     <!-- Font -->
 
