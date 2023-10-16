@@ -111,7 +111,7 @@ class HomeFragment : Fragment() {
         binding.appCompatTextView.text =
             viewModel.machineTitle.ifEmpty { getString(R.string.app_name) }
 
-        binding.logoImageView.setOnLongClickListener {
+        binding.settingsIcon.setOnClickListener {
 
             val inputTextLabel = requireContext().getString(R.string.password)
 
@@ -132,7 +132,7 @@ class HomeFragment : Fragment() {
                 }
             )
 
-            return@setOnLongClickListener true
+            return@setOnClickListener
         }
 
         val firstArg = getString(R.string.health_card)
