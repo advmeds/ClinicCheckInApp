@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/setting_dialog_width"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
@@ -58,7 +59,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
@@ -213,6 +215,42 @@
                                     android:scaleY="@dimen/switcher_scale" />
 
                             </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="@dimen/space_normal"
+                                android:text="@string/qms_ticket_print_size_label"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/font_size_h4" />
+
+
+                            <RadioGroup
+                                android:id="@+id/qms_dialog_radio_group"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:checkedButton="@id/qms_print_size_57"
+                                android:orientation="vertical"
+                                android:padding="@dimen/space_medium">
+
+                                <RadioButton
+                                    android:id="@+id/qms_print_size_57"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/qms_ticket_print_size_57"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/font_size_h4" />
+
+                                <RadioButton
+                                    android:id="@+id/qms_print_size_76"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/qms_ticket_print_size_76"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/font_size_h4" />
+
+                            </RadioGroup>
+
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                     </androidx.appcompat.widget.LinearLayoutCompat>

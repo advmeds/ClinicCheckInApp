@@ -12,8 +12,8 @@ android {
         applicationId "com.advmeds.cliniccheckinapp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0.3"
+        versionCode 3
+        versionName "1.0.5"
 
         flavorDimensions "mode"
 
@@ -36,7 +36,7 @@ android {
             debuggable = true
 
             buildConfigField "String", "MS_DOMAIN", "\"https://test.mscheduler.com/\""
-            // depend on previous buildConfigField "MS_DOMAIN" is it www so it 0 if it test it 1
+            // MS_DOMAIN_SETTINGS_RADIO depend on previous buildConfigField "MS_DOMAIN" is it www so it 0 if it test it 1
             buildConfigField "String", "MS_DOMAIN_SETTINGS_RADIO", "\"1\""
             buildConfigField "String", "ORG_ID", "\"1\""
             buildConfigField "String", "DEFAULT_LANGUAGE", "\"en\""

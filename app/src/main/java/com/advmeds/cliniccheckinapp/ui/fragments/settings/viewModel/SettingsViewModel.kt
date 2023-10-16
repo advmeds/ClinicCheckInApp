@@ -17,6 +17,7 @@ import com.advmeds.cliniccheckinapp.repositories.ServerRepository
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.utils.DownloadController
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -114,14 +115,14 @@ class SettingsViewModel(
 
 
     private fun startDownLoading(url: String, version: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             downloadControllerRepository.startProcessOfDownload(
                 url = url,
                 version = version
             )
         }
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Main) {
 
             downloadControllerRepository.getProgressOfDownload().collect { counterValue ->
                 if (counterValue != 100) {
@@ -176,6 +177,7 @@ class SettingsViewModel(
                                 updateSoftwarePercentageDownload = ""
                             )
                         }
+                        updateJob?.cancel()
                     }
                 }
             }
