@@ -36,12 +36,12 @@ class DownloadController(
 
         private const val TAG = "check---:DownloadC"
 
-        private const val FILE_NAME = "mSchedulerCheckIn_"
+        private const val FILE_NAME = "mSchedulerCheckIn"
         private const val FOLDER_NAME = "mSchedulerCheckIn"
         private const val FILE_BASE_PATH = "file://"
         private const val APP_INSTALL_PATH = "application/vnd.android.package-archive"
 
-        fun getFileName(version: String) = "$FILE_NAME$version.apk"
+        fun getFileName() = "$FILE_NAME.apk"
     }
 
     suspend fun enqueueDownload(url: String, version: String) {
@@ -53,7 +53,7 @@ class DownloadController(
         val downloadUri = Uri.parse(url)
 
         val request = DownloadManager.Request(downloadUri)
-            .setTitle(getFileName(version))
+            .setTitle(getFileName())
             .setDescription("Downloading update...")
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
             .setMimeType(APP_INSTALL_PATH)
@@ -63,7 +63,7 @@ class DownloadController(
 
         if (privateDir != null) {
 
-            val apkFile = File(privateDir, getFileName(version))
+            val apkFile = File(privateDir, getFileName())
             request.setDestinationUri(Uri.fromFile(apkFile))
 
             Log.d(TAG, "enqueueDownload: apk uri ${Uri.fromFile(apkFile)}")
@@ -74,7 +74,7 @@ class DownloadController(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 
             val destinationPath =
-                "${destinationDir.absolutePath}/$FOLDER_NAME/${getFileName(version)}"
+                "${destinationDir.absolutePath}/$FOLDER_NAME/${getFileName()}"
 
             createFolderIfItDoesNotExist(destinationDir)
 
