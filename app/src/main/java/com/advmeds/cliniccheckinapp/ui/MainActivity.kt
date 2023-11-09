@@ -58,6 +58,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetSchedul
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.utils.CheckNetworkConnection
+import com.advmeds.cliniccheckinapp.utils.DownloadController
 import com.advmeds.cliniccheckinapp.utils.toCharSequence
 import com.advmeds.cliniccheckinapp.utils.zipWith
 import com.advmeds.printerlib.usb.BPT3XPrinterService
@@ -372,7 +373,7 @@ class MainActivity : AppCompatActivity() {
         setWindowSettings()
 
         setObserver()
-
+        clearDownloadedApk()
         showPresentation()
     }
 
@@ -1490,6 +1491,37 @@ class MainActivity : AppCompatActivity() {
 
         return super.dispatchTouchEvent(ev)
     }
+
+    private fun clearDownloadedApk(): Int {
+        val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+
+        val query = DownloadManager.Query()
+        val cursor = manager.query(query)
+
+        if (!cursor.moveToFirst()) {
+            return 0
+        }
+
+        var deletedCount = 0
+
+        do {
+            val fileTitleColumnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_TITLE)
+            val fileTitle = cursor.getString(fileTitleColumnIndex)
+
+            if (fileTitle == DownloadController.getFileName()) {
+                val idColumnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_ID)
+                val id = cursor.getLong(idColumnIndex)
+
+                manager.remove(id)
+
+                deletedCount++
+            }
+
+        } while (cursor.moveToNext())
+
+        return deletedCount
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

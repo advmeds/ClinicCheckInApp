@@ -21,6 +21,16 @@ android {
     }
 
     signingConfigs {
+        debug {
+            storeFile file("advmeds-keystore.jks")
+            storePassword 'BJJsVQvS'
+            keyAlias 'KeyAlias'
+            keyPassword 'FlTXoXza'
+
+            v1SigningEnabled true
+            v2SigningEnabled true
+            // Optional, specify signing versions used
+        }
         release {
             storeFile file((project.rootDir.toString() + '\\key\\release'))
             storePassword '123456'
@@ -57,6 +67,7 @@ android {
             buildConfigField "String", "ORG_ID", "\"1\""
             buildConfigField "String", "DEFAULT_LANGUAGE", "\"en\""
             buildConfigField "String", "DEFAULT_PASSWORD", "\"qwerty\""
+            buildConfigField "String", "UPDATE_NAME", "\"CheckInApp\""
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
