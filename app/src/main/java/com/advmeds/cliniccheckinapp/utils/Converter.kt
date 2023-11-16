@@ -5,7 +5,6 @@ import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 
 object Converter {
-
     fun language_lang_code_to_name(
         context: Context,
         langCode: String = BuildConfig.DEFAULT_LANGUAGE
@@ -22,6 +21,23 @@ object Converter {
             context.getString(R.string.en_language) -> "en"
             context.getString(R.string.zh_tw_language) -> "zh"
             else -> throw IllegalArgumentException("The language has no similar language codes")
+        }
+    }
+
+    fun determineType(value: Any): String? {
+        return when (value) {
+            is String -> "String"
+            is Int -> "Int"
+            is Double -> "Double"
+            else -> null
+        }
+    }
+
+    fun convertToCorrectType(value: String, type: String?): Any {
+        return when (type) {
+            "Int" -> value.toIntOrNull() ?: value
+            "Double" -> value.toDoubleOrNull() ?: value
+            else -> value
         }
     }
 }

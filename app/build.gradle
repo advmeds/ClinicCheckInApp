@@ -3,21 +3,29 @@ plugins {
     id 'kotlin-android'
     id "kotlinx-serialization"
     id "kotlin-android-extensions"
+
+    id 'kotlin-kapt'
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.advmeds.cliniccheckinapp"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 3
         versionName "1.0.5"
 
         flavorDimensions "mode"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
+        }
     }
 
     signingConfigs {
@@ -169,6 +177,11 @@ dependencies {
     // lottie
     def coil_version = "1.4.0"
     implementation "io.coil-kt:coil:$coil_version"
+
+    // Room
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
 
     implementation "com.jakewharton.timber:timber:4.7.1"
 
