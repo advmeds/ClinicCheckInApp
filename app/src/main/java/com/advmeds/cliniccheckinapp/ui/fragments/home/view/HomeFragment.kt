@@ -31,9 +31,13 @@ import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
+import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepositoryImpl
+import com.advmeds.cliniccheckinapp.repositories.RoomRepositories
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
+import com.advmeds.cliniccheckinapp.ui.fragments.home.eventLogger.HomeEventLogger
 import com.advmeds.cliniccheckinapp.ui.fragments.home.viewmodel.HomeViewModel
+import com.advmeds.cliniccheckinapp.ui.fragments.home.viewmodel.HomeViewModelFactory
 import kotlinx.android.synthetic.main.text_input_dialog.*
 
 
@@ -41,7 +45,14 @@ class HomeFragment : Fragment() {
 
     private lateinit var dialog: Dialog
 
-    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: HomeViewModel by viewModels{
+        HomeViewModelFactory(
+            application = requireActivity().application,
+            homeEventLogger = HomeEventLogger(
+                AnalyticsRepositoryImpl.getInstance(RoomRepositories.eventsRepository)
+            )
+        )
+    }
 
     private var _binding: HomeFragmentBinding? = null
 
@@ -121,14 +132,17 @@ class HomeFragment : Fragment() {
                 inputTextLabel = inputTextLabel,
                 positiveButtonTextResId = R.string.dialog_ok_button,
                 onConfirmClick = {
-                    if (it == viewModel.password)
+                    if (it == viewModel.password) {
                         findNavController().navigate(R.id.settingsFragment)
-                    else
+                        viewModel.openSettingScreen()
+                    }
+                    else {
                         Toast.makeText(
                             requireContext(),
                             getString(R.string.password_is_incorrect),
                             Toast.LENGTH_LONG
                         ).show()
+                    }
                 }
             )
 

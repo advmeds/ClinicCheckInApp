@@ -1,8 +1,10 @@
 package com.advmeds.cliniccheckinapp.utils
 
 import android.content.Context
+import com.advmeds.cardreadermodule.AcsResponseModel
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
+import com.google.gson.Gson
 
 object Converter {
     fun language_lang_code_to_name(
@@ -29,6 +31,8 @@ object Converter {
             is String -> "String"
             is Int -> "Int"
             is Double -> "Double"
+            is AcsResponseModel -> "AcsResponseModel"
+            is Throwable -> "Throwable"
             else -> null
         }
     }
@@ -37,6 +41,8 @@ object Converter {
         return when (type) {
             "Int" -> value.toIntOrNull() ?: value
             "Double" -> value.toDoubleOrNull() ?: value
+            "AcsResponseModel" -> Gson().fromJson(value, AcsResponseModel::class.java)
+            "Throwable" -> Gson().fromJson(value, Throwable::class.java)
             else -> value
         }
     }
