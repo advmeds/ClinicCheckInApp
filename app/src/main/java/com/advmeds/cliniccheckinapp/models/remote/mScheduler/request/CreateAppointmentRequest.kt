@@ -40,6 +40,7 @@ data class CreateAppointmentRequest(
     )
 
     /** patient national id pattern */
+    @Serializable
     enum class NationalIdFormat(private val pattern: String) {
         /** national id (default) */
         DEFAULT("^[A-Z][A-Z\\d]\\d{8}\$"),

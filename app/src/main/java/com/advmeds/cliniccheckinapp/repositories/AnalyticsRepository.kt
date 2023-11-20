@@ -41,11 +41,6 @@ class AnalyticsRepositoryImpl private constructor(
         @Volatile
         private var INSTANCE: AnalyticsRepositoryImpl? = null
 
-//        fun getInstance(eventRepository: EventRepository) : AnalyticsRepository =
-//            INSTANCE ?: synchronized(this) {
-//                INSTANCE ?: AnalyticsRepositoryImpl(eventRepository).also { INSTANCE = it }
-//            }
-
         fun getInstance(eventRepository: EventRepository) : AnalyticsRepository {
             synchronized(this) {
                 if (INSTANCE == null) {

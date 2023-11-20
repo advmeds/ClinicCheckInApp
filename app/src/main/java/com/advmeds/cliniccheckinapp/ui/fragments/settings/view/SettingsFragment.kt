@@ -39,10 +39,13 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppoi
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
+import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepositoryImpl
 import com.advmeds.cliniccheckinapp.repositories.DownloadControllerRepository
+import com.advmeds.cliniccheckinapp.repositories.RoomRepositories
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter.LanguageAdapter
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter.SettingsAdapter
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.eventLogger.SettingsEventLogger
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.model.LanguageModel
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.model.combineArrays
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.SettingsViewModel
@@ -94,9 +97,13 @@ class SettingsFragment : ListFragment() {
 
         val downloadController = DownloadController(requireContext().applicationContext)
         val downloadControllerRepository = DownloadControllerRepository(downloadController)
+
         val viewModelFactory = SettingsViewModelFactory(
             requireContext().applicationContext as Application,
-            downloadControllerRepository
+            downloadControllerRepository,
+            SettingsEventLogger(
+                AnalyticsRepositoryImpl.getInstance(RoomRepositories.eventsRepository)
+            )
         )
 
         viewModel = ViewModelProvider(this, viewModelFactory)[SettingsViewModel::class.java]
@@ -264,11 +271,21 @@ class SettingsFragment : ListFragment() {
             val checkInItemsForSave =
                 prepareCustomCheckInItemsForSaving(dialog = dialog, checkInItems = checkInItems)
 
-            viewModel.machineTitle =
+            val newMachineTitle =
                 dialog.ui_settings_dialog_input_field.editText?.text.toString().trim()
 
-            viewModel.checkInItemList =
-                EditCheckInItemDialog.toList(checkInItemsForSave)
+            viewModel.userChangeUiSetting(
+                "UI Setting",
+                viewModel.machineTitle,
+                EditCheckInItemDialog.toObject(viewModel.checkInItemList),
+                newMachineTitle,
+                checkInItemsForSave
+            )
+
+
+            viewModel.machineTitle = newMachineTitle
+
+            viewModel.checkInItemList = EditCheckInItemDialog.toList(checkInItemsForSave)
 
             dialog.dismiss()
         }
@@ -441,6 +458,14 @@ class SettingsFragment : ListFragment() {
                 try {
                     HttpUrl.get(domain)
 
+                    viewModel.userChangeDomainSetting(
+                        settingItemTitle = "Domain Setting",
+                        originalUrl = viewModel.mSchedulerServerDomain.first,
+                        originalSelect = viewModel.mSchedulerServerDomain.second,
+                        newUrl = domain,
+                        newSelect = selected
+                    )
+
                     viewModel.mSchedulerServerDomain = Pair(domain, selected)
                 } catch (e: Exception) {
                     AlertDialog.Builder(requireContext())
@@ -462,6 +487,11 @@ class SettingsFragment : ListFragment() {
             inputText = viewModel.orgId,
             onConfirmClick = { id ->
                 if (id.isNotBlank()) {
+                    viewModel.userChangeSettingItem(
+                        settingItemTitle = "Clinic ID",
+                        originalValue = viewModel.orgId,
+                        newValue = id
+                    )
                     viewModel.orgId = id
                 }
             })
@@ -477,6 +507,11 @@ class SettingsFragment : ListFragment() {
             showDescription = true,
             inputText = viewModel.doctors.joinToString(","),
             onConfirmClick = { doctors ->
+                viewModel.userChangeSettingItem(
+                    settingItemTitle = "Doctor ID",
+                    originalValue = viewModel.doctors.joinToString(","),
+                    newValue = doctors
+                )
                 viewModel.doctors = doctors.split(",").filter { it.isNotBlank() }.toSet()
             }
         )
@@ -491,6 +526,11 @@ class SettingsFragment : ListFragment() {
             inputTextLabel = inputTextLabel,
             inputText = viewModel.rooms.joinToString(","),
             onConfirmClick = { rooms ->
+                viewModel.userChangeSettingItem(
+                    settingItemTitle = "Division ID",
+                    originalValue = viewModel.rooms.joinToString(","),
+                    newValue = rooms
+                )
                 viewModel.rooms = rooms.split(",").filter { it.isNotBlank() }.toSet()
             })
     }
@@ -554,10 +594,16 @@ class SettingsFragment : ListFragment() {
             inputText = viewModel.deptId.joinToString(","),
             showDescription = true,
             onConfirmClick = { id ->
+                viewModel.userChangeSettingItem(
+                    settingItemTitle = "Room ID",
+                    originalValue = viewModel.deptId.joinToString(","),
+                    newValue = id
+                )
                 if (id.isNotBlank()) {
                     viewModel.deptId = id.split(",").filter { it.isNotBlank() }.toSet()
                 }
-            })
+            }
+        )
     }
 
     private fun showTextInputDialog(
@@ -689,11 +735,19 @@ class SettingsFragment : ListFragment() {
             val qbsDomain = dialog.et_qbs_irl_input.editText?.text.toString().trim()
 
             try {
-                HttpUrl.get(qbsDomain)
+                if (qbsIsEnable) {
+                    HttpUrl.get(qbsDomain)
+                }
 
                 val queueingMachineSettingModelForSave = QueuingBoardSettingModel(
                     isEnabled = qbsIsEnable,
-                    url = qbsDomain
+                    url = if (qbsIsEnable) qbsDomain else ""
+                )
+
+                viewModel.userChangeQueueingBoardSetting(
+                    settingItemTitle = "Queueing Board Setting",
+                    originalValue = viewModel.queueingBoardSettings,
+                    newValue = queueingMachineSettingModelForSave
                 )
 
                 viewModel.queueingBoardSettings = queueingMachineSettingModelForSave
@@ -765,6 +819,12 @@ class SettingsFragment : ListFragment() {
 
             if (queueingMachineSettingModelForSave.isSame(viewModel.queueingMachineSettings))
                 return@setOnClickListener
+
+            viewModel.userChangeQueueingMachineSetting(
+                settingItemTitle = "Queueing Machine Setting",
+                originalValue = viewModel.queueingMachineSettings,
+                newValue = queueingMachineSettingModelForSave
+            )
 
             viewModel.queueingMachineSettings = queueingMachineSettingModelForSave
         }
@@ -1128,6 +1188,13 @@ class SettingsFragment : ListFragment() {
             } else {
                 list.remove(title)
             }
+
+            viewModel.userChangeCheckedListSetting(
+                settingItemTitle = "Format Check in Setting",
+                originalValue = viewModel.formatCheckedList,
+                newValue = list
+            )
+
             viewModel.formatCheckedList = list
         }
 

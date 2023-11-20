@@ -4,22 +4,29 @@ import android.content.Context
 import com.advmeds.cardreadermodule.AcsResponseModel
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
+import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
 import com.google.gson.Gson
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 
 object Converter {
     fun language_lang_code_to_name(
         context: Context,
         langCode: String = BuildConfig.DEFAULT_LANGUAGE
     ): String {
-        return when(langCode) {
+        return when (langCode) {
             "en" -> context.getString(R.string.en_language)
             "zh" -> context.getString(R.string.zh_tw_language)
             else -> throw IllegalArgumentException("The language code has no similar languages")
         }
     }
 
-    fun language_name_to_lang_code(context: Context, name: String) : String {
-        return when(name) {
+    fun language_name_to_lang_code(context: Context, name: String): String {
+        return when (name) {
             context.getString(R.string.en_language) -> "en"
             context.getString(R.string.zh_tw_language) -> "zh"
             else -> throw IllegalArgumentException("The language has no similar language codes")
@@ -27,11 +34,22 @@ object Converter {
     }
 
     fun determineType(value: Any): String? {
+        if (value is List<*>) {
+            return when ((value as List<*>).firstOrNull()) {
+                is CreateAppointmentRequest.NationalIdFormat ->
+                    "List<CreateAppointmentRequest.NationalIdFormat>"
+                else -> "String"
+            }
+        }
+
         return when (value) {
             is String -> "String"
             is Int -> "Int"
             is Double -> "Double"
             is AcsResponseModel -> "AcsResponseModel"
+            is EditCheckInItemDialog.EditCheckInItems -> "EditCheckInItemDialog.EditCheckInItems"
+            is QueuingBoardSettingModel -> "QueuingBoardSettingModel"
+            is QueueingMachineSettingModel -> "QueueingMachineSettingModel"
             is Throwable -> "Throwable"
             else -> null
         }
@@ -42,7 +60,18 @@ object Converter {
             "Int" -> value.toIntOrNull() ?: value
             "Double" -> value.toDoubleOrNull() ?: value
             "AcsResponseModel" -> Gson().fromJson(value, AcsResponseModel::class.java)
+            "EditCheckInItemDialog.EditCheckInItems" ->
+                Json.decodeFromString<EditCheckInItemDialog.EditCheckInItems>(value)
+            "QueuingBoardSettingModel" ->
+                Json.decodeFromString<QueuingBoardSettingModel>(value)
+            "QueueingMachineSettingModel" ->
+                Json.decodeFromString<QueueingMachineSettingModel>(value)
             "Throwable" -> Gson().fromJson(value, Throwable::class.java)
+            "List<CreateAppointmentRequest.NationalIdFormat>" ->
+                Json.decodeFromString(
+                    ListSerializer(CreateAppointmentRequest.NationalIdFormat.serializer()),
+                    value
+                )
             else -> value
         }
     }

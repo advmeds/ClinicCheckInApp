@@ -15,6 +15,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.Q
 import com.advmeds.cliniccheckinapp.repositories.DownloadControllerRepository
 import com.advmeds.cliniccheckinapp.repositories.ServerRepository
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.eventLogger.SettingsEventLogger
 import com.advmeds.cliniccheckinapp.utils.DownloadController
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,8 @@ import java.util.concurrent.TimeUnit
 
 class SettingsViewModel(
     application: Application,
-    private val downloadControllerRepository: DownloadControllerRepository
+    private val downloadControllerRepository: DownloadControllerRepository,
+    private val settingsEventLogger: SettingsEventLogger
 ) : AndroidViewModel(application) {
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
 
@@ -51,7 +53,7 @@ class SettingsViewModel(
 
         updateJob = viewModelScope.launch {
             val versionName = BuildConfig.VERSION_NAME
-            val updateName =  BuildConfig.UPDATE_NAME
+            val updateName = BuildConfig.UPDATE_NAME
 
             val response = serverRepo.checkControllerAppVersion(
                 name = updateName,
@@ -325,4 +327,96 @@ class SettingsViewModel(
                 retrofit.create(ApiService::class.java)
             )
         }
+
+    // Log Record functions
+    fun userChangeUiSetting(
+        settingItemTitle: String,
+        originalMachineTitle: String,
+        originalValue: EditCheckInItemDialog.EditCheckInItems,
+        changeMachineTitle: String,
+        changeValue: EditCheckInItemDialog.EditCheckInItems
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserChangeUiSettingItem(
+                settingItemTitle,
+                originalMachineTitle,
+                originalValue,
+                changeMachineTitle,
+                changeValue
+            )
+        }
+    }
+
+    fun userChangeDomainSetting(
+        settingItemTitle: String,
+        originalUrl: String,
+        originalSelect: Int,
+        newUrl: String,
+        newSelect: Int
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserChangeDomainSettingItem(
+                itemTitle = settingItemTitle,
+                originalUrl = originalUrl,
+                originalSelect = originalSelect,
+                newUrl = newUrl,
+                newSelect = newSelect
+            )
+        }
+    }
+
+
+    fun userChangeSettingItem(
+        settingItemTitle: String,
+        originalValue: String,
+        newValue: String,
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserChangeSettingItem(
+                itemTitle = settingItemTitle, originalValue = originalValue, newValue = newValue
+            )
+        }
+    }
+
+    fun userChangeQueueingBoardSetting(
+        settingItemTitle: String,
+        originalValue: QueuingBoardSettingModel,
+        newValue: QueuingBoardSettingModel,
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserChangeQueueingBoardSettingItem(
+                itemTitle = settingItemTitle,
+                originalValue = originalValue,
+                newValue = newValue
+            )
+        }
+    }
+
+    fun userChangeQueueingMachineSetting(
+        settingItemTitle: String,
+        originalValue: QueueingMachineSettingModel,
+        newValue: QueueingMachineSettingModel,
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserChangeQueueingMachineSettingItem(
+                itemTitle = settingItemTitle,
+                originalValue = originalValue,
+                newValue = newValue
+            )
+        }
+    }
+
+    fun userChangeCheckedListSetting(
+        settingItemTitle: String,
+        originalValue: List<CreateAppointmentRequest.NationalIdFormat>,
+        newValue: List<CreateAppointmentRequest.NationalIdFormat>,
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserChangeQueueingMachineSettingItem(
+                itemTitle = settingItemTitle,
+                originalValue = originalValue,
+                newValue = newValue
+            )
+        }
+    }
 }
