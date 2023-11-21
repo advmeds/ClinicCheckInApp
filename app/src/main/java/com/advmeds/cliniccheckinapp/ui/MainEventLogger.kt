@@ -1,6 +1,7 @@
 package com.advmeds.cliniccheckinapp.ui
 
 import com.advmeds.cardreadermodule.AcsResponseModel
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
 import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepository
 import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepository.DestinationType
 
@@ -26,9 +27,15 @@ class MainEventLogger(
             params = map,
             destination = DestinationType.LOCAL
         )
-        analyticsRepository.sendEvent(
-            eventName = "",
-            destination = DestinationType.LOCAL_TO_SERVER
-        )
+    }
+
+    suspend fun logResponseGetPatient(response: GetPatientsResponse) {
+        val map = mutableMapOf<String, Any>()
+        map[AnalyticsRepository.SOURCE_SCREEN] = "Main Activity"
+        map[AnalyticsRepository.SOURCE_ACTION] = "server response for get patient request"
+
+        map["get patient result"] = response
+
+        analyticsRepository.sendEvent("response: Get Patient", map)
     }
 }

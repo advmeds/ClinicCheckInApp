@@ -492,7 +492,7 @@ class SettingsViewModel(
 
     private fun responseCheckForUpdate(response: Response<ControllerAppVersionResponse>) {
         viewModelScope.launch {
-            settingsEventLogger.checkUpdateResponse(response)
+            settingsEventLogger.logCheckUpdateResponse(response)
         }
     }
 

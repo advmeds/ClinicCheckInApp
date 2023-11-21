@@ -173,7 +173,7 @@ class SettingsEventLogger(
 
     // App Events
 
-    suspend fun checkUpdateResponse(response: Response<ControllerAppVersionResponse>) {
+    suspend fun logCheckUpdateResponse(response: Response<ControllerAppVersionResponse>) {
         val map = mutableMapOf<String, Any>()
         map[AnalyticsRepository.SOURCE_SCREEN] = "setting screen"
         map[AnalyticsRepository.SOURCE_ACTION] = "server response for check update request"

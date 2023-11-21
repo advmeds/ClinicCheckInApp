@@ -6,6 +6,7 @@ import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
@@ -53,6 +54,7 @@ object Converter {
             is QueuingBoardSettingModel -> "QueuingBoardSettingModel"
             is QueueingMachineSettingModel -> "QueueingMachineSettingModel"
             is AutomaticAppointmentSettingModel -> "AutomaticAppointmentSettingModel"
+            is GetPatientsResponse -> "GetPatientsResponse"
             is Throwable -> "Throwable"
             else -> null
         }
@@ -71,6 +73,8 @@ object Converter {
                 Json.decodeFromString<QueueingMachineSettingModel>(value)
             "AutomaticAppointmentSettingModel" ->
                 Json.decodeFromString<AutomaticAppointmentSettingModel>(value)
+            "GetPatientsResponse" ->
+                Json.decodeFromString<GetPatientsResponse>(value)
             "Throwable" -> Gson().fromJson(value, Throwable::class.java)
             "List<CreateAppointmentRequest.NationalIdFormat>" ->
                 Json.decodeFromString(

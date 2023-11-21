@@ -63,7 +63,11 @@ class HomeViewModel(
     val queueingMachineSettingIsEnable: Boolean
         get() = sharedPreferencesRepo.queueingMachineSettingIsEnable
 
-    // Log Record functions
+
+    /** =======================================
+     *          Log Record functions
+     *  ======================================= */
+
     fun openSettingScreen() {
         viewModelScope.launch {
             homeEventLogger.logUserOpenSettingsScreen()

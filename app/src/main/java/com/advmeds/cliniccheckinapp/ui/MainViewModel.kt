@@ -309,6 +309,8 @@ class MainViewModel(
             completion?.let { it(response) }
 
             checkInStatus.value = CheckInStatus.NotChecking(response = response, patient = patient)
+
+            responseGetPatient(response)
         }
 
         checkJob?.invokeOnCompletion {
@@ -525,11 +527,21 @@ class MainViewModel(
         return sharedPreferencesRepo.language
     }
 
-    // Log Record functions
+    /** =======================================
+     *          Log Record functions
+     *  ======================================= */
 
     fun eventUserInsertCard(result: Result<AcsResponseModel>) {
         viewModelScope.launch {
             mainEventLogger.logUserInsertTheCard(result)
+        }
+    }
+
+
+
+    private fun responseGetPatient(response: GetPatientsResponse) {
+        viewModelScope.launch {
+            mainEventLogger.logResponseGetPatient(response)
         }
     }
 
