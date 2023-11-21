@@ -1005,6 +1005,12 @@ class MainActivity : AppCompatActivity() {
             "Arrays must have the same size"
         }
 
+        viewModel.appPrintsATicket(
+            divisions = divisions,
+            serialNumbers = serialNumbers,
+            doctors = doctors
+        )
+
         val now = Date()
         val formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
         val queueingMachineSettings = viewModel.queueingMachineSettings

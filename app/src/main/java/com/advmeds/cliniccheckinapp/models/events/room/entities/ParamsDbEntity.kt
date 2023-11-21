@@ -46,9 +46,9 @@ data class ParamsDbEntity(
         fun fromMapToParam(eventId: Long, param: Pair<String, Any>): ParamsDbEntity {
             val value = if (param.second is List<*>) {
                 when ((param.second as List<*>).firstOrNull()) {
+                    is String, Int -> (param.second as List<*>).joinToString(",")
                     is CreateAppointmentRequest.NationalIdFormat ->
                         Json.encodeToString(param.second as List<CreateAppointmentRequest.NationalIdFormat>)
-                    is String -> (param.second as List<*>).joinToString(",")
                     else -> (param.second as List<*>).joinToString(",")
                 }
             } else {

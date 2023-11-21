@@ -537,6 +537,19 @@ class MainViewModel(
         }
     }
 
+    fun appPrintsATicket(
+        divisions: Array<String>,
+        serialNumbers: Array<Int>,
+        doctors: Array<String>
+    ) {
+        viewModelScope.launch {
+            mainEventLogger.logAppPrintsATicket(
+                divisions.toList(),
+                serialNumbers.toList(),
+                doctors.toList()
+            )
+        }
+    }
 
 
     private fun responseGetPatient(response: GetPatientsResponse) {

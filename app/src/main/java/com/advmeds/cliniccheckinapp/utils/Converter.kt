@@ -41,6 +41,7 @@ object Converter {
                 is CreateAppointmentRequest.NationalIdFormat ->
                     "List<CreateAppointmentRequest.NationalIdFormat>"
                 is String -> "List<String>"
+                is Int -> "List<Int>"
                 else -> "List<String>"
             }
         }
@@ -82,6 +83,7 @@ object Converter {
                     value
                 )
             "List<String>" -> value.split(",").filter { it.isNotBlank() }
+            "List<Int>" -> value.split(",").map { it.toInt() }
             else -> value
         }
     }
