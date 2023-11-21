@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import com.advmeds.cardreadermodule.AcsResponseModel
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
 import com.advmeds.cliniccheckinapp.utils.Converter
@@ -46,7 +47,8 @@ data class ParamsDbEntity(
                 when ((param.second as List<*>).firstOrNull()) {
                     is CreateAppointmentRequest.NationalIdFormat ->
                         Json.encodeToString(param.second as List<CreateAppointmentRequest.NationalIdFormat>)
-                    else -> param.second.toString()
+                    is String -> (param.second as List<*>).joinToString(",")
+                    else -> (param.second as List<*>).joinToString(",")
                 }
             } else {
                 when (param.second) {
@@ -57,6 +59,8 @@ data class ParamsDbEntity(
                         Json.encodeToString(param.second as QueuingBoardSettingModel)
                     is QueueingMachineSettingModel ->
                         Json.encodeToString(param.second as QueueingMachineSettingModel)
+                    is AutomaticAppointmentSettingModel ->
+                        Json.encodeToString(param.second as AutomaticAppointmentSettingModel)
                     is Throwable -> Gson().toJson(param.second)
                     else -> param.second.toString()
                 }

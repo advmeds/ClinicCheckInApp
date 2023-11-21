@@ -6,6 +6,7 @@ import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
 import com.google.gson.Gson
@@ -38,7 +39,8 @@ object Converter {
             return when ((value as List<*>).firstOrNull()) {
                 is CreateAppointmentRequest.NationalIdFormat ->
                     "List<CreateAppointmentRequest.NationalIdFormat>"
-                else -> "String"
+                is String -> "List<String>"
+                else -> "List<String>"
             }
         }
 
@@ -50,6 +52,7 @@ object Converter {
             is EditCheckInItemDialog.EditCheckInItems -> "EditCheckInItemDialog.EditCheckInItems"
             is QueuingBoardSettingModel -> "QueuingBoardSettingModel"
             is QueueingMachineSettingModel -> "QueueingMachineSettingModel"
+            is AutomaticAppointmentSettingModel -> "AutomaticAppointmentSettingModel"
             is Throwable -> "Throwable"
             else -> null
         }
@@ -66,12 +69,15 @@ object Converter {
                 Json.decodeFromString<QueuingBoardSettingModel>(value)
             "QueueingMachineSettingModel" ->
                 Json.decodeFromString<QueueingMachineSettingModel>(value)
+            "AutomaticAppointmentSettingModel" ->
+                Json.decodeFromString<AutomaticAppointmentSettingModel>(value)
             "Throwable" -> Gson().fromJson(value, Throwable::class.java)
             "List<CreateAppointmentRequest.NationalIdFormat>" ->
                 Json.decodeFromString(
                     ListSerializer(CreateAppointmentRequest.NationalIdFormat.serializer()),
                     value
                 )
+            "List<String>" -> value.split(",").filter { it.isNotBlank() }
             else -> value
         }
     }

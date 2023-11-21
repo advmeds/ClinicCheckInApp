@@ -55,14 +55,26 @@ class SettingsViewModel(
             val versionName = BuildConfig.VERSION_NAME
             val updateName = BuildConfig.UPDATE_NAME
 
-            val response = serverRepo.checkControllerAppVersion(
-                name = updateName,
-                version = versionName
-            )
+            try {
+                val response = serverRepo.checkControllerAppVersion(
+                    name = updateName,
+                    version = versionName
+                )
 
-            if (response.isSuccessful) {
-                emitSuccessCheckControllerAppVersion(response)
-            } else {
+                if (response.isSuccessful) {
+                    emitSuccessCheckControllerAppVersion(response)
+                } else {
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            updateSoftwareRequestStatus = UpdateSoftwareRequestStatus.FAIL,
+                            updateSoftwareDownloadingStatus = UpdateSoftwareDownloadingStatus.FAIL,
+                            updateSoftwareDialogText = R.string.unexpected_error
+                        )
+                    }
+                }
+
+                responseCheckForUpdate(response)
+            } catch (e: Exception) {
                 _uiState.update { currentState ->
                     currentState.copy(
                         updateSoftwareRequestStatus = UpdateSoftwareRequestStatus.FAIL,
@@ -86,6 +98,7 @@ class SettingsViewModel(
                     )
                 }
                 startDownLoading(url = response.body()!!.url, version = response.body()!!.version)
+                appEventDownloadUpdate("start download update")
             } else {
                 _uiState.update { currentState ->
                     currentState.copy(
@@ -160,6 +173,7 @@ class SettingsViewModel(
                                 updateSoftwarePercentageDownload = ""
                             )
                         }
+                        appEventDownloadUpdate("download of new version is complete")
                     }
                     is DownloadController.DownloadControllerDownloadStatus.CANCEL -> {
                         _uiState.update { currentState ->
@@ -170,6 +184,7 @@ class SettingsViewModel(
                                 updateSoftwarePercentageDownload = ""
                             )
                         }
+                        appEventDownloadUpdate("download of new version is cancel")
                     }
                     is DownloadController.DownloadControllerDownloadStatus.FAIL -> {
                         _uiState.update { currentState ->
@@ -180,6 +195,7 @@ class SettingsViewModel(
                             )
                         }
                         updateJob?.cancel()
+                        appEventDownloadUpdate("download of new version is fail")
                     }
                 }
             }
@@ -328,7 +344,11 @@ class SettingsViewModel(
             )
         }
 
-    // Log Record functions
+    /** =======================================
+     *          Log Record functions
+     *  ======================================= */
+
+
     fun userChangeUiSetting(
         settingItemTitle: String,
         originalMachineTitle: String,
@@ -412,11 +432,73 @@ class SettingsViewModel(
         newValue: List<CreateAppointmentRequest.NationalIdFormat>,
     ) {
         viewModelScope.launch {
-            settingsEventLogger.logUserChangeQueueingMachineSettingItem(
+            settingsEventLogger.logUserChangeFormatCheckSettingItem(
                 itemTitle = settingItemTitle,
                 originalValue = originalValue,
                 newValue = newValue
             )
+        }
+    }
+
+    fun userChangeAutomaticAppointmentSetting(
+        settingItemTitle: String,
+        originalValue: AutomaticAppointmentSettingModel,
+        newValue: AutomaticAppointmentSettingModel,
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserChangeAutomaticAppointmentSettingItem(
+                itemTitle = settingItemTitle,
+                originalValue = originalValue,
+                newValue = newValue
+            )
+        }
+    }
+
+    fun userSelectSoftwareUpdateSetting(
+        settingItemTitle: String,
+        permissions: List<String>,
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserSelectSoftwareUpdateSettingItemItem(
+                itemTitle = settingItemTitle,
+                permission = permissions
+            )
+        }
+    }
+
+    fun userSelectSoftwareUpdateSetting(
+        settingItemTitle: String,
+        currentVersion: String
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserSelectSoftwareUpdateSettingItemItem(
+                itemTitle = settingItemTitle,
+                currentVersion = currentVersion
+            )
+        }
+    }
+
+    fun userOpenDeviceSetting() {
+        viewModelScope.launch {
+            settingsEventLogger.logUserSelectOpenSettingsOfDevice()
+        }
+    }
+
+    fun userCloseApplication() {
+        viewModelScope.launch {
+            settingsEventLogger.logUserCloseApp()
+        }
+    }
+
+    private fun responseCheckForUpdate(response: Response<ControllerAppVersionResponse>) {
+        viewModelScope.launch {
+            settingsEventLogger.checkUpdateResponse(response)
+        }
+    }
+
+    private fun appEventDownloadUpdate(eventName: String) {
+        viewModelScope.launch {
+            settingsEventLogger.logAppEventDownloadUpdate(eventName)
         }
     }
 }

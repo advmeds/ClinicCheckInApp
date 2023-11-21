@@ -32,6 +32,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.SettingsFragmentBinding
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
@@ -944,25 +945,38 @@ class SettingsFragment : ListFragment() {
                     }
                 } else {
 
-                    viewModel.automaticAppointmentSetting = AutomaticAppointmentSettingModel(
+                    val newAutomaticAppointment = AutomaticAppointmentSettingModel(
                         isEnabled = true,
                         doctorId = doctors,
                         roomId = rooms,
                         autoCheckIn = autoCheck
                     )
 
+                    viewModel.userChangeAutomaticAppointmentSetting(
+                        settingItemTitle = "Automatic Appointment",
+                        originalValue = viewModel.automaticAppointmentSetting,
+                        newValue = newAutomaticAppointment
+                    )
+
+                    viewModel.automaticAppointmentSetting = newAutomaticAppointment
+
                     dialog.dismiss()
                 }
-
-
             } else {
-
-                viewModel.automaticAppointmentSetting = AutomaticAppointmentSettingModel(
+                val newAutomaticAppointment = AutomaticAppointmentSettingModel(
                     isEnabled = false,
                     doctorId = "",
                     roomId = "",
                     autoCheckIn = autoCheck
                 )
+
+                viewModel.userChangeAutomaticAppointmentSetting(
+                    settingItemTitle = "Automatic Appointment",
+                    originalValue = viewModel.automaticAppointmentSetting,
+                    newValue = newAutomaticAppointment
+                )
+
+                viewModel.automaticAppointmentSetting = newAutomaticAppointment
 
                 dialog.dismiss()
             }
@@ -1007,6 +1021,13 @@ class SettingsFragment : ListFragment() {
         saveButton.setOnClickListener {
             if (currentLanguage != viewModel.language) {
                 (requireActivity() as MainActivity).setLanguage(language = currentLanguage)
+
+                viewModel.userChangeSettingItem(
+                    settingItemTitle = "Language Setting",
+                    originalValue = viewModel.language,
+                    newValue = currentLanguage
+                )
+
                 viewModel.language = currentLanguage
                 setupUI()
             }
@@ -1067,23 +1088,46 @@ class SettingsFragment : ListFragment() {
             dialog.update_software_dialog_ok_btn.setOnClickListener {
                 dialog.dismiss()
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    if (!havePermissionForInstallUnknownApp)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (!havePermissionForInstallUnknownApp) {
                         (requireContext() as MainActivity).getInstallUnknownApkPermission()
-
-                if (!havePermissionForInstallUnknownApp)
+                    }
+                }
+                if (!havePermissionForInstallUnknownApp) {
                     return@setOnClickListener
+                }
 
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
-                    if (!haveWriteExternalStoragePermission)
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    if (!haveWriteExternalStoragePermission) {
                         (requireContext() as MainActivity).getWriteExternalStoragePermission()
-
+                    }
+                }
             }
+
+            val permissions = mutableListOf<String>()
+
+            if (!havePermissionForInstallUnknownApp) {
+                permissions.add("Install Unknown App Permission")
+            }
+
+            if (!haveWriteExternalStoragePermission) {
+                permissions.add("Write External Storage Permission")
+            }
+
+            viewModel.userSelectSoftwareUpdateSetting(
+                "Update Software: permission",
+                permissions = permissions
+            )
         } else {
 
             Log.d("check---", "onSetSoftwareUpdateSettingItemClicked: ${stateFlowJob?.isActive}")
-            if (stateFlowJob?.isActive != true)
+            if (stateFlowJob?.isActive != true) {
                 viewModel.checkForUpdates()
+                viewModel.userSelectSoftwareUpdateSetting(
+                    settingItemTitle = "Update Software: check update",
+                    currentVersion = BuildConfig.VERSION_NAME
+                )
+            }
 
             stateFlowJob = lifecycleScope.launch(Dispatchers.Main) {
                 viewModel.uiState.collect { uiState ->
@@ -1124,6 +1168,7 @@ class SettingsFragment : ListFragment() {
     }
 
     private fun onSetOpenSystemSettingsItemClicked() {
+        viewModel.userOpenDeviceSetting()
         startActivity(Intent(Settings.ACTION_SETTINGS))
     }
 
@@ -1131,6 +1176,7 @@ class SettingsFragment : ListFragment() {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.exit_app)
             .setPositiveButton(R.string.dialog_ok_button) { _, _ ->
+                viewModel.userCloseApplication()
                 requireActivity().finishAndRemoveTask()
             }
             .setNegativeButton(R.string.cancel, null)
