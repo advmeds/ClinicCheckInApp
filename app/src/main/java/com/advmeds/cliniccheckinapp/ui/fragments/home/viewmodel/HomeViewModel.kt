@@ -74,6 +74,12 @@ class HomeViewModel(
         }
     }
 
+    fun userClickOnCustomizedButton(checkInItem: EditCheckInItemDialog.EditCheckInItem) {
+        viewModelScope.launch {
+            homeEventLogger.logUserClickCustomizedButton(checkInItem)
+        }
+    }
+
 }
 
 @Suppress("UNCHECKED_CAST")

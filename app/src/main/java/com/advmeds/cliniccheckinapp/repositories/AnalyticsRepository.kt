@@ -89,7 +89,6 @@ class AnalyticsRepositoryImpl private constructor(
                 Log.d(TAG, "$param")
             }
 
-
             Log.d(TAG, "\n")
         } catch (e: Exception) {
             Log.d(TAG, "logEventToLocal: $e")

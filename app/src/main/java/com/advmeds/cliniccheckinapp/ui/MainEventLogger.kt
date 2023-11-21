@@ -1,6 +1,8 @@
 package com.advmeds.cliniccheckinapp.ui
 
 import com.advmeds.cardreadermodule.AcsResponseModel
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
 import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepository
 
@@ -48,5 +50,25 @@ class MainEventLogger(
         map["get patient result"] = response
 
         analyticsRepository.sendEvent("response: Get Patient", map)
+    }
+
+    suspend fun logAppCreateAppointment(request: CreateAppointmentRequest) {
+        val map = mutableMapOf<String, Any>()
+        map[AnalyticsRepository.SOURCE_SCREEN] = "Main Activity"
+        map[AnalyticsRepository.SOURCE_ACTION] = "app start making create appointment request"
+
+        map["request"] = request
+
+        analyticsRepository.sendEvent("request: Create Appointment", map)
+    }
+
+    suspend fun logResponseCreateAppointment(response: CreateAppointmentResponse) {
+        val map = mutableMapOf<String, Any>()
+        map[AnalyticsRepository.SOURCE_SCREEN] = "Main Activity"
+        map[AnalyticsRepository.SOURCE_ACTION] = "server response for create appointment request"
+
+        map["response"] = response
+
+        analyticsRepository.sendEvent("response: Create Appointment", map)
     }
 }

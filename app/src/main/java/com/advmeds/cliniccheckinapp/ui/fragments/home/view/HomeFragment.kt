@@ -45,7 +45,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var dialog: Dialog
 
-    private val viewModel: HomeViewModel by viewModels{
+    private val viewModel: HomeViewModel by viewModels {
         HomeViewModelFactory(
             application = requireActivity().application,
             homeEventLogger = HomeEventLogger(
@@ -135,8 +135,7 @@ class HomeFragment : Fragment() {
                     if (it == viewModel.password) {
                         findNavController().navigate(R.id.settingsFragment)
                         viewModel.openSettingScreen()
-                    }
-                    else {
+                    } else {
                         Toast.makeText(
                             requireContext(),
                             getString(R.string.password_is_incorrect),
@@ -197,30 +196,18 @@ class HomeFragment : Fragment() {
                         itemTitle.setText(R.string.check_in_item_manual_title)
                         itemBody.text = (secondArg)
                     }
-                    EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE -> {
-                        itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
-                        itemTitle.text = checkInItem.title
-                        itemBody.text = checkInItem.action
-                    }
-                    EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO -> {
-                        itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
-                        itemTitle.text = checkInItem.title
-                        itemBody.text = checkInItem.action
-                    }
-                    EditCheckInItemDialog.CheckInItemType.CUSTOM_THREE -> {
-                        itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
-                        itemTitle.text = checkInItem.title
-                        itemBody.text = checkInItem.action
-                    }
-                    EditCheckInItemDialog.CheckInItemType.CUSTOM_FOUR -> {
-                        itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
-                        itemTitle.text = checkInItem.title
-                        itemBody.text = checkInItem.action
-                    }
                     EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
                         itemImg.setImageResource(R.drawable.ic_baseline_qr_code)
                         itemTitle.setText(R.string.check_in_item_virtual_title)
                         itemBody.text = (secondArg)
+                    }
+                    EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE,
+                    EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO,
+                    EditCheckInItemDialog.CheckInItemType.CUSTOM_THREE,
+                    EditCheckInItemDialog.CheckInItemType.CUSTOM_FOUR -> {
+                        itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
+                        itemTitle.text = checkInItem.title
+                        itemBody.text = checkInItem.action
                     }
                     else -> {}
                 }
@@ -250,40 +237,20 @@ class HomeFragment : Fragment() {
                         EditCheckInItemDialog.CheckInItemType.MANUAL_INPUT -> {
                             findNavController().navigate(R.id.manualInputFragment)
                         }
-                        EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE -> {
-                            (requireActivity() as MainActivity).createFakeAppointment(
-                                schedule = GetScheduleResponse.ScheduleBean(
-                                    doctor = checkInItem.doctorId,
-                                    division = checkInItem.divisionId
-                                )
-                            )
-                        }
-                        EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO -> {
-                            (requireActivity() as MainActivity).createFakeAppointment(
-                                schedule = GetScheduleResponse.ScheduleBean(
-                                    doctor = checkInItem.doctorId,
-                                    division = checkInItem.divisionId
-                                )
-                            )
-                        }
-                        EditCheckInItemDialog.CheckInItemType.CUSTOM_THREE -> {
-                            (requireActivity() as MainActivity).createFakeAppointment(
-                                schedule = GetScheduleResponse.ScheduleBean(
-                                    doctor = checkInItem.doctorId,
-                                    division = checkInItem.divisionId
-                                )
-                            )
-                        }
-                        EditCheckInItemDialog.CheckInItemType.CUSTOM_FOUR -> {
-                            (requireActivity() as MainActivity).createFakeAppointment(
-                                schedule = GetScheduleResponse.ScheduleBean(
-                                    doctor = checkInItem.doctorId,
-                                    division = checkInItem.divisionId
-                                )
-                            )
-                        }
                         EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
                             (requireActivity() as MainActivity).checkInWithVirtualCard()
+                        }
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE,
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO,
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM_THREE,
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM_FOUR  -> {
+                            viewModel.userClickOnCustomizedButton(checkInItem)
+                            (requireActivity() as MainActivity).createFakeAppointment(
+                                schedule = GetScheduleResponse.ScheduleBean(
+                                    doctor = checkInItem.doctorId,
+                                    division = checkInItem.divisionId
+                                )
+                            )
                         }
                         else -> {}
                     }

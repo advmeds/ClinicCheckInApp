@@ -423,6 +423,8 @@ class MainViewModel(
                     }
                 )
 
+                appCreateAppointment(request)
+
                 val result = serverRepo.createsAppointment(request)
 
                 Timber.d("Status code: ${result.code()}")
@@ -475,6 +477,8 @@ class MainViewModel(
             completion?.let { it(response) }
 
             createAppointmentStatus.value = CreateAppointmentStatus.NotChecking(response)
+
+            responseCreateAppointment(response)
         }
 
         createAppointmentJob?.invokeOnCompletion {
@@ -555,6 +559,17 @@ class MainViewModel(
     private fun responseGetPatient(response: GetPatientsResponse) {
         viewModelScope.launch {
             mainEventLogger.logResponseGetPatient(response)
+        }
+    }
+    private fun appCreateAppointment(request: CreateAppointmentRequest) {
+        viewModelScope.launch {
+            mainEventLogger.logAppCreateAppointment(request)
+        }
+    }
+
+    private fun responseCreateAppointment(response: CreateAppointmentResponse) {
+        viewModelScope.launch {
+            mainEventLogger.logResponseCreateAppointment(response)
         }
     }
 

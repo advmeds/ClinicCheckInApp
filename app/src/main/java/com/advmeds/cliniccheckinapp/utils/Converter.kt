@@ -6,6 +6,7 @@ import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
@@ -56,8 +57,11 @@ object Converter {
             is QueueingMachineSettingModel -> "QueueingMachineSettingModel"
             is AutomaticAppointmentSettingModel -> "AutomaticAppointmentSettingModel"
             is GetPatientsResponse -> "GetPatientsResponse"
+            is EditCheckInItemDialog.EditCheckInItem -> "EditCheckInItemDialog.EditCheckInItem"
+            is CreateAppointmentRequest -> "CreateAppointmentRequest"
+            is CreateAppointmentResponse -> "CreateAppointmentResponse"
             is Throwable -> "Throwable"
-            else -> null
+            else -> "String"
         }
     }
 
@@ -76,6 +80,12 @@ object Converter {
                 Json.decodeFromString<AutomaticAppointmentSettingModel>(value)
             "GetPatientsResponse" ->
                 Json.decodeFromString<GetPatientsResponse>(value)
+            "EditCheckInItemDialog.EditCheckInItem" ->
+                Json.decodeFromString<EditCheckInItemDialog.EditCheckInItem>(value)
+            "CreateAppointmentRequest" ->
+                Json.decodeFromString<CreateAppointmentRequest>(value)
+            "CreateAppointmentResponse" ->
+                Json.decodeFromString<CreateAppointmentResponse>(value)
             "Throwable" -> Gson().fromJson(value, Throwable::class.java)
             "List<CreateAppointmentRequest.NationalIdFormat>" ->
                 Json.decodeFromString(

@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import com.advmeds.cardreadermodule.AcsResponseModel
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
@@ -64,6 +65,12 @@ data class ParamsDbEntity(
                         Json.encodeToString(param.second as AutomaticAppointmentSettingModel)
                     is GetPatientsResponse ->
                         Json.encodeToString(param.second as GetPatientsResponse)
+                    is EditCheckInItemDialog.EditCheckInItem ->
+                        Json.encodeToString(param.second as EditCheckInItemDialog.EditCheckInItem)
+                    is CreateAppointmentRequest ->
+                        Json.encodeToString(param.second as CreateAppointmentRequest)
+                    is CreateAppointmentResponse ->
+                        Json.encodeToString(param.second as CreateAppointmentResponse)
                     is Throwable -> Gson().toJson(param.second)
                     else -> param.second.toString()
                 }
