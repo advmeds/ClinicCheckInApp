@@ -14,6 +14,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.Q
 import com.google.gson.Gson
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 object Converter {
@@ -36,7 +37,7 @@ object Converter {
         }
     }
 
-    fun determineType(value: Any): String? {
+    fun determineType(value: Any): String {
         if (value is List<*>) {
             return when ((value as List<*>).firstOrNull()) {
                 is CreateAppointmentRequest.NationalIdFormat ->
@@ -51,6 +52,7 @@ object Converter {
             is String -> "String"
             is Int -> "Int"
             is Double -> "Double"
+            is Boolean -> "Boolean"
             is AcsResponseModel -> "AcsResponseModel"
             is EditCheckInItemDialog.EditCheckInItems -> "EditCheckInItemDialog.EditCheckInItems"
             is QueuingBoardSettingModel -> "QueuingBoardSettingModel"
@@ -65,10 +67,44 @@ object Converter {
         }
     }
 
+    fun anyToString(value: Any) : String {
+        return if (value is List<*>) {
+            when ((value as List<*>).firstOrNull()) {
+                is String, Int -> (value as List<*>).joinToString(",")
+                is CreateAppointmentRequest.NationalIdFormat ->
+                    Json.encodeToString(value as List<CreateAppointmentRequest.NationalIdFormat>)
+                else -> (value as List<*>).joinToString(",")
+            }
+        } else {
+            when (value) {
+                is AcsResponseModel -> Gson().toJson(value)
+                is EditCheckInItemDialog.EditCheckInItems ->
+                    Json.encodeToString(value as EditCheckInItemDialog.EditCheckInItems)
+                is QueuingBoardSettingModel ->
+                    Json.encodeToString(value as QueuingBoardSettingModel)
+                is QueueingMachineSettingModel ->
+                    Json.encodeToString(value as QueueingMachineSettingModel)
+                is AutomaticAppointmentSettingModel ->
+                    Json.encodeToString(value as AutomaticAppointmentSettingModel)
+                is GetPatientsResponse ->
+                    Json.encodeToString(value as GetPatientsResponse)
+                is EditCheckInItemDialog.EditCheckInItem ->
+                    Json.encodeToString(value as EditCheckInItemDialog.EditCheckInItem)
+                is CreateAppointmentRequest ->
+                    Json.encodeToString(value as CreateAppointmentRequest)
+                is CreateAppointmentResponse ->
+                    Json.encodeToString(value as CreateAppointmentResponse)
+                is Throwable -> Gson().toJson(value)
+                else -> value.toString()
+            }
+        }
+    }
+
     fun convertToCorrectType(value: String, type: String?): Any {
         return when (type) {
             "Int" -> value.toIntOrNull() ?: value
             "Double" -> value.toDoubleOrNull() ?: value
+            "Boolean" -> value.toBooleanStrictOrNull() ?: value
             "AcsResponseModel" -> Gson().fromJson(value, AcsResponseModel::class.java)
             "EditCheckInItemDialog.EditCheckInItems" ->
                 Json.decodeFromString<EditCheckInItemDialog.EditCheckInItems>(value)

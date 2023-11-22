@@ -26,6 +26,14 @@ class MainEventLogger(
         analyticsRepository.sendEvent(eventName = "user_insert_card", params = map)
     }
 
+    suspend fun logAppOpen() {
+        val map = mutableMapOf<String, Any>()
+        map[AnalyticsRepository.SOURCE_SCREEN] = "Main Activity"
+        map[AnalyticsRepository.SOURCE_ACTION] = "The app is opening"
+
+        analyticsRepository.sendEvent(eventName = "app is opening", map)
+    }
+
     suspend fun logAppPrintsATicket(
         divisions: List<String>,
         serialNumbers: List<Int>,

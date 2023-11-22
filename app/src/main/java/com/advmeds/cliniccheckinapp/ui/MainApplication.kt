@@ -1,17 +1,30 @@
 package com.advmeds.cliniccheckinapp.ui
 
 import android.app.Application
+import android.os.Bundle
+import android.util.Log
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
+import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepository
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import timber.log.Timber
 
 class MainApplication : Application() {
     override fun onCreate() {
+        initUncaughtExceptionHandler()
+
         super.onCreate()
 
+        countSession()
         initTimber()
         initCheckInItem()
+        initCheckerOfActivityLife()
+    }
+
+    private fun countSession() {
+        val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(this)
+        Log.d("check---", "countSession: ${sharedPreferencesRepo.sessionNumber}")
+        sharedPreferencesRepo.sessionNumber++
     }
 
     private fun initTimber() {
@@ -28,7 +41,7 @@ class MainApplication : Application() {
         val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(this)
 
         if (sharedPreferencesRepo.checkInItemList.all { !it.isShow }) {
-            when(BuildConfig.BUILD_TYPE) {
+            when (BuildConfig.BUILD_TYPE) {
                 "ptch" -> {
                     sharedPreferencesRepo.checkInItemList = listOf(
                         EditCheckInItemDialog.EditCheckInItem(
@@ -75,6 +88,98 @@ class MainApplication : Application() {
                     )
                 }
             }
+        }
+    }
+
+
+    private fun initUncaughtExceptionHandler() {
+        val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(this)
+        Thread.setDefaultUncaughtExceptionHandler(MyUncaughtExceptionHandler(sharedPreferencesRepo))
+    }
+
+    private fun initCheckerOfActivityLife() {
+        val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(this)
+
+        registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
+            override fun onActivityCreated(
+                activity: android.app.Activity,
+                savedInstanceState: Bundle?
+            ) {
+                // App opened
+                Log.d("check----", "onActivityCreated")
+                Log.d("check----", "${sharedPreferencesRepo.closeAppEvent}")
+                Log.d("check----", "")
+            }
+
+            override fun onActivityStarted(activity: android.app.Activity) {}
+
+            override fun onActivityResumed(activity: android.app.Activity) {}
+
+            override fun onActivityPaused(activity: android.app.Activity) {}
+
+            override fun onActivityStopped(activity: android.app.Activity) {}
+
+            override fun onActivitySaveInstanceState(
+                activity: android.app.Activity,
+                outState: Bundle
+            ) {}
+
+            override fun onActivityDestroyed(activity: android.app.Activity) {
+                Log.d("check----", "onActivityDestroyed")
+
+                val map = mutableMapOf<String, Any>()
+                map[AnalyticsRepository.SOURCE_SCREEN] = "MainApplication"
+                map[AnalyticsRepository.SOURCE_ACTION] = "app start close"
+
+                map["is it manual close"] = true
+
+                sharedPreferencesRepo.closeAppEvent = Pair("close of the app", map)
+            }
+        })
+    }
+
+    private inner class MyUncaughtExceptionHandler(
+        val sharedPreferencesRepo: SharedPreferencesRepo
+    ) : Thread.UncaughtExceptionHandler {
+
+        private val defaultUncaughtExceptionHandler: Thread.UncaughtExceptionHandler? =
+            Thread.getDefaultUncaughtExceptionHandler()
+
+        override fun uncaughtException(thread: Thread, throwable: Throwable) {
+            val reportBuilder = StringBuilder()
+
+            reportBuilder
+                .append("\n")
+                .append("Current thread: $thread")
+                .append("\n\n");
+            processThrowable(throwable, reportBuilder)
+
+            saveCloseAppEvent(reportBuilder)
+
+            defaultUncaughtExceptionHandler?.uncaughtException(thread, throwable)
+        }
+
+        private fun saveCloseAppEvent(reportBuilder: StringBuilder) {
+            val map = mutableMapOf<String, Any>()
+            map[AnalyticsRepository.SOURCE_SCREEN] = "MainApplication"
+            map[AnalyticsRepository.SOURCE_ACTION] = "app start close"
+
+            map["is it manual close"] = false
+            map["error reason"] = reportBuilder.toString()
+
+            sharedPreferencesRepo.closeAppEvent = Pair("close of the app", map)
+        }
+
+        private fun processThrowable(exception: Throwable?, builder: StringBuilder) {
+            if (exception == null) return
+            val stackTraceElements = exception.stackTrace
+            builder
+                .append("Exception: ").append(exception.javaClass.name).append("\n")
+                .append("Message: ").append(exception.message).append("\nStacktrace:\n")
+            for (element in stackTraceElements) {
+                builder.append("\t").append(element.toString()).append("\n")
+            }
+            processThrowable(exception.cause, builder)
         }
     }
 }

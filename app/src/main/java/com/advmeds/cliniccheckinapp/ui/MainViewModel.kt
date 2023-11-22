@@ -36,6 +36,10 @@ class MainViewModel(
 ) : AndroidViewModel(application) {
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
 
+    init {
+        appIsOpening()
+    }
+
     /** @see SharedPreferencesRepo.checkInSerialNo */
     var checkInSerialNo: Int
         get() = sharedPreferencesRepo.checkInSerialNo
@@ -541,6 +545,12 @@ class MainViewModel(
         }
     }
 
+    private fun appIsOpening() {
+        viewModelScope.launch {
+            mainEventLogger.logAppOpen()
+        }
+    }
+
     fun appPrintsATicket(
         divisions: Array<String>,
         serialNumbers: Array<Int>,
@@ -555,12 +565,12 @@ class MainViewModel(
         }
     }
 
-
     private fun responseGetPatient(response: GetPatientsResponse) {
         viewModelScope.launch {
             mainEventLogger.logResponseGetPatient(response)
         }
     }
+
     private fun appCreateAppointment(request: CreateAppointmentRequest) {
         viewModelScope.launch {
             mainEventLogger.logAppCreateAppointment(request)
@@ -572,7 +582,6 @@ class MainViewModel(
             mainEventLogger.logResponseCreateAppointment(response)
         }
     }
-
 
     sealed class GetGuardianStatus {
         object Checking : GetGuardianStatus()
