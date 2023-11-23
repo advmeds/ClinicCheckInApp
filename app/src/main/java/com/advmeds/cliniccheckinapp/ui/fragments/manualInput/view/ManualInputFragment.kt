@@ -35,11 +35,14 @@ import java.util.concurrent.TimeUnit
 
 class ManualInputFragment : Fragment() {
 
-    private val viewModel: ManualInputViewModel by viewModels{
+    private val viewModel: ManualInputViewModel by viewModels {
         ManualInputViewModelFactory(
             application = requireActivity().application,
             manualInputEventLogger = ManualInputEventLogger(
-                AnalyticsRepositoryImpl.getInstance(RoomRepositories.eventsRepository)
+                AnalyticsRepositoryImpl.getInstance(
+                    RoomRepositories.eventsRepository,
+                    SharedPreferencesRepo.getInstance(requireContext())
+                )
             )
         )
     }

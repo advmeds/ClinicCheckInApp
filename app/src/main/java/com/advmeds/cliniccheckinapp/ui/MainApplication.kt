@@ -2,7 +2,7 @@ package com.advmeds.cliniccheckinapp.ui
 
 import android.app.Application
 import android.os.Bundle
-import android.util.Log
+import android.os.Looper
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepository
@@ -23,7 +23,6 @@ class MainApplication : Application() {
 
     private fun countSession() {
         val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(this)
-        Log.d("check---", "countSession: ${sharedPreferencesRepo.sessionNumber}")
         sharedPreferencesRepo.sessionNumber++
     }
 
@@ -102,14 +101,8 @@ class MainApplication : Application() {
 
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(
-                activity: android.app.Activity,
-                savedInstanceState: Bundle?
-            ) {
-                // App opened
-                Log.d("check----", "onActivityCreated")
-                Log.d("check----", "${sharedPreferencesRepo.closeAppEvent}")
-                Log.d("check----", "")
-            }
+                activity: android.app.Activity, savedInstanceState: Bundle?
+            ) {}
 
             override fun onActivityStarted(activity: android.app.Activity) {}
 
@@ -125,11 +118,9 @@ class MainApplication : Application() {
             ) {}
 
             override fun onActivityDestroyed(activity: android.app.Activity) {
-                Log.d("check----", "onActivityDestroyed")
-
                 val map = mutableMapOf<String, Any>()
                 map[AnalyticsRepository.SOURCE_SCREEN] = "MainApplication"
-                map[AnalyticsRepository.SOURCE_ACTION] = "app start close"
+                map[AnalyticsRepository.SOURCE_ACTION] = "app is closing"
 
                 map["is it manual close"] = true
 
@@ -154,7 +145,17 @@ class MainApplication : Application() {
                 .append("\n\n");
             processThrowable(throwable, reportBuilder)
 
-            saveCloseAppEvent(reportBuilder)
+            object : Thread() {
+                override fun run() {
+                    Looper.prepare()
+                    saveCloseAppEvent(reportBuilder)
+                    Looper.loop()
+                }
+            }.start()
+
+            try {
+                Thread.sleep(1000)
+            } catch (e: InterruptedException) { }
 
             defaultUncaughtExceptionHandler?.uncaughtException(thread, throwable)
         }
@@ -162,7 +163,7 @@ class MainApplication : Application() {
         private fun saveCloseAppEvent(reportBuilder: StringBuilder) {
             val map = mutableMapOf<String, Any>()
             map[AnalyticsRepository.SOURCE_SCREEN] = "MainApplication"
-            map[AnalyticsRepository.SOURCE_ACTION] = "app start close"
+            map[AnalyticsRepository.SOURCE_ACTION] = "app is closing"
 
             map["is it manual close"] = false
             map["error reason"] = reportBuilder.toString()

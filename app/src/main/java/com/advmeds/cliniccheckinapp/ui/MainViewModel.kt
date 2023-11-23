@@ -547,7 +547,7 @@ class MainViewModel(
 
     private fun appIsOpening() {
         viewModelScope.launch {
-            mainEventLogger.logAppOpen()
+            mainEventLogger.logAppOpen(sharedPreferencesRepo.closeAppEvent)
         }
     }
 

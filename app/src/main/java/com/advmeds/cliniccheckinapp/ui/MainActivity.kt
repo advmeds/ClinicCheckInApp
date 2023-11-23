@@ -100,7 +100,10 @@ class MainActivity : AppCompatActivity() {
         MainViewModelFactory(
             application = application,
             mainEventLogger = MainEventLogger(
-                AnalyticsRepositoryImpl.getInstance(RoomRepositories.eventsRepository)
+                AnalyticsRepositoryImpl.getInstance(
+                    RoomRepositories.eventsRepository,
+                    SharedPreferencesRepo.getInstance(this)
+                )
             )
         )
     }

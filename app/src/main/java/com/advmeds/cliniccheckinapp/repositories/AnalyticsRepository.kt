@@ -4,6 +4,8 @@ import android.util.Log
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.models.events.EventRepository
 import com.advmeds.cliniccheckinapp.models.events.entities.EventData
+import java.text.SimpleDateFormat
+import java.util.*
 
 private const val TAG = "check---"
 
@@ -11,6 +13,7 @@ interface AnalyticsRepository {
     suspend fun sendEvent(
         eventName: String,
         params: MutableMap<String, Any>? = null,
+        sessionNumber: Long? = null,
         destination: DestinationType = DestinationType.LOCAL
     )
 
@@ -34,17 +37,21 @@ interface AnalyticsRepository {
 }
 
 class AnalyticsRepositoryImpl private constructor(
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
+    private val sharedPreferencesRepo: SharedPreferencesRepo
 ) : AnalyticsRepository {
 
     companion object {
         @Volatile
         private var INSTANCE: AnalyticsRepositoryImpl? = null
 
-        fun getInstance(eventRepository: EventRepository) : AnalyticsRepository {
+        fun getInstance(
+            eventRepository: EventRepository,
+            sharedPreferencesRepo: SharedPreferencesRepo
+        ): AnalyticsRepository {
             synchronized(this) {
                 if (INSTANCE == null) {
-                    INSTANCE = AnalyticsRepositoryImpl(eventRepository)
+                    INSTANCE = AnalyticsRepositoryImpl(eventRepository, sharedPreferencesRepo)
                 }
                 return INSTANCE!!
             }
@@ -54,12 +61,13 @@ class AnalyticsRepositoryImpl private constructor(
     override suspend fun sendEvent(
         eventName: String,
         params: MutableMap<String, Any>?,
+        sessionNumber: Long?,
         destination: AnalyticsRepository.DestinationType
     ) {
         setGlobalProperties(params)
         when (destination) {
             AnalyticsRepository.DestinationType.LOCAL -> {
-                logEventToLocal(eventName, params)
+                logEventToLocal(eventName, params, sessionNumber)
             }
             AnalyticsRepository.DestinationType.LOCAL_TO_SERVER -> {
                 logEventFromLocalToServer()
@@ -68,9 +76,19 @@ class AnalyticsRepositoryImpl private constructor(
         }
     }
 
-    private suspend fun logEventToLocal(eventName: String, params: MutableMap<String, Any>?) {
+    private suspend fun logEventToLocal(
+        eventName: String,
+        params: MutableMap<String, Any>?,
+        sessionNumber: Long?
+    ) {
         params?.let {
-            val eventData = EventData(eventName = eventName, params = params)
+
+            val sessionId = eventRepository.getOrCreateNewSession(
+                sessionNumber = sessionNumber ?: sharedPreferencesRepo.sessionNumber.toLong(),
+                deviceId = sharedPreferencesRepo.deviceId
+            )
+
+            val eventData = EventData(eventName = eventName, params = params, sessionId = sessionId)
             try {
                 eventRepository.saveEventInDataBase(eventData)
             } catch (e: java.lang.Exception) {
@@ -101,6 +119,17 @@ class AnalyticsRepositoryImpl private constructor(
                 BuildConfig.VERSION_NAME
             params[AnalyticsRepository.APP_VERSION_CODE] =
                 BuildConfig.VERSION_CODE
+            params[AnalyticsRepository.TIME] =
+                getCurrentDateTime()
         }
+    }
+
+    private fun getCurrentDateTime(): String {
+        val currentDateAndTime = Date()
+
+        val pattern = "yyyy-MM-dd'T'HH:mm:ss"
+        val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
+
+        return simpleDateFormat.format(currentDateAndTime)
     }
 }

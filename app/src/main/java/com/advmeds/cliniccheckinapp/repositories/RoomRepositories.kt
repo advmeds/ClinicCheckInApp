@@ -19,7 +19,8 @@ object RoomRepositories {
     val eventsRepository: EventRepository by lazy {
         RoomEventRepository(
             database.getEventDao(),
-            database.getParamsDao()
+            database.getParamsDao(),
+            database.getSessionDao()
         )
     }
 

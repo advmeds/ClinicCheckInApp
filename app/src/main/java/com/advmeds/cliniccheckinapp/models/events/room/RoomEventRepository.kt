@@ -4,11 +4,23 @@ import com.advmeds.cliniccheckinapp.models.events.EventRepository
 import com.advmeds.cliniccheckinapp.models.events.entities.EventData
 import com.advmeds.cliniccheckinapp.models.events.room.entities.EventDbEntity
 import com.advmeds.cliniccheckinapp.models.events.room.entities.ParamsDbEntity
+import com.advmeds.cliniccheckinapp.models.events.room.entities.SessionDbEntity
 
 class RoomEventRepository(
     private val eventDao: EventDao,
-    private val paramsDao: ParamsDao
+    private val paramsDao: ParamsDao,
+    private val sessionDao: SessionDao
 ) : EventRepository {
+
+    override suspend fun getOrCreateNewSession(sessionNumber: Long, deviceId: Long): Long {
+        val sessionTuples = sessionDao.findSessionIdBySessionNumber(sessionNumber)
+
+        if (sessionTuples != null)
+            return sessionTuples.id
+
+        val entity = SessionDbEntity.toSessionDbEntity(sessionNumber, deviceId)
+        return sessionDao.createSession(entity)
+    }
 
     override suspend fun saveEventInDataBase(eventData: EventData): Long {
         val eventEntity = EventDbEntity.fromSendEvent(eventData)

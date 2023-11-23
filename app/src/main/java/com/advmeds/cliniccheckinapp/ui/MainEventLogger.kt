@@ -26,7 +26,19 @@ class MainEventLogger(
         analyticsRepository.sendEvent(eventName = "user_insert_card", params = map)
     }
 
-    suspend fun logAppOpen() {
+    suspend fun logAppOpen(
+        closeAppEvent: Pair<String, Map<String, Any>>? = null
+    ) {
+        if (closeAppEvent != null) {
+            val map = mutableMapOf<String, Any>()
+            map[AnalyticsRepository.SOURCE_SCREEN] = "Main Application"
+            map[AnalyticsRepository.SOURCE_ACTION] = "The app is closing"
+
+            map.putAll(closeAppEvent.second)
+
+            analyticsRepository.sendEvent(eventName = closeAppEvent.first, map)
+        }
+
         val map = mutableMapOf<String, Any>()
         map[AnalyticsRepository.SOURCE_SCREEN] = "Main Activity"
         map[AnalyticsRepository.SOURCE_ACTION] = "The app is opening"

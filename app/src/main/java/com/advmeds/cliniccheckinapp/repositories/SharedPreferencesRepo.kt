@@ -14,6 +14,7 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlin.random.Random
 
 class SharedPreferencesRepo(
     context: Context
@@ -91,6 +92,9 @@ class SharedPreferencesRepo(
 
         /** SharedPreferences『SESSION ID』KEY */
         const val SESSION_ID = "session_id"
+
+        /** SharedPreferences『DEVICE ID』KEY */
+        const val DEVICE_ID = "device_id"
 
         /** SharedPreferences『CLOSE APP ACTION EVENT』KEY */
         const val CLOSE_APP_ACTION_EVENT = "close_app_action_event"
@@ -476,6 +480,22 @@ class SharedPreferencesRepo(
                 .putInt(SESSION_ID, value)
                 .apply()
         }
+
+    var deviceId: Long
+        get() {
+            val deviceId = sharedPreferences.getLong(DEVICE_ID, -1L)
+            if (deviceId > 0) {
+                return deviceId
+            }
+
+            val id = Random.nextLong(1000000, 10000000000)
+            this.deviceId = id
+            return id
+        }
+        set(value) = sharedPreferences.edit()
+            .putLong(DEVICE_ID, value)
+            .apply()
+
 
     var closeAppEvent: Pair<String, Map<String, Any>>?
         get() {

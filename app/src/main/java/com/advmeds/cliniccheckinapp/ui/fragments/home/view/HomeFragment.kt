@@ -49,7 +49,10 @@ class HomeFragment : Fragment() {
         HomeViewModelFactory(
             application = requireActivity().application,
             homeEventLogger = HomeEventLogger(
-                AnalyticsRepositoryImpl.getInstance(RoomRepositories.eventsRepository)
+                AnalyticsRepositoryImpl.getInstance(
+                    RoomRepositories.eventsRepository,
+                    SharedPreferencesRepo.getInstance(requireContext())
+                )
             )
         )
     }
@@ -243,7 +246,7 @@ class HomeFragment : Fragment() {
                         EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE,
                         EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO,
                         EditCheckInItemDialog.CheckInItemType.CUSTOM_THREE,
-                        EditCheckInItemDialog.CheckInItemType.CUSTOM_FOUR  -> {
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM_FOUR -> {
                             viewModel.userClickOnCustomizedButton(checkInItem)
                             (requireActivity() as MainActivity).createFakeAppointment(
                                 schedule = GetScheduleResponse.ScheduleBean(

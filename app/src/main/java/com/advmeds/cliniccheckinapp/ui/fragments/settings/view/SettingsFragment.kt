@@ -43,6 +43,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.Q
 import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepositoryImpl
 import com.advmeds.cliniccheckinapp.repositories.DownloadControllerRepository
 import com.advmeds.cliniccheckinapp.repositories.RoomRepositories
+import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter.LanguageAdapter
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter.SettingsAdapter
@@ -103,7 +104,10 @@ class SettingsFragment : ListFragment() {
             requireContext().applicationContext as Application,
             downloadControllerRepository,
             SettingsEventLogger(
-                AnalyticsRepositoryImpl.getInstance(RoomRepositories.eventsRepository)
+                AnalyticsRepositoryImpl.getInstance(
+                    RoomRepositories.eventsRepository,
+                    SharedPreferencesRepo.getInstance(requireContext())
+                )
             )
         )
 
