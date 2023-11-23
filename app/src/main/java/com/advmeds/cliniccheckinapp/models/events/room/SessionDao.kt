@@ -18,6 +18,9 @@ interface SessionDao {
     @Query("SELECT * FROM session WHERE was_send_on_server = 0")
     suspend fun getAllSessionsThatHaveNotSentOnServer(): List<SessionDbEntity>?
 
+    @Query("SELECT * FROM session WHERE was_send_on_server = 0 AND session_number != :sessionNumber")
+    suspend fun getAllSessionsThatHaveNotSentOnExceptCurrentServer(sessionNumber: Long): List<SessionDbEntity>?
+
     @Update(entity = SessionDbEntity::class)
     suspend fun updateWasSendOnServer(updateWasSendOnServerTuple: SessionUpdateWasSendOnServerTuple)
 

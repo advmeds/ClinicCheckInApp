@@ -375,7 +375,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sendLocalLogsToServer() {
-        viewModel.sendLogsFromLocalToServer()
+        lifecycleScope.launch {
+//          Send logs to server after Minute of app's working
+            delay(60000)
+
+            viewModel.sendLogsFromLocalToServer()
+        }
     }
 
     private fun setOnCreate() {

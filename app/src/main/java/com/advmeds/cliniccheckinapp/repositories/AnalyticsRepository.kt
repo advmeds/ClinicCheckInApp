@@ -1,6 +1,5 @@
 package com.advmeds.cliniccheckinapp.repositories
 
-import android.util.Log
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.models.events.EventRepository
 import com.advmeds.cliniccheckinapp.models.events.entities.EventData
@@ -9,8 +8,6 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.SessionRequ
 import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepository.Companion.getCurrentDateTime
 import java.text.SimpleDateFormat
 import java.util.*
-
-private const val TAG = "check---"
 
 interface AnalyticsRepository {
 
@@ -111,9 +108,7 @@ class AnalyticsRepositoryImpl private constructor(
             val eventData = EventData(eventName = eventName, params = params, sessionId = sessionId)
             try {
                 eventRepository.saveEventInDataBase(eventData)
-            } catch (e: java.lang.Exception) {
-                Log.d(TAG, "logEventToLocal: $e")
-            }
+            } catch (_: java.lang.Exception) { }
         }
     }
 
@@ -125,11 +120,13 @@ class AnalyticsRepositoryImpl private constructor(
                 val sessionMap = mutableMapOf<Long, List<EventData>>()
 
                 val sessionsForSend =
-                    eventRepository.getAllSessionsThatHaveNotSentOnServer() ?: return
+                    eventRepository.getAllSessionsThatHaveNotSentOnExceptCurrentServer(
+                        sharedPreferencesRepo.sessionNumber.toLong()
+                    ) ?: return
 
                 sessionsForSend.forEach { session ->
                     val eventData =
-                        eventRepository.getEventBySessionId(session.id) ?: return@forEach
+                        eventRepository.getEventBySessionId(session.id) ?: return
                     sessionMap[session.sessionNumber] = eventData
                 }
 
@@ -145,6 +142,10 @@ class AnalyticsRepositoryImpl private constructor(
                     input = sharedPreferencesRepo.doctors.joinToString(","),
                     content = SessionRequest.fromMapToSessionRequest(sessionsForSend, sessionMap)
                 )
+
+                if (request.content.isEmpty()) {
+                    return
+                }
 
                 val result = it.sendActionLog(request)
 

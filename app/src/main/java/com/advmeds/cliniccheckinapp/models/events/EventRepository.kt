@@ -11,6 +11,7 @@ interface EventRepository {
     suspend fun saveEventInDataBase(eventData: EventData): Long
     suspend fun getAllEventFromDatabase(): List<EventData>
     suspend fun getAllSessionsThatHaveNotSentOnServer(): List<SessionDbEntity>?
+    suspend fun getAllSessionsThatHaveNotSentOnExceptCurrentServer(sessionId: Long): List<SessionDbEntity>?
     suspend fun deleteSessionThatHaveBeenSentOnServer()
     suspend fun getParamById(eventId: Long): Map<String, Any>
 
