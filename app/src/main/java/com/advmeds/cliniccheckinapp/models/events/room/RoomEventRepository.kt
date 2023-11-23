@@ -5,6 +5,7 @@ import com.advmeds.cliniccheckinapp.models.events.entities.EventData
 import com.advmeds.cliniccheckinapp.models.events.room.entities.EventDbEntity
 import com.advmeds.cliniccheckinapp.models.events.room.entities.ParamsDbEntity
 import com.advmeds.cliniccheckinapp.models.events.room.entities.SessionDbEntity
+import com.advmeds.cliniccheckinapp.models.events.room.entities.SessionUpdateWasSendOnServerTuple
 
 class RoomEventRepository(
     private val eventDao: EventDao,
@@ -38,6 +39,31 @@ class RoomEventRepository(
 
     override suspend fun getAllEventFromDatabase(): List<EventData> {
         return eventDao.getAllEvents()?.map { eventDbEntity -> eventDbEntity.toEvent() } ?: listOf()
+    }
+
+    override suspend fun getEventBySessionId(sessionId: Long): List<EventData>? {
+        return eventDao.getEventBySessionId(sessionId)
+            ?.map { eventDbEntity -> eventDbEntity.toEvent() }
+    }
+
+    override suspend fun markSessionThatHaveBeenSentOnServer(
+        sessionId: Long,
+        wasSendOnServer: Boolean
+    ) {
+        sessionDao.updateWasSendOnServer(
+            SessionUpdateWasSendOnServerTuple(
+                sessionId,
+                wasSendOnServer
+            )
+        )
+    }
+
+    override suspend fun getAllSessionsThatHaveNotSentOnServer(): List<SessionDbEntity>? {
+        return sessionDao.getAllSessionsThatHaveNotSentOnServer()
+    }
+
+    override suspend fun deleteSessionThatHaveBeenSentOnServer() {
+        sessionDao.deleteSentSession()
     }
 
     override suspend fun getParamById(eventId: Long): Map<String, Any> {

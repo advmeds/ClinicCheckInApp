@@ -5,10 +5,22 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppoi
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
 import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepository
+import com.advmeds.cliniccheckinapp.repositories.ServerRepository
 
 class MainEventLogger(
     private val analyticsRepository: AnalyticsRepository
 ) {
+
+    fun setServerRepoInAnalyticsRepository(serverRepository: ServerRepository) {
+        analyticsRepository.setServerRepository(serverRepository)
+    }
+
+    suspend fun sendLogsFromLocalToServer() {
+        analyticsRepository.sendEvent(
+            eventName = "send logs from local to server",
+            destination = AnalyticsRepository.DestinationType.LOCAL_TO_SERVER
+        )
+    }
 
     suspend fun logUserInsertTheCard(result: Result<AcsResponseModel>) {
         val map = mutableMapOf<String, Any>()
@@ -27,7 +39,8 @@ class MainEventLogger(
     }
 
     suspend fun logAppOpen(
-        closeAppEvent: Pair<String, Map<String, Any>>? = null
+        closeAppEvent: Pair<String, Map<String, Any>>? = null,
+        sessionNumber: Int
     ) {
         if (closeAppEvent != null) {
             val map = mutableMapOf<String, Any>()
@@ -36,7 +49,8 @@ class MainEventLogger(
 
             map.putAll(closeAppEvent.second)
 
-            analyticsRepository.sendEvent(eventName = closeAppEvent.first, map)
+            analyticsRepository.sendEvent(eventName = closeAppEvent.first, map, sessionNumber = (sessionNumber - 1).toLong())
+
         }
 
         val map = mutableMapOf<String, Any>()

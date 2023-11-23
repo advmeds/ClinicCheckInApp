@@ -4,12 +4,18 @@ import android.util.Log
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.models.events.EventRepository
 import com.advmeds.cliniccheckinapp.models.events.entities.EventData
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateActionLogRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.SessionRequest
+import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepository.Companion.getCurrentDateTime
 import java.text.SimpleDateFormat
 import java.util.*
 
 private const val TAG = "check---"
 
 interface AnalyticsRepository {
+
+    fun setServerRepository(serverRepository: ServerRepository)
+
     suspend fun sendEvent(
         eventName: String,
         params: MutableMap<String, Any>? = null,
@@ -20,13 +26,18 @@ interface AnalyticsRepository {
     companion object {
         const val SOURCE_ACTION = "source_value"
         const val SOURCE_SCREEN = "SourceScreen"
-        const val SESSION_NUMBER = "SessionNumber"
-        const val DEVICE_ID = "deviceId"
-        const val USER_ID = "userId"
-        const val DOCTOR_ID = "userId"
         const val APP_VERSION_NAME = "app_version_name"
         const val APP_VERSION_CODE = "app_version_code"
-        const val TIME = "app_version_code"
+        const val TIME = "log_time"
+
+        fun getCurrentDateTime(): String {
+            val currentDateAndTime = Date()
+
+            val pattern = "yyyy-MM-dd'T'HH:mm:ss"
+            val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
+
+            return simpleDateFormat.format(currentDateAndTime)
+        }
     }
 
     enum class DestinationType {
@@ -38,8 +49,14 @@ interface AnalyticsRepository {
 
 class AnalyticsRepositoryImpl private constructor(
     private val eventRepository: EventRepository,
-    private val sharedPreferencesRepo: SharedPreferencesRepo
+    private val sharedPreferencesRepo: SharedPreferencesRepo,
 ) : AnalyticsRepository {
+
+    private var serverRepository: ServerRepository? = null
+
+    override fun setServerRepository(serverRepository: ServerRepository) {
+        this.serverRepository = serverRepository
+    }
 
     companion object {
         @Volatile
@@ -64,7 +81,10 @@ class AnalyticsRepositoryImpl private constructor(
         sessionNumber: Long?,
         destination: AnalyticsRepository.DestinationType
     ) {
-        setGlobalProperties(params)
+        if (sessionNumber == null) {
+            setGlobalProperties(params)
+        }
+
         when (destination) {
             AnalyticsRepository.DestinationType.LOCAL -> {
                 logEventToLocal(eventName, params, sessionNumber)
@@ -98,18 +118,60 @@ class AnalyticsRepositoryImpl private constructor(
     }
 
     private suspend fun logEventFromLocalToServer() {
-        try {
-            val eventDataList = eventRepository.getAllEventFromDatabase()
+        eventRepository.deleteSessionThatHaveBeenSentOnServer()
 
-            eventDataList.forEach { eventDataDb ->
-                val param = eventRepository.getParamById(eventDataDb.id)
-                eventDataDb.params.putAll(param)
-                Log.d(TAG, "$param")
+        serverRepository?.let {
+            try {
+                val sessionMap = mutableMapOf<Long, List<EventData>>()
+
+                val sessionsForSend =
+                    eventRepository.getAllSessionsThatHaveNotSentOnServer() ?: return
+
+                sessionsForSend.forEach { session ->
+                    val eventData =
+                        eventRepository.getEventBySessionId(session.id) ?: return@forEach
+                    sessionMap[session.sessionNumber] = eventData
+                }
+
+                sessionMap.values.forEach { session ->
+                    session.forEach { eventDataDb ->
+                        val param = eventRepository.getParamById(eventDataDb.id)
+                        eventDataDb.params.putAll(param)
+                    }
+                }
+
+                val request = CreateActionLogRequest(
+                    clinicId = sharedPreferencesRepo.orgId.toInt(),
+                    input = sharedPreferencesRepo.doctors.joinToString(","),
+                    content = SessionRequest.fromMapToSessionRequest(sessionsForSend, sessionMap)
+                )
+
+                val result = it.sendActionLog(request)
+
+                if (result.isSuccessful) {
+                    sessionsForSend.forEach { session ->
+                        eventRepository.markSessionThatHaveBeenSentOnServer(
+                            sessionId = session.id,
+                            wasSendOnServer = true
+                        )
+                    }
+                } else {
+                    sendEvent(
+                        eventName = "send local logs to server with complete with error",
+                        params = mutableMapOf(
+                            "error code" to result.code(),
+                            "error message" to result.message()
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                sendEvent(
+                    eventName = "send local logs to server with complete with error",
+                    params = mutableMapOf("error" to e)
+                )
+            } finally {
+                serverRepository = null
             }
-
-            Log.d(TAG, "\n")
-        } catch (e: Exception) {
-            Log.d(TAG, "logEventToLocal: $e")
         }
     }
 
@@ -122,14 +184,5 @@ class AnalyticsRepositoryImpl private constructor(
             params[AnalyticsRepository.TIME] =
                 getCurrentDateTime()
         }
-    }
-
-    private fun getCurrentDateTime(): String {
-        val currentDateAndTime = Date()
-
-        val pattern = "yyyy-MM-dd'T'HH:mm:ss"
-        val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
-
-        return simpleDateFormat.format(currentDateAndTime)
     }
 }

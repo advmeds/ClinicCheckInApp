@@ -15,6 +15,9 @@ interface EventDao {
     @Query("SELECT * FROM events")
     suspend fun getAllEvents(): List<EventDbEntity>?
 
+    @Query("SELECT * FROM events WHERE session_id = :sessionId")
+    suspend fun getEventBySessionId(sessionId: Long): List<EventDbEntity>?
+
     @Query("SELECT * FROM events WHERE id = :eventId")
     suspend fun getEventById(eventId: Long) : EventDbEntity
 }

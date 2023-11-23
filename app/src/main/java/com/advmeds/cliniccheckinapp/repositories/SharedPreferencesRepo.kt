@@ -511,6 +511,9 @@ class SharedPreferencesRepo(
         }
         set(value) {
             if (value == null) {
+                sharedPreferences.edit()
+                    .putString(CLOSE_APP_ACTION_EVENT, "")
+                    .apply()
                 return
             }
 

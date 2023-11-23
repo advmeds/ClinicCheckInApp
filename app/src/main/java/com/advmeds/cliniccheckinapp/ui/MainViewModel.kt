@@ -32,7 +32,8 @@ import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
 
 class MainViewModel(
-    application: Application, private val mainEventLogger: MainEventLogger
+    application: Application,
+    private val mainEventLogger: MainEventLogger
 ) : AndroidViewModel(application) {
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
 
@@ -539,6 +540,18 @@ class MainViewModel(
      *          Log Record functions
      *  ======================================= */
 
+    private fun sendServerRepositoryInLogRepository() {
+        mainEventLogger.setServerRepoInAnalyticsRepository(serverRepo)
+    }
+
+    fun sendLogsFromLocalToServer() {
+        sendServerRepositoryInLogRepository()
+
+        viewModelScope.launch {
+            mainEventLogger.sendLogsFromLocalToServer()
+        }
+    }
+
     fun eventUserInsertCard(result: Result<AcsResponseModel>) {
         viewModelScope.launch {
             mainEventLogger.logUserInsertTheCard(result)
@@ -547,7 +560,10 @@ class MainViewModel(
 
     private fun appIsOpening() {
         viewModelScope.launch {
-            mainEventLogger.logAppOpen(sharedPreferencesRepo.closeAppEvent)
+            mainEventLogger.logAppOpen(
+                sharedPreferencesRepo.closeAppEvent,
+                sessionNumber = sharedPreferencesRepo.sessionNumber
+            )
         }
     }
 

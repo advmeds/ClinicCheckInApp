@@ -362,8 +362,6 @@ class MainActivity : AppCompatActivity() {
     private var failCardInsertSoundId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        RoomRepositories.init(applicationContext)
-
         setSavedLanguage()
 
         super.onCreate(savedInstanceState)
@@ -372,6 +370,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setOnCreate()
+
+        sendLocalLogsToServer()
+    }
+
+    private fun sendLocalLogsToServer() {
+        viewModel.sendLogsFromLocalToServer()
     }
 
     private fun setOnCreate() {

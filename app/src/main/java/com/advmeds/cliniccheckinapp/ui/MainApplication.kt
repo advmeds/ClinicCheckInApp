@@ -6,11 +6,13 @@ import android.os.Looper
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepository
+import com.advmeds.cliniccheckinapp.repositories.RoomRepositories
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import timber.log.Timber
 
 class MainApplication : Application() {
     override fun onCreate() {
+        RoomRepositories.init(applicationContext)
         initUncaughtExceptionHandler()
 
         super.onCreate()
@@ -124,6 +126,13 @@ class MainApplication : Application() {
 
                 map["is it manual close"] = true
 
+                map[AnalyticsRepository.APP_VERSION_NAME] =
+                    BuildConfig.VERSION_NAME
+                map[AnalyticsRepository.APP_VERSION_CODE] =
+                    BuildConfig.VERSION_CODE
+                map[AnalyticsRepository.TIME] =
+                    AnalyticsRepository.getCurrentDateTime()
+
                 sharedPreferencesRepo.closeAppEvent = Pair("close of the app", map)
             }
         })
@@ -167,6 +176,13 @@ class MainApplication : Application() {
 
             map["is it manual close"] = false
             map["error reason"] = reportBuilder.toString()
+
+            map[AnalyticsRepository.APP_VERSION_NAME] =
+                BuildConfig.VERSION_NAME
+            map[AnalyticsRepository.APP_VERSION_CODE] =
+                BuildConfig.VERSION_CODE
+            map[AnalyticsRepository.TIME] =
+                AnalyticsRepository.getCurrentDateTime()
 
             sharedPreferencesRepo.closeAppEvent = Pair("close of the app", map)
         }
