@@ -32,6 +32,7 @@ interface AnalyticsRepository {
 
             val pattern = "yyyy-MM-dd'T'HH:mm:ss"
             val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
+            simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
 
             return simpleDateFormat.format(currentDateAndTime)
         }
