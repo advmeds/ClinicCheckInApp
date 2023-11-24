@@ -12,11 +12,12 @@
 
     <ImageView
         android:id="@+id/settings_icon"
+        android:contentDescription="Setting Image"
         android:layout_width="@dimen/settings_icon_size"
         android:layout_height="@dimen/settings_icon_size"
         android:layout_margin="@dimen/settings_icon_margin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:src="@drawable/baseline_settings_24"
         app:tint="@color/white"
         android:background="@android:color/transparent"/>
