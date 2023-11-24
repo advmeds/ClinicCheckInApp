@@ -873,7 +873,6 @@ class SettingsFragment : ListFragment() {
 
 
     private fun onSetAutomaticAppointmentSettingItemClicked() {
-
         dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.automatic_appointment_setting_dialog)
 

@@ -155,7 +155,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="20dp"
                         android:gravity="center"
-                        android:lines="1"
+                        android:lines="2"
                         android:text="@string/present_health_card"
                         android:textAlignment="center"
                         android:textColor="@color/black"

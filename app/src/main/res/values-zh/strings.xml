@@ -19,6 +19,7 @@
     <string name="present_health_card">請直接插入%1$s%2$s</string>
     <string name="present_health_card_arg_check_in">報到</string>
     <string name="present_health_card_arg_take_no">取號</string>
+    <string name="present_health_card_auto_appointment_addition"> / 掛號</string>
     <string name="check_in_item_display_name">科別名稱</string>
     <string name="check_in_item_manual_title">無健保卡</string>
     <string name="check_in_item_manual_body">手動取號</string>

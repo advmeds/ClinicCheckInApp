@@ -284,7 +284,7 @@ class SettingsViewModel(
         }
 
 
-    /** @see SharedPreferencesRepo.queueingMachineSetting */
+    /** @see SharedPreferencesRepo.automaticAppointmentSetting */
     var automaticAppointmentSetting: AutomaticAppointmentSettingModel
         get() = sharedPreferencesRepo.automaticAppointmentSetting
         set(value) {

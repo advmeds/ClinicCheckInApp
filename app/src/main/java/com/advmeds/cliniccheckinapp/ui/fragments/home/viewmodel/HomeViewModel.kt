@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.fragments.home.eventLogger.HomeEventLogger
 import kotlinx.coroutines.launch
@@ -63,6 +64,9 @@ class HomeViewModel(
     val queueingMachineSettingIsEnable: Boolean
         get() = sharedPreferencesRepo.queueingMachineSettingIsEnable
 
+    /** @see SharedPreferencesRepo.automaticAppointmentSetting */
+    val automaticAppointmentSetting: AutomaticAppointmentSettingModel
+        get() = sharedPreferencesRepo.automaticAppointmentSetting
 
     /** =======================================
      *          Log Record functions
