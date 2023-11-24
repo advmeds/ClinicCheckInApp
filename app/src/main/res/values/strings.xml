@@ -173,6 +173,8 @@
     <!-- Automatic Appointment -->
     <string name="automatic_appointment_setting">Automatic Appointment Setting</string>
     <string name="automatic_appointment_setting_error_empty_field">that field shouldn\'t be empty</string>
+    <string name="automatic_appointment_single_mode">Single mode</string>
+    <string name="automatic_appointment_multiple_mode">multiple mode</string>
     <string name="automatic_appointment_setting_automatic_check_in">Automatic Check-In</string>
 
     <!-- Software Update -->
