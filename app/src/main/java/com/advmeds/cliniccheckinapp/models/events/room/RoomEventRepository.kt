@@ -62,7 +62,7 @@ class RoomEventRepository(
         return sessionDao.getAllSessionsThatHaveNotSentOnServer()
     }
 
-    override suspend fun getAllSessionsThatHaveNotSentOnExceptCurrentServer(sessionId: Long): List<SessionDbEntity>? {
+    override suspend fun getAllSessionsThatHaveNotSentOnServerExceptCurrent(sessionId: Long): List<SessionDbEntity>? {
         return sessionDao.getAllSessionsThatHaveNotSentOnExceptCurrentServer(sessionId)
     }
 
