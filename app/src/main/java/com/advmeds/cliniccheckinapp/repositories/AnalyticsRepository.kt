@@ -120,7 +120,7 @@ class AnalyticsRepositoryImpl private constructor(
                 val sessionMap = mutableMapOf<Long, List<EventData>>()
 
                 val sessionsForSend =
-                    eventRepository.getAllSessionsThatHaveNotSentOnExceptCurrentServer(
+                    eventRepository.getAllSessionsThatHaveNotSentOnServerExceptCurrent(
                         sharedPreferencesRepo.sessionNumber.toLong()
                     ) ?: return
 
