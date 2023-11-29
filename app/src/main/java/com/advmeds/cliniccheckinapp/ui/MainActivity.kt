@@ -645,7 +645,8 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         if (it.response.success) {
                             ScheduleListDialogFragment(
-                                schedules = it.response.schedules
+                                schedules = it.response.schedules,
+                                currentLanguage = viewModel.getLanguage()
                             ) { checkedSchedule ->
                                 if (checkedSchedule != null) {
                                     createAppointment(isCheckIn = false, checkedSchedule)

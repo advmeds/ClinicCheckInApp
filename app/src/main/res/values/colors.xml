@@ -17,4 +17,11 @@
     <color name="black_alter">#FF333333</color>
 
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">#E0E0E0</color>
+
+    <color name="doctor_list_dialog_success">#2CA534</color>
+
+    <color name="doctor_list_dialog_gray_300">#939599</color>
+    <color name="doctor_list_dialog_gray_400">#939599</color>
+    <color name="doctor_list_dialog_gray_600">#DCDDE0</color>
+
 </resources>

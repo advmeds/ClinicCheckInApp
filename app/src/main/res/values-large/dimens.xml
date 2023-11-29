@@ -63,4 +63,7 @@
     <dimen name="dialog_image_size">100dp</dimen>
     <dimen name="dialog_screen_padding">146dp</dimen>
 
+    <!-- Doctor list dialog -->
+    <dimen name="doctor_list_item_image_size">150dp</dimen>
+    <dimen name="doctor_detail_item_size">400dp</dimen>
 </resources>

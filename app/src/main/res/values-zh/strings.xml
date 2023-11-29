@@ -99,6 +99,15 @@
         <item>@string/exit_app</item>
     </string-array>
 
+    <!-- Automatic Appointment Doctor List Dialog -->
+    <string name="automatic_appointment_title_list">找不到您的預約資料</string>
+    <string name="automatic_appointment_title_detail">請確認您的預約資料</string>
+    <string name="automatic_appointment_prompt">請選擇醫師來預約</string>
+    <string name="automatic_appointment_cancel">取消</string>
+    <string name="automatic_appointment_redo">重新選擇</string>
+    <string name="automatic_appointment_confirm">確定</string>
+
+
     <!-- UI settings -->
     <string name="ui_settings_machine_title">應用程式名稱</string>
 
@@ -172,6 +181,12 @@
     <string name="update_software_dialog_downloaded">已下載</string>
     <string name="update_software_dialog_permission">應用程式尚未獲取安裝應用程式權限，是否開啟安裝權限？</string>
     <string name="unexpected_error">未知錯誤</string>
+
+    <!-- Scheduler dialog -->
+    <string name="scheduler_dialog_status_appointable">可預約</string>
+    <string name="scheduler_dialog_status_full">已額滿</string>
+    <string name="scheduler_dialog_status_closed">已結束</string>
+    <string name="scheduler_dialog_status_stop_appoint">停止預約</string>
 
     <string-array name="language_items">
         <item>@string/zh_tw_language</item>
