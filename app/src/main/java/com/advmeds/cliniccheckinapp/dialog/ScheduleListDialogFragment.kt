@@ -125,10 +125,6 @@ class ScheduleListDialogFragment(
             onActionButtonClicked?.let { it1 -> it1(null) }
         }
 
-        binding.confirmButton.setOnClickListener {
-
-        }
-
         binding.redoButton.setOnClickListener {
             selectedItem = null
             restartCounter()

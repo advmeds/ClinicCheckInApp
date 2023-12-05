@@ -185,7 +185,10 @@ class ManualInputFragment : Fragment() {
 
             viewModel.userSendManualInputData(patient)
 
-            (requireActivity() as MainActivity).getPatients(patient) {
+            (requireActivity() as MainActivity).getPatients(
+                nationalId = patient,
+                isItManualInput = true
+            ) {
                 binding.idInputEt.text = null
             }
         }
