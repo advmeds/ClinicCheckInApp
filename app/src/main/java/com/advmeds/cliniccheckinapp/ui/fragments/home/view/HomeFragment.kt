@@ -31,9 +31,13 @@ import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.HomeFragmentBinding
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
+import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepositoryImpl
+import com.advmeds.cliniccheckinapp.repositories.RoomRepositories
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
+import com.advmeds.cliniccheckinapp.ui.fragments.home.eventLogger.HomeEventLogger
 import com.advmeds.cliniccheckinapp.ui.fragments.home.viewmodel.HomeViewModel
+import com.advmeds.cliniccheckinapp.ui.fragments.home.viewmodel.HomeViewModelFactory
 import kotlinx.android.synthetic.main.text_input_dialog.*
 
 
@@ -41,7 +45,17 @@ class HomeFragment : Fragment() {
 
     private lateinit var dialog: Dialog
 
-    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: HomeViewModel by viewModels {
+        HomeViewModelFactory(
+            application = requireActivity().application,
+            homeEventLogger = HomeEventLogger(
+                AnalyticsRepositoryImpl.getInstance(
+                    RoomRepositories.eventsRepository,
+                    SharedPreferencesRepo.getInstance(requireContext())
+                )
+            )
+        )
+    }
 
     private var _binding: HomeFragmentBinding? = null
 
@@ -65,6 +79,12 @@ class HomeFragment : Fragment() {
     }
 
     private val reloadRightCardViewReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            setupUI()
+        }
+    }
+
+    private val reloadPresentCardTextReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             setupUI()
         }
@@ -96,6 +116,11 @@ class HomeFragment : Fragment() {
             }
         )
 
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+            reloadPresentCardTextReceiver,
+            IntentFilter(SharedPreferencesRepo.AUTOMATIC_APPOINTMENT_SETTING)
+        )
+
         return binding.root
     }
 
@@ -121,14 +146,16 @@ class HomeFragment : Fragment() {
                 inputTextLabel = inputTextLabel,
                 positiveButtonTextResId = R.string.dialog_ok_button,
                 onConfirmClick = {
-                    if (it == viewModel.password)
+                    if (it == viewModel.password) {
                         findNavController().navigate(R.id.settingsFragment)
-                    else
+                        viewModel.eventOpenSettingScreen()
+                    } else {
                         Toast.makeText(
                             requireContext(),
                             getString(R.string.password_is_incorrect),
                             Toast.LENGTH_LONG
                         ).show()
+                    }
                 }
             )
 
@@ -142,7 +169,20 @@ class HomeFragment : Fragment() {
             else
                 getString(R.string.present_health_card_arg_check_in)
 
-        val text = String.format(getString(R.string.present_health_card), firstArg, secondArg)
+        val automaticAppointmentAddition =
+            if (viewModel.automaticAppointmentSetting.isEnabled) {
+                getString(R.string.present_health_card_auto_appointment_addition)
+            } else {
+                ""
+            }
+
+
+        val presentHealthText = getString(R.string.present_health_card)
+
+        val text =
+            "${String.format(presentHealthText, firstArg, secondArg)}$automaticAppointmentAddition"
+
+
         val textColor = ContextCompat.getColor(
             requireContext(),
             R.color.error
@@ -183,30 +223,18 @@ class HomeFragment : Fragment() {
                         itemTitle.setText(R.string.check_in_item_manual_title)
                         itemBody.text = (secondArg)
                     }
-                    EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE -> {
-                        itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
-                        itemTitle.text = checkInItem.title
-                        itemBody.text = checkInItem.action
-                    }
-                    EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO -> {
-                        itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
-                        itemTitle.text = checkInItem.title
-                        itemBody.text = checkInItem.action
-                    }
-                    EditCheckInItemDialog.CheckInItemType.CUSTOM_THREE -> {
-                        itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
-                        itemTitle.text = checkInItem.title
-                        itemBody.text = checkInItem.action
-                    }
-                    EditCheckInItemDialog.CheckInItemType.CUSTOM_FOUR -> {
-                        itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
-                        itemTitle.text = checkInItem.title
-                        itemBody.text = checkInItem.action
-                    }
                     EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
                         itemImg.setImageResource(R.drawable.ic_baseline_qr_code)
                         itemTitle.setText(R.string.check_in_item_virtual_title)
                         itemBody.text = (secondArg)
+                    }
+                    EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE,
+                    EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO,
+                    EditCheckInItemDialog.CheckInItemType.CUSTOM_THREE,
+                    EditCheckInItemDialog.CheckInItemType.CUSTOM_FOUR -> {
+                        itemImg.setImageResource(R.drawable.ic_baseline_how_to_reg)
+                        itemTitle.text = checkInItem.title
+                        itemBody.text = checkInItem.action
                     }
                     else -> {}
                 }
@@ -236,40 +264,20 @@ class HomeFragment : Fragment() {
                         EditCheckInItemDialog.CheckInItemType.MANUAL_INPUT -> {
                             findNavController().navigate(R.id.manualInputFragment)
                         }
-                        EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE -> {
-                            (requireActivity() as MainActivity).createFakeAppointment(
-                                schedule = GetScheduleResponse.ScheduleBean(
-                                    doctor = checkInItem.doctorId,
-                                    division = checkInItem.divisionId
-                                )
-                            )
-                        }
-                        EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO -> {
-                            (requireActivity() as MainActivity).createFakeAppointment(
-                                schedule = GetScheduleResponse.ScheduleBean(
-                                    doctor = checkInItem.doctorId,
-                                    division = checkInItem.divisionId
-                                )
-                            )
-                        }
-                        EditCheckInItemDialog.CheckInItemType.CUSTOM_THREE -> {
-                            (requireActivity() as MainActivity).createFakeAppointment(
-                                schedule = GetScheduleResponse.ScheduleBean(
-                                    doctor = checkInItem.doctorId,
-                                    division = checkInItem.divisionId
-                                )
-                            )
-                        }
-                        EditCheckInItemDialog.CheckInItemType.CUSTOM_FOUR -> {
-                            (requireActivity() as MainActivity).createFakeAppointment(
-                                schedule = GetScheduleResponse.ScheduleBean(
-                                    doctor = checkInItem.doctorId,
-                                    division = checkInItem.divisionId
-                                )
-                            )
-                        }
                         EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
                             (requireActivity() as MainActivity).checkInWithVirtualCard()
+                        }
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE,
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO,
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM_THREE,
+                        EditCheckInItemDialog.CheckInItemType.CUSTOM_FOUR -> {
+                            viewModel.userClickOnCustomizedButton(checkInItem)
+                            (requireActivity() as MainActivity).createFakeAppointment(
+                                schedule = GetScheduleResponse.ScheduleBean(
+                                    doctor = checkInItem.doctorId,
+                                    division = checkInItem.divisionId
+                                )
+                            )
                         }
                         else -> {}
                     }
@@ -375,6 +383,8 @@ class HomeFragment : Fragment() {
             .unregisterReceiver(reloadRightCardViewReceiver)
         LocalBroadcastManager.getInstance(requireContext())
             .unregisterReceiver(reloadTitle)
+        LocalBroadcastManager.getInstance(requireContext())
+            .unregisterReceiver(reloadPresentCardTextReceiver)
 
         _binding = null
     }

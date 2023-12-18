@@ -157,6 +157,7 @@ class EditCheckInItemDialog(
         }
     }
 
+    @Serializable
     data class EditCheckInItems(
         val manualInput: EditCheckInItem =  EditCheckInItem(type = CheckInItemType.MANUAL_INPUT),
         val virtualCard: EditCheckInItem =  EditCheckInItem(type = CheckInItemType.VIRTUAL_CARD),

@@ -1,5 +1,6 @@
 package com.advmeds.cliniccheckinapp.models.remote.mScheduler
 
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateActionLogRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.*
 import retrofit2.Response
@@ -79,4 +80,8 @@ interface ApiService {
         @Query("name") name: String
     ): Response<ControllerAppVersionResponse>
 
+    @POST("api/v2/panels/action_log")
+    suspend fun sendActionLog(
+        @Body request: CreateActionLogRequest
+    ): Response<SendActionLogRequest>
 }

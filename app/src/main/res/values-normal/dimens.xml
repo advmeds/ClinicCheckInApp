@@ -19,6 +19,8 @@
     <!-- Settings Icon -->
     <dimen name="settings_icon_size">12dp</dimen>
     <dimen name="settings_icon_margin">2dp</dimen>
+    <dimen name="icon_click_area">7dp</dimen>
+
 
 
     <!-- Font -->
@@ -70,5 +72,8 @@
     <dimen name="dialog_image_size">60dp</dimen>
     <dimen name="dialog_screen_padding">100dp</dimen>
 
+    <!-- Doctor list dialog -->
+    <dimen name="doctor_list_item_image_size">100dp</dimen>
+    <dimen name="doctor_detail_item_size">250dp</dimen>
 </resources>
 

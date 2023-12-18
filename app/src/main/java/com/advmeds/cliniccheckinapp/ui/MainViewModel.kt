@@ -3,10 +3,8 @@ package com.advmeds.cliniccheckinapp.ui
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.advmeds.cardreadermodule.AcsResponseModel
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiService
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
@@ -14,6 +12,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppo
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetClinicGuardianResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetPatientsResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentMode
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.ServerRepository
@@ -33,8 +32,15 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+class MainViewModel(
+    application: Application,
+    private val mainEventLogger: MainEventLogger
+) : AndroidViewModel(application) {
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
+
+    init {
+        eventAppIsOpening()
+    }
 
     /** @see SharedPreferencesRepo.checkInSerialNo */
     var checkInSerialNo: Int
@@ -194,6 +200,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getPatients(
         patient: CreateAppointmentRequest.Patient,
+        isItManualInput: Boolean = false,
         completion: ((GetPatientsResponse) -> Unit)? = null
     ) {
         if (getGuardianJob?.isActive == true) return
@@ -299,7 +306,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                             )
                         }
                         else -> {
-                            e.localizedMessage?.let { NativeText.Simple(it) } ?: NativeText.Simple("")
+                            e.localizedMessage?.let { NativeText.Simple(it) }
+                                ?: NativeText.Simple("")
                         }
                     }
                 )
@@ -307,7 +315,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
             completion?.let { it(response) }
 
-            checkInStatus.value = CheckInStatus.NotChecking(response = response, patient = patient)
+            checkInStatus.value = CheckInStatus.NotChecking(
+                response = response,
+                patient = patient,
+                isItManualInput = isItManualInput
+            )
+
+            eventResponseGetPatient(response)
         }
 
         checkJob?.invokeOnCompletion {
@@ -323,9 +337,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getSchedule(completion: ((GetScheduleResponse) -> Unit)? = null) {
-        if (checkJob?.isActive == true) return
-
+    fun getSchedule(
+        completion: ((GetScheduleResponse) -> Unit)? = null,
+        patient: CreateAppointmentRequest.Patient? = null
+    ) {
         createAppointmentJob?.cancel()
         getSchedulesJob?.cancel()
 
@@ -373,7 +388,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
             completion?.let { it(response) }
 
-            getSchedulesStatus.value = GetSchedulesStatus.NotChecking(response)
+            getSchedulesStatus.value = GetSchedulesStatus.NotChecking(response, patient)
         }
 
         getSchedulesJob?.invokeOnCompletion {
@@ -391,7 +406,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun createAppointment(
-        isCheckIn: Boolean,
         schedule: GetScheduleResponse.ScheduleBean,
         patient: CreateAppointmentRequest.Patient? = null,
         isAutomaticAppointment: Boolean = false,
@@ -419,6 +433,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         getApplication<MainApplication>().getString(R.string.mScheduler_api_error_10008)
                     }
                 )
+
+                eventAppCreateAppointment(request)
 
                 val result = serverRepo.createsAppointment(request)
 
@@ -472,6 +488,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             completion?.let { it(response) }
 
             createAppointmentStatus.value = CreateAppointmentStatus.NotChecking(response)
+
+            eventResponseCreateAppointment(response)
         }
 
         createAppointmentJob?.invokeOnCompletion {
@@ -487,6 +505,82 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
+
+    fun makeSingleAutoAppointment(
+        checkIn: CheckInStatus,
+        completion: ((CreateAppointmentResponse) -> Unit)?
+    ) {
+        if (!automaticAppointmentSetting.isEnabled) {
+            return
+        }
+        if (automaticAppointmentSetting.mode != AutomaticAppointmentMode.SINGLE_MODE) {
+            return
+        }
+
+        if (checkIn !is CheckInStatus.NotChecking) {
+            return
+        }
+
+        val automaticRoom = automaticAppointmentSetting.roomId
+
+        // TODO if backend will add division_id in checkIn response: uncomment next code
+//        if (checkIn.response?.patients?.none { it.division == automaticRoom } == false) {
+//            return
+//        }
+
+        viewModelScope.launch {
+            try {
+                val scheduleResponse =
+                    serverRepo.getSchedules(clinicId = sharedPreferencesRepo.orgId)
+
+                Timber.d("Status code: ${scheduleResponse.code()}")
+                Timber.d("Response: ${format.encodeToString(scheduleResponse.body())}")
+
+                if (!scheduleResponse.isSuccessful) {
+                    return@launch
+                }
+
+                // TODO if backend will add division_id in checkIn response: delete roomNames
+                val roomNames = checkIn.response?.patients?.map { it.division }
+
+                roomNames?.let {
+                    it.forEach { roomName ->
+                        val schedule =
+                            scheduleResponse.body()?.schedules?.firstOrNull { schedule -> schedule.divisionName == roomName }
+                                ?: return@launch
+
+                        if (automaticRoom.contains(schedule.division)) {
+                            return@launch
+                        }
+
+                    }
+                }
+
+                val schedule =
+                    scheduleResponse.body()?.schedules?.firstOrNull { it.division == automaticRoom }
+                        ?: return@launch
+
+                if (schedule.status != 0) {
+                    return@launch
+                }
+
+                createAppointment(
+                    schedule = GetScheduleResponse.ScheduleBean(
+                        doctor = automaticAppointmentSetting.doctorId,
+                        division = automaticAppointmentSetting.roomId
+                    ),
+                    patient = checkIn.patient,
+                    isAutomaticAppointment = true,
+                    completion = completion
+                )
+
+            } catch (e: java.lang.Exception) {
+                Timber.e(e)
+            }
+        }
+    }
+
 
     fun cancelJobOnCardAbsent() {
         createAppointmentJob?.cancel()
@@ -524,6 +618,68 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         return sharedPreferencesRepo.language
     }
 
+    /** =======================================
+     *          Log Record functions
+     *  ======================================= */
+
+    private fun eventSendServerRepositoryInLogRepository() {
+        mainEventLogger.setServerRepoInAnalyticsRepository(serverRepo)
+    }
+
+    fun sendLogsFromLocalToServer() {
+        eventSendServerRepositoryInLogRepository()
+
+        viewModelScope.launch {
+            mainEventLogger.sendLogsFromLocalToServer()
+        }
+    }
+
+    fun eventUserInsertCard(result: Result<AcsResponseModel>) {
+        viewModelScope.launch {
+            mainEventLogger.logUserInsertTheCard(result)
+        }
+    }
+
+    private fun eventAppIsOpening() {
+        viewModelScope.launch {
+            mainEventLogger.logAppOpen(
+                sharedPreferencesRepo.closeAppEvent,
+                sessionNumber = sharedPreferencesRepo.sessionNumber
+            )
+        }
+    }
+
+    fun eventAppPrintsATicket(
+        divisions: Array<String>,
+        serialNumbers: Array<Int>,
+        doctors: Array<String>
+    ) {
+        viewModelScope.launch {
+            mainEventLogger.logAppPrintsATicket(
+                divisions.toList(),
+                serialNumbers.toList(),
+                doctors.toList()
+            )
+        }
+    }
+
+    private fun eventResponseGetPatient(response: GetPatientsResponse) {
+        viewModelScope.launch {
+            mainEventLogger.logResponseGetPatient(response)
+        }
+    }
+
+    private fun eventAppCreateAppointment(request: CreateAppointmentRequest) {
+        viewModelScope.launch {
+            mainEventLogger.logAppCreateAppointment(request)
+        }
+    }
+
+    private fun eventResponseCreateAppointment(response: CreateAppointmentResponse) {
+        viewModelScope.launch {
+            mainEventLogger.logResponseCreateAppointment(response)
+        }
+    }
 
     sealed class GetGuardianStatus {
         object Checking : GetGuardianStatus()
@@ -535,7 +691,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         object Checking : CheckInStatus()
         data class NotChecking(
             val response: GetPatientsResponse?,
-            val patient: CreateAppointmentRequest.Patient? = null
+            val patient: CreateAppointmentRequest.Patient? = null,
+            val isItManualInput: Boolean = false
         ) : CheckInStatus()
 
         data class Fail(val throwable: Throwable) : CheckInStatus()
@@ -543,7 +700,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     sealed class GetSchedulesStatus {
         object Checking : GetSchedulesStatus()
-        data class NotChecking(val response: GetScheduleResponse?) : GetSchedulesStatus()
+        data class NotChecking(
+            val response: GetScheduleResponse?,
+            val patient: CreateAppointmentRequest.Patient? = null
+        ) : GetSchedulesStatus()
+
         data class Fail(val throwable: Throwable) : GetSchedulesStatus()
     }
 
@@ -552,4 +713,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         data class NotChecking(val response: CreateAppointmentResponse?) : CreateAppointmentStatus()
         data class Fail(val throwable: Throwable) : CreateAppointmentStatus()
     }
+}
+
+@Suppress("UNCHECKED_CAST")
+class MainViewModelFactory(
+    private val application: Application,
+    private val mainEventLogger: MainEventLogger
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel> create(modelClass: Class<T>) =
+        (MainViewModel(application, mainEventLogger) as T)
 }

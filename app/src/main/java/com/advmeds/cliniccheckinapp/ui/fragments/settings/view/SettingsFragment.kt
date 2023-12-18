@@ -32,17 +32,23 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.SettingsFragmentBinding
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentMode
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
+import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepositoryImpl
 import com.advmeds.cliniccheckinapp.repositories.DownloadControllerRepository
+import com.advmeds.cliniccheckinapp.repositories.RoomRepositories
+import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter.LanguageAdapter
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.adapter.SettingsAdapter
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.eventLogger.SettingsEventLogger
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.model.LanguageModel
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.model.combineArrays
 import com.advmeds.cliniccheckinapp.ui.fragments.settings.viewModel.SettingsViewModel
@@ -94,9 +100,16 @@ class SettingsFragment : ListFragment() {
 
         val downloadController = DownloadController(requireContext().applicationContext)
         val downloadControllerRepository = DownloadControllerRepository(downloadController)
+
         val viewModelFactory = SettingsViewModelFactory(
             requireContext().applicationContext as Application,
-            downloadControllerRepository
+            downloadControllerRepository,
+            SettingsEventLogger(
+                AnalyticsRepositoryImpl.getInstance(
+                    RoomRepositories.eventsRepository,
+                    SharedPreferencesRepo.getInstance(requireContext())
+                )
+            )
         )
 
         viewModel = ViewModelProvider(this, viewModelFactory)[SettingsViewModel::class.java]
@@ -264,11 +277,21 @@ class SettingsFragment : ListFragment() {
             val checkInItemsForSave =
                 prepareCustomCheckInItemsForSaving(dialog = dialog, checkInItems = checkInItems)
 
-            viewModel.machineTitle =
+            val newMachineTitle =
                 dialog.ui_settings_dialog_input_field.editText?.text.toString().trim()
 
-            viewModel.checkInItemList =
-                EditCheckInItemDialog.toList(checkInItemsForSave)
+            viewModel.userChangeUiSetting(
+                "UI Setting",
+                viewModel.machineTitle,
+                EditCheckInItemDialog.toObject(viewModel.checkInItemList),
+                newMachineTitle,
+                checkInItemsForSave
+            )
+
+
+            viewModel.machineTitle = newMachineTitle
+
+            viewModel.checkInItemList = EditCheckInItemDialog.toList(checkInItemsForSave)
 
             dialog.dismiss()
         }
@@ -441,6 +464,14 @@ class SettingsFragment : ListFragment() {
                 try {
                     HttpUrl.get(domain)
 
+                    viewModel.userChangeDomainSetting(
+                        settingItemTitle = "Domain Setting",
+                        originalUrl = viewModel.mSchedulerServerDomain.first,
+                        originalSelect = viewModel.mSchedulerServerDomain.second,
+                        newUrl = domain,
+                        newSelect = selected
+                    )
+
                     viewModel.mSchedulerServerDomain = Pair(domain, selected)
                 } catch (e: Exception) {
                     AlertDialog.Builder(requireContext())
@@ -462,6 +493,11 @@ class SettingsFragment : ListFragment() {
             inputText = viewModel.orgId,
             onConfirmClick = { id ->
                 if (id.isNotBlank()) {
+                    viewModel.userChangeSettingItem(
+                        settingItemTitle = "Clinic ID",
+                        originalValue = viewModel.orgId,
+                        newValue = id
+                    )
                     viewModel.orgId = id
                 }
             })
@@ -477,6 +513,11 @@ class SettingsFragment : ListFragment() {
             showDescription = true,
             inputText = viewModel.doctors.joinToString(","),
             onConfirmClick = { doctors ->
+                viewModel.userChangeSettingItem(
+                    settingItemTitle = "Doctor ID",
+                    originalValue = viewModel.doctors.joinToString(","),
+                    newValue = doctors
+                )
                 viewModel.doctors = doctors.split(",").filter { it.isNotBlank() }.toSet()
             }
         )
@@ -491,26 +532,14 @@ class SettingsFragment : ListFragment() {
             inputTextLabel = inputTextLabel,
             inputText = viewModel.rooms.joinToString(","),
             onConfirmClick = { rooms ->
+                viewModel.userChangeSettingItem(
+                    settingItemTitle = "Division ID",
+                    originalValue = viewModel.rooms.joinToString(","),
+                    newValue = rooms
+                )
                 viewModel.rooms = rooms.split(",").filter { it.isNotBlank() }.toSet()
             })
     }
-
-//    private fun onSetPanelModeItemClicked() {
-//
-//        val hint = requireContext().getString(R.string.customize_url_hint)
-//
-//        showTextInputDialog(
-//            titleResId = R.string.clinic_panel_url,
-//            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI,
-//            hint = hint,
-//            inputTextLabel = "",
-//            inputText = viewModel.clinicPanelUrl
-//        ) { clinicPanelUrl ->
-//            if (clinicPanelUrl.isNotBlank()) {
-//                viewModel.clinicPanelUrl = clinicPanelUrl
-//            }
-//        }
-//    }
 
     private fun onSetFormatCheckedListItemClicked() {
         val choiceItems = CreateAppointmentRequest.NationalIdFormat.values()
@@ -554,10 +583,16 @@ class SettingsFragment : ListFragment() {
             inputText = viewModel.deptId.joinToString(","),
             showDescription = true,
             onConfirmClick = { id ->
+                viewModel.userChangeSettingItem(
+                    settingItemTitle = "Room ID",
+                    originalValue = viewModel.deptId.joinToString(","),
+                    newValue = id
+                )
                 if (id.isNotBlank()) {
                     viewModel.deptId = id.split(",").filter { it.isNotBlank() }.toSet()
                 }
-            })
+            }
+        )
     }
 
     private fun showTextInputDialog(
@@ -689,11 +724,19 @@ class SettingsFragment : ListFragment() {
             val qbsDomain = dialog.et_qbs_irl_input.editText?.text.toString().trim()
 
             try {
-                HttpUrl.get(qbsDomain)
+                if (qbsIsEnable) {
+                    HttpUrl.get(qbsDomain)
+                }
 
                 val queueingMachineSettingModelForSave = QueuingBoardSettingModel(
                     isEnabled = qbsIsEnable,
-                    url = qbsDomain
+                    url = if (qbsIsEnable) qbsDomain else ""
+                )
+
+                viewModel.userChangeQueueingBoardSetting(
+                    settingItemTitle = "Queueing Board Setting",
+                    originalValue = viewModel.queueingBoardSettings,
+                    newValue = queueingMachineSettingModelForSave
                 )
 
                 viewModel.queueingBoardSettings = queueingMachineSettingModelForSave
@@ -766,6 +809,12 @@ class SettingsFragment : ListFragment() {
             if (queueingMachineSettingModelForSave.isSame(viewModel.queueingMachineSettings))
                 return@setOnClickListener
 
+            viewModel.userChangeQueueingMachineSetting(
+                settingItemTitle = "Queueing Machine Setting",
+                originalValue = viewModel.queueingMachineSettings,
+                newValue = queueingMachineSettingModelForSave
+            )
+
             viewModel.queueingMachineSettings = queueingMachineSettingModelForSave
         }
 
@@ -807,7 +856,6 @@ class SettingsFragment : ListFragment() {
 
 
     private fun onSetAutomaticAppointmentSettingItemClicked() {
-
         dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.automatic_appointment_setting_dialog)
 
@@ -821,10 +869,20 @@ class SettingsFragment : ListFragment() {
 
         dialog.automatic_appointment_setting_switcher.isChecked =
             automaticAppointmentSettingModel.isEnabled
-        dialog.automatic_appointment_automatic_check_in.isChecked =
-            automaticAppointmentSettingModel.autoCheckIn
-        dialog.automatic_appointment_setting_container.isGone =
+
+        dialog.automatic_appointment_radio_group.isGone =
             !automaticAppointmentSettingModel.isEnabled
+
+        dialog.automatic_appointment_setting_container.isGone =
+            !(automaticAppointmentSettingModel.isEnabled &&
+                    (automaticAppointmentSettingModel.mode == AutomaticAppointmentMode.SINGLE_MODE))
+
+        when (automaticAppointmentSettingModel.mode) {
+            AutomaticAppointmentMode.SINGLE_MODE ->
+                dialog.automatic_appointment_radio_group.check(R.id.automatic_appointment_single_mode)
+            AutomaticAppointmentMode.MULTIPLE_MODE ->
+                dialog.automatic_appointment_radio_group.check(R.id.automatic_appointment_multiple_mode)
+        }
 
         dialog.automatic_appointment_doctor_input_field.editText?.setText(
             automaticAppointmentSettingModel.doctorId
@@ -835,8 +893,28 @@ class SettingsFragment : ListFragment() {
 
 
         dialog.automatic_appointment_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
-            dialog.automatic_appointment_setting_container.isGone = !isChecked
+            dialog.automatic_appointment_radio_group.isGone = !isChecked
+
+            val isContainerVisible = isChecked && dialog.automatic_appointment_single_mode.isChecked
+
+            dialog.automatic_appointment_setting_container.isGone = !isContainerVisible
         }
+
+        dialog.automatic_appointment_radio_group.setOnCheckedChangeListener(
+            RadioGroup.OnCheckedChangeListener { _, checkedId ->
+                if (!dialog.automatic_appointment_setting_switcher.isChecked) {
+                    return@OnCheckedChangeListener
+                }
+
+                when (checkedId) {
+                    R.id.automatic_appointment_single_mode -> dialog.automatic_appointment_setting_container.visibility =
+                        View.VISIBLE
+                    R.id.automatic_appointment_multiple_mode -> dialog.automatic_appointment_setting_container.visibility =
+                        View.GONE
+                }
+            }
+        )
+
 
         dialog.automatic_appointment_doctor_input_field.editText?.doOnTextChanged { inputText, _, _, _ ->
             if (inputText.toString().isNotEmpty())
@@ -864,15 +942,33 @@ class SettingsFragment : ListFragment() {
 
         saveButton.setOnClickListener {
             val isEnable = dialog.automatic_appointment_setting_switcher.isChecked
-            val autoCheck = dialog.automatic_appointment_automatic_check_in.isChecked
+            val mode =
+                if (dialog.automatic_appointment_single_mode.isChecked) AutomaticAppointmentMode.SINGLE_MODE
+                else AutomaticAppointmentMode.MULTIPLE_MODE
 
             if (isEnable) {
-
                 val doctors =
                     dialog.automatic_appointment_doctor_input_field.editText?.text.toString()
                 val rooms = dialog.automatic_appointment_room_input_field.editText?.text.toString()
 
-                if (doctors.isBlank() || rooms.isBlank()) {
+                if ((doctors.isNotBlank() && rooms.isNotBlank()) || mode == AutomaticAppointmentMode.MULTIPLE_MODE) {
+                    val newAutomaticAppointment = AutomaticAppointmentSettingModel(
+                        isEnabled = true,
+                        mode = mode,
+                        doctorId = doctors,
+                        roomId = rooms
+                    )
+
+                    viewModel.userChangeAutomaticAppointmentSetting(
+                        settingItemTitle = "Automatic Appointment",
+                        originalValue = viewModel.automaticAppointmentSetting,
+                        newValue = newAutomaticAppointment
+                    )
+
+                    viewModel.automaticAppointmentSetting = newAutomaticAppointment
+
+                    dialog.dismiss()
+                } else {
                     if (doctors.isBlank()) {
                         dialog.automatic_appointment_doctor_input_field.error =
                             getString(R.string.automatic_appointment_setting_error_empty_field)
@@ -882,27 +978,22 @@ class SettingsFragment : ListFragment() {
                         dialog.automatic_appointment_room_input_field.error =
                             getString(R.string.automatic_appointment_setting_error_empty_field)
                     }
-                } else {
-
-                    viewModel.automaticAppointmentSetting = AutomaticAppointmentSettingModel(
-                        isEnabled = true,
-                        doctorId = doctors,
-                        roomId = rooms,
-                        autoCheckIn = autoCheck
-                    )
-
-                    dialog.dismiss()
                 }
-
-
             } else {
-
-                viewModel.automaticAppointmentSetting = AutomaticAppointmentSettingModel(
+                val newAutomaticAppointment = AutomaticAppointmentSettingModel(
                     isEnabled = false,
+                    mode = AutomaticAppointmentMode.SINGLE_MODE,
                     doctorId = "",
-                    roomId = "",
-                    autoCheckIn = autoCheck
+                    roomId = ""
                 )
+
+                viewModel.userChangeAutomaticAppointmentSetting(
+                    settingItemTitle = "Automatic Appointment",
+                    originalValue = viewModel.automaticAppointmentSetting,
+                    newValue = newAutomaticAppointment
+                )
+
+                viewModel.automaticAppointmentSetting = newAutomaticAppointment
 
                 dialog.dismiss()
             }
@@ -947,6 +1038,13 @@ class SettingsFragment : ListFragment() {
         saveButton.setOnClickListener {
             if (currentLanguage != viewModel.language) {
                 (requireActivity() as MainActivity).setLanguage(language = currentLanguage)
+
+                viewModel.userChangeSettingItem(
+                    settingItemTitle = "Language Setting",
+                    originalValue = viewModel.language,
+                    newValue = currentLanguage
+                )
+
                 viewModel.language = currentLanguage
                 setupUI()
             }
@@ -1007,23 +1105,46 @@ class SettingsFragment : ListFragment() {
             dialog.update_software_dialog_ok_btn.setOnClickListener {
                 dialog.dismiss()
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    if (!havePermissionForInstallUnknownApp)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (!havePermissionForInstallUnknownApp) {
                         (requireContext() as MainActivity).getInstallUnknownApkPermission()
-
-                if (!havePermissionForInstallUnknownApp)
+                    }
+                }
+                if (!havePermissionForInstallUnknownApp) {
                     return@setOnClickListener
+                }
 
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
-                    if (!haveWriteExternalStoragePermission)
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    if (!haveWriteExternalStoragePermission) {
                         (requireContext() as MainActivity).getWriteExternalStoragePermission()
-
+                    }
+                }
             }
+
+            val permissions = mutableListOf<String>()
+
+            if (!havePermissionForInstallUnknownApp) {
+                permissions.add("Install Unknown App Permission")
+            }
+
+            if (!haveWriteExternalStoragePermission) {
+                permissions.add("Write External Storage Permission")
+            }
+
+            viewModel.userSelectSoftwareUpdateSetting(
+                "Update Software: permission",
+                permissions = permissions
+            )
         } else {
 
             Log.d("check---", "onSetSoftwareUpdateSettingItemClicked: ${stateFlowJob?.isActive}")
-            if (stateFlowJob?.isActive != true)
+            if (stateFlowJob?.isActive != true) {
                 viewModel.checkForUpdates()
+                viewModel.userSelectSoftwareUpdateSetting(
+                    settingItemTitle = "Update Software: check update",
+                    currentVersion = BuildConfig.VERSION_NAME
+                )
+            }
 
             stateFlowJob = lifecycleScope.launch(Dispatchers.Main) {
                 viewModel.uiState.collect { uiState ->
@@ -1064,6 +1185,7 @@ class SettingsFragment : ListFragment() {
     }
 
     private fun onSetOpenSystemSettingsItemClicked() {
+        viewModel.userOpenDeviceSetting()
         startActivity(Intent(Settings.ACTION_SETTINGS))
     }
 
@@ -1071,6 +1193,7 @@ class SettingsFragment : ListFragment() {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.exit_app)
             .setPositiveButton(R.string.dialog_ok_button) { _, _ ->
+                viewModel.userCloseApplication()
                 requireActivity().finishAndRemoveTask()
             }
             .setNegativeButton(R.string.cancel, null)
@@ -1128,6 +1251,13 @@ class SettingsFragment : ListFragment() {
             } else {
                 list.remove(title)
             }
+
+            viewModel.userChangeCheckedListSetting(
+                settingItemTitle = "Format Check in Setting",
+                originalValue = viewModel.formatCheckedList,
+                newValue = list
+            )
+
             viewModel.formatCheckedList = list
         }
 

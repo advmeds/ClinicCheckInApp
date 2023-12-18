@@ -11,4 +11,9 @@
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">@dimen/font_size_h5</item>
     </style>
+
+    <style name="RoundButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerRadius">50dp</item>
+    </style>
 </resources>
