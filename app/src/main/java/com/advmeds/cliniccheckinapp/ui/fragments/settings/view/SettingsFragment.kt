@@ -541,23 +541,6 @@ class SettingsFragment : ListFragment() {
             })
     }
 
-//    private fun onSetPanelModeItemClicked() {
-//
-//        val hint = requireContext().getString(R.string.customize_url_hint)
-//
-//        showTextInputDialog(
-//            titleResId = R.string.clinic_panel_url,
-//            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI,
-//            hint = hint,
-//            inputTextLabel = "",
-//            inputText = viewModel.clinicPanelUrl
-//        ) { clinicPanelUrl ->
-//            if (clinicPanelUrl.isNotBlank()) {
-//                viewModel.clinicPanelUrl = clinicPanelUrl
-//            }
-//        }
-//    }
-
     private fun onSetFormatCheckedListItemClicked() {
         val choiceItems = CreateAppointmentRequest.NationalIdFormat.values()
         val checkedItems = choiceItems.map { viewModel.formatCheckedList.contains(it) }
@@ -887,9 +870,6 @@ class SettingsFragment : ListFragment() {
         dialog.automatic_appointment_setting_switcher.isChecked =
             automaticAppointmentSettingModel.isEnabled
 
-        dialog.automatic_appointment_automatic_check_in.isChecked =
-            automaticAppointmentSettingModel.autoCheckIn
-
         dialog.automatic_appointment_radio_group.isGone =
             !automaticAppointmentSettingModel.isEnabled
 
@@ -962,7 +942,6 @@ class SettingsFragment : ListFragment() {
 
         saveButton.setOnClickListener {
             val isEnable = dialog.automatic_appointment_setting_switcher.isChecked
-            val autoCheck = dialog.automatic_appointment_automatic_check_in.isChecked
             val mode =
                 if (dialog.automatic_appointment_single_mode.isChecked) AutomaticAppointmentMode.SINGLE_MODE
                 else AutomaticAppointmentMode.MULTIPLE_MODE
@@ -977,8 +956,7 @@ class SettingsFragment : ListFragment() {
                         isEnabled = true,
                         mode = mode,
                         doctorId = doctors,
-                        roomId = rooms,
-                        autoCheckIn = autoCheck
+                        roomId = rooms
                     )
 
                     viewModel.userChangeAutomaticAppointmentSetting(
@@ -1006,8 +984,7 @@ class SettingsFragment : ListFragment() {
                     isEnabled = false,
                     mode = AutomaticAppointmentMode.SINGLE_MODE,
                     doctorId = "",
-                    roomId = "",
-                    autoCheckIn = autoCheck
+                    roomId = ""
                 )
 
                 viewModel.userChangeAutomaticAppointmentSetting(

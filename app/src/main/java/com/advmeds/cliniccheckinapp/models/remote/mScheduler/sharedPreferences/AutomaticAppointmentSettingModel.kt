@@ -8,7 +8,7 @@ data class AutomaticAppointmentSettingModel(
     val mode: AutomaticAppointmentMode,
     val doctorId: String,
     val roomId: String,
-    val autoCheckIn: Boolean
+    val autoCheckIn: Boolean = true
 )
 
 @Serializable

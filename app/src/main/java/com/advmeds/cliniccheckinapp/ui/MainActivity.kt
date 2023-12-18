@@ -555,39 +555,42 @@ class MainActivity : AppCompatActivity() {
 
                             when (apiError) {
                                 ApiError.APPOINTMENT_NOT_FOUND -> {
-
                                     if (automaticAppointmentData.isEnabled) {
                                         if (it.isItManualInput) {
+                                            ErrorDialogFragment(
+                                                title = getString(R.string.fail_to_check),
+                                                message = getString(apiError.resStringID),
+                                                onActionButtonClicked = null
+                                            )
+                                        } else {
+                                            if (automaticAppointmentData.mode == AutomaticAppointmentMode.MULTIPLE_MODE) {
+                                                viewModel.getSchedule(patient = it.patient)
+                                            } else {
+                                                createAppointment(
+                                                    schedule = GetScheduleResponse.ScheduleBean(
+                                                        doctor = automaticAppointmentData.doctorId,
+                                                        division = automaticAppointmentData.roomId
+                                                    ),
+                                                    patient = it.patient,
+                                                    isAutomaticAppointment = true,
+                                                    completion = { createAppointmentResponse ->
+                                                        soundPool.play(
+                                                            if (createAppointmentResponse.success) {
+                                                                successSoundId
+                                                            } else {
+                                                                failSoundId
+                                                            },
+                                                            1f,
+                                                            1f,
+                                                            0,
+                                                            0,
+                                                            1f
+                                                        )
+                                                    }
+                                                )
+                                            }
                                             return@observe
                                         }
-                                        if (automaticAppointmentData.mode == AutomaticAppointmentMode.MULTIPLE_MODE) {
-                                            viewModel.getSchedule(patient = it.patient)
-                                        } else {
-                                            createAppointment(
-                                                isCheckIn = automaticAppointmentData.autoCheckIn,
-                                                schedule = GetScheduleResponse.ScheduleBean(
-                                                    doctor = automaticAppointmentData.doctorId,
-                                                    division = automaticAppointmentData.roomId
-                                                ),
-                                                patient = it.patient,
-                                                isAutomaticAppointment = true,
-                                                completion = { createAppointmentResponse ->
-                                                    soundPool.play(
-                                                        if (createAppointmentResponse.success) {
-                                                            successSoundId
-                                                        } else {
-                                                            failSoundId
-                                                        },
-                                                        1f,
-                                                        1f,
-                                                        0,
-                                                        0,
-                                                        1f
-                                                    )
-                                                }
-                                            )
-                                        }
-                                        return@observe
                                     } else {
                                         ErrorDialogFragment(
                                             title = getString(R.string.fail_to_check),
@@ -1377,7 +1380,7 @@ class MainActivity : AppCompatActivity() {
 
     /** Do not have NHI Card, manual check in */
     private fun createAppointment(
-        isCheckIn: Boolean,
+        isCheckIn: Boolean = true,
         schedule: GetScheduleResponse.ScheduleBean,
         patient: CreateAppointmentRequest.Patient? = null,
         isAutomaticAppointment: Boolean = false,
@@ -1394,7 +1397,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.createAppointment(
-            isCheckIn = isCheckIn,
             schedule = schedule,
             patient = patient,
             isAutomaticAppointment = isAutomaticAppointment,

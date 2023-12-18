@@ -395,8 +395,7 @@ class SharedPreferencesRepo(
                     isEnabled = false,
                     mode = AutomaticAppointmentMode.SINGLE_MODE,
                     doctorId = "",
-                    roomId = "",
-                    autoCheckIn = true
+                    roomId = ""
                 )
             }
 

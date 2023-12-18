@@ -406,7 +406,6 @@ class MainViewModel(
     }
 
     fun createAppointment(
-        isCheckIn: Boolean,
         schedule: GetScheduleResponse.ScheduleBean,
         patient: CreateAppointmentRequest.Patient? = null,
         isAutomaticAppointment: Boolean = false,
@@ -567,7 +566,6 @@ class MainViewModel(
                 }
 
                 createAppointment(
-                    isCheckIn = automaticAppointmentSetting.autoCheckIn,
                     schedule = GetScheduleResponse.ScheduleBean(
                         doctor = automaticAppointmentSetting.doctorId,
                         division = automaticAppointmentSetting.roomId
