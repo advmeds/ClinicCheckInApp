@@ -9,7 +9,7 @@
     android:paddingEnd="@dimen/dialog_screen_padding">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="0dp"
+        android:layout_width="@dimen/auto_appointment_dialog_width"
         android:layout_height="wrap_content"
         android:translationZ="4dp"
         app:cardCornerRadius="10dp"

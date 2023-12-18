@@ -43,6 +43,8 @@
 
     <item name="font_size_h4_float" format="float" type="dimen">15.0</item>
 
+    <dimen name="auto_appointment_dialog_width">500dp</dimen>
+
     <!-- Home Page -->
     <dimen name="check_in_item_vertical_icon_size">100dp</dimen>
 

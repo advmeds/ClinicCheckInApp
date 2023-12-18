@@ -874,7 +874,6 @@ class MainActivity : AppCompatActivity() {
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 )
             } catch (e: ActivityNotFoundException) {
-                Log.d("check---", e.message!!)
             }
         } else {
             val installIntent = Intent(Intent.ACTION_VIEW)

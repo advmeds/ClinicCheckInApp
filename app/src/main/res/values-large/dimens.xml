@@ -37,6 +37,7 @@
     <dimen name="space_very_huge">50dp</dimen>
     <dimen name="space_grand">75dp</dimen>
 
+    <dimen name="auto_appointment_dialog_width">800dp</dimen>
 
     <!-- Home Page -->
     <dimen name="check_in_item_vertical_icon_size">150dp</dimen>
