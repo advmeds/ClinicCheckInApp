@@ -72,7 +72,7 @@ class HomeViewModel(
      *          Log Record functions
      *  ======================================= */
 
-    fun openSettingScreen() {
+    fun eventOpenSettingScreen() {
         viewModelScope.launch {
             homeEventLogger.logUserOpenSettingsScreen()
         }

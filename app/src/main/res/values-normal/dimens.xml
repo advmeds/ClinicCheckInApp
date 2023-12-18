@@ -19,6 +19,8 @@
     <!-- Settings Icon -->
     <dimen name="settings_icon_size">12dp</dimen>
     <dimen name="settings_icon_margin">2dp</dimen>
+    <dimen name="icon_click_area">7dp</dimen>
+
 
 
     <!-- Font -->

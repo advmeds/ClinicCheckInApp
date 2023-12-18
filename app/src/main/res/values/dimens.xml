@@ -13,8 +13,10 @@
     <dimen name="logo_image_margin">10dp</dimen>
 
     <!-- Settings Icon -->
+    <!-- screen_padding + screen_panel_margin == settings_icon_size + settings_icon_margin -->
     <dimen name="settings_icon_size">35dp</dimen>
     <dimen name="settings_icon_margin">5dp</dimen>
+    <dimen name="icon_click_area">20dp</dimen>
 
     <!-- Font -->
     <dimen name="font_size_h1">60sp</dimen>

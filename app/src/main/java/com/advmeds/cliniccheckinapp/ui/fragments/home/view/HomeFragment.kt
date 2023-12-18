@@ -148,7 +148,7 @@ class HomeFragment : Fragment() {
                 onConfirmClick = {
                     if (it == viewModel.password) {
                         findNavController().navigate(R.id.settingsFragment)
-                        viewModel.openSettingScreen()
+                        viewModel.eventOpenSettingScreen()
                     } else {
                         Toast.makeText(
                             requireContext(),
