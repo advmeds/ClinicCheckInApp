@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -86,6 +87,23 @@ class ScheduleListDialogFragment(
                     restartCounter()
 
                     binding.listContainer.isGone = true
+
+                    val cardViewPartParams = LinearLayoutCompat.LayoutParams(
+                        0,
+                        LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                        1.3f
+                    )
+
+                    binding.cardView.layoutParams = cardViewPartParams
+
+                    val verticalLinearPartParams = LinearLayoutCompat.LayoutParams(
+                        LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                        0,
+                        5f
+                    )
+
+                    binding.linearLayoutForVertical.layoutParams = verticalLinearPartParams
+
                     binding.detailContainer.isGone = false
                     binding.fragmentTitleTv.setText(R.string.automatic_appointment_title_detail)
 
@@ -130,6 +148,24 @@ class ScheduleListDialogFragment(
             restartCounter()
 
             binding.listContainer.isGone = false
+
+            val cardViewPartParams = LinearLayoutCompat.LayoutParams(
+                0,
+                LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                3f
+            )
+
+            binding.cardView.layoutParams = cardViewPartParams
+
+
+            val verticalLinearPartParams = LinearLayoutCompat.LayoutParams(
+                LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                0,
+                7f
+            )
+
+            binding.linearLayoutForVertical.layoutParams = verticalLinearPartParams
+
             binding.detailContainer.isGone = true
             binding.fragmentTitleTv.setText(R.string.automatic_appointment_title_list)
 
@@ -198,13 +234,7 @@ class ScheduleListDialogFragment(
         var delegate: SchedulesAdapterDelegate? = null
     ) : RecyclerView.Adapter<SchedulesAdapter.ScheduleViewHolder>() {
 
-        /** 使用者觸發的交互動作 */
         interface SchedulesAdapterDelegate {
-
-            /**
-             * 點擊圖片時觸發該方法
-             * @param item 被點擊的單詞
-             */
             fun onItemClicked(item: GetScheduleResponse.ScheduleBean)
         }
 
@@ -264,6 +294,9 @@ class ScheduleListDialogFragment(
             holder.bind(schedule)
 
             if (schedule.status == 0) {
+                holder.binding.status.setOnClickListener {
+                    delegate?.onItemClicked(schedule)
+                }
                 holder.binding.automaticAppointmentItemCardView.setOnClickListener {
                     delegate?.onItemClicked(schedule)
                 }

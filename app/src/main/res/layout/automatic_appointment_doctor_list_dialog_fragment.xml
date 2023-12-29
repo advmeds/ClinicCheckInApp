@@ -1,207 +1,251 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:paddingStart="@dimen/dialog_screen_padding"
-    android:paddingEnd="@dimen/dialog_screen_padding">
+    android:orientation="vertical"
+    android:clipToPadding="false">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="@dimen/auto_appointment_dialog_width"
-        android:layout_height="wrap_content"
-        android:translationZ="4dp"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingVertical="@dimen/space_medium">
+    <LinearLayout
+        android:id="@+id/linearLayoutForVertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/fragment_title_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:fontFamily="sans-serif-medium"
-                android:text="@string/automatic_appointment_title_list"
-                android:textAlignment="center"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/font_size_h3" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_view"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:translationZ="4dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
-                android:id="@+id/list_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:visibility="visible"
-                tools:visibility="gone">
+                android:paddingVertical="@dimen/space_medium">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/fragment_message_tv"
+                    android:id="@+id/fragment_title_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/space_medium"
                     android:fontFamily="sans-serif-medium"
-                    android:text="@string/automatic_appointment_prompt"
+                    android:text="@string/automatic_appointment_title_list"
                     android:textAlignment="center"
-                    android:textColor="@color/schedule_toggle_text_color"
-                    android:textSize="@dimen/font_size_h4" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/schedules_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/font_size_h3" />
 
                 <LinearLayout
-                    android:id="@+id/action_buttons_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:orientation="horizontal">
+                    android:id="@+id/list_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="visible"
+                    tools:visibility="gone">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/cancel_button"
-                        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/fragment_message_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingStart="@dimen/space_huge"
-                        android:paddingTop="@dimen/space_medium"
-                        android:paddingEnd="@dimen/space_huge"
-                        android:paddingBottom="@dimen/space_medium"
-                        android:text="@string/automatic_appointment_cancel"
-                        android:textAllCaps="false"
-                        android:textSize="@dimen/font_size_h4"
-                        app:cornerRadius="16dp"
-                        app:elevation="0dp" />
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/space_medium"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/automatic_appointment_prompt"
+                        android:textAlignment="center"
+                        android:textColor="@color/schedule_toggle_text_color"
+                        android:textSize="@dimen/font_size_h4" />
 
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/detail_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <LinearLayout
-                    android:layout_width="@dimen/doctor_detail_item_size"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/space_medium"
-                    android:background="@drawable/shape_for_linear_layout"
-                    android:padding="@dimen/space_medium"
-                    android:orientation="horizontal">
-
-                    <FrameLayout
-                        android:id= "@+id/frame_layout"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content" >
-
-                        <ImageView
-                            android:id="@+id/detail_image_view"
-                            android:layout_width="@dimen/doctor_list_item_image_size"
-                            android:layout_height="@dimen/doctor_list_item_image_size"
-                            android:layout_margin="10dp"
-                            android:src="@drawable/doctor_photo_placeholder"
-                            android:layout_gravity="center"
-                            android:scaleType="centerCrop"/>
-
-                    </FrameLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/schedules_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:id="@+id/action_buttons_layout"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="@dimen/space_medium"
-                        android:layout_gravity="center"
-                        android:gravity="center_vertical">
+                        android:layout_gravity="center_horizontal"
+                        android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/detail_doctor_name"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/cancel_button"
+                            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/space_small"
-                            android:text="鄭英傑"
-                            android:gravity="center_vertical"
-                            android:lines="1"
+                            android:paddingStart="@dimen/space_huge"
+                            android:paddingTop="@dimen/space_medium"
+                            android:paddingEnd="@dimen/space_huge"
+                            android:paddingBottom="@dimen/space_medium"
+                            android:text="@string/automatic_appointment_cancel"
+                            android:textAllCaps="false"
                             android:textSize="@dimen/font_size_h4"
-                            android:textColor="@color/black"
-                            android:textStyle="bold"
-                            />
+                            app:cornerRadius="16dp"
+                            app:elevation="0dp" />
 
-                        <TextView
-                            android:id="@+id/detail_division_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:lines="1"
-                            android:gravity="center_vertical"
-                            android:textSize="@dimen/font_size_h5"
-                            android:text="家醫科"/>
                     </LinearLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="@dimen/doctor_detail_item_size"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:paddingHorizontal="@dimen/space_normal"
-                    android:orientation="horizontal">
+                    android:id="@+id/detail_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/redo_button"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/space_small"
-                        android:paddingStart="@dimen/space_big"
-                        android:paddingTop="@dimen/space_small"
-                        android:paddingEnd="@dimen/space_huge"
-                        android:paddingBottom="@dimen/space_small"
-                        android:text="@string/automatic_appointment_redo"
-                        android:textAllCaps="false"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/font_size_h4"
-                        app:cornerRadius="16dp"
-                        app:elevation="0dp"
-                        app:strokeColor="@color/doctor_list_dialog_gray_300" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/confirm_button"
-                        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
+
+                    <LinearLayout
+                        android:layout_width="@dimen/doctor_detail_item_size"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/space_medium"
-                        android:paddingStart="@dimen/space_big"
-                        android:paddingTop="@dimen/space_small"
-                        android:paddingEnd="@dimen/space_big"
-                        android:paddingBottom="@dimen/space_small"
-                        android:text="@string/automatic_appointment_confirm"
-                        android:textAllCaps="false"
-                        android:textSize="@dimen/font_size_h4"
-                        app:cornerRadius="16dp"
-                        app:elevation="0dp" />
+                        android:layout_marginVertical="@dimen/space_medium"
+                        android:background="@drawable/shape_for_linear_layout"
+                        android:padding="@dimen/space_medium"
+                        android:orientation="horizontal">
+
+                        <FrameLayout
+                            android:id= "@+id/frame_layout"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content" >
+
+                            <ImageView
+                                android:id="@+id/detail_image_view"
+                                android:layout_width="@dimen/doctor_list_item_image_size"
+                                android:layout_height="@dimen/doctor_list_item_image_size"
+                                android:layout_margin="10dp"
+                                android:src="@drawable/doctor_photo_placeholder"
+                                android:layout_gravity="center"
+                                android:scaleType="centerCrop"/>
+
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginStart="@dimen/space_medium"
+                            android:layout_gravity="center"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/detail_doctor_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/space_small"
+                                android:text="鄭英傑"
+                                android:gravity="center_vertical"
+                                android:lines="1"
+                                android:textSize="@dimen/font_size_h4"
+                                android:textColor="@color/black"
+                                android:textStyle="bold"
+                                />
+
+                            <TextView
+                                android:id="@+id/detail_division_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:lines="1"
+                                android:gravity="center_vertical"
+                                android:textSize="@dimen/font_size_h5"
+                                android:text="家醫科"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
+
+                    <LinearLayout
+                        android:layout_width="@dimen/doctor_detail_item_size"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="@dimen/space_medium"
+                        android:paddingHorizontal="@dimen/space_normal"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/redo_button"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/space_small"
+                            android:paddingStart="@dimen/space_big"
+                            android:paddingTop="@dimen/space_small"
+                            android:paddingEnd="@dimen/space_huge"
+                            android:paddingBottom="@dimen/space_small"
+                            android:text="@string/automatic_appointment_redo"
+                            android:textAllCaps="false"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/font_size_h4"
+                            app:cornerRadius="16dp"
+                            app:elevation="0dp"
+                            app:strokeColor="@color/doctor_list_dialog_gray_300" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/confirm_button"
+                            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/space_medium"
+                            android:paddingStart="@dimen/space_big"
+                            android:paddingTop="@dimen/space_small"
+                            android:paddingEnd="@dimen/space_big"
+                            android:paddingBottom="@dimen/space_small"
+                            android:text="@string/automatic_appointment_confirm"
+                            android:textAllCaps="false"
+                            android:textSize="@dimen/font_size_h4"
+                            app:cornerRadius="16dp"
+                            app:elevation="0dp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
-
             </LinearLayout>
-        </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"/>
+
+</LinearLayout>

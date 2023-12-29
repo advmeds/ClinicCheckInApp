@@ -373,6 +373,15 @@ class MainActivity : AppCompatActivity() {
         setOnCreate()
 
         sendLocalLogsToServer()
+
+        lifecycleScope.launch {
+            delay(10000)
+            getPatients(
+                nationalId = "A123456789",
+                birth = "",
+                name = "test1"
+            )
+        }
     }
 
     private fun sendLocalLogsToServer() {
