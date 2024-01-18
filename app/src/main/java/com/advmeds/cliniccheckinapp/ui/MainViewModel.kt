@@ -65,6 +65,37 @@ class MainViewModel(
     val queueingBoardSettingIsEnable: Boolean
         get() = sharedPreferencesRepo.queueingBoardSettingIsEnable
 
+    var clinicName: String
+        get() {
+            val clinicNames = sharedPreferencesRepo.clinicNames
+            return clinicNames["${domainId}_${sharedPreferencesRepo.orgId}"] ?: ""
+        }
+        set(value) {
+            if (value.isBlank()) {
+                return
+            }
+
+            val clinicNames = sharedPreferencesRepo.clinicNames
+            clinicNames["${domainId}_${sharedPreferencesRepo.orgId}"] = value
+            sharedPreferencesRepo.clinicNames = clinicNames
+        }
+
+    private var domainId: String
+        get() {
+            val domainList = sharedPreferencesRepo.domainsList
+            return domainList.indexOf(sharedPreferencesRepo.mSchedulerServerDomain.first).toString()
+        }
+        set(value) {
+            var domainList = sharedPreferencesRepo.domainsList
+
+            val index = domainList.indexOf(value)
+
+            if (index < 0) {
+                domainList += value
+                sharedPreferencesRepo.domainsList = domainList
+            }
+        }
+
     val automaticAppointmentSetting: AutomaticAppointmentSettingModel
         get() = sharedPreferencesRepo.automaticAppointmentSetting
 
@@ -116,7 +147,7 @@ class MainViewModel(
     private var getSchedulesJob: Job? = null
     private var createAppointmentJob: Job? = null
 
-    val clinicGuardian = MutableLiveData<GetClinicGuardianResponse?>()
+    private val clinicGuardian = MutableLiveData<GetClinicGuardianResponse?>()
     private var patient: CreateAppointmentRequest.Patient? = null
 
     fun getClinicGuardian(completion: ((GetClinicGuardianResponse) -> Unit)? = null) {
@@ -143,7 +174,9 @@ class MainViewModel(
 
                 if (result.isSuccessful) {
                     result.body()!!.also {
+                        updateDomainList()
                         sharedPreferencesRepo.logoUrl = it.logo
+                        clinicName = it.name
                     }
                 } else {
                     GetClinicGuardianResponse(
@@ -198,6 +231,10 @@ class MainViewModel(
         }
     }
 
+    private fun updateDomainList() {
+        domainId = sharedPreferencesRepo.mSchedulerServerDomain.first
+    }
+
     fun getPatients(
         patient: CreateAppointmentRequest.Patient,
         isItManualInput: Boolean = false,
@@ -214,17 +251,6 @@ class MainViewModel(
 
         checkJob = viewModelScope.launch {
             val application = getApplication<MainApplication>()
-
-            if (clinicGuardian.value == null) {
-                checkInStatus.value = CheckInStatus.NotChecking(
-                    response = GetPatientsResponse(
-                        success = false,
-                        code = 0,
-                        _message = NativeText.Resource(R.string.clinic_data_not_found)
-                    )
-                )
-                return@launch
-            }
 
             val formatCheckedList = sharedPreferencesRepo.formatCheckedList
 

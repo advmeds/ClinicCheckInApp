@@ -95,6 +95,12 @@ class SharedPreferencesRepo(
         /** SharedPreferences『CLOSE APP ACTION EVENT』KEY */
         const val CLOSE_APP_ACTION_EVENT = "close_app_action_event"
 
+        /** SharedPreferences『CLINIC'S NAMES』KEY */
+        const val CLINIC_NAMES = "clinic_names"
+
+        /** SharedPreferences『DOMAIN'S LIST』KEY */
+        const val DOMAIN_LIST = "domain_list"
+
         /** 以Volatile註解表示此INSTANCE變數僅會在主記憶體中讀寫，可避免進入cache被不同執行緒讀寫而造成問題 */
         @Volatile
         private var INSTANCE: SharedPreferencesRepo? = null
@@ -520,6 +526,41 @@ class SharedPreferencesRepo(
                 .putString(CLOSE_APP_ACTION_EVENT, json)
                 .apply()
 
+        }
+
+    var clinicNames: MutableMap<String, String>
+        get() {
+            val json = sharedPreferences.getString(CLINIC_NAMES, "") ?: ""
+
+            if (json.isBlank()) {
+                return mutableMapOf()
+            }
+
+            return Json.decodeFromString(json)
+        }
+        set(value) {
+            val json = Json.encodeToString(value)
+            sharedPreferences.edit()
+                .putString(CLINIC_NAMES, json)
+                .apply()
+        }
+
+    var domainsList: Array<String>
+        get() {
+            val json = sharedPreferences.getString(DOMAIN_LIST, "") ?: ""
+
+            if (json.isBlank()) {
+                return emptyArray()
+            }
+
+            return Json.decodeFromString(json)
+        }
+        set(value) {
+            val json = Json.encodeToString(value)
+
+            sharedPreferences.edit()
+                .putString(DOMAIN_LIST, json)
+                .apply()
         }
 }
 

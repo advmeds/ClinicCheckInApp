@@ -379,7 +379,6 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
 //          Send logs to server after Minute of app's working
             delay(60000)
-
             viewModel.sendLogsFromLocalToServer()
         }
     }
@@ -1113,14 +1112,16 @@ class MainActivity : AppCompatActivity() {
             PrinterBuffer.selectAlignment(PrinterBuffer.Alignment.CENTER),
         )
 
-        if (isShowOrganization) {
+        val clinicName = viewModel.clinicName
+
+        if (isShowOrganization && clinicName.isNotBlank()) {
             headerCommand.addAll(
                 arrayListOf(
                     PrinterBuffer.setLineSpacing(120),
                     PrinterBuffer.selectCharacterSize(
                         setTextSizeForSmallText(textSize)
                     ),
-                    strToBytes(viewModel.clinicGuardian.value!!.name),
+                    strToBytes(clinicName),
                     PrinterBuffer.printAndFeedLine(),
                 )
             )
