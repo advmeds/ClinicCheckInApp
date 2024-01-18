@@ -15,6 +15,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.Q
 import com.advmeds.cliniccheckinapp.repositories.DownloadControllerRepository
 import com.advmeds.cliniccheckinapp.repositories.ServerRepository
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
+import com.advmeds.cliniccheckinapp.ui.fragments.settings.eventLogger.SettingsEventLogger
 import com.advmeds.cliniccheckinapp.utils.DownloadController
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,8 @@ import java.util.concurrent.TimeUnit
 
 class SettingsViewModel(
     application: Application,
-    private val downloadControllerRepository: DownloadControllerRepository
+    private val downloadControllerRepository: DownloadControllerRepository,
+    private val settingsEventLogger: SettingsEventLogger
 ) : AndroidViewModel(application) {
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
 
@@ -51,16 +53,28 @@ class SettingsViewModel(
 
         updateJob = viewModelScope.launch {
             val versionName = BuildConfig.VERSION_NAME
-            val updateName =  BuildConfig.UPDATE_NAME
+            val updateName = BuildConfig.UPDATE_NAME
 
-            val response = serverRepo.checkControllerAppVersion(
-                name = updateName,
-                version = versionName
-            )
+            try {
+                val response = serverRepo.checkControllerAppVersion(
+                    name = updateName,
+                    version = versionName
+                )
 
-            if (response.isSuccessful) {
-                emitSuccessCheckControllerAppVersion(response)
-            } else {
+                if (response.isSuccessful) {
+                    emitSuccessCheckControllerAppVersion(response)
+                } else {
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            updateSoftwareRequestStatus = UpdateSoftwareRequestStatus.FAIL,
+                            updateSoftwareDownloadingStatus = UpdateSoftwareDownloadingStatus.FAIL,
+                            updateSoftwareDialogText = R.string.unexpected_error
+                        )
+                    }
+                }
+
+                responseCheckForUpdate(response)
+            } catch (e: Exception) {
                 _uiState.update { currentState ->
                     currentState.copy(
                         updateSoftwareRequestStatus = UpdateSoftwareRequestStatus.FAIL,
@@ -84,6 +98,7 @@ class SettingsViewModel(
                     )
                 }
                 startDownLoading(url = response.body()!!.url, version = response.body()!!.version)
+                appEventDownloadUpdate("start download update")
             } else {
                 _uiState.update { currentState ->
                     currentState.copy(
@@ -158,6 +173,7 @@ class SettingsViewModel(
                                 updateSoftwarePercentageDownload = ""
                             )
                         }
+                        appEventDownloadUpdate("download of new version is complete")
                     }
                     is DownloadController.DownloadControllerDownloadStatus.CANCEL -> {
                         _uiState.update { currentState ->
@@ -168,6 +184,7 @@ class SettingsViewModel(
                                 updateSoftwarePercentageDownload = ""
                             )
                         }
+                        appEventDownloadUpdate("download of new version is cancel")
                     }
                     is DownloadController.DownloadControllerDownloadStatus.FAIL -> {
                         _uiState.update { currentState ->
@@ -178,6 +195,7 @@ class SettingsViewModel(
                             )
                         }
                         updateJob?.cancel()
+                        appEventDownloadUpdate("download of new version is fail")
                     }
                 }
             }
@@ -325,4 +343,162 @@ class SettingsViewModel(
                 retrofit.create(ApiService::class.java)
             )
         }
+
+    /** =======================================
+     *          Log Record functions
+     *  ======================================= */
+
+
+    fun userChangeUiSetting(
+        settingItemTitle: String,
+        originalMachineTitle: String,
+        originalValue: EditCheckInItemDialog.EditCheckInItems,
+        changeMachineTitle: String,
+        changeValue: EditCheckInItemDialog.EditCheckInItems
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserChangeUiSettingItem(
+                settingItemTitle,
+                originalMachineTitle,
+                originalValue,
+                changeMachineTitle,
+                changeValue
+            )
+        }
+    }
+
+    fun userChangeDomainSetting(
+        settingItemTitle: String,
+        originalUrl: String,
+        originalSelect: Int,
+        newUrl: String,
+        newSelect: Int
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserChangeDomainSettingItem(
+                itemTitle = settingItemTitle,
+                originalUrl = originalUrl,
+                originalSelect = originalSelect,
+                newUrl = newUrl,
+                newSelect = newSelect
+            )
+        }
+    }
+
+
+    fun userChangeSettingItem(
+        settingItemTitle: String,
+        originalValue: String,
+        newValue: String,
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserChangeSettingItem(
+                itemTitle = settingItemTitle, originalValue = originalValue, newValue = newValue
+            )
+        }
+    }
+
+    fun userChangeQueueingBoardSetting(
+        settingItemTitle: String,
+        originalValue: QueuingBoardSettingModel,
+        newValue: QueuingBoardSettingModel,
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserChangeQueueingBoardSettingItem(
+                itemTitle = settingItemTitle,
+                originalValue = originalValue,
+                newValue = newValue
+            )
+        }
+    }
+
+    fun userChangeQueueingMachineSetting(
+        settingItemTitle: String,
+        originalValue: QueueingMachineSettingModel,
+        newValue: QueueingMachineSettingModel,
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserChangeQueueingMachineSettingItem(
+                itemTitle = settingItemTitle,
+                originalValue = originalValue,
+                newValue = newValue
+            )
+        }
+    }
+
+    fun userChangeCheckedListSetting(
+        settingItemTitle: String,
+        originalValue: List<CreateAppointmentRequest.NationalIdFormat>,
+        newValue: List<CreateAppointmentRequest.NationalIdFormat>,
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserChangeFormatCheckSettingItem(
+                itemTitle = settingItemTitle,
+                originalValue = originalValue,
+                newValue = newValue
+            )
+        }
+    }
+
+    fun userChangeAutomaticAppointmentSetting(
+        settingItemTitle: String,
+        originalValue: AutomaticAppointmentSettingModel,
+        newValue: AutomaticAppointmentSettingModel,
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserChangeAutomaticAppointmentSettingItem(
+                itemTitle = settingItemTitle,
+                originalValue = originalValue,
+                newValue = newValue
+            )
+        }
+    }
+
+    fun userSelectSoftwareUpdateSetting(
+        settingItemTitle: String,
+        permissions: List<String>,
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserSelectSoftwareUpdateSettingItemItem(
+                itemTitle = settingItemTitle,
+                permission = permissions
+            )
+        }
+    }
+
+    fun userSelectSoftwareUpdateSetting(
+        settingItemTitle: String,
+        currentVersion: String
+    ) {
+        viewModelScope.launch {
+            settingsEventLogger.logUserSelectSoftwareUpdateSettingItemItem(
+                itemTitle = settingItemTitle,
+                currentVersion = currentVersion
+            )
+        }
+    }
+
+    fun userOpenDeviceSetting() {
+        viewModelScope.launch {
+            settingsEventLogger.logUserSelectOpenSettingsOfDevice()
+        }
+    }
+
+    fun userCloseApplication() {
+        viewModelScope.launch {
+            settingsEventLogger.logUserCloseApp()
+        }
+    }
+
+    private fun responseCheckForUpdate(response: Response<ControllerAppVersionResponse>) {
+        viewModelScope.launch {
+            settingsEventLogger.logCheckUpdateResponse(response)
+        }
+    }
+
+    private fun appEventDownloadUpdate(eventName: String) {
+        viewModelScope.launch {
+            settingsEventLogger.logAppEventDownloadUpdate(eventName)
+        }
+    }
 }

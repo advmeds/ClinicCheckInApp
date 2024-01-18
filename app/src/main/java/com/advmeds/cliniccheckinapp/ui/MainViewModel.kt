@@ -3,10 +3,8 @@ package com.advmeds.cliniccheckinapp.ui
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.advmeds.cardreadermodule.AcsResponseModel
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiService
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
@@ -33,8 +31,15 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+class MainViewModel(
+    application: Application,
+    private val mainEventLogger: MainEventLogger
+) : AndroidViewModel(application) {
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
+
+    init {
+        appIsOpening()
+    }
 
     /** @see SharedPreferencesRepo.checkInSerialNo */
     var checkInSerialNo: Int
@@ -299,7 +304,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                             )
                         }
                         else -> {
-                            e.localizedMessage?.let { NativeText.Simple(it) } ?: NativeText.Simple("")
+                            e.localizedMessage?.let { NativeText.Simple(it) }
+                                ?: NativeText.Simple("")
                         }
                     }
                 )
@@ -308,6 +314,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             completion?.let { it(response) }
 
             checkInStatus.value = CheckInStatus.NotChecking(response = response, patient = patient)
+
+            responseGetPatient(response)
         }
 
         checkJob?.invokeOnCompletion {
@@ -420,6 +428,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     }
                 )
 
+                appCreateAppointment(request)
+
                 val result = serverRepo.createsAppointment(request)
 
                 Timber.d("Status code: ${result.code()}")
@@ -472,6 +482,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             completion?.let { it(response) }
 
             createAppointmentStatus.value = CreateAppointmentStatus.NotChecking(response)
+
+            responseCreateAppointment(response)
         }
 
         createAppointmentJob?.invokeOnCompletion {
@@ -524,6 +536,68 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         return sharedPreferencesRepo.language
     }
 
+    /** =======================================
+     *          Log Record functions
+     *  ======================================= */
+
+    private fun sendServerRepositoryInLogRepository() {
+        mainEventLogger.setServerRepoInAnalyticsRepository(serverRepo)
+    }
+
+    fun sendLogsFromLocalToServer() {
+        sendServerRepositoryInLogRepository()
+
+        viewModelScope.launch {
+            mainEventLogger.sendLogsFromLocalToServer()
+        }
+    }
+
+    fun eventUserInsertCard(result: Result<AcsResponseModel>) {
+        viewModelScope.launch {
+            mainEventLogger.logUserInsertTheCard(result)
+        }
+    }
+
+    private fun appIsOpening() {
+        viewModelScope.launch {
+            mainEventLogger.logAppOpen(
+                sharedPreferencesRepo.closeAppEvent,
+                sessionNumber = sharedPreferencesRepo.sessionNumber
+            )
+        }
+    }
+
+    fun appPrintsATicket(
+        divisions: Array<String>,
+        serialNumbers: Array<Int>,
+        doctors: Array<String>
+    ) {
+        viewModelScope.launch {
+            mainEventLogger.logAppPrintsATicket(
+                divisions.toList(),
+                serialNumbers.toList(),
+                doctors.toList()
+            )
+        }
+    }
+
+    private fun responseGetPatient(response: GetPatientsResponse) {
+        viewModelScope.launch {
+            mainEventLogger.logResponseGetPatient(response)
+        }
+    }
+
+    private fun appCreateAppointment(request: CreateAppointmentRequest) {
+        viewModelScope.launch {
+            mainEventLogger.logAppCreateAppointment(request)
+        }
+    }
+
+    private fun responseCreateAppointment(response: CreateAppointmentResponse) {
+        viewModelScope.launch {
+            mainEventLogger.logResponseCreateAppointment(response)
+        }
+    }
 
     sealed class GetGuardianStatus {
         object Checking : GetGuardianStatus()
@@ -552,4 +626,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         data class NotChecking(val response: CreateAppointmentResponse?) : CreateAppointmentStatus()
         data class Fail(val throwable: Throwable) : CreateAppointmentStatus()
     }
+}
+
+@Suppress("UNCHECKED_CAST")
+class MainViewModelFactory(
+    private val application: Application,
+    private val mainEventLogger: MainEventLogger
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel> create(modelClass: Class<T>) =
+        (MainViewModel(application, mainEventLogger) as T)
 }

@@ -56,6 +56,8 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppoi
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
+import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepositoryImpl
+import com.advmeds.cliniccheckinapp.repositories.RoomRepositories
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.utils.CheckNetworkConnection
 import com.advmeds.cliniccheckinapp.utils.DownloadController
@@ -74,8 +76,6 @@ import java.text.DateFormat
 import java.util.*
 import kotlin.reflect.full.primaryConstructor
 
-
-private const val INSTALL_PERMISSION_REQUEST_CODE = 3440
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -96,7 +96,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var isInternet = false
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel by viewModels<MainViewModel> {
+        MainViewModelFactory(
+            application = application,
+            mainEventLogger = MainEventLogger(
+                AnalyticsRepositoryImpl.getInstance(
+                    RoomRepositories.eventsRepository,
+                    SharedPreferencesRepo.getInstance(this)
+                )
+            )
+        )
+    }
 
     private lateinit var binding: ActivityMainBinding
 
@@ -235,6 +245,7 @@ class MainActivity : AppCompatActivity() {
                 )
                 dialog?.showNow(supportFragmentManager, null)
             }
+            viewModel.eventUserInsertCard(result)
         }
     }
 
@@ -351,7 +362,6 @@ class MainActivity : AppCompatActivity() {
     private var failCardInsertSoundId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         setSavedLanguage()
 
         super.onCreate(savedInstanceState)
@@ -360,6 +370,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setOnCreate()
+
+        sendLocalLogsToServer()
+    }
+
+    private fun sendLocalLogsToServer() {
+        lifecycleScope.launch {
+//          Send logs to server after Minute of app's working
+            delay(60000)
+
+            viewModel.sendLogsFromLocalToServer()
+        }
     }
 
     private fun setOnCreate() {
@@ -995,6 +1016,12 @@ class MainActivity : AppCompatActivity() {
         require(divisions.size == serialNumbers.size && serialNumbers.size == doctors.size) {
             "Arrays must have the same size"
         }
+
+        viewModel.appPrintsATicket(
+            divisions = divisions,
+            serialNumbers = serialNumbers,
+            doctors = doctors
+        )
 
         val now = Date()
         val formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)

@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
+import com.advmeds.cliniccheckinapp.models.events.sharedpreference.CloseAppEventModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
@@ -13,6 +14,7 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlin.random.Random
 
 class SharedPreferencesRepo(
     context: Context
@@ -87,6 +89,15 @@ class SharedPreferencesRepo(
 
         /** SharedPreferences『MACHINE TITLE』KEY */
         const val MACHINE_TITLE = "machine_title"
+
+        /** SharedPreferences『SESSION ID』KEY */
+        const val SESSION_ID = "session_id"
+
+        /** SharedPreferences『DEVICE ID』KEY */
+        const val DEVICE_ID = "device_id"
+
+        /** SharedPreferences『CLOSE APP ACTION EVENT』KEY */
+        const val CLOSE_APP_ACTION_EVENT = "close_app_action_event"
 
         /** 以Volatile註解表示此INSTANCE變數僅會在主記憶體中讀寫，可避免進入cache被不同執行緒讀寫而造成問題 */
         @Volatile
@@ -460,6 +471,67 @@ class SharedPreferencesRepo(
                     putExtra(MACHINE_TITLE, value)
                 }
             )
+        }
+
+    var sessionNumber: Int
+        get() = sharedPreferences.getInt(SESSION_ID, 0)
+        set(value) {
+            sharedPreferences.edit()
+                .putInt(SESSION_ID, value)
+                .apply()
+        }
+
+    var deviceId: Long
+        get() {
+            val deviceId = sharedPreferences.getLong(DEVICE_ID, -1L)
+            if (deviceId > 0) {
+                return deviceId
+            }
+
+            val id = Random.nextLong(1000000, 10000000000)
+            this.deviceId = id
+            return id
+        }
+        set(value) = sharedPreferences.edit()
+            .putLong(DEVICE_ID, value)
+            .apply()
+
+
+    var closeAppEvent: Pair<String, Map<String, Any>>?
+        get() {
+            val json = sharedPreferences.getString(CLOSE_APP_ACTION_EVENT, "") ?: ""
+
+            if (json.isBlank()) {
+                return null
+            }
+
+            val closeAppEventModel: CloseAppEventModel = Json.decodeFromString(json)
+
+            return closeAppEventModel.fromModelToPair()
+        }
+        set(value) {
+            if (value == null) {
+                sharedPreferences.edit()
+                    .putString(CLOSE_APP_ACTION_EVENT, "")
+                    .apply()
+                return
+            }
+
+            val eventName = value.first
+            val params = value.second
+
+            val closeAppEventModel =
+                CloseAppEventModel.fromMapToModel(
+                    eventName = eventName,
+                    params = params
+                )
+
+            val json = Json.encodeToString(closeAppEventModel)
+
+            sharedPreferences.edit()
+                .putString(CLOSE_APP_ACTION_EVENT, json)
+                .apply()
+
         }
 }
 

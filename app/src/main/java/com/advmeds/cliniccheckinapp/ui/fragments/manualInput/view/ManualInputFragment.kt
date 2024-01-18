@@ -22,16 +22,30 @@ import androidx.navigation.fragment.findNavController
 import coil.load
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.ManualInputFragmentBinding
+import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepositoryImpl
+import com.advmeds.cliniccheckinapp.repositories.RoomRepositories
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
 import com.advmeds.cliniccheckinapp.ui.MainActivity
+import com.advmeds.cliniccheckinapp.ui.fragments.manualInput.eventLogger.ManualInputEventLogger
 import com.advmeds.cliniccheckinapp.ui.fragments.manualInput.viewModel.ManualInputViewModel
+import com.advmeds.cliniccheckinapp.ui.fragments.manualInput.viewModel.ManualInputViewModelFactory
 import com.advmeds.cliniccheckinapp.utils.NationIdTransformationMethod
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 
 class ManualInputFragment : Fragment() {
 
-    private val viewModel: ManualInputViewModel by viewModels()
+    private val viewModel: ManualInputViewModel by viewModels {
+        ManualInputViewModelFactory(
+            application = requireActivity().application,
+            manualInputEventLogger = ManualInputEventLogger(
+                AnalyticsRepositoryImpl.getInstance(
+                    RoomRepositories.eventsRepository,
+                    SharedPreferencesRepo.getInstance(requireContext())
+                )
+            )
+        )
+    }
 
     private var _binding: ManualInputFragmentBinding? = null
 
@@ -168,6 +182,9 @@ class ManualInputFragment : Fragment() {
             startIdleCountDown()
 
             val patient = binding.idInputEt.text.toString().trim()
+
+            viewModel.userSendManualInputData(patient)
+
             (requireActivity() as MainActivity).getPatients(patient) {
                 binding.idInputEt.text = null
             }

@@ -2,10 +2,18 @@ package com.advmeds.cliniccheckinapp.ui.fragments.home.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.repositories.SharedPreferencesRepo
+import com.advmeds.cliniccheckinapp.ui.fragments.home.eventLogger.HomeEventLogger
+import kotlinx.coroutines.launch
 
-class HomeViewModel(application: Application) : AndroidViewModel(application) {
+class HomeViewModel(
+    application: Application,
+    private val homeEventLogger: HomeEventLogger
+) : AndroidViewModel(application) {
     private val sharedPreferencesRepo = SharedPreferencesRepo.getInstance(getApplication())
 
     /** @see SharedPreferencesRepo.doctors */
@@ -55,4 +63,30 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val queueingMachineSettingIsEnable: Boolean
         get() = sharedPreferencesRepo.queueingMachineSettingIsEnable
 
+
+    /** =======================================
+     *          Log Record functions
+     *  ======================================= */
+
+    fun openSettingScreen() {
+        viewModelScope.launch {
+            homeEventLogger.logUserOpenSettingsScreen()
+        }
+    }
+
+    fun userClickOnCustomizedButton(checkInItem: EditCheckInItemDialog.EditCheckInItem) {
+        viewModelScope.launch {
+            homeEventLogger.logUserClickCustomizedButton(checkInItem)
+        }
+    }
+
+}
+
+@Suppress("UNCHECKED_CAST")
+class HomeViewModelFactory(
+    private val application: Application,
+    private val homeEventLogger: HomeEventLogger
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel> create(modelClass: Class<T>) =
+        (HomeViewModel(application, homeEventLogger) as T)
 }

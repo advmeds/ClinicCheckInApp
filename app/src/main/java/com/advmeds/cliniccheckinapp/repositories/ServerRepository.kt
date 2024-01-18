@@ -1,6 +1,7 @@
 package com.advmeds.cliniccheckinapp.repositories
 
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiService
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateActionLogRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 
 class ServerRepository(private val service: ApiService) {
@@ -32,4 +33,7 @@ class ServerRepository(private val service: ApiService) {
         version: String,
         name: String
     ) = service.checkControllerAppVersion(version, name)
+
+    suspend fun sendActionLog(createActionLogRequest: CreateActionLogRequest)
+    = service.sendActionLog(createActionLogRequest)
 }
