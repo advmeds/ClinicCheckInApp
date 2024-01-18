@@ -27,6 +27,26 @@ data class GetScheduleResponse(
         @SerialName("doctor_name")
         val doctorName: String = "",
 
+        /** doctor title */
+        @SerialName("doctor_title")
+        val doctorTitle: String = "",
+
+        /** doctor alias */
+        @SerialName("doctor_alias")
+        val doctorAlias: String = "",
+
+        /** doctor photo */
+        @SerialName("doctor_photo")
+        val doctorPhoto: String = "",
+
+        /** doctor experience */
+        @SerialName("doctor_experience")
+        val doctorExperience: String = "",
+
+        /** doctor specialization */
+        @SerialName("doctor_specialization")
+        val doctorSpecialization: String = "",
+
         /** division id */
         val division: String = "",
 
@@ -45,6 +65,17 @@ data class GetScheduleResponse(
         /** division end time */
         @SerialName("ends_at")
         val endsAt: String = "",
+
+        /** waiting num */
+        @SerialName("waiting_num")
+        val waitingNum: Int = 0,
+
+        /** is remote */
+        @SerialName("is_remote")
+        val isRemote: Boolean = false,
+
+        /** status */
+        val status: Int = 1,
     ) {
         companion object {
             /** Taiwan PTCH specify Division，小兒心超 */

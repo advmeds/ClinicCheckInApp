@@ -84,6 +84,12 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private val reloadPresentCardTextReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            setupUI()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -108,6 +114,11 @@ class HomeFragment : Fragment() {
                 addAction(SharedPreferencesRepo.CHECK_IN_ITEM_LIST)
                 addAction(SharedPreferencesRepo.DEPT_ID)
             }
+        )
+
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+            reloadPresentCardTextReceiver,
+            IntentFilter(SharedPreferencesRepo.AUTOMATIC_APPOINTMENT_SETTING)
         )
 
         return binding.root
@@ -137,7 +148,7 @@ class HomeFragment : Fragment() {
                 onConfirmClick = {
                     if (it == viewModel.password) {
                         findNavController().navigate(R.id.settingsFragment)
-                        viewModel.openSettingScreen()
+                        viewModel.eventOpenSettingScreen()
                     } else {
                         Toast.makeText(
                             requireContext(),
@@ -158,7 +169,20 @@ class HomeFragment : Fragment() {
             else
                 getString(R.string.present_health_card_arg_check_in)
 
-        val text = String.format(getString(R.string.present_health_card), firstArg, secondArg)
+        val automaticAppointmentAddition =
+            if (viewModel.automaticAppointmentSetting.isEnabled) {
+                getString(R.string.present_health_card_auto_appointment_addition)
+            } else {
+                ""
+            }
+
+
+        val presentHealthText = getString(R.string.present_health_card)
+
+        val text =
+            "${String.format(presentHealthText, firstArg, secondArg)}$automaticAppointmentAddition"
+
+
         val textColor = ContextCompat.getColor(
             requireContext(),
             R.color.error
@@ -359,6 +383,8 @@ class HomeFragment : Fragment() {
             .unregisterReceiver(reloadRightCardViewReceiver)
         LocalBroadcastManager.getInstance(requireContext())
             .unregisterReceiver(reloadTitle)
+        LocalBroadcastManager.getInstance(requireContext())
+            .unregisterReceiver(reloadPresentCardTextReceiver)
 
         _binding = null
     }

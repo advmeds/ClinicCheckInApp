@@ -19,6 +19,7 @@
     <string name="present_health_card">Please insert %1$s to %2$s</string>
     <string name="present_health_card_arg_check_in">Check In</string>
     <string name="present_health_card_arg_take_no">Take No.</string>
+    <string name="present_health_card_auto_appointment_addition"> / Appointment</string>
     <string name="check_in_item_display_name">Division name</string>
     <string name="check_in_item_manual_title">No NHI Card</string>
     <string name="check_in_item_manual_body">Manual Take No.</string>
@@ -100,6 +101,15 @@
     </string-array>
 
 
+    <!-- Automatic Appointment Doctor List Dialog -->
+    <string name="automatic_appointment_title_list">Cannot found your appointment</string>
+    <string name="automatic_appointment_title_detail">Please confirm your appointment</string>
+    <string name="automatic_appointment_prompt">Please select a doctor to appoint</string>
+    <string name="automatic_appointment_cancel">Cancel</string>
+    <string name="automatic_appointment_redo">Redo</string>
+    <string name="automatic_appointment_confirm">Confirm</string>
+
+
     <!-- UI settings -->
     <string name="ui_settings_machine_title">Machine Title</string>
 
@@ -173,6 +183,8 @@
     <!-- Automatic Appointment -->
     <string name="automatic_appointment_setting">Automatic Appointment Setting</string>
     <string name="automatic_appointment_setting_error_empty_field">that field shouldn\'t be empty</string>
+    <string name="automatic_appointment_single_mode">Single mode</string>
+    <string name="automatic_appointment_multiple_mode">multiple mode</string>
     <string name="automatic_appointment_setting_automatic_check_in">Automatic Check-In</string>
 
     <!-- Software Update -->
@@ -185,6 +197,12 @@
     <string name="unexpected_error">Error</string>
 
     <string name="is_selected_language_checker_image_description">is selected language checker</string>
+    
+    <!-- Scheduler dialog -->
+    <string name="scheduler_dialog_status_appointable">Appointable</string>
+    <string name="scheduler_dialog_status_full">FULL</string>
+    <string name="scheduler_dialog_status_closed">Closed</string>
+    <string name="scheduler_dialog_status_stop_appoint">Stop appoint</string>
 
     <string name="mScheduler_api_error_10001">The key field can not be blank</string>
     <string name="mScheduler_api_error_10002">Organization Not Found</string>

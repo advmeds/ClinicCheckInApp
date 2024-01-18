@@ -7,6 +7,7 @@ import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.events.sharedpreference.CloseAppEventModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentMode
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
@@ -74,12 +75,7 @@ class SharedPreferencesRepo(
             "queueing_machine_setting_organization_text_size"
 
         /** SharedPreferences [automatic appointment setting params] KEY */
-        const val AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE =
-            "automatic_appointment_setting_is_enable"
-        const val AUTOMATIC_APPOINTMENT_SETTING_DOCTOR = "automatic_appointment_setting_doctor"
-        const val AUTOMATIC_APPOINTMENT_SETTING_ROOM = "automatic_appointment_setting_room"
-        const val AUTOMATIC_APPOINTMENT_SETTING_AUTO_CHECK_IN =
-            "automatic_appointment_setting_auto_check_in"
+        const val AUTOMATIC_APPOINTMENT_SETTING = "automatic_appointment_setting"
 
         /** SharedPreferences『Language』KEY */
         const val LANGUAGE_KEY = "language"
@@ -98,6 +94,12 @@ class SharedPreferencesRepo(
 
         /** SharedPreferences『CLOSE APP ACTION EVENT』KEY */
         const val CLOSE_APP_ACTION_EVENT = "close_app_action_event"
+
+        /** SharedPreferences『CLINIC'S NAMES』KEY */
+        const val CLINIC_NAMES = "clinic_names"
+
+        /** SharedPreferences『DOMAIN'S LIST』KEY */
+        const val DOMAIN_LIST = "domain_list"
 
         /** 以Volatile註解表示此INSTANCE變數僅會在主記憶體中讀寫，可避免進入cache被不同執行緒讀寫而造成問題 */
         @Volatile
@@ -392,37 +394,29 @@ class SharedPreferencesRepo(
 
     var automaticAppointmentSetting: AutomaticAppointmentSettingModel
         get() {
+            val json = sharedPreferences.getString(AUTOMATIC_APPOINTMENT_SETTING, "") ?: ""
 
-            val isEnable: Boolean =
-                sharedPreferences.getBoolean(AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE, false)
-            val doctor: String =
-                sharedPreferences.getString(AUTOMATIC_APPOINTMENT_SETTING_DOCTOR, "") ?: ""
-            val room: String =
-                sharedPreferences.getString(AUTOMATIC_APPOINTMENT_SETTING_ROOM, "") ?: ""
-            val autoCheckIn: Boolean =
-                sharedPreferences.getBoolean(AUTOMATIC_APPOINTMENT_SETTING_AUTO_CHECK_IN, true)
+            if (json.isBlank()) {
+                return AutomaticAppointmentSettingModel(
+                    isEnabled = false,
+                    mode = AutomaticAppointmentMode.SINGLE_MODE,
+                    doctorId = "",
+                    roomId = ""
+                )
+            }
 
-            return AutomaticAppointmentSettingModel(
-                isEnabled = isEnable,
-                doctorId = doctor,
-                roomId = room,
-                autoCheckIn = autoCheckIn
-            )
+            return Json.decodeFromString(json)
         }
         set(value) {
+            val json = Json.encodeToString(value)
+
             sharedPreferences.edit()
-                .putBoolean(AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE, value.isEnabled)
-                .putString(AUTOMATIC_APPOINTMENT_SETTING_DOCTOR, value.doctorId)
-                .putString(AUTOMATIC_APPOINTMENT_SETTING_ROOM, value.roomId)
-                .putBoolean(AUTOMATIC_APPOINTMENT_SETTING_AUTO_CHECK_IN, value.autoCheckIn)
+                .putString(AUTOMATIC_APPOINTMENT_SETTING, json)
                 .apply()
 
             localBroadcastManager.sendBroadcast(
-                Intent(AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE).apply {
-                    putExtra(AUTOMATIC_APPOINTMENT_SETTING_IS_ENABLE, value.isEnabled)
-                    putExtra(AUTOMATIC_APPOINTMENT_SETTING_DOCTOR, value.doctorId)
-                    putExtra(AUTOMATIC_APPOINTMENT_SETTING_ROOM, value.roomId)
-                    putExtra(AUTOMATIC_APPOINTMENT_SETTING_AUTO_CHECK_IN, value.autoCheckIn)
+                Intent(AUTOMATIC_APPOINTMENT_SETTING).apply {
+                    putExtra(AUTOMATIC_APPOINTMENT_SETTING, json)
                 }
             )
         }
@@ -532,6 +526,41 @@ class SharedPreferencesRepo(
                 .putString(CLOSE_APP_ACTION_EVENT, json)
                 .apply()
 
+        }
+
+    var clinicNames: MutableMap<String, String>
+        get() {
+            val json = sharedPreferences.getString(CLINIC_NAMES, "") ?: ""
+
+            if (json.isBlank()) {
+                return mutableMapOf()
+            }
+
+            return Json.decodeFromString(json)
+        }
+        set(value) {
+            val json = Json.encodeToString(value)
+            sharedPreferences.edit()
+                .putString(CLINIC_NAMES, json)
+                .apply()
+        }
+
+    var domainsList: Array<String>
+        get() {
+            val json = sharedPreferences.getString(DOMAIN_LIST, "") ?: ""
+
+            if (json.isBlank()) {
+                return emptyArray()
+            }
+
+            return Json.decodeFromString(json)
+        }
+        set(value) {
+            val json = Json.encodeToString(value)
+
+            sharedPreferences.edit()
+                .putString(DOMAIN_LIST, json)
+                .apply()
         }
 }
 

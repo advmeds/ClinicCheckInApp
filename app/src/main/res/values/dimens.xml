@@ -13,8 +13,10 @@
     <dimen name="logo_image_margin">10dp</dimen>
 
     <!-- Settings Icon -->
+    <!-- screen_padding + screen_panel_margin == settings_icon_size + settings_icon_margin -->
     <dimen name="settings_icon_size">35dp</dimen>
     <dimen name="settings_icon_margin">5dp</dimen>
+    <dimen name="icon_click_area">20dp</dimen>
 
     <!-- Font -->
     <dimen name="font_size_h1">60sp</dimen>
@@ -34,6 +36,8 @@
     <dimen name="space_very_huge">80dp</dimen>
     <dimen name="space_grand">120dp</dimen>
 
+
+    <dimen name="auto_appointment_dialog_width">800dp</dimen>
 
     <!-- Home Page -->
     <dimen name="check_in_item_vertical_icon_size">200dp</dimen>
@@ -61,5 +65,9 @@
     <!-- Fragment Dialog -->
     <dimen name="dialog_image_size">150dp</dimen>
     <dimen name="dialog_screen_padding">146dp</dimen>
+
+    <!-- Doctor list dialog -->
+    <dimen name="doctor_list_item_image_size">200dp</dimen>
+    <dimen name="doctor_detail_item_size">450dp</dimen>
 
 </resources>

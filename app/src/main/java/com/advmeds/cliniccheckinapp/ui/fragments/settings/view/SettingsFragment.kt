@@ -37,6 +37,7 @@ import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.SettingsFragmentBinding
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentMode
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueuingBoardSettingModel
@@ -540,23 +541,6 @@ class SettingsFragment : ListFragment() {
             })
     }
 
-//    private fun onSetPanelModeItemClicked() {
-//
-//        val hint = requireContext().getString(R.string.customize_url_hint)
-//
-//        showTextInputDialog(
-//            titleResId = R.string.clinic_panel_url,
-//            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI,
-//            hint = hint,
-//            inputTextLabel = "",
-//            inputText = viewModel.clinicPanelUrl
-//        ) { clinicPanelUrl ->
-//            if (clinicPanelUrl.isNotBlank()) {
-//                viewModel.clinicPanelUrl = clinicPanelUrl
-//            }
-//        }
-//    }
-
     private fun onSetFormatCheckedListItemClicked() {
         val choiceItems = CreateAppointmentRequest.NationalIdFormat.values()
         val checkedItems = choiceItems.map { viewModel.formatCheckedList.contains(it) }
@@ -872,7 +856,6 @@ class SettingsFragment : ListFragment() {
 
 
     private fun onSetAutomaticAppointmentSettingItemClicked() {
-
         dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.automatic_appointment_setting_dialog)
 
@@ -886,10 +869,20 @@ class SettingsFragment : ListFragment() {
 
         dialog.automatic_appointment_setting_switcher.isChecked =
             automaticAppointmentSettingModel.isEnabled
-        dialog.automatic_appointment_automatic_check_in.isChecked =
-            automaticAppointmentSettingModel.autoCheckIn
-        dialog.automatic_appointment_setting_container.isGone =
+
+        dialog.automatic_appointment_radio_group.isGone =
             !automaticAppointmentSettingModel.isEnabled
+
+        dialog.automatic_appointment_setting_container.isGone =
+            !(automaticAppointmentSettingModel.isEnabled &&
+                    (automaticAppointmentSettingModel.mode == AutomaticAppointmentMode.SINGLE_MODE))
+
+        when (automaticAppointmentSettingModel.mode) {
+            AutomaticAppointmentMode.SINGLE_MODE ->
+                dialog.automatic_appointment_radio_group.check(R.id.automatic_appointment_single_mode)
+            AutomaticAppointmentMode.MULTIPLE_MODE ->
+                dialog.automatic_appointment_radio_group.check(R.id.automatic_appointment_multiple_mode)
+        }
 
         dialog.automatic_appointment_doctor_input_field.editText?.setText(
             automaticAppointmentSettingModel.doctorId
@@ -900,8 +893,28 @@ class SettingsFragment : ListFragment() {
 
 
         dialog.automatic_appointment_setting_switcher.setOnCheckedChangeListener { _, isChecked ->
-            dialog.automatic_appointment_setting_container.isGone = !isChecked
+            dialog.automatic_appointment_radio_group.isGone = !isChecked
+
+            val isContainerVisible = isChecked && dialog.automatic_appointment_single_mode.isChecked
+
+            dialog.automatic_appointment_setting_container.isGone = !isContainerVisible
         }
+
+        dialog.automatic_appointment_radio_group.setOnCheckedChangeListener(
+            RadioGroup.OnCheckedChangeListener { _, checkedId ->
+                if (!dialog.automatic_appointment_setting_switcher.isChecked) {
+                    return@OnCheckedChangeListener
+                }
+
+                when (checkedId) {
+                    R.id.automatic_appointment_single_mode -> dialog.automatic_appointment_setting_container.visibility =
+                        View.VISIBLE
+                    R.id.automatic_appointment_multiple_mode -> dialog.automatic_appointment_setting_container.visibility =
+                        View.GONE
+                }
+            }
+        )
+
 
         dialog.automatic_appointment_doctor_input_field.editText?.doOnTextChanged { inputText, _, _, _ ->
             if (inputText.toString().isNotEmpty())
@@ -929,31 +942,21 @@ class SettingsFragment : ListFragment() {
 
         saveButton.setOnClickListener {
             val isEnable = dialog.automatic_appointment_setting_switcher.isChecked
-            val autoCheck = dialog.automatic_appointment_automatic_check_in.isChecked
+            val mode =
+                if (dialog.automatic_appointment_single_mode.isChecked) AutomaticAppointmentMode.SINGLE_MODE
+                else AutomaticAppointmentMode.MULTIPLE_MODE
 
             if (isEnable) {
-
                 val doctors =
                     dialog.automatic_appointment_doctor_input_field.editText?.text.toString()
                 val rooms = dialog.automatic_appointment_room_input_field.editText?.text.toString()
 
-                if (doctors.isBlank() || rooms.isBlank()) {
-                    if (doctors.isBlank()) {
-                        dialog.automatic_appointment_doctor_input_field.error =
-                            getString(R.string.automatic_appointment_setting_error_empty_field)
-                    }
-
-                    if (rooms.isBlank()) {
-                        dialog.automatic_appointment_room_input_field.error =
-                            getString(R.string.automatic_appointment_setting_error_empty_field)
-                    }
-                } else {
-
+                if ((doctors.isNotBlank() && rooms.isNotBlank()) || mode == AutomaticAppointmentMode.MULTIPLE_MODE) {
                     val newAutomaticAppointment = AutomaticAppointmentSettingModel(
                         isEnabled = true,
+                        mode = mode,
                         doctorId = doctors,
-                        roomId = rooms,
-                        autoCheckIn = autoCheck
+                        roomId = rooms
                     )
 
                     viewModel.userChangeAutomaticAppointmentSetting(
@@ -965,13 +968,23 @@ class SettingsFragment : ListFragment() {
                     viewModel.automaticAppointmentSetting = newAutomaticAppointment
 
                     dialog.dismiss()
+                } else {
+                    if (doctors.isBlank()) {
+                        dialog.automatic_appointment_doctor_input_field.error =
+                            getString(R.string.automatic_appointment_setting_error_empty_field)
+                    }
+
+                    if (rooms.isBlank()) {
+                        dialog.automatic_appointment_room_input_field.error =
+                            getString(R.string.automatic_appointment_setting_error_empty_field)
+                    }
                 }
             } else {
                 val newAutomaticAppointment = AutomaticAppointmentSettingModel(
                     isEnabled = false,
+                    mode = AutomaticAppointmentMode.SINGLE_MODE,
                     doctorId = "",
-                    roomId = "",
-                    autoCheckIn = autoCheck
+                    roomId = ""
                 )
 
                 viewModel.userChangeAutomaticAppointmentSetting(

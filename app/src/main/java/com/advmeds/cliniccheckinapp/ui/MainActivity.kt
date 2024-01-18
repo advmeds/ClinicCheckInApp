@@ -55,6 +55,7 @@ import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiError
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.GetScheduleResponse
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentMode
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.QueueingMachineSettingModel
 import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepositoryImpl
 import com.advmeds.cliniccheckinapp.repositories.RoomRepositories
@@ -180,8 +181,8 @@ class MainActivity : AppCompatActivity() {
 
         override fun onCardAbsent() {
 //            viewModel.cancelJobOnCardAbsent()
-//            dialog?.dismiss()
-//            dialog = null
+            dialog?.dismiss()
+            dialog = null
 
 //            viewModel.completeAllJobOnCardAbsentAfterAllProcessIsOver() {
 //                dialog?.dismiss()
@@ -378,7 +379,6 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
 //          Send logs to server after Minute of app's working
             delay(60000)
-
             viewModel.sendLogsFromLocalToServer()
         }
     }
@@ -510,6 +510,36 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         if (it.response.success) {
+
+                            if (!it.isItManualInput) {
+                                viewModel.makeSingleAutoAppointment(it) { createAppointmentResponse ->
+
+                                    if (createAppointmentResponse.success && viewModel.queueingMachineSettingIsEnable) {
+
+                                        val arrayDoctor: Array<String> = arrayOf(
+                                            createAppointmentResponse.doctor
+                                        )
+
+                                        val arraySerialNumber: Array<Int> = arrayOf(
+                                            createAppointmentResponse.serialNo
+                                        )
+
+                                        val arrayDivision: Array<String> = arrayOf(
+                                            when (BuildConfig.BUILD_TYPE) {
+                                                "ptch" -> createAppointmentResponse.doctor
+                                                else -> createAppointmentResponse.division
+                                            }
+                                        )
+
+                                        printPatient(
+                                            divisions = arrayDivision,
+                                            serialNumbers = arraySerialNumber,
+                                            doctors = arrayDoctor
+                                        )
+                                    }
+                                }
+                            }
+
                             SuccessDialogFragment(
                                 title = getString(R.string.success_to_check),
                                 message = if (viewModel.queueingMachineSettingIsEnable) getString(R.string.success_to_check_message) else ""
@@ -524,34 +554,42 @@ class MainActivity : AppCompatActivity() {
 
                             when (apiError) {
                                 ApiError.APPOINTMENT_NOT_FOUND -> {
-
                                     if (automaticAppointmentData.isEnabled) {
-                                        createAppointment(
-                                            isCheckIn = automaticAppointmentData.autoCheckIn,
-                                            schedule = GetScheduleResponse.ScheduleBean(
-                                                doctor = automaticAppointmentData.doctorId,
-                                                division = automaticAppointmentData.roomId
-                                            ),
-                                            patient = it.patient,
-                                            isAutomaticAppointment = true,
-                                            completion = { createAppointmentResponse ->
-                                                soundPool.play(
-                                                    if (createAppointmentResponse.success) {
-                                                        successSoundId
-                                                    } else {
-                                                        failSoundId
-                                                    },
-                                                    1f,
-                                                    1f,
-                                                    0,
-                                                    0,
-                                                    1f
+                                        if (it.isItManualInput) {
+                                            ErrorDialogFragment(
+                                                title = getString(R.string.fail_to_check),
+                                                message = getString(apiError.resStringID),
+                                                onActionButtonClicked = null
+                                            )
+                                        } else {
+                                            if (automaticAppointmentData.mode == AutomaticAppointmentMode.MULTIPLE_MODE) {
+                                                viewModel.getSchedule(patient = it.patient)
+                                            } else {
+                                                createAppointment(
+                                                    schedule = GetScheduleResponse.ScheduleBean(
+                                                        doctor = automaticAppointmentData.doctorId,
+                                                        division = automaticAppointmentData.roomId
+                                                    ),
+                                                    patient = it.patient,
+                                                    isAutomaticAppointment = true,
+                                                    completion = { createAppointmentResponse ->
+                                                        soundPool.play(
+                                                            if (createAppointmentResponse.success) {
+                                                                successSoundId
+                                                            } else {
+                                                                failSoundId
+                                                            },
+                                                            1f,
+                                                            1f,
+                                                            0,
+                                                            0,
+                                                            1f
+                                                        )
+                                                    }
                                                 )
                                             }
-                                        )
-
-                                        return@observe
-
+                                            return@observe
+                                        }
                                     } else {
                                         ErrorDialogFragment(
                                             title = getString(R.string.fail_to_check),
@@ -579,41 +617,6 @@ class MainActivity : AppCompatActivity() {
                                             },
                                         onActionButtonClicked = null
                                     )
-
-
-//                            val apiError = ApiError.initWith(it.response.code)
-//
-//                            ErrorDialogFragment(
-//                                title = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
-//                                    getString(R.string.schedule_not_found)
-//                                } else {
-//                                    getString(R.string.fail_to_check)
-//                                },
-//                                message = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND) {
-//                                    getString(R.string.make_appointment_now)
-//                                } else {
-//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                                        Html.fromHtml(
-//                                            it.response.message,
-//                                            Html.FROM_HTML_MODE_COMPACT
-//                                        )
-//                                    } else {
-//                                        Html.fromHtml(it.response.message)
-//                                    }
-//                                },
-//                                onActionButtonClicked = if (BuildConfig.PRINT_ENABLED && apiError == ApiError.APPOINTMENT_NOT_FOUND){
-//                                    { isCancelled ->
-//                                        if (!isCancelled) {
-//                                            viewModel.getSchedule()
-//                                        } else {
-//                                            dialog?.dismiss()
-//                                            dialog = null
-//                                        }
-//                                    }
-//                                } else {
-//                                    null
-//                                }
-//                            )
                                 }
                             }
                         }
@@ -645,10 +648,15 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         if (it.response.success) {
                             ScheduleListDialogFragment(
-                                schedules = it.response.schedules
+                                schedules = it.response.schedules,
+                                currentLanguage = viewModel.getLanguage()
                             ) { checkedSchedule ->
                                 if (checkedSchedule != null) {
-                                    createAppointment(isCheckIn = false, checkedSchedule)
+                                    createAppointment(
+                                        isCheckIn = false,
+                                        patient = it.patient,
+                                        schedule = checkedSchedule
+                                    )
                                 } else {
                                     dialog?.dismiss()
                                     dialog = null
@@ -865,7 +873,6 @@ class MainActivity : AppCompatActivity() {
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 )
             } catch (e: ActivityNotFoundException) {
-                Log.d("check---", e.message!!)
             }
         } else {
             val installIntent = Intent(Intent.ACTION_VIEW)
@@ -1017,7 +1024,7 @@ class MainActivity : AppCompatActivity() {
             "Arrays must have the same size"
         }
 
-        viewModel.appPrintsATicket(
+        viewModel.eventAppPrintsATicket(
             divisions = divisions,
             serialNumbers = serialNumbers,
             doctors = doctors
@@ -1105,14 +1112,16 @@ class MainActivity : AppCompatActivity() {
             PrinterBuffer.selectAlignment(PrinterBuffer.Alignment.CENTER),
         )
 
-        if (isShowOrganization) {
+        val clinicName = viewModel.clinicName
+
+        if (isShowOrganization && clinicName.isNotBlank()) {
             headerCommand.addAll(
                 arrayListOf(
                     PrinterBuffer.setLineSpacing(120),
                     PrinterBuffer.selectCharacterSize(
                         setTextSizeForSmallText(textSize)
                     ),
-                    strToBytes(viewModel.clinicGuardian.value!!.name),
+                    strToBytes(clinicName),
                     PrinterBuffer.printAndFeedLine(),
                 )
             )
@@ -1323,6 +1332,7 @@ class MainActivity : AppCompatActivity() {
         nationalId: String,
         name: String = "",
         birth: String = "",
+        isItManualInput: Boolean = false,
         completion: (() -> Unit)? = null
     ) {
         if (viewModel.queueingMachineSettingIsEnable && !usbPrinterService.isConnected) {
@@ -1340,7 +1350,8 @@ class MainActivity : AppCompatActivity() {
                 nationalId = nationalId,
                 name = name.ifBlank { nationalId },
                 birthday = birth
-            )
+            ),
+            isItManualInput = isItManualInput
         ) {
             completion?.let { it1 -> it1() }
 
@@ -1369,7 +1380,7 @@ class MainActivity : AppCompatActivity() {
 
     /** Do not have NHI Card, manual check in */
     private fun createAppointment(
-        isCheckIn: Boolean,
+        isCheckIn: Boolean = true,
         schedule: GetScheduleResponse.ScheduleBean,
         patient: CreateAppointmentRequest.Patient? = null,
         isAutomaticAppointment: Boolean = false,
@@ -1386,7 +1397,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.createAppointment(
-            isCheckIn = isCheckIn,
             schedule = schedule,
             patient = patient,
             isAutomaticAppointment = isAutomaticAppointment,
