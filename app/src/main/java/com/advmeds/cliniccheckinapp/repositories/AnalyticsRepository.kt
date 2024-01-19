@@ -6,6 +6,9 @@ import com.advmeds.cliniccheckinapp.models.events.entities.EventData
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateActionLogRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.SessionRequest
 import com.advmeds.cliniccheckinapp.repositories.AnalyticsRepository.Companion.getCurrentDateTime
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -149,6 +152,17 @@ class AnalyticsRepositoryImpl private constructor(
                 }
 
                 val result = it.sendActionLog(request)
+
+                val format = Json {
+                    isLenient = true
+                    coerceInputValues = true
+                    ignoreUnknownKeys = true
+                    encodeDefaults = true
+                    prettyPrint = true
+                }
+
+                Timber.d("Status code: ${result.code()}")
+                Timber.d("Response: ${format.encodeToString(result.body())}")
 
                 if (result.isSuccessful) {
                     sessionsForSend.forEach { session ->
