@@ -129,7 +129,7 @@ android {
     }
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            def fileName = "mSchedulerCheckIn_${defaultConfig.versionName}.apk"
+            def fileName = "mSchedulerCheckIn_${defaultConfig.versionCode}_${defaultConfig.versionName}_${variant.buildType.name}.apk"
             outputFileName = fileName
         }
     }
