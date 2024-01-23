@@ -67,7 +67,7 @@ object Converter {
         }
     }
 
-    fun anyToString(value: Any) : String {
+    fun anyToString(value: Any, context: Context? = null): String {
         return if (value is List<*>) {
             when ((value as List<*>).firstOrNull()) {
                 is String, Int -> (value as List<*>).joinToString(",")
@@ -86,8 +86,16 @@ object Converter {
                     Json.encodeToString(value as QueueingMachineSettingModel)
                 is AutomaticAppointmentSettingModel ->
                     Json.encodeToString(value as AutomaticAppointmentSettingModel)
-                is GetPatientsResponse ->
-                    Json.encodeToString(value as GetPatientsResponse)
+                is GetPatientsResponse -> {
+                    if (context == null) {
+                        Json.encodeToString(value as GetPatientsResponse)
+                    } else {
+                        val normalMessage =
+                            value.copy(message = value._message.toCharSequence(context).toString())
+
+                        Json.encodeToString(normalMessage as GetPatientsResponse)
+                    }
+                }
                 is EditCheckInItemDialog.EditCheckInItem ->
                     Json.encodeToString(value as EditCheckInItemDialog.EditCheckInItem)
                 is CreateAppointmentRequest ->

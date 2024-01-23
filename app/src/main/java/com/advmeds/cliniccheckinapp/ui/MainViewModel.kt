@@ -255,20 +255,25 @@ class MainViewModel(
             val formatCheckedList = sharedPreferencesRepo.formatCheckedList
 
             if (patient.nationalId.isBlank()) {
-                checkInStatus.value = CheckInStatus.NotChecking(
-                    response = GetPatientsResponse(
-                        success = false,
-                        code = 0,
-                        _message = NativeText.Arguments(
-                            R.string.national_id_input_hint,
-                            listOf(formatCheckedList.joinToString("、") {
-                                application.getString(
-                                    it.description
-                                )
-                            })
-                        )
+                val response = GetPatientsResponse(
+                    success = false,
+                    code = 0,
+                    _message = NativeText.Arguments(
+                        R.string.national_id_input_hint,
+                        listOf(formatCheckedList.joinToString("、") {
+                            application.getString(
+                                it.description
+                            )
+                        })
                     )
                 )
+
+                checkInStatus.value = CheckInStatus.NotChecking(
+                    response = response
+                )
+
+                eventResponseGetPatient(response)
+
                 return@launch
             }
 
@@ -277,16 +282,20 @@ class MainViewModel(
                     it.inputFormatAvailable(patient.nationalId)
                 }
             ) {
-                checkInStatus.value = CheckInStatus.NotChecking(
-                    response = GetPatientsResponse(
-                        success = false,
-                        code = 0,
-                        _message = NativeText.ArgumentsMulti(
-                            R.string.national_id_format_invalid,
-                            formatCheckedList.map { NativeText.Resource(it.description) }
-                        )
+                val response = GetPatientsResponse(
+                    success = false,
+                    code = 0,
+                    _message = NativeText.ArgumentsMulti(
+                        R.string.national_id_format_invalid,
+                        formatCheckedList.map { NativeText.Resource(it.description) }
                     )
                 )
+
+                checkInStatus.value = CheckInStatus.NotChecking(
+                    response = response
+                )
+
+                eventResponseGetPatient(response)
 
                 return@launch
             }
@@ -652,11 +661,11 @@ class MainViewModel(
         mainEventLogger.setServerRepoInAnalyticsRepository(serverRepo)
     }
 
-    fun sendLogsFromLocalToServer() {
+    fun sendLogsFromLocalToServer(context: Context? = null) {
         eventSendServerRepositoryInLogRepository()
 
         viewModelScope.launch {
-            mainEventLogger.sendLogsFromLocalToServer()
+            mainEventLogger.sendLogsFromLocalToServer(context)
         }
     }
 

@@ -1,5 +1,6 @@
 package com.advmeds.cliniccheckinapp.ui
 
+import android.content.Context
 import com.advmeds.cardreadermodule.AcsResponseModel
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.CreateAppointmentResponse
@@ -15,10 +16,11 @@ class MainEventLogger(
         analyticsRepository.setServerRepository(serverRepository)
     }
 
-    suspend fun sendLogsFromLocalToServer() {
+    suspend fun sendLogsFromLocalToServer(context: Context? = null) {
         analyticsRepository.sendEvent(
             eventName = "send logs from local to server",
-            destination = AnalyticsRepository.DestinationType.LOCAL_TO_SERVER
+            destination = AnalyticsRepository.DestinationType.LOCAL_TO_SERVER,
+            context = context
         )
     }
 
