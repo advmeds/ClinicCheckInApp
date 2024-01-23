@@ -255,6 +255,19 @@ class SettingsViewModel(
             sharedPreferencesRepo.formatCheckedList = value
         }
 
+    private var tempFormatCheckedList: List<CreateAppointmentRequest.NationalIdFormat>? = null
+    var _tempFormatCheckedList: List<CreateAppointmentRequest.NationalIdFormat>
+        get() {
+            return tempFormatCheckedList ?: formatCheckedList
+        }
+        set(value) {
+            tempFormatCheckedList = value
+        }
+
+    fun clearTempFormatCheckedList() {
+        tempFormatCheckedList = null
+    }
+
     /** @see SharedPreferencesRepo.checkInItemList */
     var checkInItemList: List<EditCheckInItemDialog.EditCheckInItem>
         get() = sharedPreferencesRepo.checkInItemList

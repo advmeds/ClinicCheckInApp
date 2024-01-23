@@ -563,11 +563,28 @@ class SettingsFragment : ListFragment() {
         )
 
         dialog.fcl_save_btn.setOnClickListener {
+            if (viewModel._tempFormatCheckedList == viewModel.formatCheckedList) {
+                dialog.dismiss()
+                return@setOnClickListener
+            }
+
+            viewModel.userChangeCheckedListSetting(
+                settingItemTitle = "Format Check in Setting",
+                originalValue = viewModel.formatCheckedList,
+                newValue = viewModel._tempFormatCheckedList
+            )
+
+            viewModel.formatCheckedList = viewModel._tempFormatCheckedList
+
             dialog.dismiss()
         }
 
         dialog.fcl_cancel_btn.setOnClickListener {
             dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            viewModel.clearTempFormatCheckedList()
         }
 
         dialog.show()
@@ -1244,7 +1261,7 @@ class SettingsFragment : ListFragment() {
 
         checkBox.setOnCheckedChangeListener { _, isChecked ->
 
-            val list = viewModel.formatCheckedList.toMutableList()
+            val list = viewModel._tempFormatCheckedList.toMutableList()
 
             if (isChecked) {
                 list.add(title)
@@ -1252,13 +1269,7 @@ class SettingsFragment : ListFragment() {
                 list.remove(title)
             }
 
-            viewModel.userChangeCheckedListSetting(
-                settingItemTitle = "Format Check in Setting",
-                originalValue = viewModel.formatCheckedList,
-                newValue = list
-            )
-
-            viewModel.formatCheckedList = list
+            viewModel._tempFormatCheckedList = list
         }
 
         val outValue = TypedValue()
