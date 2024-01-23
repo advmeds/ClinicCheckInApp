@@ -1,5 +1,6 @@
 package com.advmeds.cliniccheckinapp.repositories
 
+import android.content.Context
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.models.events.EventRepository
 import com.advmeds.cliniccheckinapp.models.events.entities.EventData
@@ -15,6 +16,14 @@ import java.util.*
 interface AnalyticsRepository {
 
     fun setServerRepository(serverRepository: ServerRepository)
+
+    suspend fun sendEvent(
+        eventName: String,
+        params: MutableMap<String, Any>? = null,
+        sessionNumber: Long? = null,
+        context: Context?,
+        destination: DestinationType = DestinationType.LOCAL
+    )
 
     suspend fun sendEvent(
         eventName: String,
@@ -80,6 +89,7 @@ class AnalyticsRepositoryImpl private constructor(
         eventName: String,
         params: MutableMap<String, Any>?,
         sessionNumber: Long?,
+        context: Context?,
         destination: AnalyticsRepository.DestinationType
     ) {
         if (sessionNumber == null) {
@@ -91,10 +101,25 @@ class AnalyticsRepositoryImpl private constructor(
                 logEventToLocal(eventName, params, sessionNumber)
             }
             AnalyticsRepository.DestinationType.LOCAL_TO_SERVER -> {
-                logEventFromLocalToServer()
+                logEventFromLocalToServer(context)
             }
             AnalyticsRepository.DestinationType.SERVER -> TODO()
         }
+    }
+
+    override suspend fun sendEvent(
+        eventName: String,
+        params: MutableMap<String, Any>?,
+        sessionNumber: Long?,
+        destination: AnalyticsRepository.DestinationType
+    ) {
+        sendEvent(
+            eventName = eventName,
+            params = params,
+            sessionNumber = sessionNumber,
+            destination = destination,
+            context = null
+        )
     }
 
     private suspend fun logEventToLocal(
@@ -116,7 +141,7 @@ class AnalyticsRepositoryImpl private constructor(
         }
     }
 
-    private suspend fun logEventFromLocalToServer() {
+    private suspend fun logEventFromLocalToServer(context: Context? = null) {
         eventRepository.deleteSessionThatHaveBeenSentOnServer()
 
         serverRepository?.let {
@@ -144,7 +169,11 @@ class AnalyticsRepositoryImpl private constructor(
                 val request = CreateActionLogRequest(
                     clinicId = sharedPreferencesRepo.orgId.toInt(),
                     input = sharedPreferencesRepo.doctors.joinToString(","),
-                    content = SessionRequest.fromMapToSessionRequest(sessionsForSend, sessionMap)
+                    content = SessionRequest.fromMapToSessionRequest(
+                        sessions = sessionsForSend,
+                        sessionMap = sessionMap,
+                        context = context
+                    )
                 )
 
                 if (request.content.isEmpty()) {

@@ -9,10 +9,15 @@ import kotlinx.serialization.Serializable
 sealed class NativeText {
     @Serializable
     data class Simple(val text: String) : NativeText()
+    @Serializable
     data class Resource(@StringRes val id: Int) : NativeText()
-    data class Plural(@PluralsRes val id: Int, val number: Int, val args: List<Any>) : NativeText()
-    data class Arguments(@StringRes val id: Int, val args: List<Any>) : NativeText()
+    @Serializable
+    data class Plural(@PluralsRes val id: Int, val number: Int, val args: List<String>) : NativeText()
+    @Serializable
+    data class Arguments(@StringRes val id: Int, val args: List<String>) : NativeText()
+    @Serializable
     data class Multi(val text: List<NativeText>) : NativeText()
+    @Serializable
     data class ArgumentsMulti(@StringRes val id: Int, val text: List<NativeText>) : NativeText()
 }
 
