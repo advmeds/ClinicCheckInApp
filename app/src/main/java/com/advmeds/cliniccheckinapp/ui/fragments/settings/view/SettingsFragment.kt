@@ -184,6 +184,9 @@ class SettingsFragment : ListFragment() {
             )
         })
 
+        val showInsertNHICardAnimation = viewModel.showInsertNHICardAnimation
+        dialog.ui_settings_insert_nhi_card_animation.isChecked = showInsertNHICardAnimation
+
         val checkInItemsList = viewModel.checkInItemList
         slotsCount = checkInItemsList.count { it.isShow }
         val checkInItems = EditCheckInItemDialog.toObject(checkInItemsList)
@@ -280,18 +283,25 @@ class SettingsFragment : ListFragment() {
             val newMachineTitle =
                 dialog.ui_settings_dialog_input_field.editText?.text.toString().trim()
 
+            val newShowInsertNHICardAnimation =
+                dialog.ui_settings_insert_nhi_card_animation.isChecked
+
             viewModel.userChangeUiSetting(
-                "UI Setting",
-                viewModel.machineTitle,
-                EditCheckInItemDialog.toObject(viewModel.checkInItemList),
-                newMachineTitle,
-                checkInItemsForSave
+                settingItemTitle = "UI Setting",
+                originalMachineTitle = viewModel.machineTitle,
+                originalValue = EditCheckInItemDialog.toObject(viewModel.checkInItemList),
+                originalValueIsShowInsertNHICardAnimation = showInsertNHICardAnimation,
+                changeMachineTitle = newMachineTitle,
+                changeValue = checkInItemsForSave,
+                changeIsShowInsertNHICardAnimation = newShowInsertNHICardAnimation
             )
 
 
             viewModel.machineTitle = newMachineTitle
 
             viewModel.checkInItemList = EditCheckInItemDialog.toList(checkInItemsForSave)
+
+            viewModel.showInsertNHICardAnimation = newShowInsertNHICardAnimation
 
             dialog.dismiss()
         }

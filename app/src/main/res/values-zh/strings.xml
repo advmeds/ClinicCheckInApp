@@ -111,7 +111,9 @@
     <!-- UI settings -->
     <string name="ui_settings_machine_title">應用程式名稱</string>
 
+    <string name="ui_settings_insert_nhi_card_animation">顯示插卡動畫</string>
     <string name="ui_settings_manual_input">手動輸入</string>
+    <string name="ui_settings_hint">Mode Settings (Max. 4 modes)t</string>
     <string name="ui_settings_virtual_nhi_card">虛擬健保卡</string>
     <string name="ui_settings_customized_one">自定義 1</string>
     <string name="ui_settings_customized_two">自定義 2</string>

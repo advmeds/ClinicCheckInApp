@@ -59,7 +59,7 @@
 
     <dimen name="setting_dialog_check_box_margin_top">@dimen/space_small</dimen>
     <dimen name="setting_dialog_check_box_margin_bottom">@dimen/space_small</dimen>
-    <dimen name="setting_dialog_check_box_margin_start">@dimen/space_big</dimen>
+    <dimen name="setting_dialog_check_box_margin_start">@dimen/space_normal</dimen>
     <dimen name="setting_dialog_check_box_margin_end">-10dp</dimen>
 
     <!-- Fragment Dialog -->

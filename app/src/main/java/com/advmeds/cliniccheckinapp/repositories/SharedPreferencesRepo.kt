@@ -54,7 +54,10 @@ class SharedPreferencesRepo(
         /** patient national id pattern key of SharedPreferences */
         const val FORMAT_CHECKED_LIST = "format_checked_list"
 
-        /** manual check-in item key of SharedPreferences */
+        /** showInsertNHICardAnimation item key of SharedPreferences */
+        const val SHOW_INSERT_NHI_CARD_ANIMATION = "showInsertNHICardAnimation"
+
+        /** check-in items key of SharedPreferences */
         const val CHECK_IN_ITEM_LIST = "check_in_item_list"
 
         /** 從SharedPreferences取得『Department ID』的KEY */
@@ -490,6 +493,11 @@ class SharedPreferencesRepo(
             .putLong(DEVICE_ID, value)
             .apply()
 
+    var showInsertNHICardAnimation: Boolean
+        get() = sharedPreferences.getBoolean(SHOW_INSERT_NHI_CARD_ANIMATION, true)
+        set(value) = sharedPreferences.edit()
+            .putBoolean(SHOW_INSERT_NHI_CARD_ANIMATION, value)
+            .apply()
 
     var closeAppEvent: Pair<String, Map<String, Any>>?
         get() {

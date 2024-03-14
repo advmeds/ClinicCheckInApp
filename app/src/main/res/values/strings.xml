@@ -113,7 +113,9 @@
     <!-- UI settings -->
     <string name="ui_settings_machine_title">Machine Title</string>
 
+    <string name="ui_settings_insert_nhi_card_animation">Show Insert NHI Card Animation</string>
     <string name="ui_settings_manual_input">Manual Input</string>
+    <string name="ui_settings_hint">Mode Settings (Max. 4 modes)</string>
     <string name="ui_settings_virtual_nhi_card">Virtual NHI Card</string>
     <string name="ui_settings_customized_one">Customized 1</string>
     <string name="ui_settings_customized_two">Customized 2</string>
