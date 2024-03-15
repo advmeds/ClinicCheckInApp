@@ -68,6 +68,10 @@ class HomeViewModel(
     val automaticAppointmentSetting: AutomaticAppointmentSettingModel
         get() = sharedPreferencesRepo.automaticAppointmentSetting
 
+    /** @see SharedPreferencesRepo.showInsertNHICardAnimation */
+    val isShowInsertNHICardAnimation : Boolean
+        get() = sharedPreferencesRepo.showInsertNHICardAnimation
+
     /** =======================================
      *          Log Record functions
      *  ======================================= */

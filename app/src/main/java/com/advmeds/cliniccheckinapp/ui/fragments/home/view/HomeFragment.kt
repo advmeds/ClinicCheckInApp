@@ -22,6 +22,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -182,6 +183,7 @@ class HomeFragment : Fragment() {
         val text =
             "${String.format(presentHealthText, firstArg, secondArg)}$automaticAppointmentAddition"
 
+        val isShowInsertNHICardAnimation = viewModel.isShowInsertNHICardAnimation
 
         val textColor = ContextCompat.getColor(
             requireContext(),
@@ -201,17 +203,21 @@ class HomeFragment : Fragment() {
 
         binding.checkInLayout.removeAllViews()
 
+        binding.insertNhiCardAnimation.isGone = !isShowInsertNHICardAnimation
+
         val itemList = viewModel.checkInItemList.filter {
             it.isShow
         }
 
         itemList.forEachIndexed { index, checkInItem ->
+            val resource = if (itemList.size == 1 && isShowInsertNHICardAnimation) {
+                R.layout.check_in_item_card_view_vertical
+            } else {
+                R.layout.check_in_item_card_view_horizontal
+            }
+
             layoutInflater.inflate(
-                if (itemList.size > 1) {
-                    R.layout.check_in_item_card_view_horizontal
-                } else {
-                    R.layout.check_in_item_card_view_vertical
-                }, null, false
+                resource, null, false
             ).apply {
                 val itemImg = findViewById<ImageView>(R.id.item_image_view)
                 val itemTitle = findViewById<TextView>(R.id.item_title_tv)
@@ -223,11 +229,13 @@ class HomeFragment : Fragment() {
                         itemTitle.setText(R.string.check_in_item_manual_title)
                         itemBody.text = (secondArg)
                     }
+
                     EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
                         itemImg.setImageResource(R.drawable.ic_baseline_qr_code)
                         itemTitle.setText(R.string.check_in_item_virtual_title)
                         itemBody.text = (secondArg)
                     }
+
                     EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE,
                     EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO,
                     EditCheckInItemDialog.CheckInItemType.CUSTOM_THREE,
@@ -236,37 +244,170 @@ class HomeFragment : Fragment() {
                         itemTitle.text = checkInItem.title
                         itemBody.text = checkInItem.action
                     }
+
                     else -> {}
                 }
 
-                binding.checkInLayout.addView(
-                    this,
-                    LinearLayoutCompat.LayoutParams(
-                        LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                        0,
-                        1f
-                    ).apply {
+                if (isShowInsertNHICardAnimation) {
+                    binding.checkInLayoutHorizontal.isGone = true
+                    binding.checkInLayout.isGone = false
 
-                        val margin = resources.getDimension(R.dimen.distance_between_panel).toInt()
-//                            (resources.getDimension(R.dimen.distance_between_panel) / resources.displayMetrics.density).toInt()
+                    binding.checkInLayout.addView(
+                        this,
+                        LinearLayoutCompat.LayoutParams(
+                            LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                            0,
+                            1f
+                        ).apply {
+                            val margin =
+                                resources.getDimension(R.dimen.distance_between_panel_x_1_5).toInt()
 
-                        val topMargin = if (index == 0) 0 else margin
+                            val bottomMargin = if (index == (itemList.size - 1)) 0 else margin
+                            val leftMargin = if (itemList.isNotEmpty()) margin else 0
 
-                        val bottomMargin = if (index == (itemList.size - 1)) 0 else margin
+                            setMargins(leftMargin, 0, 0, bottomMargin)
+                        }
+                    )
+                } else {
+                    binding.checkInLayoutHorizontal.isGone = false
+                    binding.checkInLayout.isGone = true
 
-                        setMargins(0, 0, 0, bottomMargin)
+                    binding.checkInLayoutHorizontalRight.isGone = itemList.size == 1
 
+                    when (itemList.size) {
+                        1 -> {
+                            binding.checkInLayoutHorizontalLeft.addView(
+                                this,
+                                LinearLayoutCompat.LayoutParams(
+                                    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                                    0,
+                                    1f
+                                )
+                            )
+                        }
+
+                        2 -> {
+                            if ((index + 1) % 2 != 0) {
+                                binding.checkInLayoutHorizontalLeft.addView(
+                                    this,
+                                    LinearLayoutCompat.LayoutParams(
+                                        LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                                        0,
+                                        1f
+                                    ).apply {
+                                        val margin =
+                                            resources.getDimension(R.dimen.distance_between_panel_x_1_5)
+                                                .toInt()
+
+                                        setMargins(0, 0, margin, 0)
+                                    }
+                                )
+                            } else {
+                                binding.checkInLayoutHorizontalRight.addView(
+                                    this,
+                                    LinearLayoutCompat.LayoutParams(
+                                        LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                                        0,
+                                        1f
+                                    ).apply {
+                                        val margin =
+                                            resources.getDimension(R.dimen.distance_between_panel_x_1_5)
+                                                .toInt()
+
+                                        setMargins(margin, 0, 0, 0)
+                                    }
+                                )
+                            }
+                        }
+
+                        3 -> {
+                            if (index == 0) {
+                                binding.checkInLayoutHorizontalLeft.addView(
+                                    this,
+                                    LinearLayoutCompat.LayoutParams(
+                                        LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                                        0,
+                                        1f
+                                    ).apply {
+                                        val margin =
+                                            resources.getDimension(R.dimen.distance_between_panel_x_1_5)
+                                                .toInt()
+
+                                        setMargins(0, 0, margin, 0)
+                                    }
+                                )
+                            } else {
+                                binding.checkInLayoutHorizontalRight.addView(
+                                    this,
+                                    LinearLayoutCompat.LayoutParams(
+                                        LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                                        0,
+                                        1f
+                                    ).apply {
+                                        val margin =
+                                            resources.getDimension(R.dimen.distance_between_panel_x_1_5)
+                                                .toInt()
+
+                                        val bottomMargin = if (index == 1) margin else 0
+                                        val topMargin = if (index == 2) margin else 0
+
+                                        setMargins(margin, topMargin, 0, bottomMargin)
+                                    }
+                                )
+                            }
+                        }
+
+                        4 -> {
+                            if (index <= 1) {
+                                binding.checkInLayoutHorizontalLeft.addView(
+                                    this,
+                                    LinearLayoutCompat.LayoutParams(
+                                        LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                                        0,
+                                        1f
+                                    ).apply {
+                                        val margin =
+                                            resources.getDimension(R.dimen.distance_between_panel_x_1_5)
+                                                .toInt()
+
+                                        val bottomMargin = if (index == 0) margin else 0
+                                        val topMargin = if (index == 1) margin else 0
+
+                                        setMargins(0, topMargin, margin, bottomMargin)
+                                    }
+                                )
+                            } else {
+                                binding.checkInLayoutHorizontalRight.addView(
+                                    this,
+                                    LinearLayoutCompat.LayoutParams(
+                                        LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                                        0,
+                                        1f
+                                    ).apply {
+                                        val margin =
+                                            resources.getDimension(R.dimen.distance_between_panel_x_1_5)
+                                                .toInt()
+
+                                        val bottomMargin = if (index == 2) margin else 0
+                                        val topMargin = if (index == 3) margin else 0
+
+                                        setMargins(margin, topMargin, 0, bottomMargin)
+                                    }
+                                )
+                            }
+                        }
                     }
-                )
-
+                }
                 setOnClickListener {
                     when (checkInItem.type) {
                         EditCheckInItemDialog.CheckInItemType.MANUAL_INPUT -> {
                             findNavController().navigate(R.id.manualInputFragment)
                         }
+
                         EditCheckInItemDialog.CheckInItemType.VIRTUAL_CARD -> {
                             (requireActivity() as MainActivity).checkInWithVirtualCard()
                         }
+
                         EditCheckInItemDialog.CheckInItemType.CUSTOM_ONE,
                         EditCheckInItemDialog.CheckInItemType.CUSTOM_TWO,
                         EditCheckInItemDialog.CheckInItemType.CUSTOM_THREE,
@@ -279,6 +420,7 @@ class HomeFragment : Fragment() {
                                 )
                             )
                         }
+
                         else -> {}
                     }
                 }
@@ -291,7 +433,7 @@ class HomeFragment : Fragment() {
     private fun changeIsCheckInLayoutWeightIfItEmpty(size: Int) {
 
         val endMarginForLeftBlock =
-            if (size == 0) 0 else (resources.getDimension(R.dimen.distance_between_panel) / resources.displayMetrics.density).toInt()
+            if (size == 0) 0 else (resources.getDimension(R.dimen.distance_between_panel_x_1_5) / resources.displayMetrics.density).toInt()
 
         val weight = if (size == 0) 0f else 2f
 
@@ -316,7 +458,7 @@ class HomeFragment : Fragment() {
 
         leftPartParams.setMargins(0, 0, endMarginForLeftBlock, 0)
 
-        binding.leftBlock.layoutParams = leftPartParams
+        binding.insertNhiCardAnimation.layoutParams = leftPartParams
     }
 
     private fun showTextInputDialog(

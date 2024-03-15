@@ -13,22 +13,22 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/screen_padding"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/screen_padding">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/screen_panel_margin"
-            android:layout_marginBottom="@dimen/distance_between_panel"
             android:layout_marginHorizontal="@dimen/screen_panel_margin"
-            android:layout_weight="1">
+            android:layout_marginTop="@dimen/screen_panel_margin"
+            android:layout_marginBottom="@dimen/distance_between_panel_x_1_5"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/distance_between_panel"
+                android:layout_marginEnd="@dimen/distance_between_panel_x_1_5"
                 android:layout_weight="1"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="4dp">
@@ -56,7 +56,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
                 <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
                 <!--                android:layout_width="wrap_content"-->
                 <!--                android:layout_height="wrap_content"-->
@@ -81,6 +80,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/distance_between_panel_x_1_5"
                 android:layout_weight="1"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="4dp">
@@ -116,18 +116,19 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/screen_panel_margin"
+            android:layout_marginTop="@dimen/distance_between_panel_x_1_5"
             android:layout_marginHorizontal="@dimen/screen_panel_margin"
+            android:layout_marginBottom="@dimen/screen_panel_margin"
             android:layout_weight="4"
             android:clipToPadding="false"
             android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/left_block"
+                android:id="@+id/insert_nhi_card_animation"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="3"
                 android:layout_marginEnd="@dimen/distance_between_panel"
+                android:layout_weight="3"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="4dp">
 
@@ -167,7 +168,37 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/check_in_layout_horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/check_in_layout_horizontal_left"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/check_in_layout_horizontal_right"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -180,21 +211,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="@dimen/icon_click_area"
         android:paddingLeft="@dimen/icon_click_area"
+        android:paddingTop="@dimen/icon_click_area"
         android:paddingRight="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
-            android:contentDescription="Setting Image"
             android:layout_width="@dimen/settings_icon_size"
             android:layout_height="@dimen/settings_icon_size"
-            android:layout_margin="@dimen/settings_icon_margin"
             android:layout_gravity="bottom"
+            android:layout_margin="@dimen/settings_icon_margin"
+            android:background="@android:color/transparent"
+            android:contentDescription="Setting Image"
             android:src="@drawable/baseline_settings_24"
-            app:tint="@color/white"
-            android:background="@android:color/transparent"/>
+            app:tint="@color/white" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

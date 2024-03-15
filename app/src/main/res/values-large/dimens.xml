@@ -6,6 +6,7 @@
     <dimen name="screen_panel_margin">10dp</dimen>
 
     <dimen name="distance_between_panel">10dp</dimen>
+    <dimen name="distance_between_panel_x_1_5">15dp</dimen>
 
     <!-- Logo -->
     <dimen name="logo_margin">10dp</dimen>
