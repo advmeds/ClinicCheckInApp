@@ -960,7 +960,7 @@ class MainActivity : AppCompatActivity() {
             this,
             0,
             Intent(USB_PERMISSION),
-            0
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) 0 else PendingIntent.FLAG_IMMUTABLE
         )
 
         usbManager.requestPermission(device, mPermissionIntent)
