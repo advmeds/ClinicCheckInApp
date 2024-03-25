@@ -6,6 +6,7 @@
     <dimen name="screen_panel_margin">20dp</dimen>
 
     <dimen name="distance_between_panel">10dp</dimen>
+    <dimen name="distance_between_panel_x_1_5">15dp</dimen>
 
     <!-- Logo -->
     <dimen name="logo_margin">20dp</dimen>
@@ -59,7 +60,7 @@
 
     <dimen name="setting_dialog_check_box_margin_top">@dimen/space_small</dimen>
     <dimen name="setting_dialog_check_box_margin_bottom">@dimen/space_small</dimen>
-    <dimen name="setting_dialog_check_box_margin_start">@dimen/space_big</dimen>
+    <dimen name="setting_dialog_check_box_margin_start">@dimen/space_normal</dimen>
     <dimen name="setting_dialog_check_box_margin_end">-10dp</dimen>
 
     <!-- Fragment Dialog -->

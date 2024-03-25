@@ -20,7 +20,9 @@ class SettingsEventLogger(
         originalMachineTitle: String,
         originalValue: EditCheckInItemDialog.EditCheckInItems,
         changeMachineTitle: String,
-        changeValue: EditCheckInItemDialog.EditCheckInItems
+        changeValue: EditCheckInItemDialog.EditCheckInItems,
+        originalValueIsShowInsertNHICardAnimation: Boolean,
+        changeIsShowInsertNHICardAnimation: Boolean
     ) {
         val map = mutableMapOf<String, Any>()
         setChangeSettingProperties(map)
@@ -28,8 +30,10 @@ class SettingsEventLogger(
         map["item title"] = itemTitle
         map["original machine title"] = originalMachineTitle
         map["original value"] = originalValue
+        map["original value is show insert NHI card animation"] = originalValueIsShowInsertNHICardAnimation
         map["change machine title"] = changeMachineTitle
         map["change value"] = changeValue
+        map["change value is show insert NHI card animation"] = changeIsShowInsertNHICardAnimation
 
         analyticsRepository.sendEvent("change the setting item: $itemTitle", map)
     }

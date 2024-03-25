@@ -164,6 +164,7 @@ class SettingsViewModel(
                             )
                         }
                     }
+
                     is DownloadController.DownloadControllerDownloadStatus.COMPLETE -> {
                         _uiState.update { currentState ->
                             currentState.copy(
@@ -175,6 +176,7 @@ class SettingsViewModel(
                         }
                         appEventDownloadUpdate("download of new version is complete")
                     }
+
                     is DownloadController.DownloadControllerDownloadStatus.CANCEL -> {
                         _uiState.update { currentState ->
                             currentState.copy(
@@ -186,6 +188,7 @@ class SettingsViewModel(
                         }
                         appEventDownloadUpdate("download of new version is cancel")
                     }
+
                     is DownloadController.DownloadControllerDownloadStatus.FAIL -> {
                         _uiState.update { currentState ->
                             currentState.copy(
@@ -267,6 +270,13 @@ class SettingsViewModel(
     fun clearTempFormatCheckedList() {
         tempFormatCheckedList = null
     }
+
+    /** @see SharedPreferencesRepo.showInsertNHICardAnimation */
+    var showInsertNHICardAnimation: Boolean
+        get() = sharedPreferencesRepo.showInsertNHICardAnimation
+        set(value) {
+            sharedPreferencesRepo.showInsertNHICardAnimation = value
+        }
 
     /** @see SharedPreferencesRepo.checkInItemList */
     var checkInItemList: List<EditCheckInItemDialog.EditCheckInItem>
@@ -365,17 +375,21 @@ class SettingsViewModel(
     fun userChangeUiSetting(
         settingItemTitle: String,
         originalMachineTitle: String,
+        originalValueIsShowInsertNHICardAnimation: Boolean,
         originalValue: EditCheckInItemDialog.EditCheckInItems,
         changeMachineTitle: String,
-        changeValue: EditCheckInItemDialog.EditCheckInItems
+        changeValue: EditCheckInItemDialog.EditCheckInItems,
+        changeIsShowInsertNHICardAnimation: Boolean
     ) {
         viewModelScope.launch {
             settingsEventLogger.logUserChangeUiSettingItem(
-                settingItemTitle,
-                originalMachineTitle,
-                originalValue,
-                changeMachineTitle,
-                changeValue
+                itemTitle = settingItemTitle,
+                originalMachineTitle = originalMachineTitle,
+                originalValue = originalValue,
+                originalValueIsShowInsertNHICardAnimation = originalValueIsShowInsertNHICardAnimation,
+                changeMachineTitle = changeMachineTitle,
+                changeValue = changeValue,
+                changeIsShowInsertNHICardAnimation = changeIsShowInsertNHICardAnimation
             )
         }
     }
