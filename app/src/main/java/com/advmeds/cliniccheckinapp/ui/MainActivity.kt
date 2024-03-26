@@ -917,7 +917,6 @@ class MainActivity : AppCompatActivity() {
             setLanguage(language = BuildConfig.DEFAULT_LANGUAGE)
         else
             setLanguage(language = language)
-
     }
 
 
