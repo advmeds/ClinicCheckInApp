@@ -767,14 +767,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun registerBroadcastReciver() {
-        LocalBroadcastManager.getInstance(this).registerReceiver(
+        LocalBroadcastManager.getInstance(applicationContext).registerReceiver(
             reloadClinicDataReceiver,
             IntentFilter(SharedPreferencesRepo.MS_SERVER_DOMAIN).apply {
                 addAction(SharedPreferencesRepo.ORG_ID)
             }
         )
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(
+        LocalBroadcastManager.getInstance(applicationContext).registerReceiver(
             presentationReceiver,
             IntentFilter(SharedPreferencesRepo.QUEUEING_BOARD_SETTING)
         )
@@ -1577,8 +1577,8 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(reloadClinicDataReceiver)
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(presentationReceiver)
+        LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(reloadClinicDataReceiver)
+        LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(presentationReceiver)
         unregisterReceiver(downloadReceiver)
 
 //        try {

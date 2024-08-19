@@ -76,12 +76,12 @@ class ManualInputFragment : Fragment() {
     ): View {
         _binding = ManualInputFragmentBinding.inflate(inflater, container, false)
 
-        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+        LocalBroadcastManager.getInstance(requireContext().applicationContext).registerReceiver(
             reloadClinicLogoReceiver,
             IntentFilter(SharedPreferencesRepo.LOGO_URL)
         )
 
-        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+        LocalBroadcastManager.getInstance(requireContext().applicationContext).registerReceiver(
             reloadClinicLogoReceiver,
             IntentFilter(SharedPreferencesRepo.LOGO_URL)
         )
@@ -211,9 +211,9 @@ class ManualInputFragment : Fragment() {
 
         idleFireJob?.cancel()
 
-        LocalBroadcastManager.getInstance(requireContext())
+        LocalBroadcastManager.getInstance(requireContext().applicationContext)
             .unregisterReceiver(reloadClinicLogoReceiver)
-        LocalBroadcastManager.getInstance(requireContext())
+        LocalBroadcastManager.getInstance(requireContext().applicationContext)
             .unregisterReceiver(reloadTitle)
 
         _binding = null

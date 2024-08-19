@@ -52,7 +52,7 @@ class HomeFragment : Fragment() {
             homeEventLogger = HomeEventLogger(
                 AnalyticsRepositoryImpl.getInstance(
                     RoomRepositories.eventsRepository,
-                    SharedPreferencesRepo.getInstance(requireContext())
+                    SharedPreferencesRepo.getInstance(requireContext().applicationContext)
                 )
             )
         )
@@ -98,17 +98,17 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = HomeFragmentBinding.inflate(inflater, container, false)
 
-        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+        LocalBroadcastManager.getInstance(requireContext().applicationContext).registerReceiver(
             reloadClinicLogoReceiver,
             IntentFilter(SharedPreferencesRepo.LOGO_URL)
         )
 
-        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+        LocalBroadcastManager.getInstance(requireContext().applicationContext).registerReceiver(
             reloadTitle,
             IntentFilter(SharedPreferencesRepo.MACHINE_TITLE)
         )
 
-        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+        LocalBroadcastManager.getInstance(requireContext().applicationContext).registerReceiver(
             reloadRightCardViewReceiver,
             IntentFilter(SharedPreferencesRepo.ROOMS).apply {
                 addAction(SharedPreferencesRepo.DOCTORS)
@@ -117,7 +117,7 @@ class HomeFragment : Fragment() {
             }
         )
 
-        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+        LocalBroadcastManager.getInstance(requireContext().applicationContext).registerReceiver(
             reloadPresentCardTextReceiver,
             IntentFilter(SharedPreferencesRepo.AUTOMATIC_APPOINTMENT_SETTING)
         )
@@ -519,13 +519,13 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
 
-        LocalBroadcastManager.getInstance(requireContext())
+        LocalBroadcastManager.getInstance(requireContext().applicationContext)
             .unregisterReceiver(reloadClinicLogoReceiver)
-        LocalBroadcastManager.getInstance(requireContext())
+        LocalBroadcastManager.getInstance(requireContext().applicationContext)
             .unregisterReceiver(reloadRightCardViewReceiver)
-        LocalBroadcastManager.getInstance(requireContext())
+        LocalBroadcastManager.getInstance(requireContext().applicationContext)
             .unregisterReceiver(reloadTitle)
-        LocalBroadcastManager.getInstance(requireContext())
+        LocalBroadcastManager.getInstance(requireContext().applicationContext)
             .unregisterReceiver(reloadPresentCardTextReceiver)
 
         _binding = null

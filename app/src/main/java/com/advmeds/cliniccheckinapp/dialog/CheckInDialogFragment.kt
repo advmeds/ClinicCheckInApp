@@ -54,7 +54,7 @@ class CheckInDialogFragment : AppCompatDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sharedPreferencesRepo = SharedPreferencesRepo(requireContext())
+        val sharedPreferencesRepo = SharedPreferencesRepo(requireContext().applicationContext)
 
         val healthCard = getString(R.string.health_card)
         val nationId = sharedPreferencesRepo.formatCheckedList.joinToString("、") { getString(it.description) }
