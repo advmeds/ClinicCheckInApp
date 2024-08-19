@@ -39,7 +39,11 @@ import com.advmeds.cliniccheckinapp.ui.MainActivity
 import com.advmeds.cliniccheckinapp.ui.fragments.home.eventLogger.HomeEventLogger
 import com.advmeds.cliniccheckinapp.ui.fragments.home.viewmodel.HomeViewModel
 import com.advmeds.cliniccheckinapp.ui.fragments.home.viewmodel.HomeViewModelFactory
-import kotlinx.android.synthetic.main.text_input_dialog.*
+import kotlinx.android.synthetic.main.text_input_dialog.dialog_cancel_btn
+import kotlinx.android.synthetic.main.text_input_dialog.dialog_description
+import kotlinx.android.synthetic.main.text_input_dialog.dialog_input_field
+import kotlinx.android.synthetic.main.text_input_dialog.dialog_save_btn
+import kotlinx.android.synthetic.main.text_input_dialog.dialog_title
 
 
 class HomeFragment : Fragment() {

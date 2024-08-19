@@ -5,7 +5,11 @@ import android.app.Activity
 import android.app.DownloadManager
 import android.app.PendingIntent
 import android.app.Presentation
-import android.content.*
+import android.content.ActivityNotFoundException
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.hardware.usb.UsbDevice
@@ -65,6 +69,7 @@ import com.advmeds.cliniccheckinapp.utils.DownloadController
 import com.advmeds.cliniccheckinapp.utils.toCharSequence
 import com.advmeds.cliniccheckinapp.utils.zipWith
 import com.advmeds.printerlib.usb.BPT3XPrinterService
+import com.advmeds.printerlib.usb.EP360CPrintService
 import com.advmeds.printerlib.usb.UsbPrinterService
 import com.advmeds.printerlib.utils.PrinterBuffer
 import com.google.android.material.snackbar.Snackbar
@@ -74,7 +79,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.DateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import kotlin.reflect.full.primaryConstructor
 
 
@@ -129,10 +135,10 @@ class MainActivity : AppCompatActivity() {
                             ezUsbDevice.supportedDevice?.productId -> {
                                 ezUsbDevice.connectDevice(usbDevice)
                             }
-                            usbPrinterService.supportedDevice?.productId -> {
+                            usbPrinterService?.supportedDevice?.productId -> {
                                 if (viewModel.queueingMachineSettingIsEnable) {
                                     try {
-                                        usbPrinterService.connectDevice(usbDevice)
+                                        usbPrinterService?.connectDevice(usbDevice)
                                     } catch (e: Exception) {
                                         e.printStackTrace()
                                         Snackbar.make(
@@ -159,8 +165,8 @@ class MainActivity : AppCompatActivity() {
                         ezUsbDevice.connectedDevice?.productId -> {
                             ezUsbDevice.disconnect()
                         }
-                        usbPrinterService.connectedDevice?.productId -> {
-                            usbPrinterService.disconnect()
+                        usbPrinterService?.connectedDevice?.productId -> {
+                            usbPrinterService?.disconnect()
                         }
                     }
                 }
@@ -308,7 +314,7 @@ class MainActivity : AppCompatActivity() {
 
 //    private lateinit var printService: BluetoothPrinterService
 
-    lateinit var usbPrinterService: UsbPrinterService
+    var usbPrinterService: UsbPrinterService? = null
 
     private val reloadClinicDataReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -946,12 +952,14 @@ class MainActivity : AppCompatActivity() {
             connectUSBDevice(it)
         }
 
-
-        usbPrinterService = BPT3XPrinterService(usbManager)
-        if (viewModel.queueingMachineSettingIsEnable) {
-            usbPrinterService.supportedDevice?.also {
-                connectUSBDevice(it)
-            }
+        usbPrinterService = BPT3XPrinterService.isSupported(usbManager)?.let {
+            val service = BPT3XPrinterService(usbManager)
+            connectUSBDevice(it)
+            service
+        } ?: EP360CPrintService.isSupported(usbManager)?.let {
+            val service = EP360CPrintService(applicationContext)
+            connectUSBDevice(it)
+            service
         }
     }
 
@@ -1063,7 +1071,7 @@ class MainActivity : AppCompatActivity() {
             commandList.addAll(footerCommand)
 
             commandList.forEach { command ->
-                usbPrinterService.write(command)
+                usbPrinterService?.write(command)
             }
         } else {
             divisions.zipWith(serialNumbers, doctors).forEach { (division, serialNo, doctor) ->
@@ -1097,7 +1105,7 @@ class MainActivity : AppCompatActivity() {
                 commandList.addAll(footerCommand)
 
                 commandList.forEach { command ->
-                    usbPrinterService.write(command)
+                    usbPrinterService?.write(command)
                 }
             }
         }
@@ -1335,7 +1343,7 @@ class MainActivity : AppCompatActivity() {
         isItManualInput: Boolean = false,
         completion: (() -> Unit)? = null
     ) {
-        if (viewModel.queueingMachineSettingIsEnable && !usbPrinterService.isConnected) {
+        if (viewModel.queueingMachineSettingIsEnable && usbPrinterService?.isConnected != true) {
             // 若有開啟取號功能，則必須要有連線取票機才會去報到
             Snackbar.make(
                 binding.root,
@@ -1387,7 +1395,7 @@ class MainActivity : AppCompatActivity() {
         completion: ((CreateAppointmentResponse) -> Unit)? = null
     ) {
         // if app support print ticket, check ticket machine connection
-        if (viewModel.queueingMachineSettingIsEnable && !usbPrinterService.isConnected) {
+        if (viewModel.queueingMachineSettingIsEnable && usbPrinterService?.isConnected != true) {
             Snackbar.make(
                 binding.root,
                 getString(R.string.printer_not_connect),
@@ -1569,7 +1577,8 @@ class MainActivity : AppCompatActivity() {
 
         acsUsbDevice.disconnect()
         ezUsbDevice.disconnect()
-        usbPrinterService.disconnect()
+        usbPrinterService?.disconnect()
+        usbPrinterService = null
 
         try {
             unregisterReceiver(detectUsbDeviceReceiver)

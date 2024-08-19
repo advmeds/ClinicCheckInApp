@@ -7,6 +7,7 @@ import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.dialog.EditCheckInItemDialog
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.ApiService
+import com.advmeds.cliniccheckinapp.models.remote.mScheduler.LogInterceptor
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.request.CreateAppointmentRequest
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.response.ControllerAppVersionResponse
 import com.advmeds.cliniccheckinapp.models.remote.mScheduler.sharedPreferences.AutomaticAppointmentSettingModel
@@ -339,18 +340,7 @@ class SettingsViewModel(
 
     private val client = OkHttpClient.Builder()
         .readTimeout(30, TimeUnit.SECONDS)
-        .addInterceptor {
-            val request = it.request()
-
-            val buffer = Buffer()
-            request.body()?.writeTo(buffer)
-
-            Timber.d("URL: ${request.url()}")
-            Timber.d("Method: ${request.method()}")
-            Timber.d("Request: ${buffer.readUtf8()}")
-
-            return@addInterceptor it.proceed(request)
-        }
+        .addInterceptor(LogInterceptor())
         .build()
 
     @OptIn(ExperimentalSerializationApi::class)
