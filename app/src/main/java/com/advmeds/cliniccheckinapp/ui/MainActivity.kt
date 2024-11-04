@@ -125,46 +125,56 @@ class MainActivity : AppCompatActivity() {
 
     private val detectUsbDeviceReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            val usbDevice = intent.getParcelableExtra<UsbDevice>(UsbManager.EXTRA_DEVICE)
-            Timber.d("current action: ${intent.action} with ${usbDevice?.productName.orEmpty()}")
+            val usbDevice = intent.getParcelableExtra<UsbDevice>(UsbManager.EXTRA_DEVICE) ?: return
+            Timber.d("current action: ${intent.action} with ${usbDevice.productName.orEmpty()}")
 
             when (intent.action) {
                 USB_PERMISSION -> {
-                    acsUsbDevice.supportedDevice?.let {
-                        acsUsbDevice.connectDevice(it)
-                    }
-                    ezUsbDevice.supportedDevice?.let {
-                        ezUsbDevice.connectDevice(it)
-                    }
-                    rfProDevice.supportedDevice?.let {
-                        rfProDevice.connect()
-                    }
-                    usbPrinterService?.supportedDevice?.let {
-                        try {
-                            usbPrinterService?.connectDevice(it)
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            Snackbar.make(
-                                binding.root,
-                                "Fail to connect the usb printer.",
-                                Snackbar.LENGTH_LONG
-                            ).show()
+                    when (usbDevice.productId) {
+                        acsUsbDevice.supportedDevice?.productId -> {
+                            acsUsbDevice.connectDevice(usbDevice)
+                        }
+                        ezUsbDevice.supportedDevice?.productId -> {
+                            ezUsbDevice.connectDevice(usbDevice)
+                        }
+                        rfProDevice.supportedDevice?.productId -> {
+                            rfProDevice.connect()
+                        }
+                        usbPrinterService?.supportedDevice?.productId -> {
+                            try {
+                                usbPrinterService?.connectDevice(usbDevice)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                Snackbar.make(
+                                    binding.root,
+                                    "Fail to connect the usb printer.",
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                            }
                         }
                     }
                 }
                 UsbManager.ACTION_USB_DEVICE_ATTACHED -> {
-                    usbDevice?.let { connectUSBDevice(it) }
+                    if (RFProDevice.isSupported(usbDevice)) {
+                        rfProDevice.connect()
+                    } else {
+                        connectUSBDevice(usbDevice)
+                    }
                 }
                 UsbManager.ACTION_USB_DEVICE_DETACHED -> {
-                    when (usbDevice?.productId) {
-                        acsUsbDevice.connectedDevice?.productId -> {
-                            acsUsbDevice.disconnect()
-                        }
-                        ezUsbDevice.connectedDevice?.productId -> {
-                            ezUsbDevice.disconnect()
-                        }
-                        usbPrinterService?.connectedDevice?.productId -> {
-                            usbPrinterService?.disconnect()
+                    if (RFProDevice.isSupported(usbDevice)) {
+                        rfProDevice.disconnect()
+                    } else {
+                        when (usbDevice.productId) {
+                            acsUsbDevice.connectedDevice?.productId -> {
+                                acsUsbDevice.disconnect()
+                            }
+                            ezUsbDevice.connectedDevice?.productId -> {
+                                ezUsbDevice.disconnect()
+                            }
+                            usbPrinterService?.connectedDevice?.productId -> {
+                                usbPrinterService?.disconnect()
+                            }
                         }
                     }
                 }
@@ -973,7 +983,7 @@ class MainActivity : AppCompatActivity() {
             this,
             0,
             Intent(USB_PERMISSION),
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) 0 else PendingIntent.FLAG_IMMUTABLE
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) 0 else PendingIntent.FLAG_MUTABLE
         )
 
         usbManager.requestPermission(device, mPermissionIntent)
