@@ -71,12 +71,14 @@ import com.advmeds.cliniccheckinapp.utils.zipWith
 import com.advmeds.printerlib.usb.BPT3XPrinterService
 import com.advmeds.printerlib.usb.EP360CPrintService
 import com.advmeds.printerlib.usb.UsbPrinterService
+import com.advmeds.printerlib.utils.EP360CPrinterBuffer
 import com.advmeds.printerlib.utils.PrinterBuffer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.File
 import java.text.DateFormat
 import java.util.Date
@@ -122,43 +124,35 @@ class MainActivity : AppCompatActivity() {
 
     private val detectUsbDeviceReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            val usbDevice = intent.getParcelableExtra<UsbDevice>(UsbManager.EXTRA_DEVICE) ?: return
+            val usbDevice = intent.getParcelableExtra<UsbDevice>(UsbManager.EXTRA_DEVICE)
+            Timber.d("current action: ${intent.action} with ${usbDevice?.productName.orEmpty()}")
 
             when (intent.action) {
                 USB_PERMISSION -> {
-                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                        // user choose YES for your previously popup window asking for grant permission for this usb device
-                        when (usbDevice.productId) {
-                            acsUsbDevice.supportedDevice?.productId -> {
-                                acsUsbDevice.connectDevice(usbDevice)
-                            }
-                            ezUsbDevice.supportedDevice?.productId -> {
-                                ezUsbDevice.connectDevice(usbDevice)
-                            }
-                            usbPrinterService?.supportedDevice?.productId -> {
-                                if (viewModel.queueingMachineSettingIsEnable) {
-                                    try {
-                                        usbPrinterService?.connectDevice(usbDevice)
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                        Snackbar.make(
-                                            binding.root,
-                                            "Fail to connect the usb printer.",
-                                            Snackbar.LENGTH_LONG
-                                        ).show()
-                                    }
-                                }
-                            }
+                    acsUsbDevice.supportedDevice?.let {
+                        acsUsbDevice.connectDevice(it)
+                    }
+                    ezUsbDevice.supportedDevice?.let {
+                        ezUsbDevice.connectDevice(it)
+                    }
+                    usbPrinterService?.supportedDevice?.let {
+                        try {
+                            usbPrinterService?.connectDevice(it)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            Snackbar.make(
+                                binding.root,
+                                "Fail to connect the usb printer.",
+                                Snackbar.LENGTH_LONG
+                            ).show()
                         }
-                    } else {
-                        // user choose NO for your previously popup window asking for grant permission for this usb device
                     }
                 }
                 UsbManager.ACTION_USB_DEVICE_ATTACHED -> {
-                    connectUSBDevice(usbDevice)
+                    usbDevice?.let { connectUSBDevice(it) }
                 }
                 UsbManager.ACTION_USB_DEVICE_DETACHED -> {
-                    when (usbDevice.productId) {
+                    when (usbDevice?.productId) {
                         acsUsbDevice.connectedDevice?.productId -> {
                             acsUsbDevice.disconnect()
                         }
@@ -1115,26 +1109,56 @@ class MainActivity : AppCompatActivity() {
         isShowOrganization: Boolean,
         textSize: QueueingMachineSettingModel.MillimeterSize
     ): ArrayList<ByteArray> {
-        val headerCommand = arrayListOf(
-            PrinterBuffer.initializePrinter(),
-            PrinterBuffer.selectAlignment(PrinterBuffer.Alignment.CENTER),
-        )
-
-        val clinicName = viewModel.clinicName
-
-        if (isShowOrganization && clinicName.isNotBlank()) {
-            headerCommand.addAll(
-                arrayListOf(
-                    PrinterBuffer.setLineSpacing(120),
-                    PrinterBuffer.selectCharacterSize(
-                        setTextSizeForSmallText(textSize)
-                    ),
-                    strToBytes(clinicName),
-                    PrinterBuffer.printAndFeedLine(),
+        return when (usbPrinterService) {
+            is BPT3XPrinterService -> {
+                val headerCommand = arrayListOf(
+                    PrinterBuffer.initializePrinter(),
+                    PrinterBuffer.selectAlignment(PrinterBuffer.Alignment.CENTER),
                 )
-            )
+
+                val clinicName = viewModel.clinicName
+
+                if (isShowOrganization && clinicName.isNotBlank()) {
+                    headerCommand.addAll(
+                        arrayListOf(
+                            PrinterBuffer.setLineSpacing(120),
+                            PrinterBuffer.selectCharacterSize(
+                                setTextSizeForSmallText(textSize)
+                            ),
+                            strToBytes(clinicName),
+                            PrinterBuffer.printAndFeedLine(),
+                        )
+                    )
+                }
+                headerCommand
+            }
+            is EP360CPrintService -> {
+                val headerCommand = arrayListOf(
+                    EP360CPrinterBuffer.initializePrinter(),
+                    EP360CPrinterBuffer.align(EP360CPrinterBuffer.Alignment.CENTER),
+                )
+
+                val clinicName = viewModel.clinicName
+
+                if (isShowOrganization && clinicName.isNotBlank()) {
+                    headerCommand.addAll(
+                        arrayListOf(
+                            EP360CPrinterBuffer.feedLine(),
+                            EP360CPrinterBuffer.textOut(
+                                clinicName,
+                                textWidth = 3,
+                                textHeight = 2,
+                                fontStyle = EP360CPrinterBuffer.TextStyle.BOLD
+                            ),
+                            EP360CPrinterBuffer.feedLine(),
+                            EP360CPrinterBuffer.feedLine(),
+                        )
+                    )
+                }
+                headerCommand
+            }
+            else -> TODO()
         }
-        return headerCommand
     }
 
     private fun getMiddleCommand(
@@ -1149,43 +1173,99 @@ class MainActivity : AppCompatActivity() {
 
         divisions.zipWith(serialNumbers, doctors).forEach { (division, serialNo, doctor) ->
 
-            if (queueingMachineSettingModel.doctor) {
-                middleCommand.addAll(
-                    arrayListOf(
+            when (usbPrinterService) {
+                is BPT3XPrinterService -> {
+                    if (queueingMachineSettingModel.doctor) {
+                        middleCommand.addAll(
+                            arrayListOf(
+                                PrinterBuffer.setLineSpacing(160),
+                                PrinterBuffer.selectCharacterSize(setTextSizeForBigText(textSize)),
+                                strToBytes(doctor),
+                                PrinterBuffer.printAndFeedLine(),
+                            )
+                        )
+                    }
+
+                    if (queueingMachineSettingModel.dept) {
+                        middleCommand.addAll(
+                            arrayListOf(
+                                PrinterBuffer.setLineSpacing(160),
+                                PrinterBuffer.selectCharacterSize(setTextSizeForBigText(textSize)),
+                                strToBytes(division),
+                                PrinterBuffer.printAndFeedLine(),
+                            )
+                        )
+                    }
+
+                    val innerList = arrayListOf(
+                        PrinterBuffer.setLineSpacing(120),
+                        PrinterBuffer.selectCharacterSize(setTextSizeForSmallText(textSize)),
+                        strToBytes(getString(R.string.print_serial_no)),
+                        PrinterBuffer.printAndFeedLine(),
+
                         PrinterBuffer.setLineSpacing(160),
                         PrinterBuffer.selectCharacterSize(setTextSizeForBigText(textSize)),
-                        strToBytes(doctor),
+                        strToBytes(String.format("%04d", serialNo)),
                         PrinterBuffer.printAndFeedLine(),
                     )
-                )
-            }
 
-            if (queueingMachineSettingModel.dept) {
-                middleCommand.addAll(
-                    arrayListOf(
-                        PrinterBuffer.setLineSpacing(160),
-                        PrinterBuffer.selectCharacterSize(setTextSizeForBigText(textSize)),
-                        strToBytes(division),
-                        PrinterBuffer.printAndFeedLine(),
+                    middleCommand.addAll(innerList)
+                }
+                is EP360CPrintService -> {
+                    if (queueingMachineSettingModel.doctor) {
+                        middleCommand.addAll(
+                            arrayListOf(
+                                EP360CPrinterBuffer.textOut(
+                                    doctor,
+                                    textWidth = 7,
+                                    textHeight = 4,
+                                    fontStyle = EP360CPrinterBuffer.TextStyle.BOLD
+                                ),
+                                EP360CPrinterBuffer.feedLine(),
+                                EP360CPrinterBuffer.feedLine(),
+                            )
+                        )
+                    }
+
+                    if (queueingMachineSettingModel.dept) {
+                        middleCommand.addAll(
+                            arrayListOf(
+                                EP360CPrinterBuffer.textOut(
+                                    division,
+                                    textWidth = 7,
+                                    textHeight = 4,
+                                    fontStyle = EP360CPrinterBuffer.TextStyle.BOLD
+                                ),
+                                EP360CPrinterBuffer.feedLine(),
+                                EP360CPrinterBuffer.feedLine(),
+                            )
+                        )
+                    }
+
+                    val innerList = arrayListOf(
+                        EP360CPrinterBuffer.textOut(
+                            getString(R.string.print_serial_no),
+                            textWidth = 3,
+                            textHeight = 2,
+                            fontStyle = EP360CPrinterBuffer.TextStyle.BOLD
+                        ),
+                        EP360CPrinterBuffer.feedLine(),
+                        EP360CPrinterBuffer.feedLine(),
+
+                        EP360CPrinterBuffer.textOut(
+                            String.format("%04d", serialNo),
+                            textWidth = 7,
+                            textHeight = 4,
+                            fontStyle = EP360CPrinterBuffer.TextStyle.BOLD
+                        ),
+                        EP360CPrinterBuffer.feedLine(),
+                        EP360CPrinterBuffer.feedLine(),
                     )
-                )
+
+                    middleCommand.addAll(innerList)
+                }
+                else -> TODO()
             }
-
-            val innerList = arrayListOf(
-
-                PrinterBuffer.setLineSpacing(120),
-                PrinterBuffer.selectCharacterSize(setTextSizeForSmallText(textSize)),
-                strToBytes(getString(R.string.print_serial_no)),
-                PrinterBuffer.printAndFeedLine(),
-
-                PrinterBuffer.setLineSpacing(160),
-                PrinterBuffer.selectCharacterSize(setTextSizeForBigText(textSize)),
-                strToBytes(String.format("%04d", serialNo)),
-                PrinterBuffer.printAndFeedLine(),
-            )
-
-            middleCommand.addAll(innerList)
-
         }
         return middleCommand
     }
@@ -1196,27 +1276,65 @@ class MainActivity : AppCompatActivity() {
         now: Date,
         textSize: QueueingMachineSettingModel.MillimeterSize
     ): ArrayList<ByteArray> {
-        val footerCommand = if (isShowTime) {
-            arrayListOf(
-                PrinterBuffer.setLineSpacing(120),
-                PrinterBuffer.selectCharacterSize(setTextSizeForSmallText(textSize)),
-                strToBytes(formatter.format(now)),
-                PrinterBuffer.printAndFeedLine(),
-            )
-        } else {
-            ArrayList()
+        val footerCommand: ArrayList<ByteArray> = ArrayList()
+
+        when (usbPrinterService) {
+            is BPT3XPrinterService -> {
+                if (isShowTime) {
+                    footerCommand.addAll(
+                        arrayListOf(
+                            PrinterBuffer.setLineSpacing(120),
+                            PrinterBuffer.selectCharacterSize(setTextSizeForSmallText(textSize)),
+                            strToBytes(formatter.format(now)),
+                            PrinterBuffer.printAndFeedLine(),
+                        )
+                    )
+                }
+
+                footerCommand.addAll(
+                    arrayListOf(
+                        PrinterBuffer.setLineSpacing(120),
+                        PrinterBuffer.selectCharacterSize(setTextSizeForSmallText(textSize)),
+                        strToBytes(getString(R.string.print_footer)),
+                        PrinterBuffer.printAndFeedLine(),
+
+                        PrinterBuffer.selectCutPagerModerAndCutPager(66, 1)
+                    )
+                )
+            }
+            is EP360CPrintService -> {
+                if (isShowTime) {
+                    footerCommand.addAll(
+                        arrayListOf(
+                            EP360CPrinterBuffer.textOut(
+                                formatter.format(now),
+                                textWidth = 1,
+                                textHeight = 0
+                            ),
+                            EP360CPrinterBuffer.feedLine(),
+                        )
+                    )
+                }
+
+                footerCommand.addAll(
+                    arrayListOf(
+                        EP360CPrinterBuffer.textOut(
+                            getString(R.string.print_footer),
+                            textWidth = 1,
+                            textHeight = 0
+                        ),
+                        EP360CPrinterBuffer.feedLine(),
+
+                        EP360CPrinterBuffer.feedLine(),
+                        EP360CPrinterBuffer.feedLine(),
+                        EP360CPrinterBuffer.feedLine(),
+                        EP360CPrinterBuffer.halfCutPaper()
+                    )
+                )
+            }
+            else -> TODO()
         }
 
-        footerCommand.addAll(
-            arrayListOf(
-                PrinterBuffer.setLineSpacing(120),
-                PrinterBuffer.selectCharacterSize(setTextSizeForSmallText(textSize)),
-                strToBytes(getString(R.string.print_footer)),
-                PrinterBuffer.printAndFeedLine(),
-
-                PrinterBuffer.selectCutPagerModerAndCutPager(66, 1)
-            )
-        )
         return footerCommand
     }
 
