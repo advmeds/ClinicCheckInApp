@@ -48,6 +48,7 @@ import com.advmeds.cardreadermodule.UsbDeviceCallback
 import com.advmeds.cardreadermodule.acs.usb.AcsUsbDevice
 import com.advmeds.cardreadermodule.acs.usb.decoder.AcsUsbTWDecoder
 import com.advmeds.cardreadermodule.castles.CastlesUsbDevice
+import com.advmeds.cardreadermodule.rfpro.RFProDevice
 import com.advmeds.cliniccheckinapp.BuildConfig
 import com.advmeds.cliniccheckinapp.R
 import com.advmeds.cliniccheckinapp.databinding.ActivityMainBinding
@@ -135,6 +136,9 @@ class MainActivity : AppCompatActivity() {
                     ezUsbDevice.supportedDevice?.let {
                         ezUsbDevice.connectDevice(it)
                     }
+                    rfProDevice.supportedDevice?.let {
+                        rfProDevice.connect()
+                    }
                     usbPrinterService?.supportedDevice?.let {
                         try {
                             usbPrinterService?.connectDevice(it)
@@ -173,6 +177,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var acsUsbDevice: AcsUsbDevice
 
     private lateinit var ezUsbDevice: CastlesUsbDevice
+
+    private lateinit var rfProDevice: RFProDevice
 
     private val usbDeviceCallback = object : UsbDeviceCallback {
         override fun onCardPresent() {
@@ -946,6 +952,11 @@ class MainActivity : AppCompatActivity() {
             connectUSBDevice(it)
         }
 
+        rfProDevice = RFProDevice(this).apply { callback = usbDeviceCallback }
+        rfProDevice.supportedDevice?.also {
+            connectUSBDevice(it)
+        }
+
         usbPrinterService = BPT3XPrinterService.isSupported(usbManager)?.let {
             val service = BPT3XPrinterService(usbManager)
             connectUSBDevice(it)
@@ -1695,6 +1706,7 @@ class MainActivity : AppCompatActivity() {
 
         acsUsbDevice.disconnect()
         ezUsbDevice.disconnect()
+        rfProDevice.disconnect()
         usbPrinterService?.disconnect()
         usbPrinterService = null
 
