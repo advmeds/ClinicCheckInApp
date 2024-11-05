@@ -11,69 +11,65 @@
     android:padding="@dimen/screen_padding"
     tools:context=".ui.fragments.manualInput.view.ManualInputFragment">
 
-<!--    <androidx.cardview.widget.CardView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:layout_margin="@dimen/screen_padding"-->
-<!--        android:layout_weight="1"-->
-<!--        app:cardCornerRadius="10dp"-->
-<!--        app:cardElevation="4dp">-->
+    <!--    <androidx.cardview.widget.CardView-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:layout_margin="@dimen/screen_padding"-->
+    <!--        android:layout_weight="1"-->
+    <!--        app:cardCornerRadius="10dp"-->
+    <!--        app:cardElevation="4dp">-->
 
 
+    <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_gravity="center_horizontal">-->
 
-<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center_horizontal">-->
+    <!--            <androidx.appcompat.widget.AppCompatImageView-->
+    <!--                android:id="@+id/logo_imageView"-->
+    <!--                android:layout_width="@dimen/logo_image_width"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_gravity="center_vertical"-->
+    <!--                android:layout_marginVertical="@dimen/logo_image_margin"-->
+    <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--                app:layout_constraintDimensionRatio="w,850:200"-->
+    <!--                app:layout_constraintEnd_toStartOf="@+id/appCompatTextView"-->
+    <!--                app:layout_constraintStart_toStartOf="parent"-->
+    <!--                app:layout_constraintTop_toTopOf="parent"-->
+    <!--                app:srcCompat="@drawable/clinic_logo_default" />-->
 
-<!--            <androidx.appcompat.widget.AppCompatImageView-->
-<!--                android:id="@+id/logo_imageView"-->
-<!--                android:layout_width="@dimen/logo_image_width"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="center_vertical"-->
-<!--                android:layout_marginVertical="@dimen/logo_image_margin"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintDimensionRatio="w,850:200"-->
-<!--                app:layout_constraintEnd_toStartOf="@+id/appCompatTextView"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:srcCompat="@drawable/clinic_logo_default" />-->
+    <!--            <androidx.appcompat.widget.AppCompatTextView-->
+    <!--                android:id="@+id/appCompatTextView"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_gravity="center"-->
+    <!--                android:layout_marginStart="@dimen/space_normal"-->
+    <!--                android:fontFamily="sans-serif-medium"-->
+    <!--                android:gravity="center"-->
+    <!--                android:lines="1"-->
+    <!--                android:text="@string/app_name"-->
+    <!--                android:textColor="@color/colorPrimary"-->
+    <!--                android:textSize="@dimen/font_size_h2"-->
+    <!--                android:textStyle="bold"-->
+    <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--                app:layout_constraintEnd_toEndOf="parent"-->
+    <!--                app:layout_constraintStart_toEndOf="@+id/logo_imageView"-->
+    <!--                app:layout_constraintTop_toTopOf="parent" />-->
 
-<!--            <androidx.appcompat.widget.AppCompatTextView-->
-<!--                android:id="@+id/appCompatTextView"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:layout_marginStart="@dimen/space_normal"-->
-<!--                android:fontFamily="sans-serif-medium"-->
-<!--                android:gravity="center"-->
-<!--                android:lines="1"-->
-<!--                android:text="@string/app_name"-->
-<!--                android:textColor="@color/colorPrimary"-->
-<!--                android:textSize="@dimen/font_size_h2"-->
-<!--                android:textStyle="bold"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toEndOf="@+id/logo_imageView"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
+    <!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-<!--    </androidx.cardview.widget.CardView>-->
+    <!--    </androidx.cardview.widget.CardView>-->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/screen_panel_margin"
-        android:layout_marginBottom="@dimen/distance_between_panel"
-        android:layout_marginHorizontal="@dimen/screen_panel_margin"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/distance_between_panel"
+            android:layout_margin="@dimen/screen_panel_margin"
             android:layout_weight="1"
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">
@@ -99,32 +95,12 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
-            <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_gravity="center_horizontal">-->
-
-            <!--                <androidx.appcompat.widget.AppCompatImageView-->
-            <!--                    android:id="@+id/logo_imageView"-->
-            <!--                    android:layout_width="@dimen/logo_image_width"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_gravity="center_vertical"-->
-            <!--                    android:layout_marginVertical="@dimen/logo_image_margin"-->
-            <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--                    app:layout_constraintDimensionRatio="w,850:200"-->
-            <!--                    app:layout_constraintStart_toStartOf="parent"-->
-            <!--                    app:layout_constraintTop_toTopOf="parent"-->
-            <!--                    app:srcCompat="@drawable/clinic_logo_default" />-->
-
-            <!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
-
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_margin="@dimen/screen_panel_margin"
             android:layout_weight="1"
             app:cardCornerRadius="10dp"
             app:cardElevation="4dp">
@@ -160,8 +136,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="@dimen/screen_padding"
-        android:layout_marginBottom="@dimen/screen_padding"
+        android:layout_margin="@dimen/screen_panel_margin"
         android:layout_weight="4"
         app:cardCornerRadius="10dp"
         app:cardElevation="4dp">
@@ -178,13 +153,12 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/id_input_title_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginTop="@dimen/space_medium"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:lines="1"
                     android:textAlignment="center"
@@ -196,9 +170,9 @@
                     android:id="@+id/id_input_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginHorizontal="@dimen/space_huge"
                     android:layout_marginVertical="@dimen/space_normal"
+                    android:layout_weight="1"
                     android:background="@drawable/id_input_border"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
@@ -214,9 +188,9 @@
                     style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="@dimen/space_medium"
+                    android:layout_weight="1"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     android:paddingStart="@dimen/input_page_back_to_home_horizontal_padding"
@@ -229,9 +203,7 @@
                     app:cornerRadius="8dp"
                     tools:ignore="SpeakableTextPresentCheck" />
 
-
             </androidx.appcompat.widget.LinearLayoutCompat>
-
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
