@@ -47,6 +47,7 @@ import com.advmeds.cardreadermodule.AcsResponseModel
 import com.advmeds.cardreadermodule.UsbDeviceCallback
 import com.advmeds.cardreadermodule.acs.usb.AcsUsbDevice
 import com.advmeds.cardreadermodule.acs.usb.decoder.AcsUsbTWDecoder
+import com.advmeds.cardreadermodule.alcorlink.AlcorlinkUsbDevice
 import com.advmeds.cardreadermodule.castles.CastlesUsbDevice
 import com.advmeds.cardreadermodule.rfpro.RFProDevice
 import com.advmeds.cliniccheckinapp.BuildConfig
@@ -130,17 +131,20 @@ class MainActivity : AppCompatActivity() {
 
             when (intent.action) {
                 USB_PERMISSION -> {
-                    when (usbDevice.productId) {
-                        acsUsbDevice.supportedDevice?.productId -> {
+                    when {
+                        acsUsbDevice.isSupported(usbDevice) -> {
                             acsUsbDevice.connectDevice(usbDevice)
                         }
-                        ezUsbDevice.supportedDevice?.productId -> {
+                        alcorLinkDevice.isSupported(usbDevice) -> {
+                            alcorLinkDevice.connectDevice(usbDevice)
+                        }
+                        ezUsbDevice.isSupported(usbDevice) -> {
                             ezUsbDevice.connectDevice(usbDevice)
                         }
-                        rfProDevice.supportedDevice?.productId -> {
+                        RFProDevice.isSupported(usbDevice) -> {
                             rfProDevice.connect()
                         }
-                        usbPrinterService?.supportedDevice?.productId -> {
+                        usbPrinterService?.supportedDevice?.productId == usbDevice.deviceId -> {
                             try {
                                 usbPrinterService?.connectDevice(usbDevice)
                             } catch (e: Exception) {
@@ -187,6 +191,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var acsUsbDevice: AcsUsbDevice
 
     private lateinit var ezUsbDevice: CastlesUsbDevice
+
+    private lateinit var alcorLinkDevice: AlcorlinkUsbDevice
 
     private lateinit var rfProDevice: RFProDevice
 
@@ -957,6 +963,11 @@ class MainActivity : AppCompatActivity() {
             connectUSBDevice(it)
         }
 
+        alcorLinkDevice = AlcorlinkUsbDevice(this).apply { callback = usbDeviceCallback }
+        alcorLinkDevice.supportedDevice?.also {
+            connectUSBDevice(it)
+        }
+
         ezUsbDevice = CastlesUsbDevice(this).apply { callback = usbDeviceCallback }
         ezUsbDevice.supportedDevice?.also {
             connectUSBDevice(it)
@@ -1715,6 +1726,7 @@ class MainActivity : AppCompatActivity() {
 //        stopScan()
 
         acsUsbDevice.disconnect()
+        alcorLinkDevice.disconnect()
         ezUsbDevice.disconnect()
         rfProDevice.disconnect()
         usbPrinterService?.disconnect()
