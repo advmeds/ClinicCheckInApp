@@ -131,54 +131,64 @@ class MainActivity : AppCompatActivity() {
 
             when (intent.action) {
                 USB_PERMISSION -> {
-                    when {
-                        acsUsbDevice.isSupported(usbDevice) -> {
-                            acsUsbDevice.connectDevice(usbDevice)
-                        }
-                        alcorLinkDevice.isSupported(usbDevice) -> {
-                            alcorLinkDevice.connectDevice(usbDevice)
-                        }
-                        ezUsbDevice.isSupported(usbDevice) -> {
-                            ezUsbDevice.connectDevice(usbDevice)
-                        }
-                        RFProDevice.isSupported(usbDevice) -> {
-                            rfProDevice.connect()
-                        }
-                        usbPrinterService?.supportedDevice?.productId == usbDevice.deviceId -> {
-                            try {
-                                usbPrinterService?.connectDevice(usbDevice)
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                                Snackbar.make(
-                                    binding.root,
-                                    "Fail to connect the usb printer.",
-                                    Snackbar.LENGTH_LONG
-                                ).show()
+                    try {
+                        when {
+                            acsUsbDevice.isSupported(usbDevice) -> {
+                                acsUsbDevice.connectDevice(usbDevice)
+                            }
+                            alcorLinkDevice.isSupported(usbDevice) -> {
+                                alcorLinkDevice.connectDevice(usbDevice)
+                            }
+                            ezUsbDevice.isSupported(usbDevice) -> {
+                                ezUsbDevice.connectDevice(usbDevice)
+                            }
+                            RFProDevice.isSupported(usbDevice) -> {
+                                rfProDevice.connect()
                             }
                         }
+
+                        when {
+                            bpT3XPrinterService.isSupported(usbDevice) -> {
+                                bpT3XPrinterService.connectDevice(usbDevice)
+                            }
+                            eP360CPrintService.isSupported(usbDevice) -> {
+                                eP360CPrintService.connectDevice(usbDevice)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        Snackbar.make(
+                            binding.root,
+                            "Fail to connect the usb printer.",
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                 }
                 UsbManager.ACTION_USB_DEVICE_ATTACHED -> {
-                    if (RFProDevice.isSupported(usbDevice)) {
-                        rfProDevice.connect()
-                    } else {
-                        connectUSBDevice(usbDevice)
-                    }
+                    connectUSBDevice(usbDevice)
                 }
                 UsbManager.ACTION_USB_DEVICE_DETACHED -> {
-                    if (RFProDevice.isSupported(usbDevice)) {
-                        rfProDevice.disconnect()
-                    } else {
-                        when (usbDevice.productId) {
-                            acsUsbDevice.connectedDevice?.productId -> {
-                                acsUsbDevice.disconnect()
-                            }
-                            ezUsbDevice.connectedDevice?.productId -> {
-                                ezUsbDevice.disconnect()
-                            }
-                            usbPrinterService?.connectedDevice?.productId -> {
-                                usbPrinterService?.disconnect()
-                            }
+                    when {
+                        acsUsbDevice.isSupported(usbDevice) -> {
+                            acsUsbDevice.disconnect()
+                        }
+                        alcorLinkDevice.isSupported(usbDevice) -> {
+                            alcorLinkDevice.disconnect()
+                        }
+                        ezUsbDevice.isSupported(usbDevice) -> {
+                            ezUsbDevice.disconnect()
+                        }
+                        RFProDevice.isSupported(usbDevice) -> {
+                            rfProDevice.disconnect()
+                        }
+                    }
+
+                    when {
+                        bpT3XPrinterService.isSupported(usbDevice) -> {
+                            bpT3XPrinterService.disconnect()
+                        }
+                        eP360CPrintService.isSupported(usbDevice) -> {
+                            eP360CPrintService.disconnect()
                         }
                     }
                 }
@@ -202,15 +212,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onCardAbsent() {
-//            viewModel.cancelJobOnCardAbsent()
             dialog?.dismiss()
             dialog = null
-
-//            viewModel.completeAllJobOnCardAbsentAfterAllProcessIsOver() {
-//                dialog?.dismiss()
-//                dialog = null
-//            }
-
         }
 
         override fun onConnectDevice() {
@@ -248,10 +251,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }.onFailure {
-//                it.message?.let { it1 ->
-//                    Snackbar.make(binding.root, it1, Snackbar.LENGTH_LONG).show()
-//                }
-
                 soundPool.play(
                     failCardInsertSoundId,
                     1f,
@@ -260,7 +259,6 @@ class MainActivity : AppCompatActivity() {
                     0,
                     1f
                 )
-
 
                 dialog = ErrorDialogFragment(
                     title = getString(R.string.fail_to_check),
@@ -272,65 +270,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    /** 確認使用者授權的Callback */
-//    private val bleForResult =
-//        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
-//            if (result.values.find { !it } == null) {
-//                enableBluetoothService()
-//            }
-//        }
-
-//    /** Create a BroadcastReceiver for ACTION_STATE_CHANGED. */
-//    private val detectBluetoothStateReceiver = object : BroadcastReceiver() {
-//        override fun onReceive(context: Context, intent: Intent) {
-//            when(intent.action) {
-//                BluetoothAdapter.ACTION_STATE_CHANGED -> {
-//                    // Discovery has found a device. Get the BluetoothDevice
-//                    // object and its info from the Intent.
-//                    val prevState = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_STATE, 0)
-//                    val currState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0)
-//                    Timber.d("prevState: $prevState, currState: $currState")
-//
-//                    when (currState) {
-//                        BluetoothAdapter.STATE_ON -> {
-//                            startScan()
-//                        }
-//                        BluetoothAdapter.STATE_TURNING_OFF -> {
-//                            stopScan()
-//                        }
-//                        BluetoothAdapter.STATE_OFF -> {
-//                            BluetoothAdapter.getDefaultAdapter().enable()
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-    // Create a BroadcastReceiver for ACTION_FOUND.
-//    private val detectBluetoothDeviceReceiver = object : BroadcastReceiver() {
-//        override fun onReceive(context: Context, intent: Intent) {
-//            when(intent.action) {
-//                BluetoothDevice.ACTION_FOUND -> {
-//                    // Discovery has found a device. Get the BluetoothDevice
-//                    // object and its info from the Intent.
-//                    val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-//
-//                    device ?: return
-//
-//                    Timber.d(device.name)
-//
-//                    if (device.name == "58Printer") {
-//                        printService.connect(device)
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-//    private lateinit var printService: BluetoothPrinterService
-
-    var usbPrinterService: UsbPrinterService? = null
+    private lateinit var bpT3XPrinterService: BPT3XPrinterService
+    private lateinit var eP360CPrintService: EP360CPrintService
 
     private val reloadClinicDataReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -411,7 +352,7 @@ class MainActivity : AppCompatActivity() {
         setupUSB()
 //        setupBluetooth()
 
-        registerBroadcastReciver()
+        registerBroadcastReceiver()
 
         setWindowSettings()
 
@@ -788,7 +729,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun registerBroadcastReciver() {
+    private fun registerBroadcastReceiver() {
         LocalBroadcastManager.getInstance(applicationContext).registerReceiver(
             reloadClinicDataReceiver,
             IntentFilter(SharedPreferencesRepo.MS_SERVER_DOMAIN).apply {
@@ -944,6 +885,8 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setupUSB() {
+        usbManager = getSystemService(Context.USB_SERVICE) as UsbManager
+
         val usbFilter = IntentFilter(USB_PERMISSION)
         usbFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED)
         usbFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED)
@@ -953,99 +896,33 @@ class MainActivity : AppCompatActivity() {
             usbFilter
         )
 
-        usbManager = getSystemService(Context.USB_SERVICE) as UsbManager
-
         acsUsbDevice = AcsUsbDevice(
             usbManager,
             arrayOf(AcsUsbTWDecoder()),
         ).apply { callback = usbDeviceCallback }
-        acsUsbDevice.supportedDevice?.also {
-            connectUSBDevice(it)
-        }
-
         alcorLinkDevice = AlcorlinkUsbDevice(this).apply { callback = usbDeviceCallback }
-        alcorLinkDevice.supportedDevice?.also {
-            connectUSBDevice(it)
-        }
-
         ezUsbDevice = CastlesUsbDevice(this).apply { callback = usbDeviceCallback }
-        ezUsbDevice.supportedDevice?.also {
-            connectUSBDevice(it)
-        }
-
         rfProDevice = RFProDevice(this).apply { callback = usbDeviceCallback }
-        rfProDevice.supportedDevice?.also {
-            connectUSBDevice(it)
-        }
+        bpT3XPrinterService = BPT3XPrinterService(usbManager)
+        eP360CPrintService = EP360CPrintService(applicationContext)
 
-        usbPrinterService = BPT3XPrinterService.isSupported(usbManager)?.let {
-            val service = BPT3XPrinterService(usbManager)
-            connectUSBDevice(it)
-            service
-        } ?: EP360CPrintService.isSupported(usbManager)?.let {
-            val service = EP360CPrintService(applicationContext)
-            connectUSBDevice(it)
-            service
-        }
+        usbManager.deviceList.values.forEach(::connectUSBDevice)
     }
 
     private fun connectUSBDevice(device: UsbDevice) {
-        val mPermissionIntent = PendingIntent.getBroadcast(
-            this,
-            0,
-            Intent(USB_PERMISSION),
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) 0 else PendingIntent.FLAG_MUTABLE
-        )
+        if (RFProDevice.isSupported(device)) {
+            rfProDevice.connect()
+        } else {
+            val mPermissionIntent = PendingIntent.getBroadcast(
+                this,
+                0,
+                Intent(USB_PERMISSION),
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) 0 else PendingIntent.FLAG_MUTABLE
+            )
 
-        usbManager.requestPermission(device, mPermissionIntent)
+            usbManager.requestPermission(device, mPermissionIntent)
+        }
     }
-
-//    /** print ticket */
-//    private fun printPatient(division: String, serialNo: Int) {
-//        val now = Date()
-//        val formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
-//
-//        val commandList = arrayListOf(
-//            PrinterBuffer.initializePrinter(),
-//            PrinterBuffer.selectAlignment(PrinterBuffer.Alignment.CENTER),
-//
-//            PrinterBuffer.setLineSpacing(120),
-//            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
-//            strToBytes(viewModel.clinicGuardian.value!!.name),
-//            PrinterBuffer.printAndFeedLine(),
-//
-//            PrinterBuffer.setLineSpacing(160),
-//            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
-//            strToBytes(division),
-//            PrinterBuffer.printAndFeedLine(),
-//
-//            PrinterBuffer.setLineSpacing(120),
-//            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
-//            strToBytes(getString(R.string.print_serial_no)),
-//            PrinterBuffer.printAndFeedLine(),
-//
-//            PrinterBuffer.setLineSpacing(160),
-//            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.SMALL),
-//            strToBytes(String.format("%04d", serialNo)),
-//            PrinterBuffer.printAndFeedLine(),
-//
-//            PrinterBuffer.setLineSpacing(120),
-//            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
-//            strToBytes(formatter.format(now)),
-//            PrinterBuffer.printAndFeedLine(),
-//
-//            PrinterBuffer.setLineSpacing(120),
-//            PrinterBuffer.selectCharacterSize(PrinterBuffer.CharacterSize.XSMALL),
-//            strToBytes(getString(R.string.print_footer)),
-//            PrinterBuffer.printAndFeedLine(),
-//
-//            PrinterBuffer.selectCutPagerModerAndCutPager(66, 1)
-//        )
-//
-//        commandList.forEach { command ->
-//            usbPrinterService.write(command)
-//        }
-//    }
 
     /** print ticket */
     private fun printPatient(
@@ -1053,7 +930,6 @@ class MainActivity : AppCompatActivity() {
         serialNumbers: Array<Int>,
         doctors: Array<String>
     ) {
-
         require(divisions.size == serialNumbers.size && serialNumbers.size == doctors.size) {
             "Arrays must have the same size"
         }
@@ -1064,19 +940,45 @@ class MainActivity : AppCompatActivity() {
             doctors = doctors
         )
 
+        if (bpT3XPrinterService.isConnected) {
+            printPatient(
+                usbPrinterService = bpT3XPrinterService,
+                divisions = divisions,
+                serialNumbers = serialNumbers,
+                doctors = doctors
+            )
+        }
+
+        if (eP360CPrintService.isConnected) {
+            printPatient(
+                usbPrinterService = eP360CPrintService,
+                divisions = divisions,
+                serialNumbers = serialNumbers,
+                doctors = doctors
+            )
+        }
+    }
+
+    private fun printPatient(
+        usbPrinterService: UsbPrinterService,
+        divisions: Array<String>,
+        serialNumbers: Array<Int>,
+        doctors: Array<String>
+    ) {
         val now = Date()
         val formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
         val queueingMachineSettings = viewModel.queueingMachineSettings
 
         if (queueingMachineSettings.isOneTicket) {
-
             val headerCommand = getHeaderCommand(
+                usbPrinterService = usbPrinterService,
                 isShowOrganization = queueingMachineSettings.organization,
                 textSize = queueingMachineSettings.textSize
             )
 
             val middleCommand =
                 getMiddleCommand(
+                    usbPrinterService = usbPrinterService,
                     doctors = doctors,
                     divisions = divisions,
                     serialNumbers = serialNumbers,
@@ -1084,6 +986,7 @@ class MainActivity : AppCompatActivity() {
                 )
 
             val footerCommand = getFooterCommand(
+                usbPrinterService = usbPrinterService,
                 isShowTime = queueingMachineSettings.time,
                 formatter = formatter,
                 now = now,
@@ -1097,7 +1000,7 @@ class MainActivity : AppCompatActivity() {
             commandList.addAll(footerCommand)
 
             commandList.forEach { command ->
-                usbPrinterService?.write(command)
+                usbPrinterService.write(command)
             }
         } else {
             divisions.zipWith(serialNumbers, doctors).forEach { (division, serialNo, doctor) ->
@@ -1107,17 +1010,20 @@ class MainActivity : AppCompatActivity() {
                 val serialNoArray = arrayOf(serialNo)
 
                 val headerCommand = getHeaderCommand(
+                    usbPrinterService = usbPrinterService,
                     isShowOrganization = queueingMachineSettings.organization,
                     textSize = queueingMachineSettings.textSize
                 )
                 val middleCommand =
                     getMiddleCommand(
+                        usbPrinterService = usbPrinterService,
                         doctors = doctorArray,
                         divisions = divisionArray,
                         serialNumbers = serialNoArray,
                         queueingMachineSettingModel = queueingMachineSettings
                     )
                 val footerCommand = getFooterCommand(
+                    usbPrinterService = usbPrinterService,
                     isShowTime = queueingMachineSettings.time,
                     formatter = formatter,
                     now = now,
@@ -1131,13 +1037,14 @@ class MainActivity : AppCompatActivity() {
                 commandList.addAll(footerCommand)
 
                 commandList.forEach { command ->
-                    usbPrinterService?.write(command)
+                    usbPrinterService.write(command)
                 }
             }
         }
     }
 
     private fun getHeaderCommand(
+        usbPrinterService: UsbPrinterService,
         isShowOrganization: Boolean,
         textSize: QueueingMachineSettingModel.MillimeterSize
     ): ArrayList<ByteArray> {
@@ -1194,6 +1101,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getMiddleCommand(
+        usbPrinterService: UsbPrinterService,
         doctors: Array<String>,
         divisions: Array<String>,
         serialNumbers: Array<Int>,
@@ -1303,6 +1211,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getFooterCommand(
+        usbPrinterService: UsbPrinterService,
         isShowTime: Boolean,
         formatter: DateFormat,
         now: Date,
@@ -1388,102 +1297,8 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-    //        val bluetoothStateFilter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
-
-
     /** 將字串用萬國編碼轉成ByteArray防止中文亂碼 */
     private fun strToBytes(str: String): ByteArray = str.toByteArray(charset("big5"))
-
-//    private fun setupBluetooth() {
-//        registerReceiver(
-//            detectBluetoothStateReceiver,
-//            bluetoothStateFilter
-//        )
-//
-//        val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-//        registerReceiver(detectBluetoothDeviceReceiver, filter)
-//
-//        requestBluetoothPermissions()
-//
-//        printService = BluetoothPrinterService(
-//            this,
-//            object : PrinterServiceDelegate {
-//                override fun onStateChanged(state: PrinterServiceDelegate.State) {
-//                    when (state) {
-//                        PrinterServiceDelegate.State.NONE -> {
-//                            startScan()
-//                        }
-//                        PrinterServiceDelegate.State.CONNECTING -> {
-//                            stopScan()
-//                        }
-//                        PrinterServiceDelegate.State.CONNECTED -> {
-//
-//                        }
-//                    }
-//                }
-//            }
-//        )
-//    }
-//
-//    private fun requestBluetoothPermissions() {
-//        val permissions = arrayOf(
-//            android.Manifest.permission.BLUETOOTH,
-//            android.Manifest.permission.BLUETOOTH_ADMIN,
-//            android.Manifest.permission.ACCESS_FINE_LOCATION,
-//            android.Manifest.permission.ACCESS_COARSE_LOCATION
-//        )
-//
-//        bleForResult.launch(permissions)
-//    }
-//
-//    private fun enableBluetoothService() {
-//        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-//
-//        if (bluetoothAdapter.isEnabled) {
-//            startScan()
-//        } else {
-////            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-////            bleForResult.launch(enableBtIntent)
-//            bluetoothAdapter.enable()
-//        }
-//    }
-//
-//    var timeOutJob: Job? = null
-//
-//    /** 開始掃描藍牙設備 */
-//    private fun startScan() {
-//        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-//
-//        if (bluetoothAdapter.isDiscovering || printService.state != PrinterServiceDelegate.State.NONE) return
-//        Timber.d("startDiscovery")
-//
-//        if (bluetoothAdapter.isEnabled) {
-//            timeOutJob?.cancel()
-//            timeOutJob = lifecycleScope.launch {
-//                withContext(Dispatchers.IO) {
-//                    delay(TimeUnit.SECONDS.toMillis(SCAN_TIME_OUT))
-//                }
-//
-//                if (bluetoothAdapter.isEnabled && printService.state != PrinterServiceDelegate.State.CONNECTED) {
-//                    bluetoothAdapter.disable()
-//                }
-//            }
-//
-//            bluetoothAdapter.startDiscovery()
-//        }
-//    }
-//
-//    /** 停止掃描藍牙設備 */
-//    private fun stopScan() {
-//        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-//
-//        if (!bluetoothAdapter.isDiscovering) return
-//        Timber.d("cancelDiscovery")
-//
-//        if (bluetoothAdapter.isEnabled) {
-//            bluetoothAdapter.cancelDiscovery()
-//        }
-//    }
 
     /** get patient appointment */
     fun getPatients(
@@ -1493,7 +1308,8 @@ class MainActivity : AppCompatActivity() {
         isItManualInput: Boolean = false,
         completion: (() -> Unit)? = null
     ) {
-        if (viewModel.queueingMachineSettingIsEnable && usbPrinterService?.isConnected != true) {
+        if (viewModel.queueingMachineSettingIsEnable &&
+            (!bpT3XPrinterService.isConnected && !eP360CPrintService.isConnected)) {
             // 若有開啟取號功能，則必須要有連線取票機才會去報到
             Snackbar.make(
                 binding.root,
@@ -1545,7 +1361,8 @@ class MainActivity : AppCompatActivity() {
         completion: ((CreateAppointmentResponse) -> Unit)? = null
     ) {
         // if app support print ticket, check ticket machine connection
-        if (viewModel.queueingMachineSettingIsEnable && usbPrinterService?.isConnected != true) {
+        if (viewModel.queueingMachineSettingIsEnable &&
+            (!bpT3XPrinterService.isConnected && !eP360CPrintService.isConnected)) {
             Snackbar.make(
                 binding.root,
                 getString(R.string.printer_not_connect),
@@ -1599,7 +1416,7 @@ class MainActivity : AppCompatActivity() {
                 name = "手動取號",
                 nationalId = "Fake${String.format("%06d", serialNo)}"
             )
-        ) { createAppointmentResponse ->
+        ) { _ ->
 
             viewModel.checkInSerialNo = if (serialNo >= 999999) {
                 0
@@ -1729,8 +1546,8 @@ class MainActivity : AppCompatActivity() {
         alcorLinkDevice.disconnect()
         ezUsbDevice.disconnect()
         rfProDevice.disconnect()
-        usbPrinterService?.disconnect()
-        usbPrinterService = null
+        bpT3XPrinterService.disconnect()
+        eP360CPrintService.disconnect()
 
         try {
             unregisterReceiver(detectUsbDeviceReceiver)
@@ -1741,17 +1558,5 @@ class MainActivity : AppCompatActivity() {
         LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(reloadClinicDataReceiver)
         LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(presentationReceiver)
         unregisterReceiver(downloadReceiver)
-
-//        try {
-//            unregisterReceiver(detectBluetoothStateReceiver)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-//
-//        try {
-//            unregisterReceiver(detectBluetoothDeviceReceiver)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
     }
 }
